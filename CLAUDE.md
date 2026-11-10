@@ -2,7 +2,7 @@
 
 Postcard is a holiday-rating app. Friends rate holiday **destinations** and **where they stayed** (hotel, Airbnb, villa and so on) out of 10, and add photos, food picks and top tips.
 
-This repo is currently a **clickable shell**: every screen works, but it all runs on sample data in `lib/data.ts`. There is no backend, no accounts and no saving yet. The roadmap is in `docs/plan.md`.
+**Status:** clickable shell plus **real accounts** (Step 1 of `docs/plan.md`). Sign-up and log-in use Supabase email links with an age check. Everything else (ratings, friends, picks, Postcards) is still sample data in `lib/data.ts`, and the Log form doesn't save yet. The roadmap is in `docs/plan.md`.
 
 ## Working with the owner
 
@@ -16,7 +16,7 @@ This repo is currently a **clickable shell**: every screen works, but it all run
 
 1. **Scores are whole numbers out of 10.** There are two per trip: the destination and the stay. Averages show one decimal place.
 2. **Post when home, never live location.** A rating records the month of the trip, not the current place. The Log form requires "I'm back home" and rejects future months. Never add live or "I'm here now" location features, and strip GPS data from photos before storing them.
-3. **Public profiles are 18+ only.** Everyone gives a date of birth at sign-up. Under-18s can never switch their profile to public, and this must be enforced in the database, not just hidden in the UI. Date of birth is private to its owner.
+3. **Ages: 13+ to join, 18+ to go public.** (Owner's decision, Nov 2026.) Everyone gives a date of birth at sign-up, and anyone under 13 is refused. 13–17s get a private, friends-only profile: they can never switch it to public, and they don't appear in search or suggestions to people who aren't already their friends. Enforce this in the database, not just in the UI. Date of birth is private to its owner.
 4. **Notifications are called "Postcards"** everywhere in the UI, never "notifications" or "alerts".
 5. **Home has two sides:** "For you" (picks based on your taste) and "Friends" (what friends rated, newest first).
 
@@ -25,7 +25,8 @@ This repo is currently a **clickable shell**: every screen works, but it all run
 - **Next.js 16** (App Router) + **React 19** + **TypeScript** (strict)
 - **Tailwind CSS 4**: configured in CSS (`app/globals.css`, `@theme`). There is no `tailwind.config.js`.
 - Fonts are self-hosted via `@fontsource-variable/fraunces` and `@fontsource-variable/dm-sans`, imported in `app/layout.tsx`. No Google Fonts request at build or run time.
-- Planned: **Supabase** (accounts, database, photo storage), **Vercel** (hosting), **Loops** (waitlist email). None are connected yet.
+- **Supabase**: connected for accounts and profiles (`@supabase/ssr`). Database, storage and the rest come in later steps.
+- Planned: **Vercel** (hosting), **Loops** (waitlist email). Not connected yet.
 
 ### Next.js 16 notes
 
@@ -37,6 +38,7 @@ The APIs differ from older Next.js versions, so check the docs that ship with th
 ## Commands
 
 ```bash
+cp .env.example .env.local   # first time only, then fill in the two Supabase values
 npm install       # first time only: downloads dependencies
 npm run dev       # local preview at http://localhost:3000
 npm run build     # production build: must pass before any PR
@@ -53,7 +55,12 @@ app/
   layout.tsx              Root: fonts, <html>, metadata
   globals.css             Brand tokens + stamp / airmail / paper-grain styles
   not-found.tsx           "Lost in the post" 404
-  welcome/                Waitlist landing page (no tab bar)
+  welcome/                Waitlist landing page (no tab bar), with Join / Log in links
+  (auth)/                 Sign-up, log-in and email-link screens (no tab bar)
+    actions.ts            Server actions: signUp, logIn, confirmLink, logOut
+    signup/, login/       The forms (components/AuthForm.tsx)
+    auth/confirm/         Email link lands here; the "Log me in" button verifies it
+  auth/callback/          Fallback for Supabase's default email links (?code=)
   (app)/                  Every in-app screen; (app) is a route group, so it's not in the URL
     layout.tsx            Phone-width column + bottom tab bar
     page.tsx              Home: For you / Friends
@@ -66,6 +73,11 @@ app/
     people/[handle]/      A friend's profile
 components/               Shared UI (see Brand rules below)
 lib/data.ts               Sample data, types and helpers (forYouPicks, friendFeed, …)
+lib/supabase/             Supabase clients: server.ts (pages/actions), proxy.ts (session refresh + redirects), env.ts
+lib/profile.ts            getCurrentProfile(): the signed-in person's profile
+lib/age.ts                ageInYears(), MIN_AGE_TO_JOIN (13), MIN_AGE_FOR_PUBLIC_PROFILE (18)
+proxy.ts                  Next.js proxy: runs lib/supabase/proxy.ts before every page
+supabase/migrations/      Database setup, as SQL files run in order
 docs/plan.md              Step-by-step plan from shell to real app
 ```
 
@@ -73,17 +85,20 @@ docs/plan.md              Step-by-step plan from shell to real app
 
 | Route | Screen | Notes |
 |---|---|---|
-| `/welcome` | Waitlist landing | Email form shows a thank-you but sends nothing yet (Loops later). |
+| `/welcome` | Waitlist landing | Email form shows a thank-you but sends nothing yet (Loops later). Join / Log in links. |
+| `/signup` | Join | Name, email, date of birth. 13+ checked here, on the server and in the database. Then "Check your inbox". |
+| `/login` | Log in | Email only. Always says "check your inbox", so it never reveals who has an account. |
+| `/auth/confirm` | Email link | "Log me in" button (a tap is needed so email scanners can't use up the one-time link). |
 | `/` | Home | Tabs: **For you** (top pick + grid, from `forYouPicks()`) and **Friends** (feed of `RatingCard`s). |
 | `/explore` | Explore | Search by name/country and filter by tag chips. |
 | `/destination/[slug]` | Destination | Friends' average stamp, where friends stayed, food picks, top tips, all ratings. |
 | `/rating/[id]` | Rating | Postcard layout: postmark (place + trip month), place stamp, review, photos, stay stamp, food, tips. |
 | `/log` | Log a holiday | Place, country, month, destination score, stay name/type/score, headline, review, 3 food picks, 3 tips, photos, "I'm back home". Validates, then shows a preview. **Nothing is saved.** |
 | `/postcards` | Postcards | Notification list with unread dots; the count shows on the tab bar. |
-| `/profile` | You | Stats, public-profile setting (off; 18+ note), your ratings. |
+| `/profile` | You | Real name, handle and email; public-profile setting (18+ note); Log out. Ratings come in Step 2. |
 | `/people/[handle]` | Friend profile | Same view as yours, without the settings. |
 
-The signed-in person is faked as `ME = "sam"` in `lib/data.ts`.
+Signed-out visitors are sent to `/welcome` by `proxy.ts`. Only `/welcome`, `/signup`, `/login` and `/auth/*` are public. Home's greeting and You use the real profile. The sample content still treats `ME = "sam"` in `lib/data.ts` as "you".
 
 ## Brand rules
 
@@ -126,6 +141,15 @@ Warm, short and British English ("holiday", "favourite"). Postal puns sparingly:
 ### Layout
 
 Mobile-first, a single column at `max-w-md`, 16px side padding (`px-4`) and a fixed bottom tab bar (Home, Explore, a centre **Log** button, Postcards, You). Light theme only for now.
+
+## Accounts and database
+
+- **Auth:** passwordless email links (`signInWithOtp`). Sign-up sends `name` and `date_of_birth` as user metadata, and a database trigger (`handle_new_user`) creates the profile, **refusing anyone under 13**.
+- **Email links:** custom Supabase templates point to `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`. Supabase's default links go via `/auth/callback?code=` and only work in the same browser.
+- **Tables:** `profiles` (handle, name, is_public) and `profile_private` (date_of_birth, owner-only, never editable). Row Level Security is on for both. A trigger refuses `is_public = true` under 18.
+- **Changing the database:** add a new numbered file in `supabase/migrations/` (never edit one that's already been run). The owner runs it in Supabase → SQL Editor. Before handing it over, test it on a local Postgres with stand-ins for `auth.users`, `auth.uid()` and the `anon`/`authenticated` roles, covering every rule, including the "should fail" cases.
+- **Keys:** `.env.local` locally and Vercel environment variables online: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Never the secret key.
+- Use `supabase.auth.getClaims()` (not `getSession()`) to check who's signed in on the server.
 
 ## Conventions
 

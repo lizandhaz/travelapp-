@@ -1,13 +1,20 @@
 import Link from "next/link";
 import { Avatar } from "./Avatar";
 import { RatingCard } from "./RatingCard";
-import { ME, getDestination, ratingsBy, type Person } from "@/lib/data";
+import { getDestination, ratingsBy, type Person } from "@/lib/data";
 
-export function ProfileView({ person, children }: { person: Person; children?: React.ReactNode }) {
+export function ProfileView({
+  person,
+  isMe = false,
+  children,
+}: {
+  person: Person;
+  isMe?: boolean;
+  children?: React.ReactNode;
+}) {
   const rs = ratingsBy(person.handle);
   const countries = new Set(rs.map((r) => getDestination(r.destination)?.country)).size;
   const avg = rs.length ? (rs.reduce((s, r) => s + r.destinationScore, 0) / rs.length).toFixed(1) : "–";
-  const isMe = person.handle === ME;
 
   return (
     <>
@@ -23,9 +30,10 @@ export function ProfileView({ person, children }: { person: Person; children?: R
         </div>
         <h1 className="mt-3 text-3xl font-semibold">{person.name}</h1>
         <p className="text-sm text-ink-soft">
-          @{person.handle} · {person.homeTown}
+          @{person.handle}
+          {person.homeTown && ` · ${person.homeTown}`}
         </p>
-        <p className="mx-auto mt-3 max-w-xs font-display italic">{person.bio}</p>
+        {person.bio && <p className="mx-auto mt-3 max-w-xs font-display italic">{person.bio}</p>}
         {!isMe && (
           <p className="mt-3 inline-block rounded-full bg-sea/15 px-3 py-1 text-xs font-semibold text-sea">
             {person.isFriend ? "Friends" : "Add friend"}

@@ -3,10 +3,11 @@ import { DestinationCard } from "@/components/DestinationCard";
 import { HomeTabs } from "@/components/HomeTabs";
 import { RatingCard } from "@/components/RatingCard";
 import { Stamp } from "@/components/Stamp";
-import { ME, averageScore, forYouPicks, friendFeed, getPerson } from "@/lib/data";
+import { averageScore, forYouPicks, friendFeed } from "@/lib/data";
+import { getCurrentProfile } from "@/lib/profile";
 
-export default function HomePage() {
-  const me = getPerson(ME)!;
+export default async function HomePage() {
+  const me = await getCurrentProfile();
   const [top, ...rest] = forYouPicks();
   const feed = friendFeed();
   const topAvg = averageScore(top.destination.slug);
@@ -54,7 +55,7 @@ export default function HomePage() {
     <>
       <header className="flex items-center justify-between px-4 pt-6 pb-4">
         <div>
-          <p className="font-display text-sm text-ink-soft italic">Hello {me.name.split(" ")[0]},</p>
+          <p className="font-display text-sm text-ink-soft italic">Hello {me?.name.split(" ")[0] ?? "there"},</p>
           <h1 className="text-3xl font-semibold">
             Postcard<span className="text-postbox">.</span>
           </h1>
@@ -66,6 +67,9 @@ export default function HomePage() {
           About
         </Link>
       </header>
+      <p className="mx-4 mb-4 rounded-md border border-dashed border-sand px-3 py-2 text-xs text-ink-soft">
+        Preview: the picks and ratings below are sample content. Real ones arrive as friends start rating.
+      </p>
       <HomeTabs forYou={forYou} friends={friends} />
     </>
   );

@@ -11,48 +11,91 @@ Each step is small, ends with something you can click and check, and becomes its
 
 ---
 
-## Step 0: Clickable shell ✅ (this pull request)
+## Step 0: Clickable shell ✅
 
-Every screen works with made-up sample data. Nothing is saved and nothing is connected.
+Every screen works with made-up sample data.
 
 ---
 
-## Step 1: Sign up and log in (Supabase, email link, age check)
+## Step 1: Sign up and log in (Supabase, email link, age check). Code built ✅, your setup next
 
-**What it means:** people can create an account with just their email. There are no passwords: they type their email and get a "magic link" to click. At sign-up they also give their name and date of birth. **Anyone 13 or over can join** (decided Nov 2026). Everyone starts with a private profile. Only people aged 18 or over will ever be able to make their profile public (the switch comes in a later step, but the rule is built in now).
+**What it means:** people create an account with just their email. There are no passwords: they type their email and get a link to tap. At sign-up they also give their name and date of birth. **Anyone 13 or over can join** (decided Nov 2026). Everyone starts with a private profile, and only people aged 18 or over will ever be able to make it public. The database itself enforces both age rules.
 
-**You do**
+**Already done**
+- ✅ Age decision: 13+ to join, 18+ for public profiles. Because 13–17s can use Postcard, UK rules for young users apply (the Children's Code and the Online Safety Act). Book a quick legal check before launch (see "Before inviting real users").
+- ✅ You created the Supabase project and shared the Project URL and Publishable key.
+- ✅ Claude built:
+  - **Sign up** (`/signup`): name, email, date of birth. Under-13s are refused on the screen, again on the server, and again by the database.
+  - **Log in** (`/login`): email only. It always says "check your inbox", so it never reveals who has an account.
+  - **Email link page** (`/auth/confirm`): a **Log me in** button. A tap is needed because some email services (Outlook, many workplaces) automatically "click" links to scan them, which would use up a one-time link.
+  - **Log out**, plus your real name on Home and You.
+  - Signed-out visitors are sent to the welcome page. Only Welcome, Join and Log in are open to everyone.
+  - The database setup (`supabase/migrations/20261110120000_profiles.sql`): profiles, a private date-of-birth table only you can read or never edit, and the 13+/18+ rules. All of it was tested on a local copy of the database.
 
-1. ~~Decide the minimum age~~ ✅ **Decided: 13+ to join, 18+ for public profiles.** Because 13–17s can use Postcard, UK rules for young users apply (the Children's Code and the Online Safety Act). Book a quick check with a lawyer before launch (see "Before inviting real users").
-2. **Create a free Supabase account and project** (about 5 minutes):
-   1. Go to **supabase.com** and click **Start your project**. Sign up with your GitHub account (click **Continue with GitHub**).
-   2. If asked to create an organisation, name it "Postcard" and choose the **Free** plan. 💷 If you ever see a card-details screen, stop and tell Claude.
-   3. Click **New project**. Name: `postcard`. Database password: click **Generate a password** and **save it in your password manager** (you'll rarely need it, but it can't be shown again). Region: **West EU (London)**. Click **Create new project** and wait a minute or two.
-3. **Give Claude the two public settings.** In the project, click **Project Settings** (the cog, bottom left), then **API Keys**, then copy the **Publishable key** (older projects call it the **anon** key). Then go to **Data API** (or **API**) and copy the **Project URL**. Paste both into the chat. These two are safe to share. **Never paste the "secret" or "service_role" key**: that one is a master key.
-4. **Tell Supabase where the app lives.** Go to **Authentication** → **URL Configuration**. Set **Site URL** to `http://localhost:3000` for now, and under **Redirect URLs** click **Add URL** and add `http://localhost:3000/**`. (When the app goes online we'll add the real address too.)
-5. When Claude asks, paste the database setup it gives you into **SQL Editor** → **New query** → **Run**. (Or Claude can give you an alternative way. Either is fine.)
+**You do, in this order**
 
-**Claude does**
+1. **Merge the Step 1 pull request** on GitHub (**Merge pull request** → **Confirm merge**).
+2. **Run the database setup in Supabase** (2 minutes):
+   1. On GitHub, open the repo, then the `supabase` folder → `migrations` → `20261110120000_profiles.sql`.
+   2. Click the **Copy raw file** button (two overlapping squares, top right of the file).
+   3. In Supabase, click **SQL Editor** in the left sidebar → **New query**. Paste, then click **Run**.
+   4. You should see **"Success. No rows returned"**. If you see a red error instead, copy it to Claude. Don't run it twice: the second time it will say things "already exist", which is harmless but confusing.
+3. **Put the app online with Vercel** so you can try it. See **Step 1b** below.
+4. **Tell Supabase where the app lives.** In Supabase: **Authentication** → **URL Configuration**:
+   - **Site URL**: your Vercel address, e.g. `https://travelapp-abc.vercel.app` (no slash at the end). Click **Save**.
+   - **Redirect URLs** → **Add URL**: the same address followed by `/**`, e.g. `https://travelapp-abc.vercel.app/**`. Save.
+5. **Change the two log-in emails** so links work on any device:
+   1. In Supabase: **Authentication** → **Emails** (it may be called **Email Templates**).
+   2. Open **Confirm signup**. Set the subject to `Finish joining Postcard` and replace the message body with:
+      ```html
+      <h2>Welcome to Postcard</h2>
+      <p>Tap below to finish joining.</p>
+      <p><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">Finish joining Postcard</a></p>
+      <p>If you didn't ask to join Postcard, you can ignore this email.</p>
+      ```
+      Click **Save**.
+   3. Open **Magic Link** (or **Magic link or OTP**). Set the subject to `Your Postcard log-in link` and replace the body with:
+      ```html
+      <h2>Log in to Postcard</h2>
+      <p>Tap below to log in. The link works once, for about an hour.</p>
+      <p><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">Log in to Postcard</a></p>
+      <p>If you didn't ask for this, you can ignore this email.</p>
+      ```
+      Click **Save**.
+6. **Try it** (the "Done when" list below) on your phone and computer.
 
-- Adds Supabase's official Next.js helper (`@supabase/ssr` and `@supabase/supabase-js`, both free).
-- Creates `.env.example` (a blank template) and tells you how to create your own `.env.local`, which git ignores so your keys never reach the public repo.
-- Writes the database setup:
-  - a `profiles` table (name, handle, date of birth, `is_public`, created date), created automatically when someone signs up
-  - **database rules (Row Level Security)** so people can only read and edit their own profile, and only they can see their date of birth
-  - a rule that **refuses `is_public = true` for anyone under 18**, enforced by the database itself, so no bug in the app can get around it
-- Builds the new screens in the existing style:
-  - **Sign up** (`/signup`): email, name, date of birth. Under-13s are refused. The check happens on the screen *and* again on the server. Then "Check your inbox".
-  - **Log in** (`/login`): email only. Then "Check your inbox".
-  - **Link landing** (`/auth/confirm`): where the email link takes you, which signs you in and sends you Home.
-  - **Log out** on the You screen.
-- Adds `proxy.ts` so you stay signed in, and sends signed-out visitors to `/welcome` or `/login`.
-- Swaps the fake "Sam" for the real signed-in person's name on Home and You (everything else is still sample data until later steps).
-
-**Done when:** you sign up with your email and a date of birth, click the link in the email, land on Home, see your own name, log out and log back in. A date of birth under 13 is refused with a kind message, and a 13–17 account can't be made public.
+**Done when**
+- You join with your email, tap the link in the email, tap **Log me in**, and land on Home saying "Hello" with your name.
+- **You** shows your name, a handle like `@yourname1234` and your email. **Log out** takes you to the welcome page, and logging back in works.
+- A date of birth under 13 is refused with a kind message.
+- Signed out, opening any app page sends you to the welcome page.
 
 **Cost:** free. Supabase's free plan is plenty for building and testing. Two things to know:
-- Free projects **pause after about a week with no activity**. You can un-pause them from the dashboard in one click.
-- Supabase's built-in email sender only allows **a few emails per hour**. That's fine for testing, but 💷 before real users arrive we'll set up a proper email sender (several have free tiers). Claude will ask first.
+- Free projects **pause after about a week with no activity**. Un-pause from the Supabase dashboard in one click.
+- Supabase's built-in email sender only allows **a few emails per hour** across the whole project. If testing gets "We've sent a lot of emails…", wait an hour. 💷 Before real users arrive we'll set up a proper email sender (several have free tiers). Claude will ask first.
+
+**Good to know:** you can't add people by hand in Supabase's **Authentication → Users** page, because the database refuses accounts without a date of birth. That's deliberate: everyone joins through the app.
+
+---
+
+## Step 1b: Put the app online (Vercel)
+
+**Why now:** it's the easiest way for you to try sign-up for real, on your phone, without installing anything.
+
+**You do** (about 10 minutes, after merging the Step 1 pull request):
+1. Go to **vercel.com** and click **Sign Up**. Choose **Hobby** ("I'm working on personal projects"), enter your name, then click **Continue with GitHub**.
+2. If GitHub asks to install Vercel, choose **Only select repositories** → **travelapp-** → **Install**.
+3. In Vercel, click **Add New…** → **Project**. Next to **travelapp-**, click **Import**.
+4. Open **Environment Variables** and add two. For each, type the name, paste the value and click **Add**:
+   - `NEXT_PUBLIC_SUPABASE_URL` = your Project URL (`https://….supabase.co`, without `/rest/v1/`)
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` = your Publishable key (`sb_publishable_…`)
+5. Click **Deploy** and wait a minute or two. Click **Continue to Dashboard**, then copy the address under **Domains** (ending in `.vercel.app`). That's your app. Use it in Step 1, point 4.
+
+**Claude does:** checks the online version once you share the address, and fixes anything that differs from the local build.
+
+**Done when:** the Vercel address shows the Postcard welcome page, on your phone too.
+
+**Cost:** 💷 Vercel's free **Hobby** plan is for **non-commercial** use. That's fine while building and testing with friends, but once Postcard is a business (ads, payments, a company) Vercel requires the paid **Pro** plan. A custom domain (e.g. postcard.app) is also a paid purchase. Claude will ask before either.
 
 ---
 
@@ -71,11 +114,11 @@ Every screen works with made-up sample data. Nothing is saved and nothing is con
   - `destinations` (name, country), with the sample places added as a starting list. New places are added when someone logs one, matched by name + country so "Lisbon" isn't created twice.
   - `ratings`: who, where, trip month, destination score, stay name, stay type, stay score, headline, review, posted date.
   - `food_picks` and `top_tips`, linked to a rating.
-- Database rules: scores must be whole numbers 1–10, the trip month can't be in the future, you can only create, edit or delete **your own** ratings, and (for now) only you can read them. Friends get access in step 4.
+- Database rules: scores must be whole numbers 1–10, the trip month can't be in the future, you can only create, edit or delete **your own** ratings, and (for now) only you can read them. Friends get access in step 3.
 - Changes the Log form so it sends to the server, re-checks everything there (never trusting the browser alone), saves, and takes you to your new rating's page.
 - Makes **You**, **Rating** and **Destination** read your real ratings instead of sample data.
 - Edit and delete for your own ratings.
-- Photos stay as a preview for now (they're step 5).
+- Photos stay as a preview for now (they're step 4).
 
 **Done when:** you log a holiday, refresh the page and it's still there, and you see it on your profile and on that destination's page. Someone else's account can't see it yet.
 
@@ -85,28 +128,23 @@ Every screen works with made-up sample data. Nothing is saved and nothing is con
 
 ## Later steps (each a separate pull request, in this order unless you'd rather change it)
 
-### Step 3: Put the app online (Vercel)
-- **You:** create a Vercel account with GitHub (**vercel.com** → **Sign Up** → **Continue with GitHub**), click **Add New… → Project**, pick this repo, paste the two Supabase settings into **Environment Variables**, and click **Deploy**. Claude will give exact steps. Then add the new web address in Supabase's **URL Configuration**.
-- **Claude:** checks the online build, and sets up preview links for every pull request so you can try changes on your phone before merging.
-- **Cost:** 💷 Vercel's free **Hobby** plan is for **non-commercial** use. That's fine while building and testing with friends, but once Postcard is a business (ads, payments, a company) Vercel requires the paid **Pro** plan. A custom domain (e.g. postcard.app) is also a paid purchase. Claude will ask before either.
-
-### Step 4: Friends
+### Step 3: Friends
 Find people by handle, send/accept friend requests, and database rules so friends (only) can read each other's ratings. The **Friends** side of Home becomes real.
 
-### Step 5: Photos
+### Step 4: Photos
 Upload up to 6 photos per rating to Supabase Storage. Photos are shrunk and have their **location data (GPS) removed before they're stored**, so the never-live-location rule holds. Free storage covers early testing. 💷 Large numbers of photos would eventually need a paid plan.
 
-### Step 6: Postcards (notifications)
+### Step 5: Postcards (notifications)
 In-app Postcards when a friend rates somewhere, saves your tip or accepts your request, plus the unread count on the tab bar. Email or phone push notifications come later, if wanted.
 
-### Step 7: "For you" from real data
+### Step 6: "For you" from real data
 Replace the sample picks with ones based on what you rated highly and what your friends loved, using the same idea as today's shell, just with real data.
 
-### Step 8: Public profiles (18+)
+### Step 7: Public profiles (18+)
 The **Public profile** switch on You becomes real (the database already refuses it for under-18s from step 1). Then public profiles get a shareable page.
 
-### Step 9: Waitlist email (Loops)
-Connect the `/welcome` form to Loops so sign-ups land in your Loops audience and get a welcome email. **You:** create a Loops account and an API key (Claude will walk you through it). The key is secret, so it goes in Vercel's settings, not in chat or the repo. **Cost:** Loops has a free tier for small lists. 💷 Check before the list grows. *(This can move earlier, e.g. straight after step 3, if you want to start collecting emails sooner.)*
+### Step 8: Waitlist email (Loops)
+Connect the `/welcome` form to Loops so sign-ups land in your Loops audience and get a welcome email. **You:** create a Loops account and an API key (Claude will walk you through it). The key is secret, so it goes in Vercel's settings, not in chat or the repo. **Cost:** Loops has a free tier for small lists. 💷 Check before the list grows. *(This can move earlier, e.g. straight after step 1b, if you want to start collecting emails sooner.)*
 
 ### Before inviting real users
 - **Young users (13–17):** private, friends-only profiles; hidden from search and suggestions for non-friends; safe default settings; easy report and block. Get a quick legal check against the UK Children's Code and Online Safety Act duties

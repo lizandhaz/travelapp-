@@ -52,11 +52,19 @@ export default function WelcomePage() {
           </li>
         </ul>
 
-        <p className="mt-12 text-xs text-ink-soft">
-          Public profiles are for over-18s only.{" "}
-          <Link href="/" className="font-medium text-airmail underline underline-offset-4">
-            Peek at the app
-          </Link>
+        <div className="mt-12 rounded-md border border-sand bg-card p-4 text-sm">
+          <p className="font-semibold">Got an invite?</p>
+          <div className="mt-3 flex gap-3">
+            <Link href="/signup" className="flex-1 rounded-md bg-ink px-4 py-2.5 text-center font-semibold text-card">
+              Join
+            </Link>
+            <Link href="/login" className="flex-1 rounded-md border border-ink px-4 py-2.5 text-center font-semibold">
+              Log in
+            </Link>
+          </div>
+        </div>
+        <p className="mt-6 text-xs text-ink-soft">
+          Postcard is for ages 13 and over. Public profiles are for over-18s only.
         </p>
       </div>
     </main>

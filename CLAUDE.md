@@ -16,7 +16,7 @@ This repo is currently a **clickable shell**: every screen works, but it all run
 
 1. **Scores are whole numbers out of 10.** There are two per trip: the destination and the stay. Averages show one decimal place.
 2. **Post when home, never live location.** A rating records the month of the trip, not the current place. The Log form requires "I'm back home" and rejects future months. Never add live or "I'm here now" location features, and strip GPS data from photos before storing them.
-3. **Public profiles are 18+ only.** Everyone gives a date of birth at sign-up. Under-18s can never switch their profile to public, and this must be enforced in the database, not just hidden in the UI. Date of birth is private to its owner.
+3. **Ages: 13+ to join, 18+ to go public.** (Owner's decision, Nov 2026.) Everyone gives a date of birth at sign-up, and anyone under 13 is refused. 13–17s get a private, friends-only profile: they can never switch it to public, and they don't appear in search or suggestions to people who aren't already their friends. Enforce this in the database, not just in the UI. Date of birth is private to its owner.
 4. **Notifications are called "Postcards"** everywhere in the UI, never "notifications" or "alerts".
 5. **Home has two sides:** "For you" (picks based on your taste) and "Friends" (what friends rated, newest first).
 

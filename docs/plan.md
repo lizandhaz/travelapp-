@@ -17,13 +17,13 @@ Every screen works with made-up sample data. Nothing is saved and nothing is con
 
 ---
 
-## Step 1: Sign up and log in (Supabase, email link, 18+ check)
+## Step 1: Sign up and log in (Supabase, email link, age check)
 
-**What it means:** people can create an account with just their email. There are no passwords: they type their email and get a "magic link" to click. At sign-up they also give their name and date of birth. Everyone gets a private profile. Only people aged 18 or over will ever be able to make their profile public (the switch comes in a later step, but the rule is built in now).
+**What it means:** people can create an account with just their email. There are no passwords: they type their email and get a "magic link" to click. At sign-up they also give their name and date of birth. **Anyone 13 or over can join** (decided Nov 2026). Everyone starts with a private profile. Only people aged 18 or over will ever be able to make their profile public (the switch comes in a later step, but the rule is built in now).
 
 **You do**
 
-1. **Decide the minimum age to use Postcard at all.** Public profiles are 18+, but should under-18s be allowed in with a private profile, or blocked completely? *Recommendation:* the simplest and safest choice is **18+ for everyone** for now. A younger audience brings extra legal duties in the UK (the Children's Code and Online Safety Act). Worth a quick check with a lawyer before launch either way.
+1. ~~Decide the minimum age~~ ✅ **Decided: 13+ to join, 18+ for public profiles.** Because 13–17s can use Postcard, UK rules for young users apply (the Children's Code and the Online Safety Act). Book a quick check with a lawyer before launch (see "Before inviting real users").
 2. **Create a free Supabase account and project** (about 5 minutes):
    1. Go to **supabase.com** and click **Start your project**. Sign up with your GitHub account (click **Continue with GitHub**).
    2. If asked to create an organisation, name it "Postcard" and choose the **Free** plan. 💷 If you ever see a card-details screen, stop and tell Claude.
@@ -41,14 +41,14 @@ Every screen works with made-up sample data. Nothing is saved and nothing is con
   - **database rules (Row Level Security)** so people can only read and edit their own profile, and only they can see their date of birth
   - a rule that **refuses `is_public = true` for anyone under 18**, enforced by the database itself, so no bug in the app can get around it
 - Builds the new screens in the existing style:
-  - **Sign up** (`/signup`): email, name, date of birth. The 18+ (or minimum-age) check happens on the screen *and* again on the server. Then "Check your inbox".
+  - **Sign up** (`/signup`): email, name, date of birth. Under-13s are refused. The check happens on the screen *and* again on the server. Then "Check your inbox".
   - **Log in** (`/login`): email only. Then "Check your inbox".
   - **Link landing** (`/auth/confirm`): where the email link takes you, which signs you in and sends you Home.
   - **Log out** on the You screen.
 - Adds `proxy.ts` so you stay signed in, and sends signed-out visitors to `/welcome` or `/login`.
 - Swaps the fake "Sam" for the real signed-in person's name on Home and You (everything else is still sample data until later steps).
 
-**Done when:** you sign up with your email and a date of birth, click the link in the email, land on Home, see your own name, log out and log back in. An under-age date of birth is refused with a kind message.
+**Done when:** you sign up with your email and a date of birth, click the link in the email, land on Home, see your own name, log out and log back in. A date of birth under 13 is refused with a kind message, and a 13–17 account can't be made public.
 
 **Cost:** free. Supabase's free plan is plenty for building and testing. Two things to know:
 - Free projects **pause after about a week with no activity**. You can un-pause them from the dashboard in one click.
@@ -109,6 +109,7 @@ The **Public profile** switch on You becomes real (the database already refuses 
 Connect the `/welcome` form to Loops so sign-ups land in your Loops audience and get a welcome email. **You:** create a Loops account and an API key (Claude will walk you through it). The key is secret, so it goes in Vercel's settings, not in chat or the repo. **Cost:** Loops has a free tier for small lists. 💷 Check before the list grows. *(This can move earlier, e.g. straight after step 3, if you want to start collecting emails sooner.)*
 
 ### Before inviting real users
+- **Young users (13–17):** private, friends-only profiles; hidden from search and suggestions for non-friends; safe default settings; easy report and block. Get a quick legal check against the UK Children's Code and Online Safety Act duties
 - Privacy policy and terms (what's stored, including date of birth), and a cookie notice if needed
 - Account deletion that really deletes your data (a UK GDPR requirement)
 - Report and block, for ratings and people

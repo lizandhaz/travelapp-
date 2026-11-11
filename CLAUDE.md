@@ -49,7 +49,18 @@ npx expo start --web # same app in a browser
 npx tsc --noEmit     # type check: must pass before any PR
 npx expo lint        # lint: must pass before any PR
 npx expo export --platform ios --platform android   # proves the phone bundles build
+EXPO_TOKEN=proxy-injected npx eas-cli@latest update --branch preview --environment preview --message "…" --non-interactive
+                     # publish to Expo Go (the owner's phone); see "Publishing to the owner's phone"
 ```
+
+## Publishing to the owner's phone
+
+The owner has **no computer**, only an iPhone (with Expo Go) and an iPad. Claude publishes with **EAS Update** from the cloud session:
+- Expo project `@lizandhaz/postcard` (projectId in `app.json` → `extra.eas.projectId`), `runtimeVersion` policy `appVersion`, and the channel `preview` linked to the branch `preview`.
+- The QR code in `docs/expo-go-qr.png` encodes `exp://u.expo.dev/9e899203-22d1-447f-babc-27279789d30a?runtime-version=1.0.0&channel-name=preview` and always opens the latest `preview` update.
+- The cloud environment "travelapp-" allows expo.dev, api.expo.dev, u.expo.dev and exp.host, and injects the owner's Expo token for api.expo.dev. Set `EXPO_TOKEN=proxy-injected` (a placeholder; the proxy supplies the real one).
+- After merging a change, publish an update and tell the owner to fully close and reopen Postcard in Expo Go.
+- Changing `version` in `app.json` changes the runtime version, which breaks the QR link. Update the QR code if you ever do.
 
 ## Folder map
 

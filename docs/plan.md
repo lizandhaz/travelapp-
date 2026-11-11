@@ -38,13 +38,16 @@ In Nov 2026 Postcard moved from a website (Next.js) to a **phone app built with 
 
 **You do, in this order**
 
-1. **Merge the pull request** on GitHub (**Merge pull request** → **Confirm merge**).
-2. **Run the database setup in Supabase** (2 minutes):
+1. ✅ **Merge the pull request** on GitHub.
+2. ✅ **Run the database setup in Supabase** (2 minutes). Done: the `profiles` and `profile_private` tables exist. Running it again shows `relation "profiles" already exists`, which is harmless and changes nothing.
    1. Open https://github.com/lizandhaz/travelapp-/blob/main/supabase/migrations/20261110120000_profiles.sql
    2. Click the **Copy raw file** button (two overlapping squares, top right of the file).
    3. In Supabase, click **SQL Editor** in the left sidebar → **New query**. Paste, then click **Run**.
    4. You should see **"Success. No rows returned"**. If you see a red error instead, copy it to Claude. Only run it once.
-3. **Make the emails show a code** (5 minutes):
+3. ✅ **Connect an email sender (Resend).** Supabase only lets you edit email templates once a custom sender ("SMTP") is set up. Done Nov 2026 with a free Resend account:
+   - Supabase → Authentication → Emails → **SMTP Settings**: sender `onboarding@resend.dev`, name `Postcard`, host `smtp.resend.com`, port `465`, username `resend`, password = a Resend API key.
+   - **Limit:** until Postcard has its own domain verified in Resend, emails only reach the address the Resend account was created with. 💷 A domain (about £10 a year) is needed before friends can join. Claude will ask first.
+4. ✅ **Make the emails show a code** (5 minutes):
    1. In Supabase: **Authentication** → **Emails** (it may be called **Email Templates**).
    2. Open **Confirm signup**. Set the subject to `Your Postcard code` and replace the message body with:
       ```html
@@ -64,7 +67,7 @@ In Nov 2026 Postcard moved from a website (Next.js) to a **phone app built with 
       <p>If you didn't ask for this, you can ignore this email.</p>
       ```
       Click **Save**.
-4. **Try it on your phone** (see the next section), and go through the "Done when" list.
+5. **Try it on your phone** (see the next section), and go through the "Done when" list.
 
 **Done when**
 - You join with your email, type the code from the email, and land on Home saying "Hello" with your name.
@@ -79,30 +82,20 @@ In Nov 2026 Postcard moved from a website (Next.js) to a **phone app built with 
 
 ---
 
-## Trying the app on your phone (free)
+## Trying the app on your phone (free) ✅ set up
 
-Expo Go is a free app that runs Postcard while it's being built. The project has to be running on a computer, and your phone connects to it. Claude's cloud computer can't reach Expo's services, so for now this runs **on your computer**. It takes about 15 minutes the first time, and 1 minute after that.
+Postcard is published to Expo Go from Claude's cloud computer, so **no computer is needed**: just an iPhone (or Android phone) with **Expo Go**, logged in to the Expo account **lizandhaz**.
 
-**One-time setup**
-1. **On your phone:** install **Expo Go** from the App Store (iPhone) or Google Play (Android). It's free.
-2. **On your computer:** go to **nodejs.org**, download the version marked **LTS**, and install it (keep clicking **Continue** / **Next**).
-3. **Download Postcard:** open https://github.com/lizandhaz/travelapp-, click the green **Code** button → **Download ZIP**. Unzip it (double-click it), giving you a folder called `travelapp--main`.
-4. **Open a terminal in that folder:**
-   - **Mac:** right-click the folder → **Services** → **New Terminal at Folder**. (If you don't see it, open the **Terminal** app, type `cd ` with a space after it, drag the folder into the window, and press **Enter**.)
-   - **Windows:** open the folder, click in the address bar at the top, type `powershell` and press **Enter**.
-5. Type `npm install` and press **Enter**. Wait a minute or two until it finishes.
+**To open Postcard:** show `docs/expo-go-qr.png` on another screen (e.g. your iPad) and point your iPhone's **Camera** at it, then tap the banner. It always opens the **newest** published version. After the first time, Postcard also appears in Expo Go's list of recent projects.
 
-**Each time you want to try it**
-1. In the terminal (opened in the folder as above), type `npx expo start` and press **Enter**. A QR code appears.
-2. Make sure your phone and computer are on the **same Wi-Fi**.
-3. **iPhone:** open the normal **Camera** app, point it at the QR code and tap the banner. **Android:** open **Expo Go** and tap **Scan QR code**.
-4. Postcard opens in Expo Go. To stop, press **Ctrl + C** in the terminal.
+**When Claude makes changes,** Claude publishes them (`eas update --branch preview`). Fully close Postcard in Expo Go and open it again to get the new version.
 
-**If it doesn't connect** (e.g. work or public Wi-Fi), use `npx expo start --tunnel` instead.
+How it's set up (done in Nov 2026):
+- Expo project **@lizandhaz/postcard**, with an update **channel and branch both called `preview`**.
+- The link in the QR code is `exp://u.expo.dev/9e899203-22d1-447f-babc-27279789d30a?runtime-version=1.0.0&channel-name=preview`.
+- Claude's cloud setup ("travelapp-" environment) is allowed to reach Expo, and holds your Expo access key as a saved secret. The key is not in the repo or chat. To revoke it: expo.dev → Account settings → Access tokens → delete.
 
-**When Claude has made changes:** download the ZIP again (step 3), unzip it, and run steps 4–5 in the new folder.
-
-*Possible later improvement:* Claude could publish test versions straight from its cloud computer (using Expo's free "EAS Update"), so you'd only need Expo Go. That needs a free Expo account, an access key and permission for Claude's computer to reach Expo. Ask if you'd like to set it up.
+**Alternative, with a computer:** download the repo ZIP from GitHub, install Node.js (nodejs.org, LTS), run `npm install` then `npx expo start` in the folder, and scan the QR code it shows.
 
 ---
 

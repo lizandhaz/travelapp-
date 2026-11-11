@@ -33,7 +33,9 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Postcard uses your photos so you can add them to holidays you rate."
+          "photosPermission": "Postcard uses your photos so you can add them to holidays you rate.",
+          "microphonePermission": false,
+          "cameraPermission": false
         }
       ]
     ],
@@ -43,6 +45,18 @@
     "backgroundColor": "#f6efe3",
     "ios": {
       "supportsTablet": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9e899203-22d1-447f-babc-27279789d30a"
+      }
+    },
+    "owner": "lizandhaz",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/9e899203-22d1-447f-babc-27279789d30a"
     }
   }
 }

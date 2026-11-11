@@ -5,7 +5,7 @@ import { verifyCode, type Result } from '@/lib/authActions';
 import { Airmail } from './Airmail';
 import { Postmark } from './Postmark';
 import { Text } from './Text';
-import { Button, Card, Field, Input, Notice } from './ui';
+import { Button, Card, Field, Input, ErrorNotice } from './ui';
 
 /** Step two of joining or logging in: type the code from the email. */
 export function CodeEntry({
@@ -21,7 +21,7 @@ export function CodeEntry({
 }) {
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ message: string; detail?: string } | null>(null);
   const [info, setInfo] = useState<string | null>(null);
 
   async function submit() {
@@ -29,7 +29,7 @@ export function CodeEntry({
     setError(null);
     const r = await verifyCode(email, code);
     setBusy(false);
-    if (!r.ok) setError(r.message);
+    if (!r.ok) setError(r);
   }
 
   async function again() {
@@ -37,7 +37,7 @@ export function CodeEntry({
     setError(null);
     const r = await resend();
     if (r.ok) setInfo('Sent. Check your inbox (and spam folder).');
-    else setError(r.message);
+    else setError(r);
   }
 
   return (
@@ -63,13 +63,7 @@ export function CodeEntry({
             onSubmitEditing={submit}
           />
         </Field>
-        {error && (
-          <Notice>
-            <Text variant="body" style={{ fontSize: 14 }}>
-              {error}
-            </Text>
-          </Notice>
-        )}
+        <ErrorNotice error={error} />
         {info && <Text variant="small">{info}</Text>}
         <Button title={busy ? 'Checking…' : 'Continue'} onPress={submit} disabled={busy} />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>

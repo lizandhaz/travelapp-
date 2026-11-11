@@ -6,7 +6,7 @@ import { AuthFrame } from '@/components/AuthFrame';
 import { CodeEntry } from '@/components/CodeEntry';
 import { DateOfBirth, dobToIso, type Dob } from '@/components/DateOfBirth';
 import { Text } from '@/components/Text';
-import { Button, Field, Input, Notice } from '@/components/ui';
+import { Button, Field, Input, ErrorNotice } from '@/components/ui';
 import { requestSignUpCode } from '@/lib/authActions';
 
 export default function SignUp() {
@@ -14,7 +14,7 @@ export default function SignUp() {
   const [email, setEmail] = useState('');
   const [dob, setDob] = useState<Dob>({ day: '', month: '', year: '' });
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ message: string; detail?: string } | null>(null);
   const [sent, setSent] = useState(false);
 
   const send = () => requestSignUpCode(name, email, dobToIso(dob));
@@ -25,7 +25,7 @@ export default function SignUp() {
     const r = await send();
     setBusy(false);
     if (r.ok) setSent(true);
-    else setError(r.message);
+    else setError(r);
   }
 
   if (sent) {
@@ -62,13 +62,7 @@ export default function SignUp() {
           />
         </Field>
         <DateOfBirth value={dob} onChange={setDob} />
-        {error && (
-          <Notice>
-            <Text variant="body" style={{ fontSize: 14 }}>
-              {error}
-            </Text>
-          </Notice>
-        )}
+        <ErrorNotice error={error} />
         <Button title={busy ? 'Sending…' : 'Send my code'} onPress={submit} disabled={busy} />
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 24, gap: 6 }}>

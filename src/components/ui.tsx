@@ -209,3 +209,20 @@ export const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
   gutter: { paddingHorizontal: GUTTER },
 });
+
+/** A problem message, with Supabase's own wording in small print underneath (helps spot setup issues). */
+export function ErrorNotice({ error }: { error: { message: string; detail?: string } | null }) {
+  if (!error) return null;
+  return (
+    <Notice>
+      <Text variant="body" style={{ fontSize: 14 }}>
+        {error.message}
+      </Text>
+      {!!error.detail && (
+        <Text variant="tiny" style={{ marginTop: 6 }} selectable>
+          Details: {error.detail}
+        </Text>
+      )}
+    </Notice>
+  );
+}

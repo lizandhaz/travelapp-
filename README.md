@@ -2,12 +2,12 @@
 
 Holiday ratings from friends you trust. Friends rate where they went and where they stayed, out of 10, with photos, food picks and top tips.
 
-This is currently a clickable shell with sample data (no backend yet).
+A phone app built with **Expo** (React Native), using **Supabase** for accounts.
 
 ```bash
 npm install
-npm run dev   # open http://localhost:3000
+npx expo start   # scan the QR code with the Expo Go app
 ```
 
+- **docs/plan.md**: step-by-step plan, including how to try the app on your phone
 - **CLAUDE.md**: what the app is, screens, brand rules and conventions
-- **docs/plan.md**: step-by-step plan from shell to real app

@@ -1,159 +1,153 @@
 # Postcard
 
-Postcard is a holiday-rating app. Friends rate holiday **destinations** and **where they stayed** (hotel, Airbnb, villa and so on) out of 10, and add photos, food picks and top tips.
+Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations** and **where they stayed** (hotel, Airbnb, villa and so on) out of 10, and add photos, food picks and top tips.
 
-**Status:** clickable shell plus **real accounts** (Step 1 of `docs/plan.md`). Sign-up and log-in use Supabase email links with an age check. Everything else (ratings, friends, picks, Postcards) is still sample data in `lib/data.ts`, and the Log form doesn't save yet. The roadmap is in `docs/plan.md`.
+**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). Everything else (ratings, friends, picks, Postcards) is sample data in `src/lib/data.ts`, and the Log form doesn't save yet. The roadmap is in `docs/plan.md`.
 
 ## Working with the owner
 
-- The owner is **not technical**. Explain each step in plain English. When they need to do something on another website (Supabase, Vercel, Loops, GitHub), give exact click-by-click instructions.
-- **Stop and ask before anything that costs money or can't be undone**: paid plans, deleting data or projects, changing DNS, force-pushing, sending real emails.
+- The owner is **not technical**. Explain each step in plain English. When they need to do something on another website or app (Supabase, Expo, GitHub, the App Store), give exact click-by-click instructions.
+- **Stop and ask before anything that costs money or can't be undone**: paid plans, Apple/Google developer accounts, deleting data or projects, force-pushing, sending real emails.
 - Don't connect a service or add a paid one unless the current step in `docs/plan.md` calls for it and the owner has agreed.
 - Work in small steps (one step of the plan per pull request), and say what to check when it's done.
-- The GitHub repo is **public**. Never commit keys or passwords. Secrets go in `.env.local` (git ignores it) and in Vercel's environment variables. Only `NEXT_PUBLIC_` values may reach the browser, and the Supabase secret / service-role key never does.
+- The GitHub repo is **public**. Never commit secrets. The Supabase **publishable** key in `src/lib/config.ts` is public by design (every installed app contains it). The Supabase **secret / service_role** key must never be in this repo or the app.
 
 ## Product rules (don't break these)
 
 1. **Scores are whole numbers out of 10.** There are two per trip: the destination and the stay. Averages show one decimal place.
-2. **Post when home, never live location.** A rating records the month of the trip, not the current place. The Log form requires "I'm back home" and rejects future months. Never add live or "I'm here now" location features, and strip GPS data from photos before storing them.
-3. **Ages: 13+ to join, 18+ to go public.** (Owner's decision, Nov 2026.) Everyone gives a date of birth at sign-up, and anyone under 13 is refused. 13–17s get a private, friends-only profile: they can never switch it to public, and they don't appear in search or suggestions to people who aren't already their friends. Enforce this in the database, not just in the UI. Date of birth is private to its owner.
+2. **Post when home, never live location.** A rating records the month of the trip, not the current place. The Log form requires "I'm back home" and rejects future months. Never add live or "I'm here now" location features. Photos are picked with `exif: false`, and GPS data must be stripped before anything is stored.
+3. **Ages: 13+ to join, 18+ to go public.** (Owner's decision, Nov 2026.) Everyone gives a date of birth at sign-up, and anyone under 13 is refused. 13–17s get a private, friends-only profile: they can never switch it to public, and they don't appear in search or suggestions to people who aren't already their friends. This is enforced in the database (see below), not just in the app. Date of birth is private to its owner.
 4. **Notifications are called "Postcards"** everywhere in the UI, never "notifications" or "alerts".
 5. **Home has two sides:** "For you" (picks based on your taste) and "Friends" (what friends rated, newest first).
 
 ## Stack
 
-- **Next.js 16** (App Router) + **React 19** + **TypeScript** (strict)
-- **Tailwind CSS 4**: configured in CSS (`app/globals.css`, `@theme`). There is no `tailwind.config.js`.
-- Fonts are self-hosted via `@fontsource-variable/fraunces` and `@fontsource-variable/dm-sans`, imported in `app/layout.tsx`. No Google Fonts request at build or run time.
-- **Supabase**: connected for accounts and profiles (`@supabase/ssr`). Database, storage and the rest come in later steps.
-- Planned: **Vercel** (hosting), **Loops** (waitlist email). Not connected yet.
+- **Expo SDK 58**, React Native 0.88, React 19.3 and TypeScript (strict), with **Expo Router** (file-based screens in `src/app/`).
+- Styling uses `StyleSheet` / inline styles with the tokens in `src/constants/theme.ts`. There is no Tailwind.
+- Drawing (stamps, postmarks, airmail stripes, icons) uses `react-native-svg`. Gradients use `expo-linear-gradient`, photos use `expo-image-picker` and `expo-image`.
+- Fonts come from `@expo-google-fonts/fraunces` and `@expo-google-fonts/dm-sans`. Import each style from its own subpath (e.g. `@expo-google-fonts/fraunces/600SemiBold`) so only the styles used get bundled.
+- **Supabase** (`@supabase/supabase-js`) handles accounts and profiles. The session is kept on the phone with `@react-native-async-storage/async-storage`.
+- Every native module used must be one **Expo Go** includes, so the owner can test with Expo Go. Adding anything else needs a development build. Ask first.
 
-### Next.js 16 notes
+### Expo notes
 
-The APIs differ from older Next.js versions, so check the docs that ship with the installed version in `node_modules/next/dist/docs/` before relying on memory.
-- `params` and `searchParams` are **Promises**: `const { slug } = await params`.
-- Middleware is now **`proxy.ts`** (not `middleware.ts`).
-- Linting uses the ESLint CLI (`npm run lint` runs `eslint .`), with flat config in `eslint.config.mjs`. `next lint` no longer exists.
+Expo changes a lot between SDK versions, so don't trust memory.
+- Install packages with `npx expo install <pkg>` (it picks SDK-compatible versions). If Expo's servers are blocked, use `EXPO_OFFLINE=1 npx expo install <pkg>`, which reads the versions bundled with `expo`.
+- Check APIs in `node_modules/<pkg>/build/*.d.ts` when the docs site isn't reachable.
+- **Tabs** use `expo-router/ui` (`Tabs`, `TabSlot`, `TabList`, `TabTrigger`). The `<TabTrigger>`s must be written **directly inside `<TabList>` in `src/app/(tabs)/_layout.tsx`**, or the tabs silently do nothing. `Tabs` and `TabSlot` need `style={{ flex: 1 }}`, or on web the whole page scrolls and the tab bar floats.
+- Signed-in vs signed-out screens use `Stack.Protected` with `redirectTo` in `src/app/_layout.tsx`.
+- Element refs: use `ComponentRef<typeof TextInput>` (RN 0.88 types), not `TextInput` as a type.
+- `app.json` → `web.output` is `"single"`, because AsyncStorage can't run during static rendering.
+- `npx expo start` in CI mode (`CI=1`) doesn't watch files. Restart it after changes.
 
 ## Commands
 
 ```bash
-cp .env.example .env.local   # first time only, then fill in the two Supabase values
-npm install       # first time only: downloads dependencies
-npm run dev       # local preview at http://localhost:3000
-npm run build     # production build: must pass before any PR
-npm run lint      # code checks: must pass before any PR
-npm start         # serve the production build
+npm install          # first time only
+npx expo start       # dev server; scan the QR code with Expo Go
+npx expo start --web # same app in a browser
+npx tsc --noEmit     # type check: must pass before any PR
+npx expo lint        # lint: must pass before any PR
+npx expo export --platform ios --platform android   # proves the phone bundles build
 ```
-
-Node 20.9 or newer is required (developed on Node 22).
 
 ## Folder map
 
 ```
-app/
-  layout.tsx              Root: fonts, <html>, metadata
-  globals.css             Brand tokens + stamp / airmail / paper-grain styles
-  not-found.tsx           "Lost in the post" 404
-  welcome/                Waitlist landing page (no tab bar), with Join / Log in links
-  (auth)/                 Sign-up, log-in and email-link screens (no tab bar)
-    actions.ts            Server actions: signUp, logIn, confirmLink, logOut
-    signup/, login/       The forms (components/AuthForm.tsx)
-    auth/confirm/         Email link lands here; the "Log me in" button verifies it
-  auth/callback/          Fallback for Supabase's default email links (?code=)
-  (app)/                  Every in-app screen; (app) is a route group, so it's not in the URL
-    layout.tsx            Phone-width column + bottom tab bar
-    page.tsx              Home: For you / Friends
-    explore/              Search + filter destinations
-    destination/[slug]/   A destination: friends' average, stays, food, tips, ratings
-    rating/[id]/          One rating, shown as a postcard
-    log/                  "Log a holiday" form (preview only for now)
-    postcards/            Postcards (notifications)
-    profile/              Your profile + public-profile (18+) setting
-    people/[handle]/      A friend's profile
-components/               Shared UI (see Brand rules below)
-lib/data.ts               Sample data, types and helpers (forYouPicks, friendFeed, …)
-lib/supabase/             Supabase clients: server.ts (pages/actions), proxy.ts (session refresh + redirects), env.ts
-lib/profile.ts            getCurrentProfile(): the signed-in person's profile
-lib/age.ts                ageInYears(), MIN_AGE_TO_JOIN (13), MIN_AGE_FOR_PUBLIC_PROFILE (18)
-proxy.ts                  Next.js proxy: runs lib/supabase/proxy.ts before every page
+app.json                  App name, icon, splash, plugins (image-picker permission text)
+assets/images/            App icon, splash, Android adaptive icons, favicon (a red perforated stamp with "P")
+src/
+  app/                    Every file is a screen (Expo Router)
+    _layout.tsx           Fonts, AuthProvider, Stack + Stack.Protected (signed in / signed out)
+    welcome.tsx           First screen when signed out: pitch + Join / Log in
+    signup.tsx            Name, email, date of birth → 6-digit code
+    login.tsx             Email → 6-digit code (never reveals who has an account)
+    (tabs)/_layout.tsx    Bottom tab bar: Home, Explore, centre Log button, Postcards, You
+    (tabs)/index.tsx      Home: For you / Friends
+    (tabs)/explore.tsx    Search + tag chips + destination grid
+    (tabs)/log.tsx        Log a holiday (validates, then previews; doesn't save yet)
+    (tabs)/postcards.tsx  Postcards (notifications)
+    (tabs)/profile.tsx    You: real name/handle/email, public-profile note, Log out
+    destination/[slug].tsx  Friends' average, where they stayed, food, tips, ratings
+    rating/[id].tsx       One rating, laid out as a postcard
+    people/[handle].tsx   A friend's profile
+    +not-found.tsx        "Lost in the post"
+  components/             Shared UI (see Brand rules)
+    ui.tsx                Screen, Header, BackLink, Button, Input, Field, Chip, Card, Notice
+    Text.tsx              All text goes through <Text variant="…"> (fonts + colours)
+    TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
+    CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
+  constants/theme.ts      Colours, fonts, spacing (the only place for raw hex values)
+  lib/
+    data.ts               Sample data, types and helpers (forYouPicks, friendFeed, …)
+    config.ts             Supabase URL + publishable key (public by design)
+    supabase.ts           Supabase client (AsyncStorage session, auto-refresh while app is open)
+    auth.tsx              AuthProvider / useAuth(): session, profile, signOut
+    authActions.ts        requestSignUpCode, requestLogInCode, verifyCode
+    age.ts                ageInYears(), MIN_AGE_TO_JOIN (13), MIN_AGE_FOR_PUBLIC_PROFILE (18)
 supabase/migrations/      Database setup, as SQL files run in order
-docs/plan.md              Step-by-step plan from shell to real app
+docs/plan.md              Step-by-step plan
 ```
 
-## Screens
+## Accounts and database
 
-| Route | Screen | Notes |
-|---|---|---|
-| `/welcome` | Waitlist landing | Email form shows a thank-you but sends nothing yet (Loops later). Join / Log in links. |
-| `/signup` | Join | Name, email, date of birth. 13+ checked here, on the server and in the database. Then "Check your inbox". |
-| `/login` | Log in | Email only. Always says "check your inbox", so it never reveals who has an account. |
-| `/auth/confirm` | Email link | "Log me in" button (a tap is needed so email scanners can't use up the one-time link). |
-| `/` | Home | Tabs: **For you** (top pick + grid, from `forYouPicks()`) and **Friends** (feed of `RatingCard`s). |
-| `/explore` | Explore | Search by name/country and filter by tag chips. |
-| `/destination/[slug]` | Destination | Friends' average stamp, where friends stayed, food picks, top tips, all ratings. |
-| `/rating/[id]` | Rating | Postcard layout: postmark (place + trip month), place stamp, review, photos, stay stamp, food, tips. |
-| `/log` | Log a holiday | Place, country, month, destination score, stay name/type/score, headline, review, 3 food picks, 3 tips, photos, "I'm back home". Validates, then shows a preview. **Nothing is saved.** |
-| `/postcards` | Postcards | Notification list with unread dots; the count shows on the tab bar. |
-| `/profile` | You | Real name, handle and email; public-profile setting (18+ note); Log out. Ratings come in Step 2. |
-| `/people/[handle]` | Friend profile | Same view as yours, without the settings. |
-
-Signed-out visitors are sent to `/welcome` by `proxy.ts`. Only `/welcome`, `/signup`, `/login` and `/auth/*` are public. Home's greeting and You use the real profile. The sample content still treats `ME = "sam"` in `lib/data.ts` as "you".
+- **Auth:** passwordless, using a **6-digit code by email** (`signInWithOtp`, then `verifyOtp({ email, token, type: 'email' })`). There are no links, because links are awkward in phone apps and email scanners can use them up. Sign-up sends `name` and `date_of_birth` (`YYYY-MM-DD`) as user metadata.
+- **Supabase email templates** must show the code (`{{ .Token }}`). The owner sets this up (see `docs/plan.md`, Step 1).
+- **Tables:** `profiles` (handle, name, is_public) and `profile_private` (date_of_birth, owner-only, never editable). Row Level Security is on for both.
+  - The `handle_new_user` trigger creates the profile and **refuses anyone under 13**.
+  - Another trigger refuses `is_public = true` under 18.
+- **Changing the database:** add a new numbered file in `supabase/migrations/` (never edit one that's already been run). The owner runs it in Supabase → SQL Editor. Before handing it over, test it on a local Postgres with stand-ins for `auth.users`, `auth.uid()` and the `anon`/`authenticated` roles, covering every rule, including the "should fail" cases.
+- **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 
 ## Brand rules
 
 The look is **a vintage postcard**: warm card stock, fountain-pen ink, postage stamps, postmarks and airmail stripes. Friendly, a little nostalgic, never twee.
 
-### Colours (`app/globals.css` → Tailwind classes like `bg-paper`, `text-ink`)
+### Colours (`src/constants/theme.ts` → `colors.*`)
 
 | Token | Hex | Use |
 |---|---|---|
-| `paper` | `#f6efe3` | Page background |
+| `paper` | `#f6efe3` | Screen background |
 | `card` | `#fffbf4` | Cards, inputs, stamp backgrounds |
 | `sand` | `#e8d9bf` | Borders, dividers, quiet fills |
 | `ink` | `#1f2a44` | Main text, selected chips/tabs |
-| `ink-soft` | `#5b6478` | Secondary text |
+| `inkSoft` | `#5b6478` | Secondary text |
 | `postbox` | `#b5392a` | Primary buttons, Log button, unread dots, kickers, scores under 6 |
 | `airmail` | `#2f5d8a` | Links, postmarks, scores 6–7.9 |
 | `sea` | `#3e7c7a` | Scores 8+, success |
 | `sun` | `#e2a43b` | Food-pick tags, highlights (fill only, never text) |
 
-Always use tokens, not raw hex values in components. The only exception is photo-placeholder gradients in sample data. Text colours above are chosen to pass WCAG AA on `paper` and `card`.
+Text colours pass WCAG AA on `paper` and `card`.
 
-### Type
+### Type (`fonts.*`, via `<Text variant>`)
 
-- **Fraunces** (`font-display`, serif) for headings (`h1`–`h3` automatically), scores, quotes and reviews. Italic Fraunces is for tips, quotes and asides.
-- **DM Sans** (`font-sans`, the default) for everything else: body, labels, buttons.
-- Small uppercase "kicker" labels above headings: `text-xs font-semibold uppercase tracking-[0.18em] text-postbox`.
+- **Fraunces** for headings (`title`, `heading`, `hero`), scores, reviews (`review`) and italic quotes and tips (`quote`).
+- **DM Sans** for everything else: body, labels, buttons.
+- `kicker` is small uppercase letter-spaced postbox red, used above headings.
+- In React Native each weight is its own font family (e.g. `Fraunces-SemiBold`). Don't use `fontWeight` with custom fonts.
 
-### Motifs (in `components/`)
+### Motifs (`src/components/`)
 
-- **Stamp** (`Stamp.tsx`, `.stamp` in CSS): every score is a perforated postage stamp, coloured by score (8+ sea, 6–7.9 airmail, under 6 postbox), optionally tilted a few degrees. The label defaults to "/ 10" and can be "Place", "Stay" or "Friends".
-- **Postmark** (`Postmark.tsx`): a round airmail-blue ink stamp with place and **trip month** around it and wavy cancellation lines. Used on a rating and its preview, never with a current date or location.
-- **Airmail stripe** (`.airmail`): red/blue diagonal stripes as a thin top edge on cards and pages.
-- **Paper grain** (`.paper-grain`): faint dot texture for big empty surfaces (welcome page).
-- Photo placeholders (`Photo.tsx`) are gradients with an italic caption until real uploads exist.
+- **Stamp** (`Stamp.tsx`): every score is a perforated postage stamp (an SVG path with half-circle bites), coloured by score (8+ sea, 6–7.9 airmail, under 6 postbox), optionally tilted. The label defaults to "/ 10" and can be "Place", "Stay" or "Friends".
+- **Postmark** (`Postmark.tsx`): a round airmail-blue ink stamp with place and **trip month** around it and wavy cancellation lines. Never shows a current date or location.
+- **Airmail stripe** (`Airmail.tsx`): red/blue diagonal stripes as a thin top edge on cards and screens.
+- **Photo** (`Photo.tsx`): gradient placeholders with an italic caption until real uploads exist.
+- **App icon:** a cream background with a red perforated stamp, a Fraunces "P" and wavy lines.
 
 ### Voice
 
-Warm, short and British English ("holiday", "favourite"). Postal puns sparingly: "Send postcard", "Lost in the post", "Your post".
+Warm, short and British English ("holiday", "favourite"). Postal puns sparingly: "Send postcard", "Lost in the post", "Your post", "Check your inbox".
 
 ### Layout
 
-Mobile-first, a single column at `max-w-md`, 16px side padding (`px-4`) and a fixed bottom tab bar (Home, Explore, a centre **Log** button, Postcards, You). Light theme only for now.
-
-## Accounts and database
-
-- **Auth:** passwordless email links (`signInWithOtp`). Sign-up sends `name` and `date_of_birth` as user metadata, and a database trigger (`handle_new_user`) creates the profile, **refusing anyone under 13**.
-- **Email links:** custom Supabase templates point to `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`. Supabase's default links go via `/auth/callback?code=` and only work in the same browser.
-- **Tables:** `profiles` (handle, name, is_public) and `profile_private` (date_of_birth, owner-only, never editable). Row Level Security is on for both. A trigger refuses `is_public = true` under 18.
-- **Changing the database:** add a new numbered file in `supabase/migrations/` (never edit one that's already been run). The owner runs it in Supabase → SQL Editor. Before handing it over, test it on a local Postgres with stand-ins for `auth.users`, `auth.uid()` and the `anon`/`authenticated` roles, covering every rule, including the "should fail" cases.
-- **Keys:** `.env.local` locally and Vercel environment variables online: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Never the secret key.
-- Use `supabase.auth.getClaims()` (not `getSession()`) to check who's signed in on the server.
+Single column, 16px side padding (`GUTTER`) and a bottom tab bar (Home, Explore, a raised centre **Log** button, Postcards, You). Screens use `<Screen tabBar>` so content clears the tab bar. On web the app is centred at 480px max. Light theme only for now.
 
 ## Conventions
 
-- Server Components by default. Add `"use client"` only for interactivity (tabs, forms, search, nav highlighting).
-- Shared UI goes in `components/`, and route-specific bits sit next to the route (e.g. `app/welcome/WaitlistForm.tsx`).
-- Keep accessible markup: labelled inputs, `role="tab"`/`aria-selected` on tabs, `aria-label` on stamps and postmarks.
-- Before opening a PR: `npm run build` and `npm run lint` must both pass, and click through the changed screens at phone width.
+- Shared UI goes in `src/components/`, and non-screen code in `src/lib/`. Only screens live in `src/app/`.
+- Accessibility: give `accessibilityRole` / `accessibilityLabel` / `accessibilityState` on custom controls (tabs, score pickers, chips, checkbox), and labels on inputs and stamps.
+- Before opening a PR, all of these must pass:
+  - `npx tsc --noEmit`
+  - `npx expo lint`
+  - `npx expo export --platform ios --platform android`
+  - click through the changed screens with `npx expo start --web` at phone width

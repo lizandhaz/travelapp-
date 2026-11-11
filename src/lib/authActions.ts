@@ -16,7 +16,10 @@ function friendly(e: AuthError) {
   return 'Something went wrong sending your code. Please try again in a minute.';
 }
 
-export type Result = { ok: true } | { ok: false; message: string };
+/** `detail` is Supabase's own wording, shown in small print to help spot setup problems. */
+export type Result = { ok: true } | { ok: false; message: string; detail?: string };
+
+const detailOf = (e: AuthError) => [e.status, e.code, e.message].filter(Boolean).join(' · ');
 
 /** Join: check the answers, then ask Supabase to email a 6-digit code. */
 export async function requestSignUpCode(name: string, email: string, dob: string): Promise<Result> {
@@ -36,7 +39,7 @@ export async function requestSignUpCode(name: string, email: string, dob: string
   });
   if (error) {
     console.warn('sign-up code failed', error.status, error.code, error.message);
-    return { ok: false, message: friendly(error) };
+    return { ok: false, message: friendly(error), detail: detailOf(error) };
   }
   return { ok: true };
 }
@@ -47,7 +50,11 @@ export async function requestLogInCode(email: string): Promise<Result> {
   if (!EMAIL_RE.test(email)) return { ok: false, message: "That email address doesn't look quite right." };
   const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
   if (error && (isRateLimit(error) || error.status === 0 || error.message?.toLowerCase().includes('network'))) {
-    return { ok: false, message: friendly(error) };
+    return { ok: false, message: friendly(error), detail: detailOf(error) };
+  }
+  if (error && error.code !== 'otp_disabled' && error.status !== 422 && error.status !== 400) {
+    // Not "no such account" (which we keep quiet about), so it's a real problem worth showing.
+    return { ok: false, message: friendly(error), detail: detailOf(error) };
   }
   return { ok: true };
 }
@@ -58,8 +65,12 @@ export async function verifyCode(email: string, code: string): Promise<Result> {
   if (!/^\d{6,10}$/.test(token)) return { ok: false, message: 'Type the number from the email.' };
   const { error } = await supabase.auth.verifyOtp({ email: email.trim().toLowerCase(), token, type: 'email' });
   if (error) {
-    if (isRateLimit(error)) return { ok: false, message: friendly(error) };
-    return { ok: false, message: "That code didn't work. Codes last an hour and work once. Check it, or send a new one." };
+    if (isRateLimit(error)) return { ok: false, message: friendly(error), detail: detailOf(error) };
+    return {
+      ok: false,
+      message: "That code didn't work. Codes last an hour and work once. Check it, or send a new one.",
+      detail: detailOf(error),
+    };
   }
   return { ok: true };
 }

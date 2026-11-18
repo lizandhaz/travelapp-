@@ -7,6 +7,7 @@ import { Stamp } from '@/components/Stamp';
 import { Text } from '@/components/Text';
 import { Button } from '@/components/ui';
 import { colors } from '@/constants/theme';
+import { APP_NAME } from '@/constants/brand';
 
 const STEPS = [
   ["Rate it when you're home.", 'Destination and stay, out of 10. We never share live location.'],
@@ -28,11 +29,11 @@ export default function Welcome() {
         strangers, no sponsored reviews.
       </Text>
       <View style={{ marginTop: 24 }}>
-        <Postmark place="Wish you were here" date="Postcard" />
+        <Postmark place="Wish you were here" date={APP_NAME} />
       </View>
       <View style={{ gap: 12, marginTop: 28 }}>
         <Link href="/signup" asChild>
-          <Button title="Join Postcard" />
+          <Button title={`Join ${APP_NAME}`} />
         </Link>
         <Link href="/login" asChild>
           <Button title="I already have an account" kind="secondary" />
@@ -51,7 +52,7 @@ export default function Welcome() {
         ))}
       </View>
       <Text variant="tiny" style={{ marginTop: 32 }}>
-        Postcard is for ages 13 and over. Public profiles are for over-18s only.
+        {APP_NAME} is for ages 13 and over. Public profiles are for over-18s only.
       </Text>
     </AuthFrame>
   );

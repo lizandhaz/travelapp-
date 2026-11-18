@@ -7,6 +7,7 @@ import { CodeEntry } from '@/components/CodeEntry';
 import { Text } from '@/components/Text';
 import { Button, Field, Input, ErrorNotice } from '@/components/ui';
 import { requestLogInCode } from '@/lib/authActions';
+import { APP_NAME } from '@/constants/brand';
 
 export default function LogIn() {
   const [email, setEmail] = useState('');
@@ -72,7 +73,7 @@ export default function LogIn() {
         <Link href="/signup" asChild>
           <Pressable accessibilityRole="link">
             <Text variant="link" style={{ fontSize: 14 }}>
-              Join Postcard
+              Join {APP_NAME}
             </Text>
           </Pressable>
         </Link>

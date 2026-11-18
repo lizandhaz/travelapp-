@@ -1,5 +1,6 @@
 import { ageInYears, MIN_AGE_TO_JOIN } from './age';
 import { supabase } from './supabase';
+import { APP_NAME } from '@/constants/brand';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -12,7 +13,7 @@ function isRateLimit(e: AuthError) {
 function friendly(e: AuthError) {
   if (isRateLimit(e)) return "We've sent a lot of emails in the last hour. Please wait a little while and try again.";
   if (e.message?.toLowerCase().includes('network') || e.status === 0)
-    return "Couldn't reach Postcard. Check you're online and try again.";
+    return `Couldn't reach ${APP_NAME}. Check you're online and try again.`;
   return 'Something went wrong sending your code. Please try again in a minute.';
 }
 
@@ -30,7 +31,7 @@ export async function requestSignUpCode(name: string, email: string, dob: string
   if (!EMAIL_RE.test(email)) return { ok: false, message: "That email address doesn't look quite right." };
   const age = ageInYears(dob);
   if (age === null || age < 0 || age > 120) return { ok: false, message: 'Please enter your date of birth.' };
-  if (age < MIN_AGE_TO_JOIN) return { ok: false, message: `Sorry, you need to be ${MIN_AGE_TO_JOIN} or over to join Postcard.` };
+  if (age < MIN_AGE_TO_JOIN) return { ok: false, message: `Sorry, you need to be ${MIN_AGE_TO_JOIN} or over to join ${APP_NAME}.` };
 
   // The database checks the age again and refuses the account if it's under 13.
   const { error } = await supabase.auth.signInWithOtp({

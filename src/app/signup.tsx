@@ -8,6 +8,7 @@ import { DateOfBirth, dobToIso, type Dob } from '@/components/DateOfBirth';
 import { Text } from '@/components/Text';
 import { Button, Field, Input, ErrorNotice } from '@/components/ui';
 import { requestSignUpCode } from '@/lib/authActions';
+import { APP_NAME } from '@/constants/brand';
 
 export default function SignUp() {
   const [name, setName] = useState('');
@@ -39,7 +40,7 @@ export default function SignUp() {
   return (
     <AuthFrame>
       <Text variant="title" style={{ marginTop: 32, fontSize: 36, lineHeight: 42 }}>
-        Join Postcard
+        Join {APP_NAME}
       </Text>
       <Text variant="bodySoft" style={{ marginTop: 8 }}>
         No password needed. We&apos;ll email you a code to sign in.

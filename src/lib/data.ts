@@ -3,6 +3,8 @@
 // these arrays get replaced by real database queries, but the shapes (types)
 // below are a good starting point for the database tables.
 
+import { APP_NAME } from "@/constants/brand";
+
 export const STAY_TYPES = [
   "Hotel",
   "Airbnb",
@@ -442,15 +444,15 @@ export const postcards: Postcard[] = [
     id: "p5",
     kind: "tip",
     text: "Back from somewhere lovely? Log it while the memories are fresh.",
-    href: "/log",
+    href: "/add",
     sentAt: "2026-10-20",
     unread: false,
   },
   {
     id: "p6",
     kind: "welcome",
-    text: "Welcome to Postcard! Rate your first holiday to get picks made for you.",
-    href: "/log",
+    text: `Welcome to ${APP_NAME}! Add your first trip to get picks made for you.`,
+    href: "/add",
     sentAt: "2025-06-01",
     unread: false,
   },

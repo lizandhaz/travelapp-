@@ -7,7 +7,7 @@ import { Header, Screen } from '@/components/ui';
 import { colors, GUTTER } from '@/constants/theme';
 import { formatDay, getPerson, postcards } from '@/lib/data';
 
-// "Postcards" is what Postcard calls notifications.
+// "Postcards" is what the app calls notifications (product rule 4).
 export default function Postcards() {
   return (
     <Screen tabBar>

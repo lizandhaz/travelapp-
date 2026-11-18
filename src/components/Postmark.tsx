@@ -1,6 +1,7 @@
 import { useId } from 'react';
 import Svg, { Circle, Defs, G, Path, Text as SvgText, TextPath } from 'react-native-svg';
 
+import { APP_NAME } from '@/constants/brand';
 import { colors } from '@/constants/theme';
 
 /**
@@ -51,7 +52,7 @@ export function Postmark({
         {date.toUpperCase()}
       </SvgText>
       <SvgText x={44} y={75} fill={colors.airmail} fontSize={7} fontWeight="700" textAnchor="middle" letterSpacing={2}>
-        ★ POSTCARD ★
+        {`★ ${APP_NAME.toUpperCase()} ★`}
       </SvgText>
     </Svg>
   );

@@ -14,10 +14,10 @@ type Icon = (p: { color: string }) => React.ReactElement;
  * <TabList> in the layout file, so src/app/(tabs)/_layout.tsx renders them;
  * this file only provides the look.
  */
-export const TABS: { name: string; href: '/' | '/explore' | '/log' | '/postcards' | '/profile'; label: string; Icon: Icon }[] = [
+export const TABS: { name: string; href: '/' | '/explore' | '/add' | '/postcards' | '/profile'; label: string; Icon: Icon }[] = [
   { name: 'index', href: '/', label: 'Home', Icon: HomeIcon },
   { name: 'explore', href: '/explore', label: 'Explore', Icon: CompassIcon },
-  { name: 'log', href: '/log', label: 'Log', Icon: PlusIcon },
+  { name: 'add', href: '/add', label: 'Add', Icon: PlusIcon },
   { name: 'postcards', href: '/postcards', label: 'Postcards', Icon: EnvelopeIcon },
   { name: 'profile', href: '/profile', label: 'You', Icon: PersonIcon },
 ];

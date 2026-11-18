@@ -1,9 +1,9 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 
 import { TabButton, TABS, useTabBarStyle } from '@/components/TabBar';
-import { unreadPostcardCount } from '@/lib/data';
 
-// Bottom tab bar: Home, Explore, a raised centre Add button, Postcards, You.
+// Tabs: Home, Explore, the "+" (Add a trip), Saved, You. Postcards open from the
+// paper-plane button on Home; settings from the button on You.
 // The <TabTrigger>s must sit directly inside <TabList> here so Expo Router can find them.
 export default function TabsLayout() {
   const barStyle = useTabBarStyle();
@@ -13,12 +13,7 @@ export default function TabsLayout() {
       <TabList style={barStyle}>
         {TABS.map((t) => (
           <TabTrigger key={t.name} name={t.name} href={t.href} asChild>
-            <TabButton
-              label={t.label}
-              Icon={t.Icon}
-              primary={t.name === 'add'}
-              badge={t.name === 'postcards' ? unreadPostcardCount() : 0}
-            />
+            <TabButton label={t.label} Icon={t.Icon} primary={t.name === 'add'} />
           </TabTrigger>
         ))}
       </TabList>

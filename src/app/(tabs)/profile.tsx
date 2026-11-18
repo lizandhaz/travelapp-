@@ -1,23 +1,23 @@
-import { Link, useFocusEffect } from 'expo-router';
+import { Link, router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Pressable, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Pressable, View } from 'react-native';
 
-import { ProfileView } from '@/components/ProfileView';
+import { AccentTitle } from '@/components/AccentTitle';
+import { Avatar } from '@/components/Avatar';
+import { SlidersIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
 import { TripCard } from '@/components/trip/TripCard';
-import { Button, Card, Screen } from '@/components/ui';
-import { APP_NAME } from '@/constants/brand';
+import { Button, Card, IconCircle, Screen } from '@/components/ui';
 import { colors, GUTTER } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
-import type { Person } from '@/lib/data';
+import { formatScore } from '@/lib/score';
 import { countriesIn, fetchMyTrips, type Trip } from '@/lib/trips';
 
-const COLOURS: Person['colour'][] = ['postbox', 'airmail', 'sea', 'sun', 'ink'];
-
 export default function You() {
-  const { profile, session, signOut } = useAuth();
+  const { profile, session } = useAuth();
   const [trips, setTrips] = useState<Trip[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+
   const load = useCallback((isActive: () => boolean = () => true) => {
     fetchMyTrips()
       .then((t) => {
@@ -40,91 +40,79 @@ export default function You() {
   );
 
   const name = profile?.name ?? session?.user.email?.split('@')[0] ?? 'You';
-  const id = profile?.id ?? session?.user.id ?? 'x';
-  const person: Person = {
-    handle: profile?.handle ?? '…',
-    name,
-    initials: name
-      .split(/\s+/)
-      .map((w) => w[0])
-      .join('')
-      .slice(0, 2)
-      .toUpperCase(),
-    homeTown: '',
-    bio: '',
-    colour: COLOURS[id.charCodeAt(0) % COLOURS.length],
-    isFriend: false,
-  };
-
   const list = trips ?? [];
-  const stats = {
-    count: list.length,
-    countries: countriesIn(list),
-    avg: list.length ? (list.reduce((s, t) => s + t.score, 0) / list.length).toFixed(1) : '–',
-  };
-
-  let tripList: React.ReactNode;
-  if (error) {
-    tripList = (
-      <Card style={{ padding: 16, gap: 8 }}>
-        <Text variant="body">{error}</Text>
-        <Pressable accessibilityRole="button" onPress={() => load()} hitSlop={8}>
-          <Text variant="link">Try again</Text>
-        </Pressable>
-      </Card>
-    );
-  } else if (!trips) {
-    tripList = <ActivityIndicator color={colors.postbox} />;
-  } else if (trips.length === 0) {
-    tripList = <Text variant="bodySoft">No trips yet. Tap Add to save your first one.</Text>;
-  } else {
-    tripList = trips.map((t) => <TripCard key={t.id} trip={t} />);
-  }
+  const avg = list.length ? formatScore(list.reduce((s, t) => s + t.score, 0) / list.length) : '–';
+  const cardWidth = (Math.min(Dimensions.get('window').width, 480) - GUTTER * 2 - 14) / 2;
 
   return (
     <Screen tabBar>
-      <ProfileView
-        person={person}
-        isMe
-        stats={stats}
-        listTitle="Your trips"
-        list={tripList}
-        footer={
-          <View style={{ paddingHorizontal: GUTTER, marginTop: 32, gap: 16 }}>
-            <Card style={{ padding: 16 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-                <View style={{ flex: 1 }}>
-                  <Text variant="strong">Public profile</Text>
-                  <Text variant="small">Let anyone on {APP_NAME} see your trips, not just friends.</Text>
-                </View>
-                <View style={{ backgroundColor: colors.sand, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
-                  <Text variant="tiny" style={{ color: colors.inkSoft }}>
-                    {profile?.isPublic ? 'On' : 'Off'}
-                  </Text>
-                </View>
-              </View>
-              <Text variant="tiny" style={{ marginTop: 12 }}>
-                {profile?.canGoPublic
-                  ? 'Public profiles are coming soon.'
-                  : 'Public profiles are for over-18s. Until then, your profile is just for friends.'}
-              </Text>
-            </Card>
-
-            <Card style={{ padding: 16, gap: 12 }}>
-              <Text variant="small">
-                Signed in as <Text variant="strong">{session?.user.email}</Text>
-              </Text>
-              <Button title="Log out" kind="secondary" onPress={signOut} />
-            </Card>
-          </View>
-        }
-      >
-        <View style={{ paddingHorizontal: GUTTER, marginTop: 24 }}>
-          <Link href="/add" asChild>
-            <Button title={list.length ? 'Add a trip' : 'Add your first trip'} />
-          </Link>
+      <View style={{ paddingHorizontal: GUTTER, paddingTop: 20, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+        <Avatar name={name} size={76} />
+        <View style={{ flex: 1 }}>
+          <Text variant="title" style={{ fontSize: 28, lineHeight: 32 }}>
+            {name}
+          </Text>
+          <Text variant="small">
+            @{profile?.handle ?? '…'} · {profile?.isPublic ? 'Public profile' : 'Private account'}
+          </Text>
         </View>
-      </ProfileView>
+        <IconCircle label="Settings" onPress={() => router.push('/settings')}>
+          <SlidersIcon color={colors.ink} />
+        </IconCircle>
+      </View>
+
+      <View style={{ paddingHorizontal: GUTTER, marginTop: 20, flexDirection: 'row', gap: 10 }}>
+        <Button title="Saved places" kind="outline" size="sm" style={{ flex: 1 }} onPress={() => router.push('/saved')} />
+        <Link href="/add" asChild>
+          <Button title="Add a trip" kind="outline" size="sm" style={{ flex: 1 }} />
+        </Link>
+      </View>
+
+      <Card style={{ marginHorizontal: GUTTER, marginTop: 14, flexDirection: 'row' }}>
+        <Stat label="Trips" value={list.length} />
+        <Stat label="Countries" value={countriesIn(list)} border />
+        <Stat label="Avg score" value={avg} border />
+      </Card>
+
+      <View style={{ paddingHorizontal: GUTTER, marginTop: 30, gap: 16 }}>
+        <AccentTitle before="Your" accent="trips" variant="heading" />
+        {error ? (
+          <Card style={{ padding: 16, gap: 8 }}>
+            <Text variant="body">{error}</Text>
+            <Pressable accessibilityRole="button" onPress={() => load()} hitSlop={8}>
+              <Text variant="link">Try again</Text>
+            </Pressable>
+          </Card>
+        ) : !trips ? (
+          <ActivityIndicator color={colors.terracotta} />
+        ) : trips.length === 0 ? (
+          <Card style={{ padding: 20, gap: 12, alignItems: 'flex-start' }}>
+            <Text variant="body">No trips yet. Add the last place you went and how it was.</Text>
+            <Link href="/add" asChild>
+              <Button title="Add your first trip" />
+            </Link>
+          </Card>
+        ) : (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 14, rowGap: 18 }}>
+            {trips.map((t) => (
+              <TripCard key={t.id} trip={t} width={cardWidth} />
+            ))}
+          </View>
+        )}
+      </View>
     </Screen>
+  );
+}
+
+function Stat({ label, value, border }: { label: string; value: string | number; border?: boolean }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', paddingVertical: 14, borderLeftWidth: border ? 1 : 0, borderLeftColor: colors.line }}>
+      <Text variant="title" style={{ fontSize: 26, lineHeight: 30 }}>
+        {value}
+      </Text>
+      <Text variant="label" style={{ fontSize: 10, marginTop: 2 }}>
+        {label}
+      </Text>
+    </View>
   );
 }

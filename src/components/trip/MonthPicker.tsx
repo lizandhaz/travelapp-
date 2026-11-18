@@ -1,20 +1,13 @@
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 
+import { Row } from '@/components/cards';
 import { Text } from '@/components/Text';
 import { Chip } from '@/components/ui';
-import { colors } from '@/constants/theme';
-import {
-  addMonths,
-  currentMonth,
-  longMonth,
-  makeMonth,
-  MONTH_NAMES_SHORT,
-  shortMonth,
-  yearOf,
-} from '@/lib/months';
+import { colors, GUTTER } from '@/constants/theme';
+import { addMonths, currentMonth, longMonth, makeMonth, MONTH_NAMES_SHORT, monthYear, yearOf } from '@/lib/months';
 
-/** This month, the 6 before it as chips, or "Earlier…" to pick any past month. */
+/** This month and the 6 before it as chips, or "Earlier…" to pick any past month. */
 export function MonthPicker({ value, onChange }: { value: string | null; onChange: (ym: string) => void }) {
   const now = currentMonth();
   const recent = Array.from({ length: 7 }, (_, i) => addMonths(now, -i));
@@ -23,32 +16,30 @@ export function MonthPicker({ value, onChange }: { value: string | null; onChang
 
   return (
     <View style={{ gap: 10 }}>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-        {recent.map((ym, i) => (
-          <Chip
-            key={ym}
-            label={i === 0 ? 'This month' : shortMonth(ym)}
-            selected={value === ym}
-            onPress={() => {
-              setEarlier(false);
-              onChange(ym);
-            }}
-          />
-        ))}
-        <Chip label="Earlier…" selected={earlier} onPress={() => setEarlier(true)} />
+      <View style={{ marginHorizontal: -GUTTER }}>
+        <Row gap={8}>
+          {recent.map((ym) => (
+            <Chip
+              key={ym}
+              label={monthYear(ym)}
+              accessibilityLabel={ym === now ? `This month, ${longMonth(ym)}` : longMonth(ym)}
+              selected={value === ym}
+              onPress={() => {
+                setEarlier(false);
+                onChange(ym);
+              }}
+            />
+          ))}
+          <Chip label="Earlier…" selected={earlier} onPress={() => setEarlier(true)} />
+        </Row>
       </View>
+      <Text variant="tiny">Just the month is fine.</Text>
 
       {earlier && (
         <View style={{ gap: 10 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Previous year"
-              disabled={year <= 1950}
-              onPress={() => setYear((y) => y - 1)}
-              hitSlop={10}
-            >
-              <Text variant="heading" style={{ color: colors.airmail }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18 }}>
+            <Pressable accessibilityRole="button" accessibilityLabel="Previous year" disabled={year <= 1950} onPress={() => setYear((y) => y - 1)} hitSlop={10}>
+              <Text variant="heading" style={{ color: colors.terracottaText }}>
                 ‹
               </Text>
             </Pressable>
@@ -63,7 +54,7 @@ export function MonthPicker({ value, onChange }: { value: string | null; onChang
               hitSlop={10}
               style={{ opacity: year >= yearOf(now) ? 0.3 : 1 }}
             >
-              <Text variant="heading" style={{ color: colors.airmail }}>
+              <Text variant="heading" style={{ color: colors.terracottaText }}>
                 ›
               </Text>
             </Pressable>
@@ -73,27 +64,11 @@ export function MonthPicker({ value, onChange }: { value: string | null; onChang
               const ym = makeMonth(year, m);
               // Never a future month, and skip months already shown as chips above.
               if (ym > now || recent.includes(ym)) return null;
-              return (
-                <Chip
-                  key={ym}
-                  label={name}
-                  accessibilityLabel={`${name} ${year}`}
-                  selected={value === ym}
-                  onPress={() => onChange(ym)}
-                />
-              );
+              return <Chip key={ym} label={name} accessibilityLabel={`${name} ${year}`} selected={value === ym} onPress={() => onChange(ym)} />;
             })}
           </View>
         </View>
       )}
-
-      {value && (
-        <Text variant="small">
-          {longMonth(value)}
-          {value === now ? ' (this month)' : ''}
-        </Text>
-      )}
     </View>
   );
 }
-

@@ -39,10 +39,10 @@ export default function SignUp() {
 
   return (
     <AuthFrame>
-      <Text variant="title" style={{ marginTop: 32, fontSize: 36, lineHeight: 42 }}>
+      <Text variant="title" style={{ marginTop: 36, textAlign: 'center' }}>
         Join {APP_NAME}
       </Text>
-      <Text variant="bodySoft" style={{ marginTop: 8 }}>
+      <Text variant="bodySoft" style={{ marginTop: 8, textAlign: 'center' }}>
         No password needed. We&apos;ll email you a code to sign in.
       </Text>
       <View style={{ gap: 20, marginTop: 28 }}>
@@ -64,13 +64,13 @@ export default function SignUp() {
         </Field>
         <DateOfBirth value={dob} onChange={setDob} />
         <ErrorNotice error={error} />
-        <Button title={busy ? 'Sending…' : 'Send my code'} onPress={submit} disabled={busy} />
+        <Button title={busy ? 'Sending…' : 'Send my code'} size="lg" onPress={submit} disabled={busy} />
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 24, gap: 6 }}>
         <Text variant="small">Already joined?</Text>
         <Link href="/login" asChild>
           <Pressable accessibilityRole="link">
-            <Text variant="link" style={{ fontSize: 14 }}>
+            <Text variant="link">
               Log in
             </Text>
           </Pressable>

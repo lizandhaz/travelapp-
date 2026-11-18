@@ -2,7 +2,7 @@
 
 Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations** and **where they stayed** (hotel, Airbnb, villa and so on) out of 10, and add photos, food picks and top tips.
 
-**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real (Step 2):** "Add a trip" saves to Supabase, and You and the trip page show your own trips with edit and delete. Everything else (friends' feed, For you, destination pages, Postcards) is still sample data in `src/lib/data.ts`. The roadmap is in `docs/plan.md`.
+**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips (Home's picks and Friends feed, Explore, Saved boards, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts`. The roadmap is in `docs/plan.md`.
 
 **App name:** the name is a placeholder, currently **XYZX**. It lives in **one place**, `src/constants/brand.json` (`appName`). Code uses `APP_NAME` from `src/constants/brand.ts`, and `app.config.ts` reads the same JSON for the name under the icon. Never type the app's name anywhere else. (The project was originally called "Postcard"; that's still the Expo `slug` and the repo's history, and the notifications feature is still called "Postcards".)
 
@@ -16,10 +16,10 @@ Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations*
 
 ## Product rules (don't break these)
 
-1. **Scores are whole numbers out of 10:** the trip's own score ("How was it?", with a word like "Loved it") and, optionally, where you stayed. Averages show one decimal place.
+1. **Scores are out of 10 with one decimal place (8.8)** (owner's decision, Nov 2026): the trip's own score ("How was it?", a slider with a word like "Loved it") and, optionally, where you stayed. Always shown with one decimal (`formatScore`: 9.0, not 9). Words come from `scoreWord()` in `src/lib/score.ts`.
 2. **Post when home, never live location.** A trip records the month of the trip, not the current place. Add a trip rejects future months (so does the database), and asks for "I'm back home" when the month picked is this month. Never add live or "I'm here now" location features. Photos are picked with `exif: false`, and GPS data must be stripped before anything is stored.
 3. **Ages: 13+ to join, 18+ to go public.** (Owner's decision, Nov 2026.) Everyone gives a date of birth at sign-up, and anyone under 13 is refused. 13–17s get a private, friends-only profile: they can never switch it to public, and they don't appear in search or suggestions to people who aren't already their friends. This is enforced in the database (see below), not just in the app. Date of birth is private to its owner.
-4. **Notifications are called "Postcards"** everywhere in the UI, never "notifications" or "alerts".
+4. **Notifications are called "Postcards"** everywhere in the UI, never "notifications" or "alerts". They open from the paper-plane button at the top of Home (with the unread count), not a tab.
 5. **Home has two sides:** "For you" (picks based on your taste) and "Friends" (what friends rated, newest first).
 6. **No trip planning.** The app is for rating trips you've been on, not planning future ones. Don't add itineraries, planning lists, bookings or future dates.
 
@@ -27,7 +27,8 @@ Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations*
 
 - **Expo SDK 58**, React Native 0.88, React 19.3 and TypeScript (strict), with **Expo Router** (file-based screens in `src/app/`).
 - Styling uses `StyleSheet` / inline styles with the tokens in `src/constants/theme.ts`. There is no Tailwind.
-- Drawing (stamps, postmarks, airmail stripes, icons) uses `react-native-svg`. Gradients use `expo-linear-gradient`, photos use `expo-image-picker` and `expo-image`.
+- Drawing (perforated stamp edges, the swash under accent words, icons) uses `react-native-svg`. Photo shades and placeholders use `expo-linear-gradient`; photos use `expo-image` (and `expo-image-picker` for picking).
+- **Sample photos** live in `assets/photos/` (from the prototype; all Unsplash, credited in `PHOTO_CREDITS` and shown at the bottom of Home). `src/lib/photos.ts` maps names (`'como-1'`) to the files; only photos the sample content uses are bundled.
 - Fonts come from `@expo-google-fonts/fraunces` and `@expo-google-fonts/dm-sans`. Import each style from its own subpath (e.g. `@expo-google-fonts/fraunces/600SemiBold`) so only the styles used get bundled.
 - **Supabase** (`@supabase/supabase-js`) handles accounts and profiles. The session is kept on the phone with `@react-native-async-storage/async-storage`.
 - Every native module used must be one **Expo Go** includes, so the owner can test with Expo Go. Adding anything else needs a development build. Ask first.
@@ -70,46 +71,53 @@ The owner has **no computer**, only an iPhone (with Expo Go) and an iPad. Claude
 ```
 app.json                  Icon, splash, plugins, Expo project link
 app.config.ts             Adds the app name (from src/constants/brand.json) on top of app.json
-assets/images/            App icon, splash, Android adaptive icons, favicon (a red perforated stamp with "P")
+assets/images/            App icon, splash, Android adaptive icons, favicon
+assets/photos/            Sample photos from the design prototype (Unsplash)
 src/
   app/                    Every file is a screen (Expo Router)
     _layout.tsx           Fonts, AuthProvider, Stack + Stack.Protected (signed in / signed out)
-    welcome.tsx           First screen when signed out: pitch + Join / Log in
-    signup.tsx            Name, email, date of birth → 6-digit code
-    login.tsx             Email → 6-digit code (never reveals who has an account)
-    (tabs)/_layout.tsx    Bottom tab bar: Home, Explore, centre Add button, Postcards, You
-    (tabs)/index.tsx      Home: For you / Friends
-    (tabs)/explore.tsx    Search + tag chips + destination grid
-    (tabs)/add.tsx        "Add a trip" (centre tab): uses components/trip/TripForm
-    (tabs)/postcards.tsx  Postcards (notifications)
-    (tabs)/profile.tsx    You: real name/handle, your real trips (highest score first), public-profile note, Log out
-    trip/[id]/index.tsx   One of your trips as a postcard, with Edit and Delete (confirm first)
+    welcome.tsx           Signed out: wordmark, Hydra photo stamp, "Where your friends loved staying", Join / Log in
+    signup.tsx, login.tsx Join (name, email, date of birth) / Log in (email), then the 6-digit code
+    (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
+    (tabs)/index.tsx      Home: wordmark, search + Postcards buttons, For you (hero + rows) / Friends (feed)
+    (tabs)/explore.tsx    "Describe your perfect trip" search, filter chips, collections, Trending this month, board
+    (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
+    (tabs)/saved.tsx      Saved: "Your lists" boards (sample; real in plan Step D)
+    (tabs)/profile.tsx    You: profile, stats, your real trips as photo stamps (highest score first)
+    postcards.tsx         Postcards (sample), opened from Home's paper-plane button
+    settings.tsx          Settings (public-profile note, sign out), opened from You
+    place/[slug].tsx      A sample place: photo, score, what friends said, things they loved
+    trip/[id]/index.tsx   One of your trips, with Edit and Delete (confirm first)
     trip/[id]/edit.tsx    Edit a trip (same TripForm, prefilled)
-    destination/[slug].tsx  Friends' average, where they stayed, food, tips, ratings
-    rating/[id].tsx       One sample (friend) rating, laid out as a postcard
-    people/[handle].tsx   A friend's profile
     +not-found.tsx        "Lost in the post"
-  components/             Shared UI (see Brand rules)
-    ui.tsx                Screen, Header, BackLink, Button, Input, Field, Chip, Card, Notice
+  components/
+    ui.tsx                Screen, PageTitle, SectionHeader, IconCircle, BackButton, Button (dark/accent/outline),
+                          Input (optional icon), Field, Chip, Segmented, Card, Notice, ErrorNotice
     Text.tsx              All text goes through <Text variant="…"> (fonts + colours)
+    AccentTitle.tsx       Heading with one italic word and a terracotta swash ("Where did *you* go?")
+    Wordmark.tsx          The app name in spaced serif capitals + terracotta star, and the tagline
+    ScoreStamp.tsx        Score in a perforated stamp: navy on peach (or white on teal for a stay)
+    Photo.tsx             PhotoFill, Shade, PhotoTile (rounded photo), PhotoStamp (photo in a perforated frame)
+    MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
+    Avatar.tsx            Face photo or initials
+    cards.tsx             Row, TrendCard, PlaceCard, TasteCard, PickCard, FeedCard, BoardTile, PhotoBadge
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
+    Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
-    trip/TripForm.tsx     Add/edit a trip: place, month, score, who can see it, photo preview, "Add more detail"
+    trip/TripForm.tsx     Add/edit a trip: place, month, slider score, photo preview, who can see it, "Add more detail"
     trip/PlacePicker.tsx  Search or type a place ("Sintra, Portugal" → name + country)
-    trip/MonthPicker.tsx  This month + last 6 months as chips, or "Earlier…" (year arrows + months)
-    trip/ScorePicker.tsx  Tap or slide 1–10 with a word; accessibilityRole "adjustable"
-    trip/TripCard.tsx     A trip in a list
-  constants/theme.ts      Colours, fonts, spacing (the only place for raw hex values)
+    trip/MonthPicker.tsx  This month + last 6 months as chips ("Nov 2026"), or "Earlier…"
+    trip/ScorePicker.tsx  "Slide to rate out of 10": 1.0–10.0 in 0.1 steps; accessibilityRole "adjustable"
+    trip/TripCard.tsx     One of your trips as a photo stamp
+  constants/theme.ts      Colours, fonts, radius, GUTTER (the only place for raw hex values)
   constants/brand.json    The app name (placeholder "XYZX"); brand.ts exports APP_NAME
   lib/
-    data.ts               Sample data, types and helpers (forYouPicks, friendFeed, …)
-    config.ts             Supabase URL + publishable key (public by design)
-    supabase.ts           Supabase client (AsyncStorage session, auto-refresh while app is open)
-    auth.tsx              AuthProvider / useAuth(): session, profile, signOut
-    authActions.ts        requestSignUpCode, requestLogInCode, verifyCode
-    age.ts                ageInYears(), MIN_AGE_TO_JOIN (13), MIN_AGE_FOR_PUBLIC_PROFILE (18)
-    trips.ts              Trip types, fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces, SCORE_WORDS
-    months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth)
+    sample.ts             Sample content from the prototype: hero, rows, places, feed, board, boards, postcards
+    photos.ts             Sample photo names → files
+    score.ts              formatScore, clampScore, scoreWord
+    trips.ts              Trip types, fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces
+    months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
+    config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order
 docs/plan.md              Step-by-step plan
 ```
@@ -126,51 +134,57 @@ docs/plan.md              Step-by-step plan
   - Save new and edited trips **only through `save_trip(p_trip jsonb)`**: one transaction, runs with the caller's permissions, and replaces the details on edit. The app calls it with `supabase.rpc('save_trip', { p_trip })`.
   - Places are added via the `destination_id_for()` helper (it tidies spaces and treats case as the same place). People only see the starting list plus places they've used, so private names like "Grandma's house" never leak.
   - A trigger refuses future months.
+  - **Decimal scores** (`20261120120000_decimal_scores.sql`): `trips.score` and `stays.score` are `numeric(3,1)`, 1.0–10.0. PostgREST may return them as strings, so the app wraps them in `Number()`.
 - **Changing the database:** add a new numbered file in `supabase/migrations/` (never edit one that's already been run). The owner runs it in Supabase → SQL Editor. Before handing it over, test it on a local Postgres with stand-ins for `auth.users`, `auth.uid()` and the `anon`/`authenticated` roles, covering every rule, including the "should fail" cases.
 - **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 
 ## Brand rules
 
-The look is **a vintage postcard**: warm card stock, fountain-pen ink, postage stamps, postmarks and airmail stripes. Friendly, a little nostalgic, never twee.
+The look follows the owner's prototype: **clean, warm and photo-led**. A warm off-white background, white rounded cards with thin borders, navy pill buttons, big serif headings with one italic accent word, and photos framed like postage stamps. No airmail stripes or round postmarks any more.
 
 ### Colours (`src/constants/theme.ts` → `colors.*`)
 
 | Token | Hex | Use |
 |---|---|---|
-| `paper` | `#f6efe3` | Screen background |
-| `card` | `#fffbf4` | Cards, inputs, stamp backgrounds |
-| `sand` | `#e8d9bf` | Borders, dividers, quiet fills |
-| `ink` | `#1f2a44` | Main text, selected chips/tabs |
-| `inkSoft` | `#5b6478` | Secondary text |
-| `postbox` | `#b5392a` | Primary buttons, Add button, unread dots, kickers, scores under 6 |
-| `airmail` | `#2f5d8a` | Links, postmarks, scores 6–7.9 |
-| `sea` | `#3e7c7a` | Scores 8+, success |
-| `sun` | `#e2a43b` | Food-pick tags, highlights (fill only, never text) |
+| `bg` | `#fbf9f5` | Page background |
+| `card` | `#ffffff` | Cards, inputs, stamp frames |
+| `line` | `#ece5db` | Borders, dividers |
+| `sand` | `#e9dec8` | Quiet fills, photo placeholders |
+| `ink` | `#13264a` | Main text, navy buttons, selected chips/tabs, the + button |
+| `muted` | `#66708a` | Secondary text, labels |
+| `peach` | `#f6b096` | Score stamps, the + sign |
+| `mint` | `#96c7b8` | Soft tags (stay type, % match) |
+| `terracotta` | `#cc754a` | Swash under accent words, star, slider fill, large text only |
+| `terracottaDeep` | `#b05e37` | "Save trip" button (white text passes contrast) |
+| `terracottaText` | `#a9552c` | Small terracotta text: links, taglines, kickers |
+| `teal` | `#2e7a7d` | Stay score stamp |
+| `onDark` | `#fffaf5` | Text on photos and navy |
 
-Text colours pass WCAG AA on `paper` and `card`.
+`#cc754a` is too light for small text on `bg`. Use `terracottaText` for small text and `terracottaDeep` behind white text.
 
 ### Type (`fonts.*`, via `<Text variant>`)
 
-- **Fraunces** for headings (`title`, `heading`, `hero`), scores, reviews (`review`) and italic quotes and tips (`quote`).
-- **DM Sans** for everything else: body, labels, buttons.
-- `kicker` is small uppercase letter-spaced postbox red, used above headings.
-- In React Native each weight is its own font family (e.g. `Fraunces-SemiBold`). Don't use `fontWeight` with custom fonts.
+- **Fraunces** for headings (`title` 32, `heading` 22, `subheading` 18), scores and quotes. **Fraunces Italic** for the accent word in `AccentTitle`.
+- **DM Sans** for everything else.
+- `label`: small uppercase letter-spaced muted text ("ADD A TRIP", "WHO CAN SEE THIS"). `kicker`: the same in terracotta (the tagline).
+- Each weight is its own font family (e.g. `Fraunces-SemiBold`). Don't use `fontWeight` with custom fonts.
 
-### Motifs (`src/components/`)
+### Motifs
 
-- **Stamp** (`Stamp.tsx`): every score is a perforated postage stamp (an SVG path with half-circle bites), coloured by score (8+ sea, 6–7.9 airmail, under 6 postbox), optionally tilted. The label defaults to "/ 10" and can be "Place", "Stay" or "Friends".
-- **Postmark** (`Postmark.tsx`): a round airmail-blue ink stamp with place and **trip month** around it and wavy cancellation lines. Never shows a current date or location.
-- **Airmail stripe** (`Airmail.tsx`): red/blue diagonal stripes as a thin top edge on cards and screens.
-- **Photo** (`Photo.tsx`): gradient placeholders with an italic caption until real uploads exist.
-- **App icon:** a cream background with a red perforated stamp, a Fraunces "P" and wavy lines.
+- **Wordmark**: the app name in wide-spaced serif capitals with a small terracotta four-point star, and the tagline "Picked by you and those you trust".
+- **AccentTitle**: one italic word with a hand-drawn terracotta swash ("Your *trips*", "Find your *next* trip").
+- **ScoreStamp**: every score sits in a small perforated stamp, navy on peach (white on teal for stays).
+- **PhotoStamp**: hero photos and your trips in a white perforated frame with a dotted inner border.
+- **MonthPill**: a trip month in a slightly tilted outline pill ("JUN 2026"). Never a current date or location.
+- **App icon**: still the earlier red stamp with "P". Update it when the name is final.
 
 ### Voice
 
-Warm, short and British English ("holiday", "favourite"). Postal puns sparingly: "Lost in the post", "Your post", "Check your inbox".
+Warm, short and British English ("holiday", "favourite"). No description lines under headings (owner's preference). Postal touches sparingly: "Postcards", "Lost in the post", "Check your inbox".
 
 ### Layout
 
-Single column, 16px side padding (`GUTTER`) and a bottom tab bar (Home, Explore, a raised centre **Add** button, Postcards, You). Screens use `<Screen tabBar>` so content clears the tab bar. On web the app is centred at 480px max. Light theme only for now.
+Single column, 20px side padding (`GUTTER`). The tab bar is **Home, Explore, a raised navy + (Add a trip), Saved, You**. Postcards open from Home's paper-plane button, and settings from You. Rows scroll sideways (`Row`). Screens use `<Screen tabBar>` so content clears the tab bar. On web the app is centred at 480px max. Light theme only.
 
 ## Conventions
 

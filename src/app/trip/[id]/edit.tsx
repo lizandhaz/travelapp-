@@ -4,7 +4,7 @@ import { ActivityIndicator, View } from 'react-native';
 
 import { Text } from '@/components/Text';
 import { TripForm } from '@/components/trip/TripForm';
-import { BackLink, Screen } from '@/components/ui';
+import { BackButton, Screen } from '@/components/ui';
 import { colors, GUTTER } from '@/constants/theme';
 import { fetchTrip, type Trip } from '@/lib/trips';
 
@@ -20,18 +20,18 @@ export default function EditTrip() {
   }, [id]);
 
   if (trip) {
-    return <TripForm initial={trip} title="Edit trip" back="Cancel" onSaved={() => router.back()} />;
+    return <TripForm initial={trip} back onSaved={() => router.back()} />;
   }
   return (
     <Screen>
       <View style={{ padding: GUTTER, paddingTop: 20, gap: 12 }}>
-        <BackLink />
+        <BackButton />
         {error ? (
           <Text variant="body">{error}</Text>
         ) : trip === null ? (
           <Text variant="body">That trip couldn’t be found. It may have been deleted.</Text>
         ) : (
-          <ActivityIndicator color={colors.postbox} />
+          <ActivityIndicator color={colors.terracotta} />
         )}
       </View>
     </Screen>

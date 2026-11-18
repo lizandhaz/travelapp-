@@ -1,35 +1,19 @@
-import { Link } from 'expo-router';
-import { KeyboardAvoidingView, Platform, Pressable, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, View } from 'react-native';
 
 import { colors, GUTTER } from '@/constants/theme';
-import { Airmail } from './Airmail';
-import { Text } from './Text';
 import { Screen } from './ui';
-import { APP_NAME } from '@/constants/brand';
+import { Wordmark } from './Wordmark';
 
-/** Frame for welcome, join and log in: no tab bar, airmail edge, brand name. */
+/** Frame for welcome, join and log in: no tab bar, centred wordmark and tagline. */
 export function AuthFrame({ children }: { children: React.ReactNode }) {
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.paper }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <Screen>
-        <Airmail height={8} />
-        <View style={{ paddingHorizontal: GUTTER, paddingTop: 24 }}>
-          <Link href="/welcome" asChild>
-            <Pressable accessibilityRole="link" style={{ alignSelf: 'flex-start' }}>
-              <Logo />
-            </Pressable>
-          </Link>
+        <View style={{ paddingHorizontal: GUTTER, paddingTop: 28 }}>
+          <Wordmark size={38} center />
           {children}
         </View>
       </Screen>
     </KeyboardAvoidingView>
-  );
-}
-
-export function Logo({ size = 26 }: { size?: number }) {
-  return (
-    <Text variant="title" style={{ fontSize: size, lineHeight: size * 1.2 }}>
-      {APP_NAME}<Text style={{ color: colors.postbox }}>.</Text>
-    </Text>
   );
 }

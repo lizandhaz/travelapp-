@@ -21,7 +21,7 @@ In Nov 2026 Postcard moved from a website (Next.js) to a **phone app built with 
 
 ---
 
-## Step 1: Join and log in (Supabase, email code, age check). Code built ✅, your setup next
+## Step 1: Join and log in (Supabase, email code, age check) ✅
 
 **What it means:** people create an account with just their email. There are no passwords: Postcard emails them a **6-digit code** to type into the app. At sign-up they also give their name and date of birth. **Anyone 13 or over can join** (decided Nov 2026). Everyone starts with a private profile, and only people aged 18 or over will ever be able to make it public. The database itself enforces both age rules.
 
@@ -99,7 +99,7 @@ How it's set up (done in Nov 2026):
 
 ---
 
-## Step 2: Save a real trip. Code built ✅, your setup next
+## Step 2 (Step A in the build plan): Save a real trip ✅
 
 **What it means:** the centre **Add** tab is now **"Add a trip"**: one simple screen with Where did you go?, When did you go?, How was it? (1–10 with a word), Who can see this? (Friends / Just me) and an optional photo (preview only for now). Under **Add more detail** you can add extra stops with nights, where you stayed (with its own score), your best meal and a top tip. Trips save to your database. **You** shows your real trips, highest score first, and each trip has its own page with **Edit** and **Delete**. The app's name is a placeholder, **XYZX**, kept in one place (`src/constants/brand.json`).
 
@@ -126,28 +126,42 @@ How it's set up (done in Nov 2026):
 
 ---
 
-## Later steps (each a separate pull request, in this order unless you'd rather change it)
+## Step B: Match the design prototype. Code built ✅, your setup next
 
-### Step 3: Friends
-Find people by handle, send/accept friend requests, and database rules so friends (only) can read each other's trips marked "Friends" (never "Just me"). The **Friends** side of Home becomes real.
+**What it means:** the app now looks and is laid out like your prototype ("XYZX without planning"):
+- **Tabs:** Home, Explore, a navy **+** for Add a trip, Saved and You. **Postcards** open from the paper-plane button on Home, and **settings** from the button on You.
+- **Home:** For you (the Lake Como hero, then Where's trending, Island escapes, Weekends away, One night away, Made for your taste and Picked for you) and Friends.
+- **Explore:** search, chips, collections, Trending this month, and the photo board.
+- **Saved:** your boards.
+- **Your trips:** shown as photo stamps on **You**, with a new trip page.
+- **Scores have one decimal place (8.8)**, set with a slider.
+- **Sample content and photos come from the prototype** (Unsplash, credited at the bottom of Home). Only your own trips are real so far.
 
-### Step 4: Photos
-Save trip photos to Supabase Storage (Add a trip already lets you pick one, as a preview). Photos are shrunk and have their **location data (GPS) removed before they're stored**, so the never-live-location rule holds. Free storage covers early testing. 💷 Large numbers of photos would eventually need a paid plan.
+**You do**
+1. **Run the decimal-scores update in Supabase** (1 minute): open `supabase/migrations/20261120120000_decimal_scores.sql` on GitHub, tap **Copy raw file**, then in Supabase go to **SQL Editor** → **New query** → paste → **Run**. You should see "Success. No rows returned". Run it once. Your existing trips keep their scores (8 becomes 8.0).
+2. Try it on your phone (close and reopen Expo Go).
 
-### Step 5: Postcards (notifications)
-In-app Postcards when a friend rates somewhere, saves your tip or accepts your request, plus the unread count on the tab bar. Phone push notifications can come later (they need a development build rather than Expo Go).
+**Cost:** free.
 
-### Step 6: "For you" from real data
-Replace the sample picks with ones based on what you rated highly and what your friends loved, using the same idea as today, just with real data.
+---
 
-### Step 7: Public profiles (18+)
-The **Public profile** switch on You becomes real (the database already refuses it for under-18s from step 1).
+## Next steps (from the build plan, one pull request each)
 
-### Step 8: Into the app stores
-Build proper installable versions with Expo's cloud build service (EAS) and submit them to Apple and Google. **You:** 💷 Apple Developer Program (about **£79 a year**) and Google Play (a **one-off US$25**), plus store listings (screenshots, description, age rating). Claude walks you through each and asks before anything is paid for. Both stores also require in-app account deletion, report and block, and a privacy policy (see below).
+Each step's ready-made prompt is in your build plan doc ("XYZX: build plan from the preview").
 
-### Step 9: Waitlist (Loops) and a simple website
-A one-page website for Postcard with a waitlist form connected to Loops, so people can sign up before it's in the stores. It can use the web version of the app, or a simple page hosted for free (e.g. on Vercel). **You:** create a Loops account and an API key (secret, so it goes in the hosting settings, not in chat or the repo). **Cost:** Loops and Vercel have free tiers for this size. 💷 Vercel's free plan is non-commercial only. *(Can move earlier if you want to start collecting emails sooner.)*
+| Step | What you'll be able to do | Aim to finish |
+|---|---|---|
+| C | Add friends, and see their trips on Home → Friends | Wed 2 Dec |
+| D | Save places to boards on Saved, plus a "Want to go" list | Fri 4 Dec |
+| E | Real place, stay and restaurant pages, and Explore from the database | Sun 6 Dec |
+| F | For you and trending from real ratings | Tue 8 Dec |
+| G | Add photos to trips (location data removed first) | Wed 9 Dec |
+| H | Postcards inside the app | Thu 10 Dec |
+| I | First-time setup for new people | Fri 11 Dec |
+| J | Block, report, download and delete account; privacy policy | Sat 12 Dec |
+| K | Beta on TestFlight (💷 Apple Developer, about £79 a year: Claude asks first) | Sun 13 Dec |
+
+**After the beta:** public profiles (18+), booking links, the travel map and yearly recap, "Found in your photos", push notifications, First Class payments, and the App Store and Google Play launch. Trip planning stays out unless you decide to bring it back.
 
 ### Before inviting real users
 - **Young users (13–17):** private, friends-only profiles; hidden from search and suggestions for non-friends; safe default settings; easy report and block. Get a quick legal check against the UK Children's Code and Online Safety Act duties.

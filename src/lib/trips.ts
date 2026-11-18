@@ -1,4 +1,4 @@
-import { destinations as sampleDestinations } from './data';
+import { places as samplePlaces } from './sample';
 import { supabase } from './supabase';
 
 /**
@@ -30,20 +30,6 @@ export type Trip = {
 /** What the Add a trip form sends to save_trip(). */
 export type TripInput = Omit<Trip, 'id'> & { id?: string };
 
-/** A word for each score, shown under the score picker and on trip pages. */
-export const SCORE_WORDS: Record<number, string> = {
-  1: 'Never again',
-  2: 'Awful',
-  3: 'Poor',
-  4: 'Not great',
-  5: 'OK',
-  6: 'Decent',
-  7: 'Good',
-  8: 'Great',
-  9: 'Loved it',
-  10: 'Perfect',
-};
-
 const TRIP_SELECT = `
   id, trip_month, score, visibility,
   trip_stops ( position, nights, destinations ( name, country ) ),
@@ -73,10 +59,10 @@ function fromRow(r: Row): Trip {
   return {
     id: r.id,
     month: r.trip_month.slice(0, 7),
-    score: r.score,
+    score: Number(r.score),
     visibility: r.visibility,
     stops,
-    stay: r.stays?.[0] ?? null,
+    stay: r.stays?.[0] ? { ...r.stays[0], score: Number(r.stays[0].score) } : null,
     meal: r.food_picks?.[0]?.name ?? null,
     tip: r.top_tips?.[0]?.tip ?? null,
   };
@@ -125,7 +111,7 @@ export async function deleteTrip(id: string): Promise<void> {
 
 /** Places to suggest when searching: the starting list plus places you've used. */
 export async function fetchPlaces(): Promise<Place[]> {
-  const fallback = sampleDestinations.map((d) => ({ name: d.name, country: d.country }));
+  const fallback = samplePlaces.map((p) => ({ name: p.name, country: p.region.split(', ').pop() ?? '' }));
   const { data, error } = await supabase.from('destinations').select('name, country').order('name').limit(500);
   if (error || !data?.length) return fallback;
   return data as Place[];

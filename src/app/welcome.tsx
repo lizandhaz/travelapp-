@@ -1,57 +1,42 @@
 import { Link } from 'expo-router';
-import { View } from 'react-native';
+import { Dimensions, View } from 'react-native';
 
 import { AuthFrame } from '@/components/AuthFrame';
-import { Postmark } from '@/components/Postmark';
-import { Stamp } from '@/components/Stamp';
+import { PhotoStamp } from '@/components/Photo';
 import { Text } from '@/components/Text';
 import { Button } from '@/components/ui';
-import { colors } from '@/constants/theme';
 import { APP_NAME } from '@/constants/brand';
-
-const STEPS = [
-  ["Rate it when you're home.", 'Destination and stay, out of 10. We never share live location.'],
-  ['See what friends loved.', 'The Friends feed shows every trip your people have rated.'],
-  ['Get picks for you.', 'The more you rate, the better your For you suggestions.'],
-];
+import { colors, fonts } from '@/constants/theme';
 
 export default function Welcome() {
+  const w = Math.min(Dimensions.get('window').width, 480) * 0.7;
   return (
     <AuthFrame>
-      <View style={{ position: 'absolute', right: 0, top: -4 }}>
-        <Stamp score={9} tilt={6} />
-      </View>
-      <Text variant="hero" style={{ marginTop: 40 }}>
-        Holidays, rated by friends you <Text variant="hero" style={{ color: colors.postbox, fontFamily: 'Fraunces-Italic' }}>actually</Text> trust.
-      </Text>
-      <Text variant="bodySoft" style={{ marginTop: 16, fontSize: 18, lineHeight: 26 }}>
-        Your friends rate where they went and where they stayed, out of 10. Add photos, food picks and top tips. No
-        strangers, no sponsored reviews.
-      </Text>
-      <View style={{ marginTop: 24 }}>
-        <Postmark place="Wish you were here" date={APP_NAME} />
-      </View>
-      <View style={{ gap: 12, marginTop: 28 }}>
-        <Link href="/signup" asChild>
-          <Button title={`Join ${APP_NAME}`} />
-        </Link>
-        <Link href="/login" asChild>
-          <Button title="I already have an account" kind="secondary" />
-        </Link>
-      </View>
-      <View style={{ gap: 16, marginTop: 40 }}>
-        {STEPS.map(([title, body], i) => (
-          <View key={title} style={{ flexDirection: 'row', gap: 12 }}>
-            <Text variant="heading" style={{ color: colors.postbox }}>
-              {i + 1}
-            </Text>
-            <Text variant="body" style={{ flex: 1, fontSize: 15 }}>
-              <Text variant="strong">{title}</Text> {body}
+      <View style={{ alignItems: 'center', marginTop: 28 }}>
+        <PhotoStamp photo="hydra-2" width={w} height={w * 1.18} tilt={-3}>
+          <View style={{ position: 'absolute', left: 20, right: 20, bottom: 22 }}>
+            <Text style={{ fontFamily: fonts.displayBold, fontSize: 30, color: colors.onDark }}>Hydra</Text>
+            <Text variant="label" style={{ color: colors.onDark }}>
+              Maya rated it 9.4
             </Text>
           </View>
-        ))}
+        </PhotoStamp>
       </View>
-      <Text variant="tiny" style={{ marginTop: 32 }}>
+      <Text variant="title" style={{ textAlign: 'center', marginTop: 28 }}>
+        Where your friends loved staying
+      </Text>
+      <Text variant="bodySoft" style={{ textAlign: 'center', marginTop: 10 }}>
+        Rate the holidays you’ve been on. See the ones your friends would go back to.
+      </Text>
+      <View style={{ gap: 12, marginTop: 28 }}>
+        <Link href="/signup" asChild>
+          <Button title={`Join ${APP_NAME}`} size="lg" />
+        </Link>
+        <Link href="/login" asChild>
+          <Button title="I already have an account" kind="outline" size="lg" />
+        </Link>
+      </View>
+      <Text variant="tiny" style={{ textAlign: 'center', marginTop: 24 }}>
         {APP_NAME} is for ages 13 and over. Public profiles are for over-18s only.
       </Text>
     </AuthFrame>

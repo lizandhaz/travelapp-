@@ -44,10 +44,10 @@ export default function LogIn() {
 
   return (
     <AuthFrame>
-      <Text variant="title" style={{ marginTop: 32, fontSize: 36, lineHeight: 42 }}>
+      <Text variant="title" style={{ marginTop: 36, textAlign: 'center' }}>
         Welcome back
       </Text>
-      <Text variant="bodySoft" style={{ marginTop: 8 }}>
+      <Text variant="bodySoft" style={{ marginTop: 8, textAlign: 'center' }}>
         Enter your email and we&apos;ll send you a code to log in.
       </Text>
       <View style={{ gap: 20, marginTop: 28 }}>
@@ -66,13 +66,13 @@ export default function LogIn() {
           />
         </Field>
         <ErrorNotice error={error} />
-        <Button title={busy ? 'Sending…' : 'Send my code'} onPress={submit} disabled={busy} />
+        <Button title={busy ? 'Sending…' : 'Send my code'} size="lg" onPress={submit} disabled={busy} />
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 24, gap: 6 }}>
         <Text variant="small">New here?</Text>
         <Link href="/signup" asChild>
           <Pressable accessibilityRole="link">
-            <Text variant="link" style={{ fontSize: 14 }}>
+            <Text variant="link">
               Join {APP_NAME}
             </Text>
           </Pressable>

@@ -11,6 +11,8 @@ export type Profile = {
   handle: string;
   isPublic: boolean;
   canGoPublic: boolean;
+  /** Your profile picture in the private photo store, if you've added one. */
+  avatarPath: string | null;
 };
 
 type AuthState = {
@@ -19,6 +21,8 @@ type AuthState = {
   session: Session | null;
   profile: Profile | null;
   signOut: () => Promise<void>;
+  /** Reload your profile (e.g. after changing your picture). */
+  refreshProfile: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthState>({
@@ -26,6 +30,7 @@ const AuthContext = createContext<AuthState>({
   session: null,
   profile: null,
   signOut: async () => {},
+  refreshProfile: async () => {},
 });
 
 export function useAuth() {
@@ -34,7 +39,7 @@ export function useAuth() {
 
 async function loadProfile(id: string, email: string): Promise<Profile | null> {
   const [{ data: profile }, { data: priv }] = await Promise.all([
-    supabase.from('profiles').select('name, handle, is_public').eq('id', id).maybeSingle(),
+    supabase.from('profiles').select('name, handle, is_public, avatar_path').eq('id', id).maybeSingle(),
     supabase.from('profile_private').select('date_of_birth').eq('id', id).maybeSingle(),
   ]);
   if (!profile) return null;
@@ -46,6 +51,7 @@ async function loadProfile(id: string, email: string): Promise<Profile | null> {
     handle: profile.handle,
     isPublic: profile.is_public,
     canGoPublic: age !== null && age >= MIN_AGE_FOR_PUBLIC_PROFILE,
+    avatarPath: profile.avatar_path ?? null,
   };
 }
 
@@ -88,7 +94,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
   }, []);
 
+  const refreshProfile = useCallback(async () => {
+    if (!userId) return;
+    setLoadedProfile(await loadProfile(userId, userEmail));
+  }, [userId, userEmail]);
+
   return (
-    <AuthContext.Provider value={{ loading, session, profile, signOut }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ loading, session, profile, signOut, refreshProfile }}>{children}</AuthContext.Provider>
   );
 }

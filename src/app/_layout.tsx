@@ -57,15 +57,15 @@ function Navigator() {
   if (loading) return null;
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.paper }}>
+    <View style={{ flex: 1, backgroundColor: colors.bg }}>
       {/* On a computer browser, keep the app phone-width and centred. */}
       <View style={{ flex: 1, width: '100%', maxWidth: Platform.OS === 'web' ? 480 : undefined, alignSelf: 'center' }}>
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.paper } }}>
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
           <Stack.Protected guard={signedIn} redirectTo="/welcome">
             <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="destination/[slug]" />
-            <Stack.Screen name="rating/[id]" />
-            <Stack.Screen name="people/[handle]" />
+            <Stack.Screen name="place/[slug]" />
+            <Stack.Screen name="postcards" />
+            <Stack.Screen name="settings" />
             <Stack.Screen name="trip/[id]/index" />
             <Stack.Screen name="trip/[id]/edit" />
           </Stack.Protected>

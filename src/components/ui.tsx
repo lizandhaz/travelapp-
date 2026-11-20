@@ -14,75 +14,107 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { BackIcon } from './Icons';
 import { Text } from './Text';
 
 /** Scrolling screen with safe-area padding at the top and room for the tab bar below. */
-export const Screen = forwardRef<ComponentRef<typeof ScrollView>, ScrollViewProps & { tabBar?: boolean; contentStyle?: ViewStyle }>(function Screen(
-  { children, tabBar = false, contentStyle, ...props },
-  ref,
-) {
-  const insets = useSafeAreaInsets();
-  return (
-    <ScrollView
-      ref={ref}
-      style={{ flex: 1, backgroundColor: colors.paper }}
-      contentContainerStyle={[{ paddingTop: insets.top, paddingBottom: (tabBar ? 110 : 40) + insets.bottom }, contentStyle]}
-      keyboardShouldPersistTaps="handled"
-      {...props}
-    >
-      {children}
-    </ScrollView>
-  );
-});
+export const Screen = forwardRef<ComponentRef<typeof ScrollView>, ScrollViewProps & { tabBar?: boolean; contentStyle?: ViewStyle; noTopInset?: boolean }>(
+  function Screen({ children, tabBar = false, contentStyle, noTopInset = false, ...props }, ref) {
+    const insets = useSafeAreaInsets();
+    return (
+      <ScrollView
+        ref={ref}
+        style={{ flex: 1, backgroundColor: colors.bg }}
+        contentContainerStyle={[{ paddingTop: noTopInset ? 0 : insets.top, paddingBottom: (tabBar ? 120 : 48) + insets.bottom }, contentStyle]}
+        keyboardShouldPersistTaps="handled"
+        {...props}
+      >
+        {children}
+      </ScrollView>
+    );
+  },
+);
 
-/** Title block at the top of a screen, with an optional back link and something on the right. */
-export function Header({
-  title,
-  kicker,
-  back,
-  right,
-}: {
-  title: string;
-  kicker?: string;
-  back?: string;
-  right?: React.ReactNode;
-}) {
+/** Small uppercase label above a big heading. */
+export function PageTitle({ label, children, right }: { label?: string; children: React.ReactNode; right?: React.ReactNode }) {
   return (
-    <View style={{ paddingHorizontal: GUTTER, paddingTop: 20, paddingBottom: 16 }}>
-      {back && <BackLink label={back} />}
-      {kicker && <Text variant="kicker">{kicker}</Text>}
-      <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12 }}>
-        <Text variant="title" style={{ flexShrink: 1 }}>
-          {title}
-        </Text>
-        {right}
+    <View style={{ paddingHorizontal: GUTTER, paddingTop: 20, paddingBottom: 18, flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
+      <View style={{ flex: 1, gap: 6 }}>
+        {label && <Text variant="label">{label}</Text>}
+        {children}
       </View>
+      {right}
     </View>
   );
 }
 
-export function BackLink({ label = 'Back' }: { label?: string }) {
+/** Section heading with an optional "See all" link on the right. */
+export function SectionHeader({ children, action, onAction }: { children: React.ReactNode; action?: string; onAction?: () => void }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', paddingHorizontal: GUTTER, marginBottom: 12 }}>
+      <View style={{ flexShrink: 1 }}>{typeof children === 'string' ? <Text variant="heading" accessibilityRole="header">{children}</Text> : children}</View>
+      {action && (
+        <Pressable onPress={onAction} accessibilityRole="link" hitSlop={10}>
+          <Text variant="link">{action}</Text>
+        </Pressable>
+      )}
+    </View>
+  );
+}
+
+/** Round white icon button (search, postcards, settings, back). */
+export function IconCircle({
+  children,
+  onPress,
+  label,
+  badge = 0,
+  style,
+}: {
+  children: React.ReactNode;
+  onPress: () => void;
+  label: string;
+  badge?: number;
+  style?: ViewStyle;
+}) {
   return (
     <Pressable
+      onPress={onPress}
       accessibilityRole="button"
-      onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
-      hitSlop={12}
-      style={{ marginBottom: 12, alignSelf: 'flex-start' }}
+      accessibilityLabel={badge ? `${label}, ${badge} new` : label}
+      hitSlop={6}
+      style={({ pressed }) => [styles.iconCircle, pressed && { opacity: 0.8 }, style]}
     >
-      <Text variant="link">← {label}</Text>
+      {children}
+      {badge > 0 && (
+        <View style={styles.badge}>
+          <Text style={{ fontFamily: fonts.sansBold, fontSize: 10, color: colors.card }}>{badge}</Text>
+        </View>
+      )}
     </Pressable>
   );
 }
 
+export function BackButton({ onPhoto = false }: { onPhoto?: boolean }) {
+  return (
+    <IconCircle label="Back" onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} style={onPhoto ? { borderWidth: 0 } : undefined}>
+      <BackIcon color={colors.ink} />
+    </IconCircle>
+  );
+}
+
+type ButtonKind = 'dark' | 'accent' | 'outline';
+
 export function Button({
   title,
-  kind = 'primary',
+  kind = 'dark',
+  size = 'md',
   style,
   disabled,
   ...props
-}: PressableProps & { title: string; kind?: 'primary' | 'secondary' | 'dark'; style?: ViewStyle }) {
-  const bg = kind === 'primary' ? colors.postbox : kind === 'dark' ? colors.ink : 'transparent';
-  const fg = kind === 'secondary' ? colors.ink : colors.card;
+}: PressableProps & { title: string; kind?: ButtonKind; size?: 'md' | 'lg' | 'sm'; style?: ViewStyle }) {
+  const bg = kind === 'dark' ? colors.ink : kind === 'accent' ? colors.terracottaDeep : colors.card;
+  const fg = kind === 'outline' ? colors.ink : colors.onDark;
+  const pad = size === 'lg' ? 18 : size === 'sm' ? 9 : 14;
   return (
     <Pressable
       accessibilityRole="button"
@@ -91,37 +123,38 @@ export function Button({
       style={({ pressed }) => [
         {
           backgroundColor: bg,
-          borderRadius: radius.md,
-          paddingVertical: 14,
-          paddingHorizontal: 18,
+          borderRadius: radius.pill,
+          paddingVertical: pad,
+          paddingHorizontal: size === 'sm' ? 16 : 22,
           alignItems: 'center',
-          borderWidth: kind === 'secondary' ? 1 : 0,
-          borderColor: colors.ink,
-          opacity: disabled ? 0.6 : pressed ? 0.85 : 1,
+          borderWidth: kind === 'outline' ? 1 : 0,
+          borderColor: colors.line,
+          opacity: disabled ? 0.6 : pressed ? 0.88 : 1,
         },
         style,
       ]}
       {...props}
     >
-      <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 17, color: fg }}>{title}</Text>
+      <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: size === 'lg' ? 18 : size === 'sm' ? 14 : 16, color: fg }}>{title}</Text>
     </Pressable>
   );
 }
 
-export const Input = forwardRef<ComponentRef<typeof TextInput>, TextInputProps>(function Input({ style, ...props }, ref) {
+export const Input = forwardRef<ComponentRef<typeof TextInput>, TextInputProps & { icon?: React.ReactNode }>(function Input(
+  { style, icon, ...props },
+  ref,
+) {
   return (
-    <TextInput
-      ref={ref}
-      placeholderTextColor="rgba(91,100,120,0.6)"
-      style={[styles.input, style]}
-      {...props}
-    />
+    <View style={[styles.inputWrap, props.multiline && { alignItems: 'flex-start' }]}>
+      {icon}
+      <TextInput ref={ref} placeholderTextColor="rgba(102,112,138,0.75)" style={[styles.input, style]} {...props} />
+    </View>
   );
 });
 
 export function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <View style={{ gap: 6 }}>
+    <View style={{ gap: 8 }}>
       <Text variant="label">{label}</Text>
       {children}
       {hint && <Text variant="tiny">{hint}</Text>}
@@ -149,22 +182,46 @@ export function Chip({
       style={{
         borderRadius: radius.pill,
         borderWidth: 1,
-        borderColor: selected ? colors.ink : colors.sand,
+        borderColor: selected ? colors.ink : colors.line,
         backgroundColor: selected ? colors.ink : colors.card,
-        paddingHorizontal: 12,
-        paddingVertical: 7,
+        paddingHorizontal: 16,
+        paddingVertical: 9,
       }}
     >
-      <Text
-        style={{
-          fontFamily: fonts.sansMedium,
-          fontSize: 14,
-          color: selected ? colors.card : colors.inkSoft,
-        }}
-      >
-        {label}
-      </Text>
+      <Text style={{ fontFamily: fonts.sansMedium, fontSize: 14, color: selected ? colors.onDark : colors.ink }}>{label}</Text>
     </Pressable>
+  );
+}
+
+/** Two or three options in a white pill, the chosen one in navy ("For you / Friends"). */
+export function Segmented<T extends string>({
+  options,
+  value,
+  onChange,
+  label,
+}: {
+  options: readonly (readonly [T, string])[];
+  value: T;
+  onChange: (v: T) => void;
+  label: string;
+}) {
+  return (
+    <View accessibilityRole="tablist" accessibilityLabel={label} style={styles.segmented}>
+      {options.map(([id, text]) => {
+        const on = value === id;
+        return (
+          <Pressable
+            key={id}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: on }}
+            onPress={() => onChange(id)}
+            style={{ flex: 1, borderRadius: radius.pill, paddingVertical: 11, backgroundColor: on ? colors.ink : 'transparent' }}
+          >
+            <Text style={{ textAlign: 'center', fontFamily: fonts.sansSemiBold, fontSize: 15, color: on ? colors.onDark : colors.muted }}>{text}</Text>
+          </Pressable>
+        );
+      })}
+    </View>
   );
 }
 
@@ -179,38 +236,16 @@ export function Notice({ tone = 'error', children }: { tone?: 'error' | 'info'; 
       style={{
         borderRadius: radius.md,
         borderWidth: 1,
-        borderColor: tone === 'error' ? 'rgba(181,57,42,0.4)' : 'rgba(226,164,59,0.5)',
-        backgroundColor: tone === 'error' ? 'rgba(181,57,42,0.08)' : 'rgba(226,164,59,0.15)',
-        padding: 12,
+        borderColor: tone === 'error' ? 'rgba(169,85,44,0.35)' : colors.line,
+        backgroundColor: tone === 'error' ? 'rgba(246,176,150,0.18)' : colors.card,
+        padding: 14,
+        gap: 2,
       }}
     >
       {children}
     </View>
   );
 }
-
-export const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1,
-    borderColor: colors.sand,
-    backgroundColor: colors.card,
-    borderRadius: radius.md,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontFamily: fonts.sans,
-    fontSize: 16,
-    color: colors.ink,
-  },
-  card: {
-    borderWidth: 1,
-    borderColor: colors.sand,
-    backgroundColor: colors.card,
-    borderRadius: radius.md,
-    overflow: 'hidden',
-  },
-  row: { flexDirection: 'row', alignItems: 'center' },
-  gutter: { paddingHorizontal: GUTTER },
-});
 
 /** A problem message, with Supabase's own wording in small print underneath (helps spot setup issues). */
 export function ErrorNotice({ error }: { error: { message: string; detail?: string } | null }) {
@@ -228,3 +263,61 @@ export function ErrorNotice({ error }: { error: { message: string; detail?: stri
     </Notice>
   );
 }
+
+export const styles = StyleSheet.create({
+  inputWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    borderWidth: 1,
+    borderColor: colors.line,
+    backgroundColor: colors.card,
+    borderRadius: radius.md,
+    paddingHorizontal: 16,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 15,
+    fontFamily: fonts.sans,
+    fontSize: 17,
+    color: colors.ink,
+  },
+  card: {
+    borderWidth: 1,
+    borderColor: colors.line,
+    backgroundColor: colors.card,
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+  },
+  segmented: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: colors.line,
+    backgroundColor: colors.card,
+    borderRadius: radius.pill,
+    padding: 4,
+  },
+  iconCircle: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.line,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badge: {
+    position: 'absolute',
+    top: -3,
+    right: -3,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: colors.terracottaDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+  },
+  gutter: { paddingHorizontal: GUTTER },
+});

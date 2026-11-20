@@ -1,25 +1,33 @@
 import { Link, router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { Image } from 'expo-image';
+import { ActivityIndicator, Dimensions, ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Airmail } from '@/components/Airmail';
-import { Postmark } from '@/components/Postmark';
-import { Stamp } from '@/components/Stamp';
+import { MonthPill } from '@/components/MonthPill';
+import { PhotoFill, Shade } from '@/components/Photo';
+import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
-import { BackLink, Button, Card, ErrorNotice, Notice, Screen } from '@/components/ui';
-import { colors, GUTTER } from '@/constants/theme';
-import { formatMonth } from '@/lib/data';
-import { longMonth } from '@/lib/months';
-import { deleteTrip, fetchTrip, SCORE_WORDS, type Trip } from '@/lib/trips';
+import { BackButton, Button, Card, ErrorNotice, Notice, Screen } from '@/components/ui';
+import { colors, fonts, GUTTER } from '@/constants/theme';
+import { MONTH_NAMES_SHORT, monthIndexOf, monthYear, yearOf } from '@/lib/months';
+import { countryOf } from '@/lib/knownPlaces';
+import { photoForPlaceName } from '@/lib/sample';
+import { scoreWord } from '@/lib/score';
+import { companionsLabel, deleteTrip, fetchTrip, type Trip } from '@/lib/trips';
+import { useTripPhoto } from '@/lib/useTripPhoto';
 
-/** One of your real trips, laid out as a postcard, with Edit and Delete. */
+/** One of your trips, with Edit and Delete. */
 export default function TripScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const insets = useSafeAreaInsets();
   const [trip, setTrip] = useState<Trip | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<{ message: string } | null>(null);
+  const cover = trip?.photoPaths[0] ?? null;
+  const photoUrl = useTripPhoto(cover);
 
   // Reload whenever the screen comes back into view (e.g. after editing).
   useFocusEffect(
@@ -38,7 +46,7 @@ export default function TripScreen() {
     setDeleting(true);
     setDeleteError(null);
     try {
-      await deleteTrip(id);
+      await deleteTrip(id, trip?.photoPaths ?? []);
       if (router.canGoBack()) router.back();
       else router.replace('/profile');
     } catch (e) {
@@ -50,14 +58,14 @@ export default function TripScreen() {
   if (!trip) {
     return (
       <Screen>
-        <View style={{ padding: GUTTER, paddingTop: 20, gap: 12 }}>
-          <BackLink />
+        <View style={{ padding: GUTTER, gap: 16 }}>
+          <BackButton />
           {error ? (
             <Text variant="body">{error}</Text>
           ) : trip === null ? (
             <Text variant="body">That trip couldn’t be found. It may have been deleted.</Text>
           ) : (
-            <ActivityIndicator color={colors.postbox} />
+            <ActivityIndicator color={colors.terracotta} />
           )}
         </View>
       </Screen>
@@ -65,31 +73,68 @@ export default function TripScreen() {
   }
 
   const [main, ...more] = trip.stops;
+  const nights = trip.stops.reduce((n, s) => n + (s.nights ?? 0), 0);
+  const h = Math.min(Dimensions.get('window').width, 480) * 0.95;
+  const summary = [
+    more.length ? `${trip.stops.length} places` : null,
+    trip.stay ? '1 stay' : null,
+    trip.meal ? '1 food & drink' : null,
+    trip.tip ? '1 tip' : null,
+  ].filter(Boolean);
 
   return (
-    <Screen>
-      <View style={{ paddingHorizontal: GUTTER, paddingTop: 20, gap: 24 }}>
-        <View>
-          <BackLink />
-          <Card>
-            <Airmail height={8} />
-            <View style={{ padding: 20 }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Postmark place={main.name} date={formatMonth(trip.month)} size={72} />
-                <Stamp score={trip.score} label="Trip" size="lg" tilt={5} />
-              </View>
-              <Text variant="title" style={{ marginTop: 16 }}>
-                {main.name}
+    <Screen noTopInset>
+      <View style={{ height: h }}>
+        <PhotoFill uri={photoUrl} photo={cover ? null : photoForPlaceName(main.name)} label={main.name} />
+        <Shade strength={0.55} />
+        <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER }}>
+          <BackButton onPhoto />
+        </View>
+        <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: 46, flexDirection: 'row', alignItems: 'flex-end' }}>
+          <View style={{ flex: 1, gap: 8 }}>
+            <MonthPill month={monthYear(trip.month).toUpperCase()} onPhoto />
+            <Text style={{ fontFamily: fonts.displayBold, fontSize: 46, lineHeight: 48, color: colors.onDark }}>{main.name}</Text>
+            {!!countryOf(main) && (
+              <Text variant="body" style={{ color: colors.onDark }}>
+                {countryOf(main)}
               </Text>
-              {!!main.country && <Text variant="bodySoft">{main.country}</Text>}
-              <Text variant="quote" style={{ marginTop: 10, fontSize: 20 }}>
-                {SCORE_WORDS[trip.score]}
-              </Text>
-              <Text variant="small" style={{ marginTop: 10 }}>
-                {longMonth(trip.month)} · {trip.visibility === 'private' ? 'Just me' : 'Friends'}
-              </Text>
-            </View>
-          </Card>
+            )}
+          </View>
+          <ScoreStamp score={trip.score} size="lg" label="Your trip" />
+        </View>
+      </View>
+
+      <View style={{ paddingHorizontal: GUTTER, marginTop: -26, gap: 26 }}>
+        <Card style={{ flexDirection: 'row' }}>
+          <Info label="With" big={companionsLabel(trip.companions) ?? '–'} small={trip.companions ? (trip.companions === 'solo' ? 'just you' : 'together') : 'not added'} />
+          <Info label="How long" big={nights ? String(nights) : '–'} small={nights ? (nights === 1 ? 'night' : 'nights') : 'not added'} border />
+          <Info label="When" big={MONTH_NAMES_SHORT[monthIndexOf(trip.month)]} small={String(yearOf(trip.month))} border />
+        </Card>
+
+        {trip.photoPaths.length > 1 && (
+          <View style={{ marginHorizontal: -GUTTER }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10, paddingHorizontal: GUTTER }}>
+              {trip.photoPaths.map((path, i) => (
+                <TripPhoto key={path} path={path} index={i} />
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        <View style={{ gap: 6 }}>
+          {trip.note ? (
+            <Text variant="title" style={{ fontSize: 26, lineHeight: 33 }}>
+              “{trip.note}”
+            </Text>
+          ) : (
+            <Text variant="title" style={{ fontSize: 30, lineHeight: 36 }}>
+              {scoreWord(trip.score)}.
+            </Text>
+          )}
+          <Text variant="small">
+            {[trip.note ? scoreWord(trip.score) : null, ...summary, trip.visibility === 'private' ? 'Just me' : 'Friends'].filter(Boolean).join(' · ')}
+          </Text>
+          <Text variant="tiny">Added {addedOn(trip.createdAt)}</Text>
         </View>
 
         {more.length > 0 && (
@@ -98,17 +143,11 @@ export default function TripScreen() {
               {more.map((s, i) => (
                 <View
                   key={`${s.name}-${i}`}
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    padding: 12,
-                    borderTopWidth: i ? 1 : 0,
-                    borderTopColor: colors.sand,
-                  }}
+                  style={{ flexDirection: 'row', alignItems: 'center', padding: 14, borderTopWidth: i ? 1 : 0, borderTopColor: colors.line }}
                 >
                   <View style={{ flex: 1 }}>
                     <Text variant="strong">{s.name}</Text>
-                    {!!s.country && <Text variant="tiny">{s.country}</Text>}
+                    {!!countryOf(s) && <Text variant="tiny">{countryOf(s)}</Text>}
                   </View>
                   {s.nights ? <Text variant="small">{s.nights === 1 ? '1 night' : `${s.nights} nights`}</Text> : null}
                 </View>
@@ -118,23 +157,24 @@ export default function TripScreen() {
         )}
 
         {trip.stay && (
-          <Card style={{ padding: 16, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-            <View style={{ flex: 1 }}>
-              <Text variant="kicker" style={{ color: colors.inkSoft, fontSize: 11 }}>
-                Where you stayed
-              </Text>
-              <Text variant="heading" style={{ marginTop: 4 }}>
-                {trip.stay.name}
-              </Text>
-              <Text variant="small">{trip.stay.type}</Text>
-            </View>
-            <Stamp score={trip.stay.score} label="Stay" tilt={-3} />
-          </Card>
+          <Section title="Where you stayed">
+            <Card style={{ padding: 16, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+              <View style={{ flex: 1, gap: 4 }}>
+                <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(150,199,184,0.35)', borderRadius: 999, paddingHorizontal: 8, paddingVertical: 2 }}>
+                  <Text variant="label" style={{ fontSize: 9, color: colors.teal }}>
+                    {trip.stay.type}
+                  </Text>
+                </View>
+                <Text variant="subheading">{trip.stay.name}</Text>
+              </View>
+              <ScoreStamp score={trip.stay.score} tone="teal" label="Stay" />
+            </Card>
+          </Section>
         )}
 
         {!!trip.meal && (
           <Section title="Best meal">
-            <Card style={{ padding: 12 }}>
+            <Card style={{ padding: 16 }}>
               <Text variant="body">{trip.meal}</Text>
             </Card>
           </Section>
@@ -146,12 +186,12 @@ export default function TripScreen() {
           </Section>
         )}
 
-        <View style={{ gap: 12, marginTop: 8 }}>
+        <View style={{ gap: 12, marginTop: 4 }}>
           <Link href={`/trip/${trip.id}/edit`} asChild>
-            <Button title="Edit trip" kind="dark" />
+            <Button title="Edit trip" />
           </Link>
           {!confirming ? (
-            <Button title="Delete trip" kind="secondary" onPress={() => setConfirming(true)} />
+            <Button title="Delete trip" kind="outline" onPress={() => setConfirming(true)} />
           ) : (
             <Notice>
               <Text variant="strong">Delete this trip?</Text>
@@ -159,13 +199,8 @@ export default function TripScreen() {
                 This can’t be undone.
               </Text>
               <View style={{ flexDirection: 'row', gap: 12 }}>
-                <Button title="Keep it" kind="secondary" style={{ flex: 1 }} onPress={() => setConfirming(false)} />
-                <Button
-                  title={deleting ? 'Deleting…' : 'Delete'}
-                  style={{ flex: 1 }}
-                  disabled={deleting}
-                  onPress={remove}
-                />
+                <Button title="Keep it" kind="outline" style={{ flex: 1 }} onPress={() => setConfirming(false)} />
+                <Button title={deleting ? 'Deleting…' : 'Delete'} kind="accent" style={{ flex: 1 }} disabled={deleting} onPress={remove} />
               </View>
             </Notice>
           )}
@@ -176,11 +211,43 @@ export default function TripScreen() {
   );
 }
 
+function Info({ label, big, small, border }: { label: string; big: string; small: string; border?: boolean }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', paddingVertical: 14, borderLeftWidth: border ? 1 : 0, borderLeftColor: colors.line }}>
+      <Text variant="label" style={{ fontSize: 10 }}>
+        {label}
+      </Text>
+      <Text variant="heading" style={{ marginTop: 6 }}>
+        {big}
+      </Text>
+      <Text variant="tiny">{small}</Text>
+    </View>
+  );
+}
+
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <View style={{ gap: 8 }}>
-      <Text variant="heading">{title}</Text>
+    <View style={{ gap: 10 }}>
+      <Text variant="heading" accessibilityRole="header">
+        {title}
+      </Text>
       {children}
+    </View>
+  );
+}
+
+/** "20 Nov 2026" */
+function addedOn(iso: string) {
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? '' : `${d.getDate()} ${MONTH_NAMES_SHORT[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+/** One of the trip's photos in the row under the header. */
+function TripPhoto({ path, index }: { path: string; index: number }) {
+  const url = useTripPhoto(path);
+  return (
+    <View style={{ width: 150, height: 190, borderRadius: 16, overflow: 'hidden', backgroundColor: colors.sand }}>
+      {url && <Image source={{ uri: url }} style={{ width: 150, height: 190 }} contentFit="cover" accessibilityLabel={`Photo ${index + 1}`} />}
     </View>
   );
 }

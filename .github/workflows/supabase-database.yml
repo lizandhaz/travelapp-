@@ -1,0 +1,63 @@
+# Updates the Supabase database automatically.
+#
+# When a merge to main includes new files in supabase/migrations/, this sends
+# them to Supabase (in order, each only once). It can also be started by hand:
+# GitHub → Actions → "Update Supabase database" → Run workflow.
+#
+# Needs two private settings in GitHub (Settings → Secrets and variables →
+# Actions): SUPABASE_ACCESS_TOKEN and SUPABASE_DB_PASSWORD. They're never shown
+# in the code or the logs.
+name: Update Supabase database
+
+on:
+  push:
+    branches: [main]
+    paths: ['supabase/migrations/**']
+  workflow_dispatch:
+
+# Never run two updates at the same time.
+concurrency:
+  group: supabase-database
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  update-database:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      # The project's id (not secret: it's part of the app's public Supabase address).
+      SUPABASE_PROJECT_ID: adeichqdunpxuxumxthz
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the private settings are there
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_DB_PASSWORD" ]; then
+            echo "::error::Add SUPABASE_ACCESS_TOKEN and SUPABASE_DB_PASSWORD in GitHub: Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Connect to the Supabase project
+        run: supabase link --project-ref "$SUPABASE_PROJECT_ID"
+
+      # These updates were pasted into the SQL Editor by hand before this job
+      # existed. Record them as done so they're never run again.
+      - name: Record updates already run by hand
+        run: supabase migration repair --status applied 20261110120000 20261118120000 20261120120000
+
+      - name: Show which updates are done
+        run: supabase migration list
+
+      - name: Run any new updates
+        run: supabase db push
+
+      - name: Show the result
+        run: supabase migration list

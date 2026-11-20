@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 
 import { Text } from '@/components/Text';
+import { SearchIcon } from '@/components/Icons';
 import { Card, Input } from '@/components/ui';
 import { colors } from '@/constants/theme';
 import { parsePlace, placeLabel, type Place } from '@/lib/trips';
@@ -62,6 +63,7 @@ export function PlacePicker({
         accessibilityLabel={accessibilityLabel}
         autoCorrect={false}
         returnKeyType="done"
+        icon={<SearchIcon color={colors.muted} />}
       />
       {focused && q.length > 0 && (suggestions.length > 0 || !exact) && (
         <Card>
@@ -88,7 +90,7 @@ export function PlacePicker({
                 borderTopColor: colors.sand,
               }}
             >
-              <Text variant="link" style={{ fontSize: 14 }}>
+              <Text variant="link">
                 Use “{text.trim()}”
               </Text>
               <Text variant="tiny">Tip: add the country after a comma, e.g. “Sintra, Portugal”</Text>

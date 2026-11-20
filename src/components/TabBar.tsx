@@ -4,53 +4,51 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, fonts } from '@/constants/theme';
-import { CompassIcon, EnvelopeIcon, HomeIcon, PersonIcon, PlusIcon } from './Icons';
+import { CompassIcon, HeartIcon, HomeIcon, PersonIcon, PlusIcon } from './Icons';
 import { Text } from './Text';
 
 type Icon = (p: { color: string }) => React.ReactElement;
 
 /**
- * The tab definitions. Expo Router needs <TabTrigger>s written directly inside
- * <TabList> in the layout file, so src/app/(tabs)/_layout.tsx renders them;
- * this file only provides the look.
+ * The tabs: Home, Explore, the "+" (Add a trip), Saved, You.
+ * Expo Router needs <TabTrigger>s written directly inside <TabList> in the
+ * layout file, so src/app/(tabs)/_layout.tsx renders them; this file only
+ * provides the look.
  */
-export const TABS: { name: string; href: '/' | '/explore' | '/add' | '/postcards' | '/profile'; label: string; Icon: Icon }[] = [
+export const TABS: { name: string; href: '/' | '/explore' | '/add' | '/saved' | '/profile'; label: string; Icon: Icon }[] = [
   { name: 'index', href: '/', label: 'Home', Icon: HomeIcon },
   { name: 'explore', href: '/explore', label: 'Explore', Icon: CompassIcon },
-  { name: 'add', href: '/add', label: 'Add', Icon: PlusIcon },
-  { name: 'postcards', href: '/postcards', label: 'Postcards', Icon: EnvelopeIcon },
+  { name: 'add', href: '/add', label: 'Add a trip', Icon: PlusIcon },
+  { name: 'saved', href: '/saved', label: 'Saved', Icon: HeartIcon },
   { name: 'profile', href: '/profile', label: 'You', Icon: PersonIcon },
 ];
 
 export function useTabBarStyle() {
   const insets = useSafeAreaInsets();
-  return [styles.bar, { paddingBottom: Math.max(insets.bottom, 6) }];
+  return [styles.bar, { paddingBottom: Math.max(insets.bottom, 8) }];
 }
 
-export const TabButton = forwardRef<ComponentRef<typeof Pressable>, TabTriggerSlotProps & { label: string; Icon: Icon; primary?: boolean; badge?: number }>(
-  function TabButton({ label, Icon, primary, badge = 0, isFocused, ...props }, ref) {
-    const color = isFocused ? colors.postbox : colors.inkSoft;
+export const TabButton = forwardRef<ComponentRef<typeof Pressable>, TabTriggerSlotProps & { label: string; Icon: Icon; primary?: boolean }>(
+  function TabButton({ label, Icon, primary, isFocused, ...props }, ref) {
+    const color = isFocused ? colors.ink : colors.muted;
     return (
       <Pressable
         ref={ref}
         {...props}
         accessibilityRole="tab"
         accessibilityState={{ selected: !!isFocused }}
-        accessibilityLabel={badge ? `${label}, ${badge} unread` : label}
+        accessibilityLabel={label}
         style={styles.tab}
       >
         {primary ? (
           <View style={styles.primary}>
-            <Icon color={colors.card} />
+            <PlusIcon color={colors.peach} size={24} strokeWidth={2.4} />
           </View>
         ) : (
-          <Icon color={color} />
-        )}
-        <Text style={{ fontFamily: fonts.sansMedium, fontSize: 11, color, marginTop: 2 }}>{label}</Text>
-        {badge > 0 && (
-          <View style={styles.badge}>
-            <Text style={{ fontFamily: fonts.sansBold, fontSize: 10, color: colors.card }}>{badge}</Text>
-          </View>
+          <>
+            <Icon color={color} />
+            <Text style={{ fontFamily: isFocused ? fonts.sansSemiBold : fonts.sansMedium, fontSize: 11, color, marginTop: 3 }}>{label}</Text>
+          </>
         )}
       </Pressable>
     );
@@ -65,34 +63,28 @@ const styles = StyleSheet.create({
     bottom: 0,
     flexDirection: 'row',
     alignItems: 'flex-end',
-    backgroundColor: 'rgba(255,251,244,0.97)',
+    backgroundColor: 'rgba(251,249,245,0.97)',
     borderTopWidth: 1,
-    borderTopColor: colors.sand,
+    borderTopColor: colors.line,
     paddingHorizontal: 8,
-    paddingTop: 6,
+    paddingTop: 8,
   },
   tab: { flex: 1, alignItems: 'center', paddingVertical: 2 },
   primary: {
-    marginTop: -24,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: colors.postbox,
+    marginTop: -22,
+    marginBottom: 4,
+    width: 56,
+    height: 56,
+    borderRadius: 18,
+    backgroundColor: colors.ink,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 4,
-    borderColor: colors.paper,
-  },
-  badge: {
-    position: 'absolute',
-    top: -2,
-    right: '28%',
-    minWidth: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: colors.postbox,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 3,
+    borderColor: colors.bg,
+    shadowColor: colors.ink,
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
   },
 });

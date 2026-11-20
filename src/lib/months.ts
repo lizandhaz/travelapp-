@@ -32,3 +32,8 @@ export function shortMonth(ym: string, now: Date = new Date()) {
 }
 
 export const MONTH_NAMES_SHORT = SHORT;
+
+/** "Jul 2025" */
+export function monthYear(ym: string) {
+  return `${SHORT[monthIndexOf(ym)]} ${yearOf(ym)}`;
+}

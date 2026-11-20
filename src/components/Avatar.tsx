@@ -1,26 +1,28 @@
+import { Image } from 'expo-image';
 import { View } from 'react-native';
 
 import { colors, fonts } from '@/constants/theme';
-import type { Person } from '@/lib/data';
+import { photos, type PhotoName } from '@/lib/photos';
 import { Text } from './Text';
 
-const SIZE = { sm: 32, md: 40, lg: 80 };
-
-export function Avatar({ person, size = 'md' }: { person: Person; size?: keyof typeof SIZE }) {
-  const d = SIZE[size];
+/** A round face photo, or initials on navy when there's no photo. */
+export function Avatar({ face, uri, name, size = 40 }: { face?: PhotoName | null; uri?: string | null; name: string; size?: number }) {
+  const initials = name
+    .split(/\s+/)
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
   return (
     <View
       accessibilityElementsHidden
-      style={{
-        width: d,
-        height: d,
-        borderRadius: d / 2,
-        backgroundColor: colors[person.colour],
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+      style={{ width: size, height: size, borderRadius: size / 2, overflow: 'hidden', backgroundColor: colors.ink, alignItems: 'center', justifyContent: 'center' }}
     >
-      <Text style={{ fontFamily: fonts.display, fontSize: d * 0.36, color: colors.card }}>{person.initials}</Text>
+      {uri || face ? (
+        <Image source={uri ? { uri } : photos[face!]} style={{ width: size, height: size }} contentFit="cover" />
+      ) : (
+        <Text style={{ fontFamily: fonts.display, fontSize: size * 0.38, color: colors.onDark }}>{initials}</Text>
+      )}
     </View>
   );
 }

@@ -86,7 +86,8 @@ src/
     (tabs)/profile.tsx    You: profile picture (tap to change), stats, your real trips as photo stamps (highest score first)
     postcards.tsx         Postcards (sample), opened from Home's paper-plane button
     settings.tsx          Settings (public-profile note, sign out), opened from You
-    place/[slug].tsx      A sample place: photo, score, what friends said, things they loved
+    place/[slug].tsx      A sample place: photo, score, best time, what friends said, where to stay/eat, things to do,
+                          culture and top tips, "I've been" (opens Add a trip with the place filled in)
     trip/[id]/index.tsx   One of your trips, with Edit and Delete (confirm first)
     trip/[id]/edit.tsx    Edit a trip (same TripForm, prefilled)
     +not-found.tsx        "Lost in the post"
@@ -102,6 +103,7 @@ src/
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
     cards.tsx             Row, TrendCard, PlaceCard, TasteCard, PickCard, FeedCard, BoardTile, PhotoBadge
+    place.tsx             Place page pieces: PlaceFacts, BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
@@ -115,6 +117,7 @@ src/
   lib/
     sample.ts             Sample content from the prototype: hero, rows, places, feed, board, boards, postcards
     photos.ts             Sample photo names → files
+    placeDetails.ts       Sample place details from the prototype (stays, food, things to do, best time, tips)
     score.ts              formatScore, clampScore, scoreWord
     trips.ts              Trip types, fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces, photo upload + signed URLs
     useTripPhoto.ts       Hook: a signed URL for one of your photos (trip photos and profile picture)

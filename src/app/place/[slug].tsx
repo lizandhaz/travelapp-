@@ -1,27 +1,33 @@
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Dimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/Avatar';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
+import { BestTimeChart, DoRow, EatRow, MoreAbout, PlaceFacts, SaidList, StayRow } from '@/components/place';
 import { PhotoBadge, Row } from '@/components/cards';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
-import { BackButton, Card, Screen, SectionHeader } from '@/components/ui';
+import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
 import { colors, fonts, GUTTER } from '@/constants/theme';
+import { countryOf } from '@/lib/knownPlaces';
+import { placeDetails } from '@/lib/placeDetails';
 import { scoreWord } from '@/lib/score';
 import { aboutPlace, getPlace } from '@/lib/sample';
 import NotFound from '../+not-found';
 
-/** A place page (sample content for now; real place pages come in plan Step E). */
+/** A place page (sample content from the prototype for now; real place pages come in plan Step E). */
 export default function PlaceScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const insets = useSafeAreaInsets();
   const place = getPlace(slug);
   if (!place) return <NotFound />;
+  const detail = placeDetails[slug] ?? null;
   const { said, ideas } = aboutPlace(slug);
-  const h = Math.min(Dimensions.get('window').width, 480) * 1.05;
+  const moreSaid = (detail?.said ?? []).filter((s) => !said.some((f) => f.who === s.who));
+  const h = Math.min(Dimensions.get('window').width, 480) * 1.0;
+  const country = countryOf({ name: place.name, country: place.region.split(', ').pop() ?? '' });
 
   return (
     <Screen noTopInset>
@@ -31,27 +37,40 @@ export default function PlaceScreen() {
         <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER }}>
           <BackButton onPhoto />
         </View>
-        <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: 22, flexDirection: 'row', alignItems: 'flex-end' }}>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: fonts.displayBold, fontSize: 46, lineHeight: 48, color: colors.onDark }}>{place.name}</Text>
-            <Text variant="body" style={{ color: colors.onDark }}>
-              {place.region}
+        <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: detail ? 48 : 22 }}>
+          {!!detail?.kicker && (
+            <Text variant="label" style={{ color: colors.onDark, opacity: 0.95 }}>
+              {detail.kicker}
             </Text>
-          </View>
-          {place.score != null && <ScoreStamp score={place.score} size="lg" label="Your score" />}
+          )}
+          <Text style={{ fontFamily: fonts.displayBold, fontSize: 46, lineHeight: 50, color: colors.onDark }}>{place.name}</Text>
+          <Text variant="body" style={{ color: colors.onDark }}>
+            {place.region}
+          </Text>
         </View>
       </View>
 
-      <View style={{ paddingHorizontal: GUTTER, paddingTop: 20, gap: 6 }}>
-        {place.score != null && (
-          <Text variant="quote" style={{ fontFamily: fonts.displayItalic }}>
-            {scoreWord(place.score)}
-          </Text>
-        )}
-        <Text variant="tiny">Your score blends ratings from your friends and people with similar taste. Preview: sample content.</Text>
-      </View>
+      {place.score != null && (
+        <Card style={{ marginHorizontal: GUTTER, marginTop: -30, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+          <ScoreStamp score={place.score} size="md" label="Your score" />
+          <View style={{ flex: 1 }}>
+            <Text variant="subheading">
+              Your score · <Text variant="subheading" style={{ fontFamily: fonts.displayItalic }}>{scoreWord(place.score)}</Text>
+            </Text>
+            <Text variant="small">{detail?.scoreNote ?? 'From your friends and people with your taste.'}</Text>
+          </View>
+        </Card>
+      )}
 
-      {said.length > 0 && (
+      {detail && (
+        <View style={{ marginTop: 12 }}>
+          <PlaceFacts detail={detail} />
+        </View>
+      )}
+
+      {detail && <BestTimeChart detail={detail} />}
+
+      {(said.length > 0 || moreSaid.length > 0) && (
         <View style={{ marginTop: 28 }}>
           <SectionHeader>What friends said</SectionHeader>
           <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
@@ -75,10 +94,19 @@ export default function PlaceScreen() {
               </Card>
             ))}
           </View>
+          {moreSaid.length > 0 && (
+            <View style={{ marginTop: said.length ? 16 : 0 }}>
+              <SaidList items={moreSaid} />
+            </View>
+          )}
         </View>
       )}
 
-      {ideas.length > 0 && (
+      {!!detail?.stays.length && <StayRow stays={detail.stays} />}
+      {!!detail?.eats.length && <EatRow eats={detail.eats} />}
+      {!!detail?.dos.length && <DoRow dos={detail.dos} />}
+
+      {!detail && ideas.length > 0 && (
         <View style={{ marginTop: 28 }}>
           <SectionHeader>Things friends loved here</SectionHeader>
           <Row gap={14}>
@@ -96,6 +124,22 @@ export default function PlaceScreen() {
           </Row>
         </View>
       )}
+
+      {detail && <MoreAbout name={place.name} detail={detail} />}
+
+      <View style={{ paddingHorizontal: GUTTER, marginTop: 28, flexDirection: 'row', gap: 12 }}>
+        <Button title="Save to a list" kind="outline" style={{ flex: 1 }} onPress={() => router.push('/saved')} />
+        <Button
+          title="I’ve been"
+          kind="accent"
+          style={{ flex: 1 }}
+          onPress={() => router.push({ pathname: '/add', params: { place: place.name, country } })}
+        />
+      </View>
+
+      <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 18 }}>
+        Sample content for now.{detail?.credits ? ` ${detail.credits}` : ''}
+      </Text>
     </Screen>
   );
 }

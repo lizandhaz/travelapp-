@@ -9,10 +9,12 @@ import { monthYear } from '@/lib/months';
 import { photoForPlaceName } from '@/lib/sample';
 import { formatScore } from '@/lib/score';
 import type { Trip } from '@/lib/trips';
+import { useTripPhoto } from '@/lib/useTripPhoto';
 
 /** One of your trips as a photo stamp (You page). Tap to open it. */
 export function TripCard({ trip, width }: { trip: Trip; width: number }) {
   const main = trip.stops[0];
+  const photoUrl = useTripPhoto(trip.photoPath);
   const extras = [
     trip.stops.length > 1 ? `${trip.stops.length} places` : null,
     trip.stay ? '1 stay' : null,
@@ -22,11 +24,11 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
   return (
     <Link href={`/trip/${trip.id}`} asChild>
       <Pressable accessibilityRole="link" accessibilityLabel={`${main?.name}, ${monthYear(trip.month)}, ${formatScore(trip.score)} out of 10`} style={{ width }}>
-        <PhotoStamp photo={main ? photoForPlaceName(main.name) : null} width={width} height={width * 1.2}>
+        <PhotoStamp uri={photoUrl} photo={trip.photoPath ? null : main ? photoForPlaceName(main.name) : null} width={width} height={width * 1.2}>
           <View style={{ position: 'absolute', top: 18, left: 16 }}>
             <MonthPill month={monthYear(trip.month).toUpperCase()} onPhoto />
           </View>
-          <View style={{ position: 'absolute', left: 16, right: 16, bottom: 16, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+          <View style={{ position: 'absolute', left: 16, right: 16, bottom: 16, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
             <Text numberOfLines={2} style={{ flex: 1, fontFamily: fonts.display, fontSize: 19, lineHeight: 22, color: colors.onDark }}>
               {main?.name}
             </Text>

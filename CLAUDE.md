@@ -104,7 +104,7 @@ src/
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
-    trip/TripForm.tsx     Add/edit a trip: place, month, slider score, photo preview, who can see it, "Add more detail"
+    trip/TripForm.tsx     Add/edit a trip: place, month, slider score, who with, photo, note, who can see it, "Add more detail"
     trip/PlacePicker.tsx  Search or type a place ("Sintra, Portugal" → name + country)
     trip/MonthPicker.tsx  This month + last 6 months as chips ("Nov 2026"), or "Earlier…"
     trip/ScorePicker.tsx  "Slide to rate out of 10": 1.0–10.0 in 0.1 steps; accessibilityRole "adjustable"
@@ -115,7 +115,8 @@ src/
     sample.ts             Sample content from the prototype: hero, rows, places, feed, board, boards, postcards
     photos.ts             Sample photo names → files
     score.ts              formatScore, clampScore, scoreWord
-    trips.ts              Trip types, fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces
+    trips.ts              Trip types, fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces, photo upload + signed URLs
+    useTripPhoto.ts       Hook: a signed URL for one of your trip photos
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order
@@ -134,7 +135,10 @@ docs/plan.md              Step-by-step plan
   - Save new and edited trips **only through `save_trip(p_trip jsonb)`**: one transaction, runs with the caller's permissions, and replaces the details on edit. The app calls it with `supabase.rpc('save_trip', { p_trip })`.
   - Places are added via the `destination_id_for()` helper (it tidies spaces and treats case as the same place). People only see the starting list plus places they've used, so private names like "Grandma's house" never leak.
   - A trigger refuses future months.
-  - **Decimal scores** (`20261120120000_decimal_scores.sql`): `trips.score` and `stays.score` are `numeric(3,1)`, 1.0–10.0. PostgREST may return them as strings, so the app wraps them in `Number()`.
+  - **Trip details** (`20261120120000_trip_details.sql`):
+    - `trips.score` and `stays.score` are `numeric(3,1)`, 1.0–10.0. PostgREST may return them as strings, so the app wraps them in `Number()`.
+    - `trips.companions` ("who you went with": `solo`/`partner`/`friends`/`family`), `trips.note` (up to 500 characters) and `trips.photo_path`. `created_at` is shown as "Added …".
+  - **Photos:** a private Storage bucket `trip-photos` (JPEG only, 5 MB max). Each person's photos live at `<user id>/<name>.jpg`, and storage policies allow only their own folder; `trips.photo_path` must also start with the owner's id. `uploadTripPhoto()` shrinks the photo to 1600px and re-encodes it with expo-image-manipulator, which drops EXIF/GPS (product rule 2), before uploading. Photos are shown through 1-hour signed URLs (`tripPhotoUrl`, `useTripPhoto`). Replacing, removing or deleting a trip deletes the old file.
 - **Changing the database:** add a new numbered file in `supabase/migrations/` (never edit one that's already been run). The owner runs it in Supabase → SQL Editor. Before handing it over, test it on a local Postgres with stand-ins for `auth.users`, `auth.uid()` and the `anon`/`authenticated` roles, covering every rule, including the "should fail" cases.
 - **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 

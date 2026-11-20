@@ -9,7 +9,21 @@ import { Text } from '@/components/Text';
 import { BackButton, Button, Card, Chip, ErrorNotice, Input, Notice, PageTitle, Screen, Segmented } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { currentMonth } from '@/lib/months';
-import { fetchPlaces, saveTrip, STAY_KINDS, type Place, type StayKind, type Trip, type TripInput, type Visibility } from '@/lib/trips';
+import {
+  COMPANIONS,
+  deleteTripPhoto,
+  fetchPlaces,
+  saveTrip,
+  STAY_KINDS,
+  uploadTripPhoto,
+  type Companions,
+  type Place,
+  type StayKind,
+  type Trip,
+  type TripInput,
+  type Visibility,
+} from '@/lib/trips';
+import { useTripPhoto } from '@/lib/useTripPhoto';
 import { MonthPicker } from './MonthPicker';
 import { PlacePicker } from './PlacePicker';
 import { ScorePicker } from './ScorePicker';
@@ -27,7 +41,13 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
   const [month, setMonth] = useState<string | null>(initial?.month ?? null);
   const [score, setScore] = useState<number | null>(initial?.score ?? null);
   const [visibility, setVisibility] = useState<Visibility>(initial?.visibility ?? 'friends');
-  const [photo, setPhoto] = useState<string | null>(null);
+  const [companions, setCompanions] = useState<Companions | null>(initial?.companions ?? null);
+  const [note, setNote] = useState(initial?.note ?? '');
+  // Photo: a newly picked one (not uploaded until you save), or the trip's existing one.
+  const [newPhoto, setNewPhoto] = useState<{ uri: string; width?: number } | null>(null);
+  const [keepPath, setKeepPath] = useState<string | null>(initial?.photoPath ?? null);
+  const existingUrl = useTripPhoto(keepPath);
+  const photo = newPhoto?.uri ?? (keepPath ? existingUrl : null);
   const [home, setHome] = useState(false);
 
   // Keys for extra-stop rows: existing stops use 1, 2, 3…; new rows count up from 100.
@@ -45,7 +65,7 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
   // After the first Save, the "Nearly there" list updates as you fix things.
   const [tried, setTried] = useState(false);
   const [saveError, setSaveError] = useState<{ message: string } | null>(null);
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving] = useState<false | 'photo' | 'trip'>(false);
   const scroll = useRef<ComponentRef<typeof ScrollView>>(null);
 
   useEffect(() => {
@@ -76,6 +96,7 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
       if (!stayType) p.push('What kind of place did you stay in?');
       if (stayScore == null) p.push('Give where you stayed a score out of 10.');
     }
+    if (note.trim().length > 500) p.push('Note: 500 characters at most.');
     if (meal.trim().length > 120) p.push('Best meal: 120 characters at most.');
     if (tip.trim().length > 280) p.push('Top tip: 280 characters at most.');
     if (p.length) return { problems: p };
@@ -94,6 +115,9 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
         stay: hasStay ? { name: stayName.trim(), type: stayType!, score: stayScore! } : null,
         meal: meal.trim() || null,
         tip: tip.trim() || null,
+        companions,
+        note: note.trim() || null,
+        photoPath: keepPath, // replaced by the new photo's path in save()
       },
     };
   }
@@ -105,11 +129,20 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
     setTried(true);
     const { input } = check();
     if (!input) return;
-    setSaving(true);
+    let uploaded: string | null = null;
     try {
+      if (newPhoto) {
+        setSaving('photo');
+        uploaded = await uploadTripPhoto(newPhoto.uri, newPhoto.width);
+        input.photoPath = uploaded;
+      }
+      setSaving('trip');
       const id = await saveTrip(input);
+      // Tidy up a photo the trip no longer uses.
+      if (initial?.photoPath && initial.photoPath !== input.photoPath) await deleteTripPhoto(initial.photoPath);
       onSaved(id);
     } catch (e) {
+      if (uploaded) await deleteTripPhoto(uploaded);
       setSaveError({ message: e instanceof Error ? e.message : 'Something went wrong. Please try again.' });
     } finally {
       setSaving(false);
@@ -123,10 +156,12 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
       exif: false, // never read location data from photos
       quality: 0.8,
     });
-    if (!result.canceled) setPhoto(result.assets[0]?.uri ?? null);
+    const asset = !result.canceled ? result.assets[0] : null;
+    if (asset) setNewPhoto({ uri: asset.uri, width: asset.width });
   }
 
-  const saveButton = <Button title={saving ? 'Saving…' : initial ? 'Save changes' : 'Save trip'} kind="accent" size="lg" onPress={save} disabled={saving} />;
+  const saveTitle = saving === 'photo' ? 'Saving photo…' : saving ? 'Saving…' : initial ? 'Save changes' : 'Save trip';
+  const saveButton = <Button title={saveTitle} kind="accent" size="lg" onPress={save} disabled={!!saving} />;
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -151,12 +186,32 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
             <ScorePicker value={score} onChange={setScore} label="How was it" />
           </Question>
 
+          <Question title="Who did you go with?">
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              {COMPANIONS.map(([id, text]) => (
+                <Chip key={id} label={text} selected={companions === id} onPress={() => setCompanions(companions === id ? null : id)} />
+              ))}
+            </View>
+          </Question>
+
           <Question title="Add a photo" note="optional">
             <View style={{ flexDirection: 'row', gap: 12 }}>
               {photo && (
-                <Pressable onPress={() => setPhoto(null)} accessibilityRole="button" accessibilityLabel="Remove photo">
-                  <Image source={{ uri: photo }} style={{ width: 110, height: 110, borderRadius: radius.md }} contentFit="cover" />
-                </Pressable>
+                <View>
+                  <Image source={{ uri: photo }} style={{ width: 110, height: 110, borderRadius: radius.md }} contentFit="cover" accessibilityLabel="Your photo" />
+                  <Pressable
+                    onPress={() => {
+                      setNewPhoto(null);
+                      setKeepPath(null);
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel="Remove photo"
+                    hitSlop={8}
+                    style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(19,38,74,0.75)', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <Text style={{ color: colors.onDark, fontFamily: fonts.sansBold, fontSize: 14, lineHeight: 16 }}>×</Text>
+                  </Pressable>
+                </View>
               )}
               <Pressable
                 onPress={pickPhoto}
@@ -180,7 +235,19 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
                 </Text>
               </Pressable>
             </View>
-            <Text variant="tiny">Preview only for now: photos aren’t saved with the trip yet.</Text>
+            <Text variant="tiny">Only you can see your photos. Location data is removed before saving.</Text>
+          </Question>
+
+          <Question title="Add a note" note="optional">
+            <Input
+              value={note}
+              onChangeText={setNote}
+              placeholder="A line about it, e.g. “Long lunches by the sea”"
+              accessibilityLabel="Add a note"
+              multiline
+              maxLength={500}
+              style={{ minHeight: 70, textAlignVertical: 'top' }}
+            />
           </Question>
 
           <View style={{ gap: 10 }}>

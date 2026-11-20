@@ -137,9 +137,11 @@ How it's set up (done in Nov 2026):
 - **Scores have one decimal place (8.8)**, set with a slider.
 - **Sample content and photos come from the prototype** (Unsplash, credited at the bottom of Home). Only your own trips are real so far.
 
+**Also in this step (Nov 2026):** each trip can now say **who you went with** (Solo, Partner, Friends, Family), have a **note**, and a **photo that's saved for real**. Photos are private to you, shrunk, and have location data removed before saving.
+
 **You do**
-1. **Run the decimal-scores update in Supabase** (1 minute): open `supabase/migrations/20261120120000_decimal_scores.sql` on GitHub, tap **Copy raw file**, then in Supabase go to **SQL Editor** → **New query** → paste → **Run**. You should see "Success. No rows returned". Run it once. Your existing trips keep their scores (8 becomes 8.0).
-2. Try it on your phone (close and reopen Expo Go).
+1. **Run the trip-details update in Supabase** (1 minute): open `supabase/migrations/20261120120000_trip_details.sql` (Claude sends you the file or the link), copy all of it, then in Supabase go to **SQL Editor** → **New query** → paste → **Run**. You should see "Success. No rows returned". Run it once. It switches scores to decimals (8 becomes 8.0), adds who-with, note and photo, and creates the private photo store. There's nothing else to click.
+2. Try it on your phone (fully close and reopen Expo Go).
 
 **Cost:** free.
 

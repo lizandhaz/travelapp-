@@ -12,7 +12,8 @@ import { colors, fonts, GUTTER } from '@/constants/theme';
 import { MONTH_NAMES_SHORT, monthIndexOf, monthYear, yearOf } from '@/lib/months';
 import { photoForPlaceName } from '@/lib/sample';
 import { scoreWord } from '@/lib/score';
-import { deleteTrip, fetchTrip, type Trip } from '@/lib/trips';
+import { companionsLabel, deleteTrip, fetchTrip, type Trip } from '@/lib/trips';
+import { useTripPhoto } from '@/lib/useTripPhoto';
 
 /** One of your trips, with Edit and Delete. */
 export default function TripScreen() {
@@ -23,6 +24,7 @@ export default function TripScreen() {
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<{ message: string } | null>(null);
+  const photoUrl = useTripPhoto(trip?.photoPath);
 
   // Reload whenever the screen comes back into view (e.g. after editing).
   useFocusEffect(
@@ -41,7 +43,7 @@ export default function TripScreen() {
     setDeleting(true);
     setDeleteError(null);
     try {
-      await deleteTrip(id);
+      await deleteTrip(id, trip?.photoPath);
       if (router.canGoBack()) router.back();
       else router.replace('/profile');
     } catch (e) {
@@ -80,7 +82,7 @@ export default function TripScreen() {
   return (
     <Screen noTopInset>
       <View style={{ height: h }}>
-        <PhotoFill photo={photoForPlaceName(main.name)} label={main.name} />
+        <PhotoFill uri={photoUrl} photo={trip.photoPath ? null : photoForPlaceName(main.name)} label={main.name} />
         <Shade strength={0.55} />
         <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER }}>
           <BackButton onPhoto />
@@ -101,16 +103,25 @@ export default function TripScreen() {
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: -26, gap: 26 }}>
         <Card style={{ flexDirection: 'row' }}>
-          <Info label="How long" big={nights ? String(nights) : '–'} small={nights ? (nights === 1 ? 'night' : 'nights') : 'not added'} />
+          <Info label="With" big={companionsLabel(trip.companions) ?? '–'} small={trip.companions ? (trip.companions === 'solo' ? 'just you' : 'together') : 'not added'} />
+          <Info label="How long" big={nights ? String(nights) : '–'} small={nights ? (nights === 1 ? 'night' : 'nights') : 'not added'} border />
           <Info label="When" big={MONTH_NAMES_SHORT[monthIndexOf(trip.month)]} small={String(yearOf(trip.month))} border />
-          <Info label="Who sees it" big={trip.visibility === 'private' ? 'Me' : 'Friends'} small={trip.visibility === 'private' ? 'just me' : 'once added'} border />
         </Card>
 
         <View style={{ gap: 6 }}>
-          <Text variant="title" style={{ fontSize: 30, lineHeight: 36 }}>
-            {scoreWord(trip.score)}.
+          {trip.note ? (
+            <Text variant="title" style={{ fontSize: 26, lineHeight: 33 }}>
+              “{trip.note}”
+            </Text>
+          ) : (
+            <Text variant="title" style={{ fontSize: 30, lineHeight: 36 }}>
+              {scoreWord(trip.score)}.
+            </Text>
+          )}
+          <Text variant="small">
+            {[trip.note ? scoreWord(trip.score) : null, ...summary, trip.visibility === 'private' ? 'Just me' : 'Friends'].filter(Boolean).join(' · ')}
           </Text>
-          {summary.length > 0 && <Text variant="small">{summary.join(' · ')}</Text>}
+          <Text variant="tiny">Added {addedOn(trip.createdAt)}</Text>
         </View>
 
         {more.length > 0 && (
@@ -210,4 +221,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       {children}
     </View>
   );
+}
+
+/** "20 Nov 2026" */
+function addedOn(iso: string) {
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? '' : `${d.getDate()} ${MONTH_NAMES_SHORT[d.getMonth()]} ${d.getFullYear()}`;
 }

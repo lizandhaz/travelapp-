@@ -7,6 +7,7 @@ export const colors = {
   card: '#ffffff', // cards, inputs, stamp frames
   line: '#ece5db', // borders, dividers
   sand: '#e9dec8', // quiet fills, placeholders
+  mapLand: '#d5c2a5', // dotted land on the travel map
   ink: '#13264a', // main text, navy buttons, selected chips/tabs
   muted: '#66708a', // secondary text, labels
   peach: '#f6b096', // score stamps, the "+" on the Add button

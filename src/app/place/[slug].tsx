@@ -128,7 +128,7 @@ export default function PlaceScreen() {
       {detail && <MoreAbout name={place.name} detail={detail} />}
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 28, flexDirection: 'row', gap: 12 }}>
-        <Button title="Save to a list" kind="outline" style={{ flex: 1 }} onPress={() => router.push('/saved')} />
+        <Button title="Save to a list" kind="outline" style={{ flex: 1 }} onPress={() => router.push({ pathname: '/save', params: { place: place.name, country, slug } })} />
         <Button
           title="I’ve been"
           kind="accent"

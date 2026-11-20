@@ -166,6 +166,15 @@ From now on, **merging a pull request also updates the database**. A GitHub job 
 
 ---
 
+## Lists and the travel map ✅
+
+**What it means:** **Saved** is real. Everyone has a **Want to go** list, and you can make your own lists ("Summer 2027"), rename them, choose who can see them (Friends / Just me), add places (from any place page with **Save to a list**, or by typing a place on the list), remove places and delete lists. **Share** sends a list as a message through the phone's share sheet (Messages, WhatsApp, email). **You** has **Your travel map**: places from your trips (terracotta dots) and your Want to go list (teal stars), with All / Been / Want to go.
+
+- Database: `supabase/migrations/20261122120000_boards.sql` (applied automatically when merged). Lists are owner-only for now; friends get to see "Friends" lists in Step C.
+- Map positions are approximate (a dot on a small world map), from a built-in list of popular places, or the middle of the country otherwise. Never a live location.
+
+---
+
 ## Next steps (from the build plan, one pull request each)
 
 Each step's ready-made prompt is in your build plan doc ("XYZX: build plan from the preview").
@@ -173,16 +182,16 @@ Each step's ready-made prompt is in your build plan doc ("XYZX: build plan from 
 | Step | What you'll be able to do | Aim to finish |
 |---|---|---|
 | C | Add friends, and see their trips on Home → Friends | Wed 2 Dec |
-| D | Save places to boards on Saved, plus a "Want to go" list | Fri 4 Dec |
+| D ✅ | Save places to lists on Saved, plus a "Want to go" list (done early; friends see "Friends" lists once Step C is in) | Fri 4 Dec |
 | E | Real place, stay and restaurant pages, and Explore from the database | Sun 6 Dec |
 | F | For you and trending from real ratings | Tue 8 Dec |
-| G | Add photos to trips (location data removed first) | Wed 9 Dec |
+| G ✅ | Add photos to trips (location data removed first) (done early) | Wed 9 Dec |
 | H | Postcards inside the app | Thu 10 Dec |
 | I | First-time setup for new people | Fri 11 Dec |
 | J | Block, report, download and delete account; privacy policy | Sat 12 Dec |
 | K | Beta on TestFlight (💷 Apple Developer, about £79 a year: Claude asks first) | Sun 13 Dec |
 
-**After the beta:** public profiles (18+), booking links, the travel map and yearly recap, "Found in your photos", push notifications, First Class payments, and the App Store and Google Play launch. Trip planning stays out unless you decide to bring it back.
+**After the beta:** public profiles (18+), booking links, the yearly recap, "Found in your photos", push notifications, First Class payments, and the App Store and Google Play launch. Trip planning stays out unless you decide to bring it back.
 
 ### Before inviting real users
 - **Young users (13–17):** private, friends-only profiles; hidden from search and suggestions for non-friends; safe default settings; easy report and block. Get a quick legal check against the UK Children's Code and Online Safety Act duties.

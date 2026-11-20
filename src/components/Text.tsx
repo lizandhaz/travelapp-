@@ -1,4 +1,4 @@
-import { Text as RNText, type TextProps, type TextStyle } from 'react-native';
+import { Text as RNText, StyleSheet, type TextProps, type TextStyle } from 'react-native';
 
 import { colors, fonts } from '@/constants/theme';
 
@@ -21,7 +21,16 @@ const variants = {
 
 export type TextVariant = keyof typeof variants;
 
-/** All text in the app goes through this, so fonts and colours stay on-brand. */
+/**
+ * All text in the app goes through this, so fonts and colours stay on-brand.
+ * If a style makes the text bigger without saying how tall each line is, the
+ * line height grows with it, so big numbers and headings (like a 9.0 in a
+ * stamp) never get their tops cut off on iPhone.
+ */
 export function Text({ variant = 'body', style, ...props }: TextProps & { variant?: TextVariant }) {
-  return <RNText {...props} style={[variants[variant], style]} />;
+  const own = StyleSheet.flatten(style) ?? {};
+  const base = variants[variant] as TextStyle;
+  const size = own.fontSize ?? base.fontSize;
+  const lineHeight = own.lineHeight ?? (own.fontSize ? Math.ceil(own.fontSize * 1.28) : base.lineHeight);
+  return <RNText {...props} style={[base, own, size && lineHeight ? { lineHeight } : null]} />;
 }

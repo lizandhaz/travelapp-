@@ -14,7 +14,8 @@ import { useTripPhoto } from '@/lib/useTripPhoto';
 /** One of your trips as a photo stamp (You page). Tap to open it. */
 export function TripCard({ trip, width }: { trip: Trip; width: number }) {
   const main = trip.stops[0];
-  const photoUrl = useTripPhoto(trip.photoPath);
+  const cover = trip.photoPaths[0] ?? null;
+  const photoUrl = useTripPhoto(cover);
   const extras = [
     trip.stops.length > 1 ? `${trip.stops.length} places` : null,
     trip.stay ? '1 stay' : null,
@@ -24,7 +25,7 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
   return (
     <Link href={`/trip/${trip.id}`} asChild>
       <Pressable accessibilityRole="link" accessibilityLabel={`${main?.name}, ${monthYear(trip.month)}, ${formatScore(trip.score)} out of 10`} style={{ width }}>
-        <PhotoStamp uri={photoUrl} photo={trip.photoPath ? null : main ? photoForPlaceName(main.name) : null} width={width} height={width * 1.2}>
+        <PhotoStamp uri={photoUrl} photo={cover ? null : main ? photoForPlaceName(main.name) : null} width={width} height={width * 1.2}>
           <View style={{ position: 'absolute', top: 18, left: 16 }}>
             <MonthPill month={monthYear(trip.month).toUpperCase()} onPhoto />
           </View>

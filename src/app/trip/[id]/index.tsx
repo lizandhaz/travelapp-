@@ -1,6 +1,7 @@
 import { Link, router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Dimensions, View } from 'react-native';
+import { Image } from 'expo-image';
+import { ActivityIndicator, Dimensions, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { MonthPill } from '@/components/MonthPill';
@@ -10,6 +11,7 @@ import { Text } from '@/components/Text';
 import { BackButton, Button, Card, ErrorNotice, Notice, Screen } from '@/components/ui';
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { MONTH_NAMES_SHORT, monthIndexOf, monthYear, yearOf } from '@/lib/months';
+import { countryOf } from '@/lib/knownPlaces';
 import { photoForPlaceName } from '@/lib/sample';
 import { scoreWord } from '@/lib/score';
 import { companionsLabel, deleteTrip, fetchTrip, type Trip } from '@/lib/trips';
@@ -24,7 +26,8 @@ export default function TripScreen() {
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<{ message: string } | null>(null);
-  const photoUrl = useTripPhoto(trip?.photoPath);
+  const cover = trip?.photoPaths[0] ?? null;
+  const photoUrl = useTripPhoto(cover);
 
   // Reload whenever the screen comes back into view (e.g. after editing).
   useFocusEffect(
@@ -43,7 +46,7 @@ export default function TripScreen() {
     setDeleting(true);
     setDeleteError(null);
     try {
-      await deleteTrip(id, trip?.photoPath);
+      await deleteTrip(id, trip?.photoPaths ?? []);
       if (router.canGoBack()) router.back();
       else router.replace('/profile');
     } catch (e) {
@@ -82,7 +85,7 @@ export default function TripScreen() {
   return (
     <Screen noTopInset>
       <View style={{ height: h }}>
-        <PhotoFill uri={photoUrl} photo={trip.photoPath ? null : photoForPlaceName(main.name)} label={main.name} />
+        <PhotoFill uri={photoUrl} photo={cover ? null : photoForPlaceName(main.name)} label={main.name} />
         <Shade strength={0.55} />
         <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER }}>
           <BackButton onPhoto />
@@ -91,9 +94,9 @@ export default function TripScreen() {
           <View style={{ flex: 1, gap: 8 }}>
             <MonthPill month={monthYear(trip.month).toUpperCase()} onPhoto />
             <Text style={{ fontFamily: fonts.displayBold, fontSize: 46, lineHeight: 48, color: colors.onDark }}>{main.name}</Text>
-            {!!main.country && (
+            {!!countryOf(main) && (
               <Text variant="body" style={{ color: colors.onDark }}>
-                {main.country}
+                {countryOf(main)}
               </Text>
             )}
           </View>
@@ -107,6 +110,16 @@ export default function TripScreen() {
           <Info label="How long" big={nights ? String(nights) : '–'} small={nights ? (nights === 1 ? 'night' : 'nights') : 'not added'} border />
           <Info label="When" big={MONTH_NAMES_SHORT[monthIndexOf(trip.month)]} small={String(yearOf(trip.month))} border />
         </Card>
+
+        {trip.photoPaths.length > 1 && (
+          <View style={{ marginHorizontal: -GUTTER }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10, paddingHorizontal: GUTTER }}>
+              {trip.photoPaths.map((path, i) => (
+                <TripPhoto key={path} path={path} index={i} />
+              ))}
+            </ScrollView>
+          </View>
+        )}
 
         <View style={{ gap: 6 }}>
           {trip.note ? (
@@ -134,7 +147,7 @@ export default function TripScreen() {
                 >
                   <View style={{ flex: 1 }}>
                     <Text variant="strong">{s.name}</Text>
-                    {!!s.country && <Text variant="tiny">{s.country}</Text>}
+                    {!!countryOf(s) && <Text variant="tiny">{countryOf(s)}</Text>}
                   </View>
                   {s.nights ? <Text variant="small">{s.nights === 1 ? '1 night' : `${s.nights} nights`}</Text> : null}
                 </View>
@@ -227,4 +240,14 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function addedOn(iso: string) {
   const d = new Date(iso);
   return isNaN(d.getTime()) ? '' : `${d.getDate()} ${MONTH_NAMES_SHORT[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+/** One of the trip's photos in the row under the header. */
+function TripPhoto({ path, index }: { path: string; index: number }) {
+  const url = useTripPhoto(path);
+  return (
+    <View style={{ width: 150, height: 190, borderRadius: 16, overflow: 'hidden', backgroundColor: colors.sand }}>
+      {url && <Image source={{ uri: url }} style={{ width: 150, height: 190 }} contentFit="cover" accessibilityLabel={`Photo ${index + 1}`} />}
+    </View>
+  );
 }

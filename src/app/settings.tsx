@@ -6,10 +6,23 @@ import { BackButton, Button, Card, PageTitle, Screen } from '@/components/ui';
 import { APP_NAME } from '@/constants/brand';
 import { colors, GUTTER } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
+import { setProfilePicture } from '@/lib/trips';
+import { useState } from 'react';
 
 /** Settings. Privacy switches, blocking, data download and deleting your account come in plan Step J. */
 export default function Settings() {
-  const { profile, session, signOut } = useAuth();
+  const { profile, session, signOut, refreshProfile } = useAuth();
+  const [removing, setRemoving] = useState(false);
+
+  async function removePicture() {
+    setRemoving(true);
+    try {
+      await setProfilePicture(null, undefined, profile?.avatarPath);
+      await refreshProfile();
+    } finally {
+      setRemoving(false);
+    }
+  }
   return (
     <Screen>
       <View style={{ paddingHorizontal: GUTTER, paddingTop: 12 }}>
@@ -25,6 +38,13 @@ export default function Settings() {
             {profile?.canGoPublic ? 'Public profiles are coming soon.' : 'Public profiles are for over-18s. Until then, your profile is just for friends.'}
           </Text>
         </Section>
+        {!!profile?.avatarPath && (
+          <Section label="Profile picture">
+            <View style={{ padding: 16 }}>
+              <Button title={removing ? 'Removing…' : 'Remove profile picture'} kind="outline" disabled={removing} onPress={removePicture} />
+            </View>
+          </Section>
+        )}
         <Section label="Signed in as">
           <View style={{ padding: 16, gap: 14 }}>
             <Text variant="strong">{session?.user.email}</Text>

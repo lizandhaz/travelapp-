@@ -83,7 +83,7 @@ src/
     (tabs)/explore.tsx    "Describe your perfect trip" search, filter chips, collections, Trending this month, board
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
     (tabs)/saved.tsx      Saved: "Your lists" boards (sample; real in plan Step D)
-    (tabs)/profile.tsx    You: profile, stats, your real trips as photo stamps (highest score first)
+    (tabs)/profile.tsx    You: profile picture (tap to change), stats, your real trips as photo stamps (highest score first)
     postcards.tsx         Postcards (sample), opened from Home's paper-plane button
     settings.tsx          Settings (public-profile note, sign out), opened from You
     place/[slug].tsx      A sample place: photo, score, what friends said, things they loved
@@ -93,7 +93,8 @@ src/
   components/
     ui.tsx                Screen, PageTitle, SectionHeader, IconCircle, BackButton, Button (dark/accent/outline),
                           Input (optional icon), Field, Chip, Segmented, Card, Notice, ErrorNotice
-    Text.tsx              All text goes through <Text variant="…"> (fonts + colours)
+    Text.tsx              All text goes through <Text variant="…"> (fonts + colours). A bigger fontSize without a
+                          lineHeight gets lineHeight ≈ 1.28× automatically, so big numbers aren't clipped on iPhone
     AccentTitle.tsx       Heading with one italic word and a terracotta swash ("Where did *you* go?")
     Wordmark.tsx          The app name in spaced serif capitals + terracotta star, and the tagline
     ScoreStamp.tsx        Score in a perforated stamp: navy on peach (or white on teal for a stay)
@@ -104,7 +105,7 @@ src/
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
-    trip/TripForm.tsx     Add/edit a trip: place, month, slider score, who with, photo, note, who can see it, "Add more detail"
+    trip/TripForm.tsx     Add/edit a trip: place, month, slider score, who with, up to 6 photos, note, who can see it, "Add more detail"
     trip/PlacePicker.tsx  Search or type a place ("Sintra, Portugal" → name + country)
     trip/MonthPicker.tsx  This month + last 6 months as chips ("Nov 2026"), or "Earlier…"
     trip/ScorePicker.tsx  "Slide to rate out of 10": 1.0–10.0 in 0.1 steps; accessibilityRole "adjustable"
@@ -116,7 +117,8 @@ src/
     photos.ts             Sample photo names → files
     score.ts              formatScore, clampScore, scoreWord
     trips.ts              Trip types, fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces, photo upload + signed URLs
-    useTripPhoto.ts       Hook: a signed URL for one of your trip photos
+    useTripPhoto.ts       Hook: a signed URL for one of your photos (trip photos and profile picture)
+    knownPlaces.ts        Popular places with countries: suggestions + countryOf()
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order
@@ -137,8 +139,10 @@ docs/plan.md              Step-by-step plan
   - A trigger refuses future months.
   - **Trip details** (`20261120120000_trip_details.sql`):
     - `trips.score` and `stays.score` are `numeric(3,1)`, 1.0–10.0. PostgREST may return them as strings, so the app wraps them in `Number()`.
-    - `trips.companions` ("who you went with": `solo`/`partner`/`friends`/`family`), `trips.note` (up to 500 characters) and `trips.photo_path`. `created_at` is shown as "Added …".
-  - **Photos:** a private Storage bucket `trip-photos` (JPEG only, 5 MB max). Each person's photos live at `<user id>/<name>.jpg`, and storage policies allow only their own folder; `trips.photo_path` must also start with the owner's id. `uploadTripPhoto()` shrinks the photo to 1600px and re-encodes it with expo-image-manipulator, which drops EXIF/GPS (product rule 2), before uploading. Photos are shown through 1-hour signed URLs (`tripPhotoUrl`, `useTripPhoto`). Replacing, removing or deleting a trip deletes the old file.
+    - `trips.companions` ("who you went with": `solo`/`partner`/`friends`/`family`) and `trips.note` (up to 500 characters). `created_at` is shown as "Added …".
+  - **Photos and profile picture** (`20261121120000_photos_and_avatar.sql`): `trips.photo_paths text[]` (up to 6, the first is the cover; every path must be in the owner's folder via `paths_in_own_folder()`), replacing the earlier single `photo_path`. `profiles.avatar_path` (in the owner's folder; only that column is newly editable).
+  - **Photo storage:** a private Storage bucket `trip-photos` (JPEG only, 5 MB max) holds trip photos and profile pictures (`avatar-…jpg`). Each person's files live at `<user id>/<name>.jpg`, and storage policies allow only their own folder. `uploadTripPhoto()` shrinks the photo to 1600px and re-encodes it with expo-image-manipulator, which drops EXIF/GPS (product rule 2), before uploading. Photos are shown through 1-hour signed URLs (`tripPhotoUrl`, `useTripPhoto`). Profile pictures are 800px. Replacing, removing or deleting deletes the old files.
+- **Places and countries:** `src/lib/knownPlaces.ts` lists about 235 popular places with countries. It feeds place suggestions, and `countryOf()` fills in the country for trips saved without one (for the Countries stat and the trip page).
 - **Changing the database:** add a new numbered file in `supabase/migrations/` (never edit one that's already been run). The owner runs it in Supabase → SQL Editor. Before handing it over, test it on a local Postgres with stand-ins for `auth.users`, `auth.uid()` and the `anon`/`authenticated` roles, covering every rule, including the "should fail" cases.
 - **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 

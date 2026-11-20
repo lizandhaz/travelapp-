@@ -6,7 +6,7 @@ import { photos, type PhotoName } from '@/lib/photos';
 import { Text } from './Text';
 
 /** A round face photo, or initials on navy when there's no photo. */
-export function Avatar({ face, name, size = 40 }: { face?: PhotoName | null; name: string; size?: number }) {
+export function Avatar({ face, uri, name, size = 40 }: { face?: PhotoName | null; uri?: string | null; name: string; size?: number }) {
   const initials = name
     .split(/\s+/)
     .map((w) => w[0])
@@ -18,8 +18,8 @@ export function Avatar({ face, name, size = 40 }: { face?: PhotoName | null; nam
       accessibilityElementsHidden
       style={{ width: size, height: size, borderRadius: size / 2, overflow: 'hidden', backgroundColor: colors.ink, alignItems: 'center', justifyContent: 'center' }}
     >
-      {face ? (
-        <Image source={photos[face]} style={{ width: size, height: size }} contentFit="cover" />
+      {uri || face ? (
+        <Image source={uri ? { uri } : photos[face!]} style={{ width: size, height: size }} contentFit="cover" />
       ) : (
         <Text style={{ fontFamily: fonts.display, fontSize: size * 0.38, color: colors.onDark }}>{initials}</Text>
       )}

@@ -1,17 +1,19 @@
+import * as ImagePicker from 'expo-image-picker';
 import { Link, router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Dimensions, Pressable, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { Avatar } from '@/components/Avatar';
-import { SlidersIcon } from '@/components/Icons';
+import { PlusIcon, SlidersIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
 import { TripCard } from '@/components/trip/TripCard';
 import { Button, Card, IconCircle, Screen } from '@/components/ui';
 import { colors, GUTTER } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { formatScore } from '@/lib/score';
-import { countriesIn, fetchMyTrips, type Trip } from '@/lib/trips';
+import { countriesIn, fetchMyTrips, setProfilePicture, type Trip } from '@/lib/trips';
+import { useTripPhoto } from '@/lib/useTripPhoto';
 
 export default function You() {
   const { profile, session } = useAuth();
@@ -47,7 +49,7 @@ export default function You() {
   return (
     <Screen tabBar>
       <View style={{ paddingHorizontal: GUTTER, paddingTop: 20, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-        <Avatar name={name} size={76} />
+        <ProfilePicture name={name} />
         <View style={{ flex: 1 }}>
           <Text variant="title" style={{ fontSize: 28, lineHeight: 32 }}>
             {name}
@@ -114,5 +116,63 @@ function Stat({ label, value, border }: { label: string; value: string | number;
         {label}
       </Text>
     </View>
+  );
+}
+
+/** Your picture (or initials). Tap it to choose a photo. */
+function ProfilePicture({ name }: { name: string }) {
+  const { profile, refreshProfile } = useAuth();
+  const url = useTripPhoto(profile?.avatarPath);
+  const [busy, setBusy] = useState(false);
+
+  async function choose() {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      exif: false, // never read location data from photos
+      quality: 0.8,
+    });
+    const asset = !result.canceled ? result.assets[0] : null;
+    if (!asset) return;
+    setBusy(true);
+    try {
+      await setProfilePicture(asset.uri, asset.width, profile?.avatarPath);
+      await refreshProfile();
+    } catch (e) {
+      Alert.alert('Couldn’t save your picture', e instanceof Error ? e.message : 'Please try again.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Pressable
+      onPress={choose}
+      disabled={busy}
+      accessibilityRole="button"
+      accessibilityLabel={profile?.avatarPath ? 'Change your profile picture' : 'Add a profile picture'}
+    >
+      <View style={{ opacity: busy ? 0.5 : 1 }}>
+        <Avatar name={name} uri={url} size={76} />
+      </View>
+      <View
+        style={{
+          position: 'absolute',
+          right: -2,
+          bottom: -2,
+          width: 26,
+          height: 26,
+          borderRadius: 13,
+          backgroundColor: colors.ink,
+          borderWidth: 2,
+          borderColor: colors.bg,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {busy ? <ActivityIndicator size="small" color={colors.peach} /> : <PlusIcon color={colors.peach} size={14} strokeWidth={2.6} />}
+      </View>
+    </Pressable>
   );
 }

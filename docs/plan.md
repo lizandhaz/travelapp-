@@ -147,6 +147,17 @@ How it's set up (done in Nov 2026):
 
 ---
 
+## Photos and profile picture. Code built ✅, your setup next
+
+- Up to **6 photos per trip** (the first is the cover); the trip page shows them all.
+- A **profile picture**: tap your initials on You. Remove it in Settings.
+- Places like "Venice" or "Algarve" now know their country (search suggests "Venice, Italy"), so the Countries count is right even for trips saved without a country.
+- Big numbers in stamps and on the slider no longer get cut off on iPhone.
+
+**You do:** run `supabase/migrations/20261121120000_photos_and_avatar.sql` in Supabase (**SQL Editor** → **New query** → paste → **Run**, once). Existing trip photos are kept as each trip's first photo.
+
+---
+
 ## Next steps (from the build plan, one pull request each)
 
 Each step's ready-made prompt is in your build plan doc ("XYZX: build plan from the preview").

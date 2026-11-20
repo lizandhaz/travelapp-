@@ -11,7 +11,8 @@ import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { currentMonth } from '@/lib/months';
 import {
   COMPANIONS,
-  deleteTripPhoto,
+  deleteTripPhotos,
+  MAX_PHOTOS,
   fetchPlaces,
   saveTrip,
   STAY_KINDS,
@@ -43,11 +44,10 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
   const [visibility, setVisibility] = useState<Visibility>(initial?.visibility ?? 'friends');
   const [companions, setCompanions] = useState<Companions | null>(initial?.companions ?? null);
   const [note, setNote] = useState(initial?.note ?? '');
-  // Photo: a newly picked one (not uploaded until you save), or the trip's existing one.
-  const [newPhoto, setNewPhoto] = useState<{ uri: string; width?: number } | null>(null);
-  const [keepPath, setKeepPath] = useState<string | null>(initial?.photoPath ?? null);
-  const existingUrl = useTripPhoto(keepPath);
-  const photo = newPhoto?.uri ?? (keepPath ? existingUrl : null);
+  // Photos, in order (the first is the cover): ones already saved with the trip,
+  // and newly picked ones, which are only uploaded when you save.
+  const photoKey = useRef(1000);
+  const [photos, setPhotos] = useState<PhotoItem[]>(() => (initial?.photoPaths ?? []).map((path, i) => ({ key: i + 1, path })));
   const [home, setHome] = useState(false);
 
   // Keys for extra-stop rows: existing stops use 1, 2, 3…; new rows count up from 100.
@@ -65,7 +65,7 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
   // After the first Save, the "Nearly there" list updates as you fix things.
   const [tried, setTried] = useState(false);
   const [saveError, setSaveError] = useState<{ message: string } | null>(null);
-  const [saving, setSaving] = useState<false | 'photo' | 'trip'>(false);
+  const [saving, setSaving] = useState<false | 'trip' | { done: number; of: number }>(false);
   const scroll = useRef<ComponentRef<typeof ScrollView>>(null);
 
   useEffect(() => {
@@ -117,7 +117,7 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
         tip: tip.trim() || null,
         companions,
         note: note.trim() || null,
-        photoPath: keepPath, // replaced by the new photo's path in save()
+        photoPaths: [], // filled in by save() once new photos are uploaded
       },
     };
   }
@@ -129,38 +129,57 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
     setTried(true);
     const { input } = check();
     if (!input) return;
-    let uploaded: string | null = null;
+    const uploaded: string[] = [];
     try {
-      if (newPhoto) {
-        setSaving('photo');
-        uploaded = await uploadTripPhoto(newPhoto.uri, newPhoto.width);
-        input.photoPath = uploaded;
+      const fresh = photos.filter((p) => p.uri).length;
+      const paths: string[] = [];
+      for (const p of photos) {
+        if (p.path) paths.push(p.path);
+        else if (p.uri) {
+          setSaving({ done: uploaded.length + 1, of: fresh });
+          const path = await uploadTripPhoto(p.uri, p.width);
+          uploaded.push(path);
+          paths.push(path);
+        }
       }
+      input.photoPaths = paths;
       setSaving('trip');
       const id = await saveTrip(input);
-      // Tidy up a photo the trip no longer uses.
-      if (initial?.photoPath && initial.photoPath !== input.photoPath) await deleteTripPhoto(initial.photoPath);
+      // Tidy up photos the trip no longer uses.
+      await deleteTripPhotos((initial?.photoPaths ?? []).filter((p) => !paths.includes(p)));
       onSaved(id);
     } catch (e) {
-      if (uploaded) await deleteTripPhoto(uploaded);
+      await deleteTripPhotos(uploaded);
       setSaveError({ message: e instanceof Error ? e.message : 'Something went wrong. Please try again.' });
     } finally {
       setSaving(false);
     }
   }
 
-  async function pickPhoto() {
+  const roomFor = MAX_PHOTOS - photos.length;
+  async function pickPhotos() {
+    if (roomFor <= 0) return;
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
-      allowsMultipleSelection: false,
+      allowsMultipleSelection: true,
+      selectionLimit: roomFor,
+      orderedSelection: true,
       exif: false, // never read location data from photos
       quality: 0.8,
     });
-    const asset = !result.canceled ? result.assets[0] : null;
-    if (asset) setNewPhoto({ uri: asset.uri, width: asset.width });
+    if (result.canceled) return;
+    const picked = result.assets.slice(0, roomFor).map((a) => ({ key: photoKey.current++, uri: a.uri, width: a.width }));
+    setPhotos((ps) => [...ps, ...picked].slice(0, MAX_PHOTOS));
   }
 
-  const saveTitle = saving === 'photo' ? 'Saving photo…' : saving ? 'Saving…' : initial ? 'Save changes' : 'Save trip';
+  const saveTitle =
+    typeof saving === 'object'
+      ? `Saving photo ${saving.done} of ${saving.of}…`
+      : saving
+        ? 'Saving…'
+        : initial
+          ? 'Save changes'
+          : 'Save trip';
   const saveButton = <Button title={saveTitle} kind="accent" size="lg" onPress={save} disabled={!!saving} />;
 
   return (
@@ -194,46 +213,42 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
             </View>
           </Question>
 
-          <Question title="Add a photo" note="optional">
-            <View style={{ flexDirection: 'row', gap: 12 }}>
-              {photo && (
-                <View>
-                  <Image source={{ uri: photo }} style={{ width: 110, height: 110, borderRadius: radius.md }} contentFit="cover" accessibilityLabel="Your photo" />
+          <Question title="Add photos" note={`optional, up to ${MAX_PHOTOS}`}>
+            <View style={{ marginHorizontal: -GUTTER }}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: GUTTER }}>
+                {photos.map((p, i) => (
+                  <PhotoThumb
+                    key={p.key}
+                    item={p}
+                    cover={i === 0 && photos.length > 1}
+                    index={i}
+                    onRemove={() => setPhotos((ps) => ps.filter((x) => x.key !== p.key))}
+                  />
+                ))}
+                {roomFor > 0 && (
                   <Pressable
-                    onPress={() => {
-                      setNewPhoto(null);
-                      setKeepPath(null);
-                    }}
+                    onPress={pickPhotos}
                     accessibilityRole="button"
-                    accessibilityLabel="Remove photo"
-                    hitSlop={8}
-                    style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(19,38,74,0.75)', alignItems: 'center', justifyContent: 'center' }}
+                    accessibilityLabel={photos.length ? 'Add more photos' : 'Add photos'}
+                    style={{
+                      width: 110,
+                      height: 110,
+                      borderRadius: radius.md,
+                      borderWidth: 1.5,
+                      borderStyle: 'dashed',
+                      borderColor: colors.line,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                    }}
                   >
-                    <Text style={{ color: colors.onDark, fontFamily: fonts.sansBold, fontSize: 14, lineHeight: 16 }}>×</Text>
+                    <ImageIcon color={colors.ink} />
+                    <Text variant="small" style={{ color: colors.ink }}>
+                      {photos.length ? 'Add more' : 'Add'}
+                    </Text>
                   </Pressable>
-                </View>
-              )}
-              <Pressable
-                onPress={pickPhoto}
-                accessibilityRole="button"
-                accessibilityLabel={photo ? 'Choose a different photo' : 'Add a photo'}
-                style={{
-                  width: 110,
-                  height: 110,
-                  borderRadius: radius.md,
-                  borderWidth: 1.5,
-                  borderStyle: 'dashed',
-                  borderColor: colors.line,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 6,
-                }}
-              >
-                <ImageIcon color={colors.ink} />
-                <Text variant="small" style={{ color: colors.ink }}>
-                  {photo ? 'Change' : 'Add'}
-                </Text>
-              </Pressable>
+                )}
+              </ScrollView>
             </View>
             <Text variant="tiny">Only you can see your photos. Location data is removed before saving.</Text>
           </Question>
@@ -395,6 +410,35 @@ export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: 
         </View>
       </Screen>
     </KeyboardAvoidingView>
+  );
+}
+
+type PhotoItem = { key: number; path?: string; uri?: string; width?: number };
+
+/** One photo in the form: a saved one (shown through a private link) or a newly picked one. */
+function PhotoThumb({ item, cover, index, onRemove }: { item: PhotoItem; cover: boolean; index: number; onRemove: () => void }) {
+  const savedUrl = useTripPhoto(item.path);
+  const uri = item.uri ?? savedUrl;
+  return (
+    <View>
+      <View style={{ width: 110, height: 110, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.sand }}>
+        {uri && <Image source={{ uri }} style={{ width: 110, height: 110 }} contentFit="cover" accessibilityLabel={`Photo ${index + 1}`} />}
+      </View>
+      {cover && (
+        <View style={{ position: 'absolute', left: 6, bottom: 6, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 999, paddingHorizontal: 7, paddingVertical: 2 }}>
+          <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 10, color: colors.ink }}>Cover</Text>
+        </View>
+      )}
+      <Pressable
+        onPress={onRemove}
+        accessibilityRole="button"
+        accessibilityLabel={`Remove photo ${index + 1}`}
+        hitSlop={8}
+        style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(19,38,74,0.75)', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Text style={{ color: colors.onDark, fontFamily: fonts.sansBold, fontSize: 14, lineHeight: 16 }}>×</Text>
+      </Pressable>
+    </View>
   );
 }
 

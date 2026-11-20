@@ -62,7 +62,7 @@ function ForYou() {
                 <Text variant="label" style={{ color: colors.onDark }}>
                   {hero.kicker}
                 </Text>
-                <Text style={{ fontFamily: fonts.displayBold, fontSize: 52, lineHeight: 52, color: colors.onDark, marginTop: 6 }}>{hero.name}</Text>
+                <Text style={{ fontFamily: fonts.displayBold, fontSize: 52, lineHeight: 57, color: colors.onDark, marginTop: 6 }}>{hero.name}</Text>
                 <Text variant="label" style={{ color: colors.onDark, marginTop: 8 }}>
                   {hero.sub} →
                 </Text>

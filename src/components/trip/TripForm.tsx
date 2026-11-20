@@ -36,9 +36,20 @@ type ExtraStop = { key: number; place: Place | null; nights: string };
  * screen, with the optional extras under "Add more detail". Saves through
  * save_trip() in Supabase.
  */
-export function TripForm({ initial, onSaved, back }: { initial?: Trip; onSaved: (id: string) => void; back?: boolean }) {
+export function TripForm({
+  initial,
+  startPlace,
+  onSaved,
+  back,
+}: {
+  initial?: Trip;
+  /** Where you went, when coming from a place page's "I've been". */
+  startPlace?: Place;
+  onSaved: (id: string) => void;
+  back?: boolean;
+}) {
   const [places, setPlaces] = useState<Place[]>([]);
-  const [place, setPlace] = useState<Place | null>(initial?.stops[0] ?? null);
+  const [place, setPlace] = useState<Place | null>(initial?.stops[0] ?? startPlace ?? null);
   const [month, setMonth] = useState<string | null>(initial?.month ?? null);
   const [score, setScore] = useState<number | null>(initial?.score ?? null);
   const [visibility, setVisibility] = useState<Visibility>(initial?.visibility ?? 'friends');

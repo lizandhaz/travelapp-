@@ -22,6 +22,7 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
     trip.meal ? '1 food & drink' : null,
     trip.tip ? '1 tip' : null,
   ].filter(Boolean);
+  const nameSize = fitNameSize(main?.name ?? '', width);
   return (
     <Link href={`/trip/${trip.id}`} asChild>
       <Pressable accessibilityRole="link" accessibilityLabel={`${main?.name}, ${monthYear(trip.month)}, ${formatScore(trip.score)} out of 10`} style={{ width }}>
@@ -30,7 +31,7 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
             <MonthPill month={monthYear(trip.month).toUpperCase()} onPhoto />
           </View>
           <View style={{ position: 'absolute', left: 16, right: 16, bottom: 16, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
-            <Text numberOfLines={2} style={{ flex: 1, fontFamily: fonts.display, fontSize: 19, lineHeight: 22, color: colors.onDark }}>
+            <Text numberOfLines={2} style={{ flex: 1, fontFamily: fonts.display, fontSize: nameSize, lineHeight: Math.round(nameSize * 1.18), color: colors.onDark }}>
               {main?.name}
             </Text>
             <Text style={{ fontFamily: fonts.display, fontSize: 20, color: colors.onDark, fontVariant: ['tabular-nums'] }}>{formatScore(trip.score)}</Text>
@@ -42,4 +43,14 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
       </Pressable>
     </Link>
   );
+}
+
+/**
+ * A font size that keeps the longest word of a place name on one line, so a
+ * long single word like "Singapore" shrinks a little instead of breaking ("Singapor / e").
+ */
+function fitNameSize(name: string, cardWidth: number) {
+  const longest = Math.max(1, ...name.split(/\s+/).map((w) => w.length));
+  const room = cardWidth - 2 * Math.max(6, Math.round(cardWidth * 0.025)) - 32 - 40; // frame, padding, score
+  return Math.max(12, Math.min(19, Math.floor(room / (longest * 0.6))));
 }

@@ -43,7 +43,7 @@ jobs:
 
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.122.1 # a fixed version: "latest" can fail when GitHub limits lookups
 
       - name: Connect to the Supabase project
         run: supabase link --project-ref "$SUPABASE_PROJECT_ID"
@@ -51,13 +51,13 @@ jobs:
       # These updates were pasted into the SQL Editor by hand before this job
       # existed. Record them as done so they're never run again.
       - name: Record updates already run by hand
-        run: supabase migration repair --status applied 20261110120000 20261118120000 20261120120000
+        run: supabase migration repair --status applied 20261110120000 20261118120000 20261120120000 --linked
 
       - name: Show which updates are done
-        run: supabase migration list
+        run: supabase migration list --linked
 
       - name: Run any new updates
-        run: supabase db push
+        run: supabase db push --linked
 
       - name: Show the result
-        run: supabase migration list
+        run: supabase migration list --linked

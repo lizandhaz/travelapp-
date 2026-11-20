@@ -99,28 +99,28 @@ How it's set up (done in Nov 2026):
 
 ---
 
-## Step 2: Save a real holiday rating from the Log screen
+## Step 2: Save a real trip. Code built ✅, your setup next
 
-**What it means:** the Log form stops being a preview. Tapping **Send postcard** saves the rating to your database, and it then appears on your profile and on the destination page.
+**What it means:** the centre **Add** tab is now **"Add a trip"**: one simple screen with Where did you go?, When did you go?, How was it? (1–10 with a word), Who can see this? (Friends / Just me) and an optional photo (preview only for now). Under **Add more detail** you can add extra stops with nights, where you stayed (with its own score), your best meal and a top tip. Trips save to your database. **You** shows your real trips, highest score first, and each trip has its own page with **Edit** and **Delete**. The app's name is a placeholder, **XYZX**, kept in one place (`src/constants/brand.json`).
+
+**Claude did**
+- Database tables: `destinations`, `trips`, `trip_stops`, `stays`, `food_picks` and `top_tips`, plus a `save_trip` action that saves a whole trip in one go (`supabase/migrations/20261118120000_trips.sql`).
+- Rules: only you can read, edit or delete your trips (friends come in Step 3). Scores are whole numbers 1–10, there are no future months, nights are 1–365, and places you type in stay private to you.
+- Tested on a local copy of the database as two different people, including everything that should be refused, and with the exact trips the app sends.
 
 **You do**
+1. **Run the database setup in Supabase** (2 minutes):
+   1. Open the file `supabase/migrations/20261118120000_trips.sql` on GitHub (Claude gives you the link).
+   2. Click **Copy raw file** (two overlapping squares, top right).
+   3. In Supabase: **SQL Editor** → **New query** → paste → **Run**.
+   4. You should see **"Success. No rows returned"**. Run it once only. A second run says something "already exists", which is harmless.
+2. **Try it on your phone** (see "Done when").
 
-1. Run the database setup Claude gives you (same as before: **SQL Editor** → **New query** → paste → **Run**).
-2. Log a real holiday and check it shows up.
-
-**Claude does**
-
-- Database tables:
-  - `destinations` (name, country), with the sample places added as a starting list. New places are added when someone logs one, matched by name + country so "Lisbon" isn't created twice.
-  - `ratings`: who, where, trip month, destination score, stay name, stay type, stay score, headline, review, posted date.
-  - `food_picks` and `top_tips`, linked to a rating.
-- Database rules: scores must be whole numbers 1–10, the trip month can't be in the future, you can only create, edit or delete **your own** ratings, and (for now) only you can read them. Friends get access in step 3.
-- Changes the Log screen to save, and takes you to your new rating.
-- Makes **You**, **Rating** and **Destination** show your real ratings instead of sample data.
-- Edit and delete for your own ratings.
-- Photos stay as a preview for now (they're step 4).
-
-**Done when:** you log a holiday, close and reopen the app, and it's still there, on your profile and on that destination's page. Someone else's account can't see it yet.
+**Done when**
+- You add a trip, it opens on its own page, and it's on **You**, still there after fully closing and reopening the app.
+- Trips on **You** are sorted highest score first.
+- **Edit** changes stick, and **Delete** (after "Delete this trip?") removes the trip.
+- Someone else's account can't see your trips.
 
 **Cost:** free.
 
@@ -129,10 +129,10 @@ How it's set up (done in Nov 2026):
 ## Later steps (each a separate pull request, in this order unless you'd rather change it)
 
 ### Step 3: Friends
-Find people by handle, send/accept friend requests, and database rules so friends (only) can read each other's ratings. The **Friends** side of Home becomes real.
+Find people by handle, send/accept friend requests, and database rules so friends (only) can read each other's trips marked "Friends" (never "Just me"). The **Friends** side of Home becomes real.
 
 ### Step 4: Photos
-Upload up to 6 photos per rating to Supabase Storage. Photos are shrunk and have their **location data (GPS) removed before they're stored**, so the never-live-location rule holds. Free storage covers early testing. 💷 Large numbers of photos would eventually need a paid plan.
+Save trip photos to Supabase Storage (Add a trip already lets you pick one, as a preview). Photos are shrunk and have their **location data (GPS) removed before they're stored**, so the never-live-location rule holds. Free storage covers early testing. 💷 Large numbers of photos would eventually need a paid plan.
 
 ### Step 5: Postcards (notifications)
 In-app Postcards when a friend rates somewhere, saves your tip or accepts your request, plus the unread count on the tab bar. Phone push notifications can come later (they need a development build rather than Expo Go).

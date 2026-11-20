@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Postcard",
+    "name": "(set in src/constants/brand.ts)",
     "slug": "postcard",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -33,7 +33,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Postcard uses your photos so you can add them to holidays you rate.",
+          "photosPermission": "(set in app.config.ts)",
           "microphonePermission": false,
           "cameraPermission": false
         }

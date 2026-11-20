@@ -66,6 +66,8 @@ function Navigator() {
             <Stack.Screen name="destination/[slug]" />
             <Stack.Screen name="rating/[id]" />
             <Stack.Screen name="people/[handle]" />
+            <Stack.Screen name="trip/[id]/index" />
+            <Stack.Screen name="trip/[id]/edit" />
           </Stack.Protected>
           <Stack.Protected guard={!signedIn} redirectTo="/">
             <Stack.Screen name="welcome" />

@@ -1,5 +1,5 @@
 /**
- * Postcard brand tokens. Use these, never raw hex values, in components.
+ * Brand tokens. Use these, never raw hex values, in components.
  * (Photo-placeholder gradients in sample data are the one exception.)
  */
 export const colors = {

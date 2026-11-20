@@ -2,7 +2,9 @@
 
 Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations** and **where they stayed** (hotel, Airbnb, villa and so on) out of 10, and add photos, food picks and top tips.
 
-**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). Everything else (ratings, friends, picks, Postcards) is sample data in `src/lib/data.ts`, and the Log form doesn't save yet. The roadmap is in `docs/plan.md`.
+**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real (Step 2):** "Add a trip" saves to Supabase, and You and the trip page show your own trips with edit and delete. Everything else (friends' feed, For you, destination pages, Postcards) is still sample data in `src/lib/data.ts`. The roadmap is in `docs/plan.md`.
+
+**App name:** the name is a placeholder, currently **XYZX**. It lives in **one place**, `src/constants/brand.json` (`appName`). Code uses `APP_NAME` from `src/constants/brand.ts`, and `app.config.ts` reads the same JSON for the name under the icon. Never type the app's name anywhere else. (The project was originally called "Postcard"; that's still the Expo `slug` and the repo's history, and the notifications feature is still called "Postcards".)
 
 ## Working with the owner
 
@@ -14,11 +16,12 @@ Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations*
 
 ## Product rules (don't break these)
 
-1. **Scores are whole numbers out of 10.** There are two per trip: the destination and the stay. Averages show one decimal place.
-2. **Post when home, never live location.** A rating records the month of the trip, not the current place. The Log form requires "I'm back home" and rejects future months. Never add live or "I'm here now" location features. Photos are picked with `exif: false`, and GPS data must be stripped before anything is stored.
+1. **Scores are whole numbers out of 10:** the trip's own score ("How was it?", with a word like "Loved it") and, optionally, where you stayed. Averages show one decimal place.
+2. **Post when home, never live location.** A trip records the month of the trip, not the current place. Add a trip rejects future months (so does the database), and asks for "I'm back home" when the month picked is this month. Never add live or "I'm here now" location features. Photos are picked with `exif: false`, and GPS data must be stripped before anything is stored.
 3. **Ages: 13+ to join, 18+ to go public.** (Owner's decision, Nov 2026.) Everyone gives a date of birth at sign-up, and anyone under 13 is refused. 13–17s get a private, friends-only profile: they can never switch it to public, and they don't appear in search or suggestions to people who aren't already their friends. This is enforced in the database (see below), not just in the app. Date of birth is private to its owner.
 4. **Notifications are called "Postcards"** everywhere in the UI, never "notifications" or "alerts".
 5. **Home has two sides:** "For you" (picks based on your taste) and "Friends" (what friends rated, newest first).
+6. **No trip planning.** The app is for rating trips you've been on, not planning future ones. Don't add itineraries, planning lists, bookings or future dates.
 
 ## Stack
 
@@ -65,7 +68,8 @@ The owner has **no computer**, only an iPhone (with Expo Go) and an iPad. Claude
 ## Folder map
 
 ```
-app.json                  App name, icon, splash, plugins (image-picker permission text)
+app.json                  Icon, splash, plugins, Expo project link
+app.config.ts             Adds the app name (from src/constants/brand.json) on top of app.json
 assets/images/            App icon, splash, Android adaptive icons, favicon (a red perforated stamp with "P")
 src/
   app/                    Every file is a screen (Expo Router)
@@ -73,14 +77,16 @@ src/
     welcome.tsx           First screen when signed out: pitch + Join / Log in
     signup.tsx            Name, email, date of birth → 6-digit code
     login.tsx             Email → 6-digit code (never reveals who has an account)
-    (tabs)/_layout.tsx    Bottom tab bar: Home, Explore, centre Log button, Postcards, You
+    (tabs)/_layout.tsx    Bottom tab bar: Home, Explore, centre Add button, Postcards, You
     (tabs)/index.tsx      Home: For you / Friends
     (tabs)/explore.tsx    Search + tag chips + destination grid
-    (tabs)/log.tsx        Log a holiday (validates, then previews; doesn't save yet)
+    (tabs)/add.tsx        "Add a trip" (centre tab): uses components/trip/TripForm
     (tabs)/postcards.tsx  Postcards (notifications)
-    (tabs)/profile.tsx    You: real name/handle/email, public-profile note, Log out
+    (tabs)/profile.tsx    You: real name/handle, your real trips (highest score first), public-profile note, Log out
+    trip/[id]/index.tsx   One of your trips as a postcard, with Edit and Delete (confirm first)
+    trip/[id]/edit.tsx    Edit a trip (same TripForm, prefilled)
     destination/[slug].tsx  Friends' average, where they stayed, food, tips, ratings
-    rating/[id].tsx       One rating, laid out as a postcard
+    rating/[id].tsx       One sample (friend) rating, laid out as a postcard
     people/[handle].tsx   A friend's profile
     +not-found.tsx        "Lost in the post"
   components/             Shared UI (see Brand rules)
@@ -88,7 +94,13 @@ src/
     Text.tsx              All text goes through <Text variant="…"> (fonts + colours)
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
+    trip/TripForm.tsx     Add/edit a trip: place, month, score, who can see it, photo preview, "Add more detail"
+    trip/PlacePicker.tsx  Search or type a place ("Sintra, Portugal" → name + country)
+    trip/MonthPicker.tsx  This month + last 6 months as chips, or "Earlier…" (year arrows + months)
+    trip/ScorePicker.tsx  Tap or slide 1–10 with a word; accessibilityRole "adjustable"
+    trip/TripCard.tsx     A trip in a list
   constants/theme.ts      Colours, fonts, spacing (the only place for raw hex values)
+  constants/brand.json    The app name (placeholder "XYZX"); brand.ts exports APP_NAME
   lib/
     data.ts               Sample data, types and helpers (forYouPicks, friendFeed, …)
     config.ts             Supabase URL + publishable key (public by design)
@@ -96,6 +108,8 @@ src/
     auth.tsx              AuthProvider / useAuth(): session, profile, signOut
     authActions.ts        requestSignUpCode, requestLogInCode, verifyCode
     age.ts                ageInYears(), MIN_AGE_TO_JOIN (13), MIN_AGE_FOR_PUBLIC_PROFILE (18)
+    trips.ts              Trip types, fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces, SCORE_WORDS
+    months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth)
 supabase/migrations/      Database setup, as SQL files run in order
 docs/plan.md              Step-by-step plan
 ```
@@ -107,6 +121,11 @@ docs/plan.md              Step-by-step plan
 - **Tables:** `profiles` (handle, name, is_public) and `profile_private` (date_of_birth, owner-only, never editable). Row Level Security is on for both.
   - The `handle_new_user` trigger creates the profile and **refuses anyone under 13**.
   - Another trigger refuses `is_public = true` under 18.
+- **Trips** (`20261118120000_trips.sql`): `trips` (owner, trip_month = 1st of a month, score 1–10, visibility `friends`/`private`), `trip_stops` (position 0 = main place, then extra stops, optional nights 1–365), `stays` (name, type Hotel/Airbnb/Villa/B&B/Other, score 1–10), `food_picks`, `top_tips`, and `destinations` (shared place names).
+  - **Owner-only** for everything on trips, for now. Friends get read access in Step 3, for "Friends" trips only.
+  - Save new and edited trips **only through `save_trip(p_trip jsonb)`**: one transaction, runs with the caller's permissions, and replaces the details on edit. The app calls it with `supabase.rpc('save_trip', { p_trip })`.
+  - Places are added via the `destination_id_for()` helper (it tidies spaces and treats case as the same place). People only see the starting list plus places they've used, so private names like "Grandma's house" never leak.
+  - A trigger refuses future months.
 - **Changing the database:** add a new numbered file in `supabase/migrations/` (never edit one that's already been run). The owner runs it in Supabase → SQL Editor. Before handing it over, test it on a local Postgres with stand-ins for `auth.users`, `auth.uid()` and the `anon`/`authenticated` roles, covering every rule, including the "should fail" cases.
 - **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 
@@ -123,7 +142,7 @@ The look is **a vintage postcard**: warm card stock, fountain-pen ink, postage s
 | `sand` | `#e8d9bf` | Borders, dividers, quiet fills |
 | `ink` | `#1f2a44` | Main text, selected chips/tabs |
 | `inkSoft` | `#5b6478` | Secondary text |
-| `postbox` | `#b5392a` | Primary buttons, Log button, unread dots, kickers, scores under 6 |
+| `postbox` | `#b5392a` | Primary buttons, Add button, unread dots, kickers, scores under 6 |
 | `airmail` | `#2f5d8a` | Links, postmarks, scores 6–7.9 |
 | `sea` | `#3e7c7a` | Scores 8+, success |
 | `sun` | `#e2a43b` | Food-pick tags, highlights (fill only, never text) |
@@ -147,11 +166,11 @@ Text colours pass WCAG AA on `paper` and `card`.
 
 ### Voice
 
-Warm, short and British English ("holiday", "favourite"). Postal puns sparingly: "Send postcard", "Lost in the post", "Your post", "Check your inbox".
+Warm, short and British English ("holiday", "favourite"). Postal puns sparingly: "Lost in the post", "Your post", "Check your inbox".
 
 ### Layout
 
-Single column, 16px side padding (`GUTTER`) and a bottom tab bar (Home, Explore, a raised centre **Log** button, Postcards, You). Screens use `<Screen tabBar>` so content clears the tab bar. On web the app is centred at 480px max. Light theme only for now.
+Single column, 16px side padding (`GUTTER`) and a bottom tab bar (Home, Explore, a raised centre **Add** button, Postcards, You). Screens use `<Screen tabBar>` so content clears the tab bar. On web the app is centred at 480px max. Light theme only for now.
 
 ## Conventions
 

@@ -133,14 +133,17 @@ export function Chip({
   label,
   selected,
   onPress,
+  accessibilityLabel,
 }: {
   label: string;
   selected: boolean;
   onPress: () => void;
+  accessibilityLabel?: string;
 }) {
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       accessibilityState={{ selected }}
       onPress={onPress}
       style={{
@@ -157,7 +160,6 @@ export function Chip({
           fontFamily: fonts.sansMedium,
           fontSize: 14,
           color: selected ? colors.card : colors.inkSoft,
-          textTransform: 'capitalize',
         }}
       >
         {label}

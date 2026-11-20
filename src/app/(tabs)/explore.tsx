@@ -32,7 +32,7 @@ export default function Explore() {
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: GUTTER, paddingVertical: 12 }}>
         {[null, ...tags].map((t) => (
-          <Chip key={t ?? 'all'} label={t ?? 'All'} selected={tag === t} onPress={() => setTag(t)} />
+          <Chip key={t ?? 'all'} label={t ? t[0].toUpperCase() + t.slice(1) : 'All'} selected={tag === t} onPress={() => setTag(t)} />
         ))}
       </ScrollView>
       <View style={{ paddingHorizontal: GUTTER }}>

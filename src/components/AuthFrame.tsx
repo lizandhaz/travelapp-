@@ -5,6 +5,7 @@ import { colors, GUTTER } from '@/constants/theme';
 import { Airmail } from './Airmail';
 import { Text } from './Text';
 import { Screen } from './ui';
+import { APP_NAME } from '@/constants/brand';
 
 /** Frame for welcome, join and log in: no tab bar, airmail edge, brand name. */
 export function AuthFrame({ children }: { children: React.ReactNode }) {
@@ -28,7 +29,7 @@ export function AuthFrame({ children }: { children: React.ReactNode }) {
 export function Logo({ size = 26 }: { size?: number }) {
   return (
     <Text variant="title" style={{ fontSize: size, lineHeight: size * 1.2 }}>
-      Postcard<Text style={{ color: colors.postbox }}>.</Text>
+      {APP_NAME}<Text style={{ color: colors.postbox }}>.</Text>
     </Text>
   );
 }

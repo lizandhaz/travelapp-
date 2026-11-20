@@ -1,26 +1,36 @@
 import { View } from 'react-native';
 
 import { colors, GUTTER } from '@/constants/theme';
-import { getDestination, ratingsBy, type Person } from '@/lib/data';
+import type { Person } from '@/lib/data';
 import { Airmail } from './Airmail';
 import { Avatar } from './Avatar';
-import { RatingCard } from './RatingCard';
 import { Text } from './Text';
 import { BackLink, Card } from './ui';
 
+export type ProfileStats = { count: number; countries: number; avg: string };
+
+/** A profile page: header, three stats, optional extras, then a list of trips. */
 export function ProfileView({
   person,
   isMe = false,
+  stats,
+  countLabel = 'Trips',
+  listTitle,
+  list,
   children,
+  footer,
 }: {
   person: Person;
   isMe?: boolean;
+  stats: ProfileStats;
+  countLabel?: string;
+  listTitle: string;
+  list: React.ReactNode;
+  /** Shown just under the stats, above the list. */
   children?: React.ReactNode;
+  /** Shown after the list (e.g. settings). */
+  footer?: React.ReactNode;
 }) {
-  const rs = ratingsBy(person.handle);
-  const countries = new Set(rs.map((r) => getDestination(r.destination)?.country)).size;
-  const avg = rs.length ? (rs.reduce((s, r) => s + r.destinationScore, 0) / rs.length).toFixed(1) : '–';
-
   return (
     <View>
       <Airmail height={8} />
@@ -61,20 +71,18 @@ export function ProfileView({
       </View>
 
       <Card style={{ marginHorizontal: GUTTER, flexDirection: 'row' }}>
-        <Stat label="Holidays" value={rs.length} />
-        <Stat label="Countries" value={countries} border />
-        <Stat label="Avg score" value={avg} border />
+        <Stat label={countLabel} value={stats.count} />
+        <Stat label="Countries" value={stats.countries} border />
+        <Stat label="Avg score" value={stats.avg} border />
       </Card>
 
       {children}
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 32, gap: 16 }}>
-        <Text variant="heading">{isMe ? 'Your holidays' : 'Holidays'}</Text>
-        {rs.map((r) => (
-          <RatingCard key={r.id} rating={r} showAuthor={false} />
-        ))}
-        {rs.length === 0 && <Text variant="bodySoft">No holidays rated yet.</Text>}
+        <Text variant="heading">{listTitle}</Text>
+        {list}
       </View>
+      {footer}
     </View>
   );
 }

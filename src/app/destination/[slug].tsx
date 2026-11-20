@@ -36,10 +36,10 @@ export default function DestinationScreen() {
         {rs.length === 0 ? (
           <Card style={{ padding: 20, alignItems: 'center', borderStyle: 'dashed' }}>
             <Text variant="heading">No friends have rated {place.name} yet.</Text>
-            <Link href="/log" asChild>
+            <Link href="/add" asChild>
               <Pressable style={{ marginTop: 12 }}>
                 <Text variant="link" style={{ color: colors.postbox }}>
-                  Been? Rate it →
+                  Been? Add your trip →
                 </Text>
               </Pressable>
             </Link>

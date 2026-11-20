@@ -26,6 +26,7 @@ import {
 } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
 import { MonthPicker } from './MonthPicker';
+import { NightsPicker } from './NightsPicker';
 import { PlacePicker } from './PlacePicker';
 import { ScorePicker } from './ScorePicker';
 
@@ -52,6 +53,7 @@ export function TripForm({
   const [place, setPlace] = useState<Place | null>(initial?.stops[0] ?? startPlace ?? null);
   const [month, setMonth] = useState<string | null>(initial?.month ?? null);
   const [score, setScore] = useState<number | null>(initial?.score ?? null);
+  const [nights, setNights] = useState<number | null>(initial?.stops[0]?.nights ?? null);
   const [visibility, setVisibility] = useState<Visibility>(initial?.visibility ?? 'friends');
   const [companions, setCompanions] = useState<Companions | null>(initial?.companions ?? null);
   const [note, setNote] = useState(initial?.note ?? '');
@@ -91,6 +93,8 @@ export function TripForm({
     else if (place.name.trim().length > 80) p.push('That place name is a bit long (80 characters at most).');
     if (!month) p.push('When did you go?');
     else if (month > currentMonth()) p.push("That month is in the future. Trips are for holidays you're back from.");
+    if (nights == null) p.push('How long did you stay? Pick the number of nights.');
+    else if (nights < 1 || nights > 365) p.push('How long did you stay? 1 to 365 nights.');
     if (score == null) p.push('How was it? Slide to give it a score out of 10.');
     if (isThisMonth && !home) p.push("Tick “I'm back home”. Trips are only shared once you're home.");
 
@@ -120,7 +124,7 @@ export function TripForm({
         score: score!,
         visibility,
         stops: [
-          { ...place!, nights: initial?.stops[0]?.nights ?? null },
+          { ...place!, nights: nights! },
           ...stops.map((e) => ({ ...e.place!, nights: e.nights ? Number(e.nights) : null })),
         ],
         stay: hasStay ? { name: stayName.trim(), type: stayType!, score: stayScore! } : null,
@@ -210,6 +214,10 @@ export function TripForm({
 
           <Question title="When did you go?">
             <MonthPicker value={month} onChange={setMonth} />
+          </Question>
+
+          <Question title="How long did you stay?">
+            <NightsPicker value={nights} onChange={setNights} />
           </Question>
 
           <Question title="How was it?">
@@ -352,7 +360,7 @@ export function TripForm({
 
           {more && (
             <View style={{ gap: 28 }}>
-              <Question title="Other places on this trip">
+              <Question title="Other places on this trip" note="with nights in each">
                 {extras.map((e, i) => (
                   <Card key={e.key} style={{ padding: 12, gap: 10 }}>
                     <PlacePicker

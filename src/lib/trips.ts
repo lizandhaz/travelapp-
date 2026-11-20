@@ -1,6 +1,6 @@
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 
-import { countryOf, KNOWN_PLACES } from './knownPlaces';
+import { ALL_PLACES, countryOf, plain } from './knownPlaces';
 import { places as samplePlaces } from './sample';
 import { supabase } from './supabase';
 
@@ -216,10 +216,10 @@ function base64ToBytes(b64: string): Uint8Array {
 export async function fetchPlaces(): Promise<Place[]> {
   const sample = samplePlaces.map((p) => ({ name: p.name, country: p.region.split(', ').pop() ?? '' }));
   const { data } = await supabase.from('destinations').select('name, country').order('name').limit(500);
-  const all = [...((data as Place[] | null) ?? []), ...sample, ...KNOWN_PLACES].map((p) => ({ name: p.name, country: countryOf(p) }));
+  const all = [...((data as Place[] | null) ?? []), ...sample, ...ALL_PLACES].map((p) => ({ name: p.name, country: countryOf(p) }));
   const seen = new Set<string>();
   return all.filter((p) => {
-    const key = `${p.name.toLowerCase()}|${p.country.toLowerCase()}`;
+    const key = `${plain(p.name)}|${plain(p.country)}`; // "Malaga" and "Málaga" are the same place
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
@@ -228,7 +228,7 @@ export async function fetchPlaces(): Promise<Place[]> {
 
 /** "Lisbon, Portugal" (or just "Lisbon" when there's no country). */
 export function placeLabel(p: Place) {
-  return p.country ? `${p.name}, ${p.country}` : p.name;
+  return p.country && p.country.toLowerCase() !== p.name.toLowerCase() ? `${p.name}, ${p.country}` : p.name;
 }
 
 /** Turns typed text into a place: "Sintra, Portugal" → name + country. */
@@ -249,6 +249,7 @@ type DbError = { message?: string; code?: string; details?: string | null };
 export function friendlyError(e: DbError): string {
   const m = e.message ?? '';
   if (/up to 50 lists|up to 300 places/i.test(m)) return m;
+  if (/main_stop_has_nights/i.test(m)) return 'How long did you stay? Pick the number of nights.';
   if (/future/i.test(m)) return "That month is in the future. Trips are for holidays you're back from.";
   if (/network|fetch/i.test(m)) return "Couldn't connect. Check you're online and try again.";
   if (/save_trip|function .* does not exist|schema cache|column .* does not exist|bucket not found|relation .* does not exist/i.test(m))

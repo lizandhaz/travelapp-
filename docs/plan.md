@@ -175,6 +175,15 @@ From now on, **merging a pull request also updates the database**. A GitHub job 
 
 ---
 
+## Trip length, more places, a nicer map ✅
+
+- **How long did you stay?** is now required when adding or editing a trip (1 night to two weeks, or type up to 365). Older trips keep working; editing one asks for it.
+- Place suggestions cover about 10,000 towns and cities worldwide plus every country and ~525 holiday spots, and ignore accents ("malaga" finds Málaga).
+- The score slider no longer triggers the iPhone's swipe-back.
+- One tap **Want to go** on every place page. The travel map zooms to your places, with names on the pins and "Whole world".
+
+---
+
 ## Next steps (from the build plan, one pull request each)
 
 Each step's ready-made prompt is in your build plan doc ("XYZX: build plan from the preview").

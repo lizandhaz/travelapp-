@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { View, type GestureResponderEvent } from 'react-native';
 
 import { Text } from '@/components/Text';
@@ -23,7 +23,6 @@ export function ScorePicker({
   compact?: boolean;
 }) {
   const width = useRef(1);
-  const [dragging, setDragging] = useState(false);
 
   const fromTouch = (e: GestureResponderEvent) => {
     const x = Math.min(width.current, Math.max(0, e.nativeEvent.locationX));
@@ -60,14 +59,10 @@ export function ScorePicker({
         onLayout={(e) => (width.current = e.nativeEvent.layout.width || 1)}
         onStartShouldSetResponder={() => true}
         onMoveShouldSetResponder={() => true}
-        onResponderTerminationRequest={() => !dragging}
-        onResponderGrant={(e) => {
-          setDragging(true);
-          fromTouch(e);
-        }}
+        // Keep the drag once it starts, so sliding right isn't taken as a swipe back or a scroll.
+        onResponderTerminationRequest={() => false}
+        onResponderGrant={fromTouch}
         onResponderMove={fromTouch}
-        onResponderRelease={() => setDragging(false)}
-        onResponderTerminate={() => setDragging(false)}
         style={{ height: 30, justifyContent: 'center' }}
       >
         <View pointerEvents="none" style={{ height: 6, borderRadius: 3, backgroundColor: value == null ? colors.line : colors.ink, overflow: 'hidden' }}>

@@ -5,6 +5,7 @@ import { Text } from '@/components/Text';
 import { SearchIcon } from '@/components/Icons';
 import { Card, Input } from '@/components/ui';
 import { colors } from '@/constants/theme';
+import { plain } from '@/lib/knownPlaces';
 import { parsePlace, placeLabel, type Place } from '@/lib/trips';
 
 /**
@@ -27,15 +28,31 @@ export function PlacePicker({
   const [text, setText] = useState(value ? placeLabel(value) : '');
   const [focused, setFocused] = useState(false);
 
-  const q = text.trim().toLowerCase();
+  const q = plain(text);
+  // Best matches first: the name itself, then names starting with what you typed, then the
+  // rest (towns, regions and countries containing it). Ties keep the list's order: popular
+  // holiday places, then countries, then towns and cities by size.
   const suggestions = useMemo(() => {
     if (!q) return [];
-    return places
-      .filter((p) => placeLabel(p).toLowerCase().includes(q))
-      .sort((a, b) => Number(!a.name.toLowerCase().startsWith(q)) - Number(!b.name.toLowerCase().startsWith(q)))
-      .slice(0, 5);
+    const [qName, qCountry] = q.split(',').map((x) => x.trim());
+    const ranked: [number, number, Place][] = [];
+    places.forEach((p, i) => {
+      const name = plain(p.name);
+      const country = plain(p.country);
+      if (qCountry !== undefined && qCountry && !country.startsWith(qCountry)) return;
+      let rank = -1;
+      if (name === qName) rank = 0;
+      else if (name.startsWith(qName)) rank = 1;
+      else if (name.split(/[\s-]+/).some((w) => w.startsWith(qName))) rank = 2;
+      else if (qCountry === undefined && qName.length >= 3 && country.startsWith(qName)) rank = 3;
+      if (rank >= 0) ranked.push([rank, i, p]);
+    });
+    return ranked
+      .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+      .slice(0, 6)
+      .map(([, , p]) => p);
   }, [places, q]);
-  const exact = suggestions.some((p) => placeLabel(p).toLowerCase() === q);
+  const exact = suggestions.some((p) => plain(placeLabel(p)) === q);
 
   function choose(p: Place) {
     setText(placeLabel(p));
@@ -48,7 +65,7 @@ export function PlacePicker({
     if (!t.trim()) return onChange(null);
     const typed = parsePlace(t);
     // "lisbon" on its own → the known Lisbon, Portugal
-    const known = !typed.country && places.find((p) => p.name.toLowerCase() === typed.name.toLowerCase());
+    const known = !typed.country && places.find((p) => plain(p.name) === plain(typed.name));
     onChange(known || typed);
   }
 
@@ -76,7 +93,7 @@ export function PlacePicker({
               style={{ paddingHorizontal: 12, paddingVertical: 11, borderTopWidth: i ? 1 : 0, borderTopColor: colors.sand }}
             >
               <Text variant="strong">{p.name}</Text>
-              {!!p.country && <Text variant="tiny">{p.country}</Text>}
+              {!!p.country && p.country !== p.name && <Text variant="tiny">{p.country}</Text>}
             </Pressable>
           ))}
           {!exact && (

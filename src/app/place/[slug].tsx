@@ -3,6 +3,7 @@ import { Dimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/Avatar';
+import { WantToGoButton } from '@/components/lists';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
 import { BestTimeChart, DoRow, EatRow, MoreAbout, PlaceFacts, SaidList, StayRow } from '@/components/place';
@@ -15,6 +16,7 @@ import { countryOf } from '@/lib/knownPlaces';
 import { placeDetails } from '@/lib/placeDetails';
 import { scoreWord } from '@/lib/score';
 import { aboutPlace, getPlace } from '@/lib/sample';
+import { useWantToGo } from '@/lib/useWantToGo';
 import NotFound from '../+not-found';
 
 /** A place page (sample content from the prototype for now; real place pages come in plan Step E). */
@@ -22,20 +24,22 @@ export default function PlaceScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const insets = useSafeAreaInsets();
   const place = getPlace(slug);
+  const country = place ? countryOf({ name: place.name, country: place.region.split(', ').pop() ?? '' }) : '';
+  const wish = useWantToGo({ name: place?.name ?? '', country, slug });
   if (!place) return <NotFound />;
   const detail = placeDetails[slug] ?? null;
   const { said, ideas } = aboutPlace(slug);
   const moreSaid = (detail?.said ?? []).filter((s) => !said.some((f) => f.who === s.who));
   const h = Math.min(Dimensions.get('window').width, 480) * 1.0;
-  const country = countryOf({ name: place.name, country: place.region.split(', ').pop() ?? '' });
 
   return (
     <Screen noTopInset>
       <View style={{ height: h }}>
         <PhotoFill photo={place.photo} label={place.name} />
         <Shade strength={0.55} />
-        <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER }}>
+        <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER, right: GUTTER, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <BackButton onPhoto />
+          {wish.ready && <WantToGoButton variant="photo" saved={wish.saved} busy={wish.busy} onPress={wish.toggle} />}
         </View>
         <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: detail ? 48 : 22 }}>
           {!!detail?.kicker && (
@@ -60,6 +64,16 @@ export default function PlaceScreen() {
             <Text variant="small">{detail?.scoreNote ?? 'From your friends and people with your taste.'}</Text>
           </View>
         </Card>
+      )}
+
+      <View style={{ paddingHorizontal: GUTTER, marginTop: 12, flexDirection: 'row', gap: 10 }}>
+        <WantToGoButton variant="block" saved={wish.saved} busy={wish.busy || !wish.ready} onPress={wish.toggle} style={{ flex: 1 }} />
+        <Button title="I’ve been" kind="accent" style={{ flex: 1 }} onPress={() => router.navigate({ pathname: '/add', params: { place: place.name, country } })} />
+      </View>
+      {!!wish.error && (
+        <Text variant="small" style={{ paddingHorizontal: GUTTER, marginTop: 6, color: colors.terracottaText }}>
+          {wish.error}
+        </Text>
       )}
 
       {detail && (
@@ -128,13 +142,8 @@ export default function PlaceScreen() {
       {detail && <MoreAbout name={place.name} detail={detail} />}
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 28, flexDirection: 'row', gap: 12 }}>
+        <WantToGoButton variant="block" saved={wish.saved} busy={wish.busy || !wish.ready} onPress={wish.toggle} style={{ flex: 1 }} />
         <Button title="Save to a list" kind="outline" style={{ flex: 1 }} onPress={() => router.push({ pathname: '/save', params: { place: place.name, country, slug } })} />
-        <Button
-          title="I’ve been"
-          kind="accent"
-          style={{ flex: 1 }}
-          onPress={() => router.push({ pathname: '/add', params: { place: place.name, country } })}
-        />
       </View>
 
       <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 18 }}>

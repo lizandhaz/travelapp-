@@ -158,6 +158,14 @@ How it's set up (done in Nov 2026):
 
 ---
 
+## Automatic database updates. Built ✅, one-time setup next
+
+From now on, **merging a pull request also updates the database**. A GitHub job sends any new database files to Supabase, so there's no more pasting into the SQL Editor.
+
+**One-time setup (about 10 minutes):** add two private settings in GitHub, `SUPABASE_ACCESS_TOKEN` (made in Supabase → Account → Access Tokens) and `SUPABASE_DB_PASSWORD` (the database password from when the project was created, or a new one from Supabase → Project Settings → Database → Reset database password). Add both in GitHub → the repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. To see it working, open the repo's **Actions** tab after a merge: a green tick means the database is up to date.
+
+---
+
 ## Next steps (from the build plan, one pull request each)
 
 Each step's ready-made prompt is in your build plan doc ("XYZX: build plan from the preview").

@@ -7,13 +7,16 @@
 --     trip already has is kept and becomes its first photo.
 --   * Your profile can have a picture. Like trip photos, it's stored in your
 --     own private folder in the "trip-photos" store.
+--
+-- Safe to run more than once (it skips what's already done), because some
+-- people pasted it by hand before updates became automatic.
 
 -- ---------------------------------------------------------------------------
 -- Up to 6 photos per trip
 -- ---------------------------------------------------------------------------
 
 -- True when every photo path is inside the owner's own folder.
-create function public.paths_in_own_folder(paths text[], owner uuid)
+create or replace function public.paths_in_own_folder(paths text[], owner uuid)
 returns boolean
 language sql
 immutable
@@ -23,12 +26,22 @@ as $$
 $$;
 
 alter table public.trips
-  add column photo_paths text[] not null default '{}'
+  add column if not exists photo_paths text[] not null default '{}'
     check (cardinality(photo_paths) <= 6 and public.paths_in_own_folder(photo_paths, owner_id));
 
-update public.trips set photo_paths = array[photo_path] where photo_path is not null;
+-- Move each trip's single photo (if the old column is still there) into the list.
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'trips' and column_name = 'photo_path'
+  ) then
+    update public.trips set photo_paths = array[photo_path] where photo_path is not null and photo_paths = '{}';
+  end if;
+end;
+$$;
 
-alter table public.trips drop column photo_path;
+alter table public.trips drop column if exists photo_path;
 
 grant update (photo_paths) on public.trips to authenticated;
 
@@ -143,6 +156,6 @@ grant execute on function public.save_trip(jsonb) to authenticated;
 -- ---------------------------------------------------------------------------
 
 alter table public.profiles
-  add column avatar_path text check (avatar_path is null or avatar_path like id::text || '/%');
+  add column if not exists avatar_path text check (avatar_path is null or avatar_path like id::text || '/%');
 
 grant update (avatar_path) on public.profiles to authenticated;

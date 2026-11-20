@@ -1,0 +1,4 @@
+# Settings for the Supabase command-line tool, used by the
+# "Update Supabase database" GitHub job (.github/workflows/supabase-database.yml).
+# The real project is linked by its id in that job; nothing secret lives here.
+project_id = "travelapp"

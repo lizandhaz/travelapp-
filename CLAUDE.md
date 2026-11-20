@@ -121,7 +121,9 @@ src/
     knownPlaces.ts        Popular places with countries: suggestions + countryOf()
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
-supabase/migrations/      Database setup, as SQL files run in order
+supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)
+supabase/config.toml      Settings for the Supabase command-line tool (used by the GitHub job)
+.github/workflows/supabase-database.yml   On merge to main: applies new database files to Supabase
 docs/plan.md              Step-by-step plan
 ```
 
@@ -143,7 +145,12 @@ docs/plan.md              Step-by-step plan
   - **Photos and profile picture** (`20261121120000_photos_and_avatar.sql`): `trips.photo_paths text[]` (up to 6, the first is the cover; every path must be in the owner's folder via `paths_in_own_folder()`), replacing the earlier single `photo_path`. `profiles.avatar_path` (in the owner's folder; only that column is newly editable).
   - **Photo storage:** a private Storage bucket `trip-photos` (JPEG only, 5 MB max) holds trip photos and profile pictures (`avatar-…jpg`). Each person's files live at `<user id>/<name>.jpg`, and storage policies allow only their own folder. `uploadTripPhoto()` shrinks the photo to 1600px and re-encodes it with expo-image-manipulator, which drops EXIF/GPS (product rule 2), before uploading. Photos are shown through 1-hour signed URLs (`tripPhotoUrl`, `useTripPhoto`). Profile pictures are 800px. Replacing, removing or deleting deletes the old files.
 - **Places and countries:** `src/lib/knownPlaces.ts` lists about 235 popular places with countries. It feeds place suggestions, and `countryOf()` fills in the country for trips saved without one (for the Countries stat and the trip page).
-- **Changing the database:** add a new numbered file in `supabase/migrations/` (never edit one that's already been run). The owner runs it in Supabase → SQL Editor. Before handing it over, test it on a local Postgres with stand-ins for `auth.users`, `auth.uid()` and the `anon`/`authenticated` roles, covering every rule, including the "should fail" cases.
+- **Changing the database:** add a new file in `supabase/migrations/` named `YYYYMMDDHHMMSS_what_it_does.sql` (never edit one that's already been applied). **Database updates are automatic:** when a merge to `main` touches `supabase/migrations/`, the GitHub Actions job `.github/workflows/supabase-database.yml` runs `supabase db push`, which applies new files in order, each once (tracked by Supabase's migration history). The owner no longer pastes SQL.
+  - The job needs GitHub secrets `SUPABASE_ACCESS_TOKEN` and `SUPABASE_DB_PASSWORD`. The project id is in the workflow file. It can be started by hand from GitHub → Actions → "Update Supabase database" → Run workflow.
+  - The first three migrations were pasted by hand, and the job marks them as applied (`supabase migration repair`) before pushing. `20261121120000_photos_and_avatar.sql` is written to be safe to run twice, in case it was pasted too.
+  - **Order matters:** merge the pull request (database update) *before* publishing an app update that needs it, or the app will show "The latest database update hasn't been run". After merging, check the job went green (GitHub MCP `actions_list` / `get_job_logs`) before publishing.
+  - Write migrations so they're safe if partly applied where reasonable (`if not exists`, `create or replace`).
+  - Before merging, test every migration on a local Postgres with stand-ins for `auth.users`, `auth.uid()`, the `anon`/`authenticated` roles and (when needed) `storage.buckets`/`storage.objects`/`storage.foldername`, covering every rule, including the "should fail" cases.
 - **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 
 ## Brand rules

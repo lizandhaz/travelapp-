@@ -246,11 +246,12 @@ export function countriesIn(trips: Trip[]) {
 
 type DbError = { message?: string; code?: string; details?: string | null };
 
-function friendlyError(e: DbError): string {
+export function friendlyError(e: DbError): string {
   const m = e.message ?? '';
+  if (/up to 50 lists|up to 300 places/i.test(m)) return m;
   if (/future/i.test(m)) return "That month is in the future. Trips are for holidays you're back from.";
   if (/network|fetch/i.test(m)) return "Couldn't connect. Check you're online and try again.";
-  if (/save_trip|function .* does not exist|schema cache|column .* does not exist|bucket not found/i.test(m))
+  if (/save_trip|function .* does not exist|schema cache|column .* does not exist|bucket not found|relation .* does not exist/i.test(m))
     return 'The latest database update hasn’t been run in Supabase yet (see the steps Claude gave you).';
   if (/payload too large|exceeded the maximum/i.test(m)) return 'That photo is too big. Try another one.';
   if (/Trip not found/i.test(m)) return 'That trip couldn’t be found. It may have been deleted.';

@@ -2,7 +2,7 @@
 
 Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations** and **where they stayed** (hotel, Airbnb, villa and so on) out of 10, and add photos, food picks and top tips.
 
-**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips (Home's picks and Friends feed, Explore, Saved boards, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts`. The roadmap is in `docs/plan.md`.
+**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **Lists are real too:** Saved holds your "Want to go" list and lists you make, and You has a travel map of where you've been and want to go. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips and lists (Home's picks and Friends feed, Explore, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts`. The roadmap is in `docs/plan.md`.
 
 **App name:** the name is a placeholder, currently **XYZX**. It lives in **one place**, `src/constants/brand.json` (`appName`). Code uses `APP_NAME` from `src/constants/brand.ts`, and `app.config.ts` reads the same JSON for the name under the icon. Never type the app's name anywhere else. (The project was originally called "Postcard"; that's still the Expo `slug` and the repo's history, and the notifications feature is still called "Postcards".)
 
@@ -82,8 +82,11 @@ src/
     (tabs)/index.tsx      Home: wordmark, search + Postcards buttons, For you (hero + rows) / Friends (feed)
     (tabs)/explore.tsx    "Describe your perfect trip" search, filter chips, collections, Trending this month, board
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
-    (tabs)/saved.tsx      Saved: "Your lists" boards (sample; real in plan Step D)
-    (tabs)/profile.tsx    You: profile picture (tap to change), stats, your real trips as photo stamps (highest score first)
+    (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list
+    (tabs)/profile.tsx    You: profile picture (tap to change), stats, Your travel map, your real trips as photo stamps (highest score first)
+    list/[id].tsx         One list: its places (tap → place page), add a place, remove (×), Share, Edit, Delete (confirm)
+    list/new.tsx          New list, or rename/who-can-see with ?id=; with ?place= it also adds that place
+    save.tsx              "Save to a list" from a place page: tick lists (Want to go first), + New list
     postcards.tsx         Postcards (sample), opened from Home's paper-plane button
     settings.tsx          Settings (public-profile note, sign out), opened from You
     place/[slug].tsx      A sample place: photo, score, best time, what friends said, where to stay/eat, things to do,
@@ -103,6 +106,8 @@ src/
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
     cards.tsx             Row, TrendCard, PlaceCard, TasteCard, PickCard, FeedCard, BoardTile, PhotoBadge
+    lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, photoForItem, placeSlugForItem
+    TravelMap.tsx         "Your travel map": dotted world map, Been dots + Want to go stars, filter chips, place chips
     place.tsx             Place page pieces: PlaceFacts, BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
@@ -120,6 +125,10 @@ src/
     placeDetails.ts       Sample place details from the prototype (stays, food, things to do, best time, tips)
     score.ts              formatScore, clampScore, scoreWord
     trips.ts              Trip types, fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces, photo upload + signed URLs
+    boards.ts             Lists: fetchBoards/fetchBoard/createBoard/ensureWishList/updateBoard/deleteBoard,
+                          addToBoard/removeFromBoard, findOnBoard, shareBoard (phone share sheet)
+    geo.ts                Rough map positions for popular places (country middle as fallback) + toMap()
+    worldMap.ts           The world outline for the travel map (from the prototype, 360 × 158)
     useTripPhoto.ts       Hook: a signed URL for one of your photos (trip photos and profile picture)
     knownPlaces.ts        Popular places with countries: suggestions + countryOf()
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
@@ -147,6 +156,7 @@ docs/plan.md              Step-by-step plan
     - `trips.companions` ("who you went with": `solo`/`partner`/`friends`/`family`) and `trips.note` (up to 500 characters). `created_at` is shown as "Added …".
   - **Photos and profile picture** (`20261121120000_photos_and_avatar.sql`): `trips.photo_paths text[]` (up to 6, the first is the cover; every path must be in the owner's folder via `paths_in_own_folder()`), replacing the earlier single `photo_path`. `profiles.avatar_path` (in the owner's folder; only that column is newly editable).
   - **Photo storage:** a private Storage bucket `trip-photos` (JPEG only, 5 MB max) holds trip photos and profile pictures (`avatar-…jpg`). Each person's files live at `<user id>/<name>.jpg`, and storage policies allow only their own folder. `uploadTripPhoto()` shrinks the photo to 1600px and re-encodes it with expo-image-manipulator, which drops EXIF/GPS (product rule 2), before uploading. Photos are shown through 1-hour signed URLs (`tripPhotoUrl`, `useTripPhoto`). Profile pictures are 800px. Replacing, removing or deleting deletes the old files.
+- **Lists** (`20261122120000_boards.sql`): `boards` (owner_id, name 1–60, kind `wish` = the one "Want to go" list per person or `list`, visibility `friends`/`private`, updated_at kept fresh by triggers) and `board_items` (board_id, owner_id, optional `place_slug` for sample place pages, name, country; the same place can't be on a list twice, ignoring case and spaces). Owner-only RLS (friends read "friends" lists in Step C). Only name and visibility can be updated. Limits: 50 lists each, 300 places a list. The app makes the Want to go list the first time it's needed (`ensureWishList`). **Share** uses React Native's `Share` (text list), not a link.
 - **Places and countries:** `src/lib/knownPlaces.ts` lists about 235 popular places with countries. It feeds place suggestions, and `countryOf()` fills in the country for trips saved without one (for the Countries stat and the trip page).
 - **Changing the database:** add a new file in `supabase/migrations/` named `YYYYMMDDHHMMSS_what_it_does.sql` (never edit one that's already been applied). **Database updates are automatic:** when a merge to `main` touches `supabase/migrations/`, the GitHub Actions job `.github/workflows/supabase-database.yml` runs `supabase db push`, which applies new files in order, each once (tracked by Supabase's migration history). The owner no longer pastes SQL.
   - The job needs GitHub secrets `SUPABASE_ACCESS_TOKEN` and `SUPABASE_DB_PASSWORD`. The project id is in the workflow file. It can be started by hand from GitHub → Actions → "Update Supabase database" → Run workflow.
@@ -168,6 +178,7 @@ The look follows the owner's prototype: **clean, warm and photo-led**. A warm of
 | `card` | `#ffffff` | Cards, inputs, stamp frames |
 | `line` | `#ece5db` | Borders, dividers |
 | `sand` | `#e9dec8` | Quiet fills, photo placeholders |
+| `mapLand` | `#d5c2a5` | Dotted land on the travel map |
 | `ink` | `#13264a` | Main text, navy buttons, selected chips/tabs, the + button |
 | `muted` | `#66708a` | Secondary text, labels |
 | `peach` | `#f6b096` | Score stamps, the + sign |

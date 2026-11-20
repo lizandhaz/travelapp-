@@ -1,16 +1,20 @@
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Dimensions, Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { Avatar } from '@/components/Avatar';
 import { PlusIcon, SlidersIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
+import { placeSlugForItem } from '@/components/lists';
+import { TravelMap, type MapPlace } from '@/components/TravelMap';
 import { TripCard } from '@/components/trip/TripCard';
 import { Button, Card, IconCircle, Screen } from '@/components/ui';
 import { colors, GUTTER } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
+import { fetchBoards, type BoardItem } from '@/lib/boards';
+import { countryOf } from '@/lib/knownPlaces';
 import { formatScore } from '@/lib/score';
 import { countriesIn, fetchMyTrips, setProfilePicture, type Trip } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
@@ -19,8 +23,13 @@ export default function You() {
   const { profile, session } = useAuth();
   const [trips, setTrips] = useState<Trip[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [wishItems, setWishItems] = useState<BoardItem[]>([]);
 
   const load = useCallback((isActive: () => boolean = () => true) => {
+    // The map's "Want to go" places. If lists can't load, the map just shows where you've been.
+    fetchBoards()
+      .then((b) => isActive() && setWishItems(b.find((x) => x.kind === 'wish')?.items ?? []))
+      .catch(() => {});
     fetchMyTrips()
       .then((t) => {
         if (!isActive()) return;
@@ -42,8 +51,26 @@ export default function You() {
   );
 
   const name = profile?.name ?? session?.user.email?.split('@')[0] ?? 'You';
-  const list = trips ?? [];
+  const list = useMemo(() => trips ?? [], [trips]);
   const avg = list.length ? formatScore(list.reduce((s, t) => s + t.score, 0) / list.length) : '–';
+  const been = useMemo(() => {
+    const seen = new Map<string, MapPlace>();
+    for (const t of list)
+      for (const s of t.stops) {
+        const place = { name: s.name, country: countryOf(s) };
+        const key = `${place.name.toLowerCase()}|${place.country.toLowerCase()}`;
+        if (!seen.has(key)) seen.set(key, { ...place, href: `/trip/${t.id}` });
+      }
+    return [...seen.values()];
+  }, [list]);
+  const wish = useMemo<MapPlace[]>(
+    () =>
+      wishItems.map((i) => {
+        const slug = placeSlugForItem(i);
+        return { name: i.name, country: countryOf(i), href: slug ? `/place/${slug}` : null };
+      }),
+    [wishItems],
+  );
   const cardWidth = (Math.min(Dimensions.get('window').width, 480) - GUTTER * 2 - 14) / 2;
 
   return (
@@ -75,6 +102,8 @@ export default function You() {
         <Stat label="Countries" value={countriesIn(list)} border />
         <Stat label="Avg score" value={avg} border />
       </Card>
+
+      {trips && <TravelMap been={been} wish={wish} countries={countriesIn(list)} />}
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 30, gap: 16 }}>
         <AccentTitle before="Your" accent="trips" variant="heading" />

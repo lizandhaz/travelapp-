@@ -8,7 +8,7 @@ import { Text } from '@/components/Text';
 import { BackButton, PageTitle, Screen } from '@/components/ui';
 import { colors, GUTTER, radius } from '@/constants/theme';
 import { photos } from '@/lib/photos';
-import { samplePostcards } from '@/lib/sample';
+import { postcards } from '@/lib/postcards';
 
 // "Postcards" is what the app calls notifications (product rule 4).
 export default function Postcards() {
@@ -24,11 +24,12 @@ export default function Postcards() {
         <Text variant="tiny" style={{ marginBottom: 10 }}>
           Preview: these are sample postcards.
         </Text>
-        {samplePostcards.map((p, i) => (
+        {postcards.map((p) => (
           <Pressable
-            key={i}
-            onPress={() => router.push(`/place/${p.slug}`)}
+            key={p.id}
+            onPress={() => router.push(`/postcard/${p.id}`)}
             accessibilityRole="link"
+            accessibilityLabel={`Postcard from ${p.from}: ${p.line}. ${p.when}`}
             style={{ flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: colors.line }}
           >
             <View style={{ width: 52, height: 52, borderRadius: radius.sm + 4, overflow: 'hidden', backgroundColor: colors.sand, alignItems: 'center', justifyContent: 'center' }}>
@@ -36,7 +37,7 @@ export default function Postcards() {
             </View>
             <View style={{ flex: 1 }}>
               <Text variant="body" style={{ fontSize: 15, lineHeight: 21 }}>
-                <Text variant="strong">{p.who}</Text> {p.text}
+                <Text variant="strong">{p.from}</Text> {p.line}
               </Text>
               <Text variant="tiny" style={{ marginTop: 2 }}>
                 {p.when}

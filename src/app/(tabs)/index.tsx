@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { Dimensions, Pressable, View } from 'react-native';
+import { useRef, useState, type ComponentRef } from 'react';
+import { Dimensions, Pressable, ScrollView, View, type LayoutChangeEvent } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { FeedCard, PickCard, PlaceCard, Row, TasteCard, TrendCard } from '@/components/cards';
@@ -10,46 +11,121 @@ import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { Chip, IconCircle, Screen, SectionHeader, Segmented, TONES } from '@/components/ui';
 import { Wordmark } from '@/components/Wordmark';
+import { APP_NAME } from '@/constants/brand';
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { friendsFeed, hero as sampleHero, PHOTO_CREDITS, places, rows, TASTES, unreadPostcardCount, type RowItem } from '@/lib/sample';
 import { rankValue } from '@/lib/match';
 import { tasteNote, useTaste } from '@/lib/taste';
 
+/** Chips under the search bar: each jumps to its section of For you. */
+const JUMPS: [string, string][] = [
+  ['trending', 'Trending'],
+  ['islands', 'Islands & beaches'],
+  ['weekends', 'Weekends'],
+  ['overnight', 'One night away'],
+  ['taste', 'Made for your taste'],
+  ['picked', 'Picked for you'],
+];
+
 export default function Home() {
   const [side, setSide] = useState<'for-you' | 'friends'>('for-you');
+  const insets = useSafeAreaInsets();
+  const scroller = useRef<ComponentRef<typeof ScrollView>>(null);
+  // Where things are, for jumping: the pinned bar's height, where For you starts, and each section within it.
+  const spots = useRef<{ bar: number; content: number; sections: Record<string, number> }>({ bar: 0, content: 0, sections: {} });
+  const [active, setActive] = useState<string | null>(null);
+  const chipRow = useRef<ComponentRef<typeof ScrollView>>(null);
+  const chipX = useRef<Record<string, number>>({});
+  // Keep the highlighted chip in view as you scroll down the page.
+  const highlight = (key: string | null) => {
+    if (key === active) return;
+    setActive(key);
+    if (key) chipRow.current?.scrollTo({ x: Math.max(0, (chipX.current[key] ?? 0) - GUTTER), animated: true });
+  };
+  const top = (key: string) => spots.current.content + (spots.current.sections[key] ?? 0) - spots.current.bar - 8;
+  const jump = (key: string) => {
+    highlight(key);
+    scroller.current?.scrollTo({ y: Math.max(0, top(key)), animated: true });
+  };
 
   return (
-    <Screen tabBar>
-      <View style={{ paddingHorizontal: GUTTER, paddingTop: 16, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <Wordmark />
-        <View style={{ flexDirection: 'row', gap: 10, marginTop: 2 }}>
-          <IconCircle label="Search" onPress={() => router.push('/explore')}>
-            <SearchIcon color={colors.ink} />
-          </IconCircle>
-          <IconCircle label="Postcards" badge={unreadPostcardCount} onPress={() => router.push('/postcards')}>
+    <View style={{ flex: 1, backgroundColor: colors.bg, paddingTop: insets.top }}>
+      <Screen
+        ref={scroller}
+        tabBar
+        noTopInset
+        stickyHeaderIndices={[2]}
+        scrollEventThrottle={100}
+        onScroll={(e) => {
+          if (side !== 'for-you') return;
+          const y = e.nativeEvent.contentOffset.y;
+          const here = [...JUMPS].reverse().find(([key]) => spots.current.sections[key] != null && top(key) <= y + 30);
+          highlight(here ? here[0] : null);
+        }}
+      >
+        <View style={{ paddingHorizontal: GUTTER, paddingTop: 16, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+          <Wordmark />
+          <IconCircle label="Postcards" badge={unreadPostcardCount} onPress={() => router.push('/postcards')} style={{ marginTop: 2 }}>
             <SendIcon color={colors.ink} />
           </IconCircle>
         </View>
-      </View>
 
-      <View style={{ paddingHorizontal: GUTTER, marginTop: 18, marginBottom: 20 }}>
-        <Segmented
-          label="Home"
-          value={side}
-          onChange={setSide}
-          options={[
-            ['for-you', 'For you'],
-            ['friends', 'Friends'],
-          ]}
-        />
-      </View>
+        <View style={{ paddingHorizontal: GUTTER, marginTop: 18 }}>
+          <Segmented
+            label="Home"
+            value={side}
+            onChange={(v) => {
+              setSide(v);
+              setActive(null);
+            }}
+            options={[
+              ['for-you', 'For you'],
+              ['friends', 'Friends'],
+            ]}
+          />
+        </View>
 
-      {side === 'for-you' ? <ForYou /> : <Friends />}
-    </Screen>
+        {/* Pinned to the top while you scroll. */}
+        <View onLayout={(e) => (spots.current.bar = e.nativeEvent.layout.height)} style={{ backgroundColor: colors.bg, paddingTop: 14, paddingBottom: 12 }}>
+          <View style={{ paddingHorizontal: GUTTER }}>
+            <Pressable
+              onPress={() => router.navigate('/explore')}
+              accessibilityRole="search"
+              accessibilityLabel="Search: describe your perfect trip"
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 10, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, borderRadius: 999, paddingHorizontal: 16, paddingVertical: 13 }}
+            >
+              <SearchIcon color={colors.muted} />
+              <Text variant="body" style={{ color: colors.muted }}>
+                Describe your perfect trip
+              </Text>
+            </Pressable>
+          </View>
+          {side === 'for-you' && (
+            <ScrollView
+              ref={chipRow}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginTop: 12 }}
+              contentContainerStyle={{ paddingHorizontal: GUTTER, gap: 8 }}
+            >
+              {JUMPS.map(([key, label]) => (
+                <View key={key} onLayout={(e) => (chipX.current[key] = e.nativeEvent.layout.x)}>
+                  <Chip label={label} selected={active === key} onPress={() => jump(key)} accessibilityLabel={`Go to ${label}`} />
+                </View>
+              ))}
+            </ScrollView>
+          )}
+        </View>
+
+        <View onLayout={(e) => (spots.current.content = e.nativeEvent.layout.y)} style={{ paddingTop: 8 }}>
+          {side === 'for-you' ? <ForYou onSection={(key, y) => (spots.current.sections[key] = y + 8)} /> : <Friends />}
+        </View>
+      </Screen>
+    </View>
   );
 }
 
-function ForYou() {
+function ForYou({ onSection }: { onSection: (key: string, y: number) => void }) {
   const width = Math.min(Dimensions.get('window').width, 480) - GUTTER * 2;
   const [taste, setTaste] = useState(0);
   const t = useTaste();
@@ -87,6 +163,7 @@ function ForYou() {
   // The name shrinks so its longest word fits beside the score stamp (no "Palerm / o").
   const longest = Math.max(1, ...hero.name.split(/\s+/).map((w) => w.length));
   const heroSize = Math.max(30, Math.min(52, Math.floor((width - 44 - 118) / (longest * 0.6))));
+  const at = (key: string) => (e: LayoutChangeEvent) => onSection(key, e.nativeEvent.layout.y);
 
   return (
     <View style={{ gap: 32 }}>
@@ -112,12 +189,12 @@ function ForYou() {
             ✦ {hero.reason}
           </Text>
         )}
-        <Text variant="tiny">{tasteNote(t.profile)}</Text>
+        <Text variant="tiny">{tasteNote(t.profile, t.usingFriends)}</Text>
       </View>
 
-      <View>
+      <View onLayout={at('trending')}>
         <SectionHeader action="See all" onAction={() => router.push('/explore')}>
-          <AccentTitle before="Where's" accent="trending" variant="heading" />
+          <AccentTitle before="Where's" accent="trending" after={`with ${APP_NAME} users`} variant="heading" />
         </SectionHeader>
         <Row>
           {rows.trending.map((i) => (
@@ -126,11 +203,11 @@ function ForYou() {
         </Row>
       </View>
 
-      <PlaceRow before="Island" accent="escapes" items={byYou(rows.islands)} width={230} height={260} />
-      <PlaceRow before="Weekends" accent="away" items={byYou(rows.weekends)} />
-      <PlaceRow before="One night" accent="away" items={byYou(rows.overnight)} width={170} height={190} />
+      <PlaceRow onLayout={at('islands')} before="Island" accent="escapes" items={byYou(rows.islands)} width={230} height={260} />
+      <PlaceRow onLayout={at('weekends')} before="Weekends" accent="away" items={byYou(rows.weekends)} />
+      <PlaceRow onLayout={at('overnight')} before="One night" accent="away" items={byYou(rows.overnight)} width={170} height={190} />
 
-      <View style={{ backgroundColor: colors.sageSoft, paddingVertical: 24 }}>
+      <View onLayout={at('taste')} style={{ backgroundColor: colors.sageSoft, paddingVertical: 24 }}>
         <SectionHeader>
           <AccentTitle before="Made for your" accent="taste" variant="heading" />
         </SectionHeader>
@@ -147,7 +224,7 @@ function ForYou() {
         </Row>
       </View>
 
-      <View>
+      <View onLayout={at('picked')}>
         <SectionHeader action="Explore" onAction={() => router.push('/explore')}>
           <AccentTitle before="Picked for" accent="you" variant="heading" />
         </SectionHeader>
@@ -170,9 +247,23 @@ function ForYou() {
   );
 }
 
-function PlaceRow({ before, accent, items, width, height }: { before: string; accent: string; items: typeof rows.islands; width?: number; height?: number }) {
+function PlaceRow({
+  before,
+  accent,
+  items,
+  width,
+  height,
+  onLayout,
+}: {
+  before: string;
+  accent: string;
+  items: typeof rows.islands;
+  width?: number;
+  height?: number;
+  onLayout?: (e: LayoutChangeEvent) => void;
+}) {
   return (
-    <View>
+    <View onLayout={onLayout}>
       <SectionHeader action="See all" onAction={() => router.push('/explore')}>
         <AccentTitle before={before} accent={accent} variant="heading" />
       </SectionHeader>

@@ -3,6 +3,7 @@ import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import { ALL_PLACES, countryOf, plain } from './knownPlaces';
 import { places as samplePlaces } from './sample';
 import { supabase } from './supabase';
+import { tasteChanged } from './tasteEvents';
 
 /**
  * Real trips, stored in Supabase (see supabase/migrations/20261118120000_trips.sql,
@@ -132,6 +133,7 @@ export async function saveTrip(input: TripInput): Promise<string> {
     },
   });
   if (error) throw new Error(friendlyError(error));
+  tasteChanged();
   return data as string;
 }
 
@@ -139,6 +141,7 @@ export async function saveTrip(input: TripInput): Promise<string> {
 export async function deleteTrip(id: string, photoPaths: string[] = []): Promise<void> {
   const { error } = await supabase.from('trips').delete().eq('id', id);
   if (error) throw new Error(friendlyError(error));
+  tasteChanged();
   await deleteTripPhotos(photoPaths);
 }
 

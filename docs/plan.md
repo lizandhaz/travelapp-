@@ -184,6 +184,12 @@ From now on, **merging a pull request also updates the database**. A GitHub job 
 
 ---
 
+## Personal scores and matches ✅
+
+Every score out of 10 and every % match is now worked out for you, in two equal halves: what you've enjoyed (your trips) and what you want next (Want to go, your lists and their names, and the place pages you keep looking at). Who you travel with, the stays you rated and your friends' ratings (friends who agree with you count more) count too. Browsing can be switched off or cleared in Settings. Add a trip or save a place and the numbers change straight away. Place pages say why ("Like Venice, which you gave 9.0") and have "How we worked this out". Home's top picture is your best match you haven't been to. Friends are still sample people until Step C; real friends plug straight in.
+
+---
+
 ## Next steps (from the build plan, one pull request each)
 
 Each step's ready-made prompt is in your build plan doc ("XYZX: build plan from the preview").
@@ -204,7 +210,7 @@ Each step's ready-made prompt is in your build plan doc ("XYZX: build plan from 
 
 ### Before inviting real users
 - **Young users (13–17):** private, friends-only profiles; hidden from search and suggestions for non-friends; safe default settings; easy report and block. Get a quick legal check against the UK Children's Code and Online Safety Act duties.
-- Privacy policy and terms (what's stored, including date of birth).
+- Privacy policy and terms (what's stored, including date of birth and the place pages you've looked at).
 - Account deletion that really deletes your data, from inside the app (a UK GDPR requirement, and required by both app stores).
 - Report and block, for ratings and people.
 - A proper email sender for log-in codes (see step 1).

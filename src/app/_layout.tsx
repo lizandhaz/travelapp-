@@ -17,6 +17,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { colors } from '@/constants/theme';
 import { AuthProvider, useAuth } from '@/lib/auth';
+import { TasteProvider } from '@/lib/taste';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,8 +36,10 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <StatusBar style="dark" />
-        {fontsLoaded && <Navigator />}
+        <TasteProvider>
+          <StatusBar style="dark" />
+          {fontsLoaded && <Navigator />}
+        </TasteProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );

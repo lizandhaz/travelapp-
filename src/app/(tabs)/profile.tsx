@@ -13,6 +13,7 @@ import { TripCard } from '@/components/trip/TripCard';
 import { Button, Card, IconCircle, Screen } from '@/components/ui';
 import { colors, GUTTER } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
+import { TASTE_LABELS, useTaste } from '@/lib/taste';
 import { fetchBoards, type BoardItem } from '@/lib/boards';
 import { countryOf } from '@/lib/knownPlaces';
 import { formatScore } from '@/lib/score';
@@ -21,6 +22,7 @@ import { useTripPhoto } from '@/lib/useTripPhoto';
 
 export default function You() {
   const { profile, session } = useAuth();
+  const taste = useTaste();
   const [trips, setTrips] = useState<Trip[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [wishItems, setWishItems] = useState<BoardItem[]>([]);
@@ -102,6 +104,19 @@ export default function You() {
         <Stat label="Countries" value={countriesIn(list)} border />
         <Stat label="Avg score" value={avg} border />
       </Card>
+
+      {taste.tastes.length > 0 && (
+        <View style={{ paddingHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+          <Text variant="label">Your taste</Text>
+          {taste.tastes.map((t) => (
+            <View key={t} style={{ backgroundColor: colors.mint + '59', borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
+              <Text variant="small" style={{ color: colors.ink }}>
+                {TASTE_LABELS[t] ?? t}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
 
       {trips && <TravelMap been={been} wish={wish} countries={countriesIn(list)} />}
 

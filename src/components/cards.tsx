@@ -2,7 +2,9 @@ import { router } from 'expo-router';
 import { Pressable, ScrollView, View, type ViewStyle } from 'react-native';
 
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { placeDetails } from '@/lib/placeDetails';
 import type { BoardItem, FeedItem, RowItem, TasteItem } from '@/lib/sample';
+import { useTaste } from '@/lib/taste';
 import { Avatar } from './Avatar';
 import { MonthPill } from './MonthPill';
 import { PhotoFill, PhotoTile } from './Photo';
@@ -11,6 +13,13 @@ import { Text } from './Text';
 import { Card } from './ui';
 
 const openPlace = (slug: string | null) => slug && router.push(`/place/${slug}`);
+
+/** Your personal score for a sample place (falls back to the card's own score). */
+function usePersonalScore(slug: string | null, fallback: number | undefined) {
+  const t = useTaste();
+  const r = slug ? t.forSlug(slug) : null;
+  return { score: r?.score ?? fallback ?? null, match: r && t.profile.evidence > 0 ? r.match : null };
+}
 
 /** A sideways-scrolling row of cards with the screen's side padding. */
 export function Row({ children, gap = 12 }: { children: React.ReactNode; gap?: number }) {
@@ -54,14 +63,16 @@ export function TrendCard({ item, width = 150, height = 190 }: { item: RowItem; 
 
 /** Photo with a score stamp, name and a line below (Island escapes, Weekends away…). */
 export function PlaceCard({ item, width = 200, height = 220 }: { item: RowItem; width?: number; height?: number }) {
+  const { score, match } = usePersonalScore(item.slug, item.score);
   return (
     <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" accessibilityLabel={`${item.name}, ${item.sub}`} style={{ width }}>
       <PhotoTile photo={item.photo} style={{ width, height }} shade={false}>
-        {item.score != null && (
+        {score != null && (
           <View style={{ position: 'absolute', top: 8, right: 8 }}>
-            <ScoreStamp score={item.score} size="sm" />
+            <ScoreStamp score={score} size="sm" />
           </View>
         )}
+        {match != null && <PhotoBadge text={`${match}% match`} style={{ position: 'absolute', left: 8, bottom: 8, backgroundColor: 'rgba(150,199,184,0.95)' }} />}
       </PhotoTile>
       <Text variant="subheading" style={{ marginTop: 8 }}>
         {item.name}
@@ -73,11 +84,20 @@ export function PlaceCard({ item, width = 200, height = 220 }: { item: RowItem; 
 
 /** "Made for your taste": a thing to eat, drink, do or stay, with why it's picked. */
 export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: number }) {
+  const t = useTaste();
+  const d = placeDetails[item.slug];
+  const place = t.forSlug(item.slug);
+  const stay = item.kind === 'Stay' ? d?.stays.find((x) => x.name === item.name) : undefined;
+  const eat = item.kind === 'Eat' ? d?.eats.find((x) => x.name === item.name) : undefined;
+  const personal = t.profile.evidence > 0;
+  const match = !personal ? item.match : stay ? `${t.stayPercent(stay)}% match` : eat ? `${t.eatPercent(eat)}% match` : place ? `${place.match}% match` : item.match;
+  // Only say "because…" when it's true for you (the prototype's lines were made up).
+  const because = place?.reasons.find((r) => !r.startsWith('You gave')) ?? null;
   return (
     <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" style={{ width }}>
       <PhotoTile photo={item.photo} style={{ width, height: 160 }} shade={false}>
         <PhotoBadge text={item.kind} style={{ position: 'absolute', top: 10, left: 10 }} />
-        <PhotoBadge text={item.match} style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(150,199,184,0.95)' }} />
+        <PhotoBadge text={match} style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(150,199,184,0.95)' }} />
       </PhotoTile>
       <Text variant="subheading" style={{ marginTop: 8 }}>
         {item.name}
@@ -85,9 +105,11 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
       <Text variant="tiny" style={{ color: colors.terracottaText, marginTop: 1 }}>
         {item.where}
       </Text>
-      <Text variant="tiny" style={{ marginTop: 4, color: colors.ink }}>
-        ✦ {item.because}
-      </Text>
+      {!!because && (
+        <Text variant="tiny" style={{ marginTop: 4, color: colors.ink }}>
+          ✦ {because}
+        </Text>
+      )}
       <Text variant="tiny" style={{ marginTop: 2 }}>
         {item.friends}
       </Text>
@@ -97,20 +119,26 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
 
 /** "Picked for you": a white card with photo, stamp and the reason. */
 export function PickCard({ item }: { item: RowItem }) {
+  const { score, match } = usePersonalScore(item.slug, item.score);
   return (
     <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" style={{ flex: 1 }}>
       <Card>
         <View style={{ height: 150 }}>
           <PhotoFill photo={item.photo} />
-          {item.score != null && (
+          {score != null && (
             <View style={{ position: 'absolute', top: 8, right: 8 }}>
-              <ScoreStamp score={item.score} size="sm" />
+              <ScoreStamp score={score} size="sm" />
             </View>
           )}
         </View>
         <View style={{ padding: 12 }}>
           <Text variant="subheading">{item.name}</Text>
           <Text variant="tiny">{item.sub}</Text>
+          {match != null && (
+            <Text variant="tiny" style={{ color: colors.teal, fontFamily: fonts.sansSemiBold, marginTop: 2 }}>
+              {match}% match
+            </Text>
+          )}
         </View>
       </Card>
     </Pressable>
@@ -168,12 +196,13 @@ export function FeedCard({ item }: { item: FeedItem }) {
 /** A tile on the Explore board (masonry style). */
 export function BoardTile({ item, height }: { item: BoardItem; height: number }) {
   const isPlace = item.kind === 'place';
+  const { score } = usePersonalScore(isPlace ? item.slug : null, item.score);
   return (
     <Pressable onPress={() => openPlace(item.slug)} accessibilityRole={item.slug ? 'link' : undefined} style={{ marginBottom: 14 }}>
       <PhotoTile photo={item.photo} style={{ height, borderRadius: radius.md }} shade={false}>
-        {isPlace && item.score != null ? (
+        {isPlace && score != null ? (
           <View style={{ position: 'absolute', top: 8, left: 8 }}>
-            <ScoreStamp score={item.score} size="sm" />
+            <ScoreStamp score={score} size="sm" />
           </View>
         ) : (
           <PhotoBadge text={item.kind} style={{ position: 'absolute', top: 8, left: 8 }} />

@@ -14,7 +14,7 @@ import { BackButton, Button, Card, ErrorNotice, IconCircle, Notice, Screen } fro
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { addToBoard, deleteBoard, fetchBoard, findOnBoard, removeFromBoard, shareBoard, type Board, type BoardItem } from '@/lib/boards';
 import { countryOf } from '@/lib/knownPlaces';
-import { getPlace } from '@/lib/sample';
+import { useTaste } from '@/lib/taste';
 import { fetchPlaces, placeLabel, type Place } from '@/lib/trips';
 
 /** One of your lists: a photo cover, its places as photo cards, add a place, share, edit and delete. */
@@ -276,7 +276,8 @@ function Cover({ items, isWish, name }: { items: BoardItem[]; isWish: boolean; n
 function PlaceTile({ item, width, onRemove }: { item: BoardItem; width: number; onRemove: () => void }) {
   const slug = placeSlugForItem(item);
   const photo = photoForItem(item);
-  const score = slug ? getPlace(slug)?.score : null;
+  const taste = useTaste();
+  const score = slug ? taste.forSlug(slug)?.score : null; // your personal score
   return (
     <View style={{ width }}>
       <Pressable

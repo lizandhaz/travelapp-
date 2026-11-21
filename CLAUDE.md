@@ -52,6 +52,7 @@ npx expo start       # dev server; scan the QR code with Expo Go
 npx expo start --web # same app in a browser
 npx tsc --noEmit     # type check: must pass before any PR
 npx expo lint        # lint: must pass before any PR
+npm test             # matching engine tests: must pass before any PR
 npx expo export --platform ios --platform android   # proves the phone bundles build
 EXPO_TOKEN=proxy-injected npx eas-cli@latest update --branch preview --environment preview --message "…" --non-interactive
                      # publish to Expo Go (the owner's phone); see "Publishing to the owner's phone"
@@ -89,7 +90,7 @@ src/
     list/new.tsx          New list, or rename/who-can-see with ?id=; with ?place= it also adds that place
     save.tsx              "Save to a list" from a place page: tick lists (Want to go first), + New list
     postcards.tsx         Postcards (sample), opened from Home's paper-plane button
-    settings.tsx          Settings (public-profile note, sign out), opened from You
+    settings.tsx          Settings (public-profile note, Your matches: use/clear places you've looked at, sign out), opened from You
     place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, best time, what friends said, where to stay/eat, things to do,
                           culture and top tips, "I've been" (opens Add a trip with the place filled in)
     trip/[id]/index.tsx   One of your trips, with Edit and Delete (confirm first)
@@ -136,6 +137,12 @@ src/
     knownPlaces.ts        ~525 popular holiday places + countries + WORLD_PLACES: suggestions, countryOf(), plain()
     worldPlaces.ts        Generated: ~10,400 towns/cities with positions (GeoNames, CC BY 4.0; credited in Settings)
     useWantToGo.ts        Hook: is a place on your Want to go list, and toggle() it in one tap
+    match.ts              The matching engine (pure, tested in tests/match.test.mjs): profile, fit, % match, score, reasons
+    placeFeatures.ts      Places in the engine's terms (holiday types, position, warmth, who it suits, base rating)
+                          + the sample friends' ratings
+    taste.tsx             TasteProvider/useTaste(): your profile from trips + lists, rebuilt on tasteChanged()
+    tasteEvents.ts        tasteChanged()/onTasteChanged(): saveTrip/deleteTrip, list changes and new views call it
+    views.ts              Place pages you've looked at: recordPlaceView, fetchPlaceViews, clearPlaceViews, on/off setting
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)
@@ -170,6 +177,15 @@ docs/plan.md              Step-by-step plan
   - **Order matters:** merge the pull request (database update) *before* publishing an app update that needs it, or the app will show "The latest database update hasn't been run". After merging, check the job went green (GitHub MCP `actions_list` / `get_job_logs`) before publishing.
   - Write migrations so they're safe if partly applied where reasonable (`if not exists`, `create or replace`).
   - Before merging, test every migration on a local Postgres with stand-ins for `auth.users`, `auth.uid()`, the `anon`/`authenticated` roles and (when needed) `storage.buckets`/`storage.objects`/`storage.foldername`, covering every rule, including the "should fail" cases.
+- **Matching (your score and % match)** — `src/lib/match.ts`, wired up in `taste.tsx`:
+  - **Two halves of taste, equal say:** *enjoyed* (your trips: 10 → +1, 6.5 → 0, 3.5 → −1; halves every 3 years; longer stays count a bit more) and *want next* (Want to go = 1.0 and other lists = 0.7, fading by half a year but never below 60%; list names like "Ski trips" via `tagsForListName`; place pages you look at, up to 0.5 each, halving every 45 days, 0.3× for places you've saved or been). So a long trip history can't drown out what someone's saving now.
+  - **Fit (0–1)** from four parts, each blended 50/50 from the two halves where both know something: kind of holiday (holiday-type overlap, minus dislikes) 45%, near places (1,200 km falloff) 20%, warmth 20%, company 15% (who you've travelled with + who your saved places suit). Pulled towards neutral by confidence (`1 − e^(−evidence/1.5)`). Places you keep looking at get a direct lift (`interestLift`, up to +0.15 fit).
+  - **% match** = 70 + (fit − 0.5) × 70, within 40–99. **Score** = base (Bayesian blend of the place's rating, worth 2 friends, and friends' ratings; friends who agree with you count up to 2×) + 3 × (fit − 0.5), within 1–10. Places you've been show your own score. "For you" order: `rankValue` = 0.6 × score + 0.04 × match. Home's top pick is new to you (not been, not saved).
+  - **Reasons:** "Like Venice, which you gave 9.0", "Like La Digue on your Want to go list", "You've looked at it 4 times", "Maya gave it 9.1", company.
+  - Every card reads scores through `useTaste()`, so Home, Explore, place pages (score card + "How we worked this out", stays/eats % match), lists and "Your taste" update after a trip, a save, or leaving a place page.
+  - The React Compiler memoises values inside components, so per-profile caches live outside them (`resultsByProfile` WeakMap in taste.tsx). Don't create caches with `new Map()` inside a component.
+  - `npm test` runs the engine's tests (Node's built-in runner, `--experimental-strip-types`).
+- **Place views** (`20261124120000_place_views.sql`): `place_views` (owner_id + place_slug, views, seconds, first/last viewed). Owner-only: select and delete directly; recording only via `record_place_view(slug, name, country, seconds)` (security definer, own row only, at most 600 s a visit). The place page records a visit when you leave it (3 s minimum, `lib/views.ts`). Settings → Your matches: "Use the places I look at" (stored on the phone; off = nothing recorded or used) and "Clear the places I've looked at". Mention viewing history in the privacy policy (plan Step J).
 - **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 
 ## Brand rules
@@ -228,5 +244,6 @@ Single column, 20px side padding (`GUTTER`). The tab bar is **Home, Explore, a r
 - Before opening a PR, all of these must pass:
   - `npx tsc --noEmit`
   - `npx expo lint`
+  - `npm test`
   - `npx expo export --platform ios --platform android`
   - click through the changed screens with `npx expo start --web` at phone width

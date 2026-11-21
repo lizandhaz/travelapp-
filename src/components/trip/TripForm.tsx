@@ -62,8 +62,31 @@ export function TripForm({
   const photoKey = useRef(1000);
   const [photos, setPhotos] = useState<PhotoItem[]>(() => (initial?.photoPaths ?? []).map((path, i) => ({ key: i + 1, path })));
   const [home, setHome] = useState(false);
-  // The photo picked up to move (tap a photo), by key.
-  const [moving, setMoving] = useState<number | null>(null);
+  // The photo being dragged (hold, then drag): its key, where the finger started, and how far it's moved.
+  const [drag, setDrag] = useState<{ key: number; x0: number; dx: number } | null>(null);
+  const movePhoto = (key: number, to: number) =>
+    setPhotos((ps) => {
+      const from = ps.findIndex((p) => p.key === key);
+      if (from < 0 || to < 0 || to >= ps.length || to === from) return ps;
+      const next = [...ps];
+      const [item] = next.splice(from, 1);
+      next.splice(to, 0, item);
+      return next;
+    });
+  function dragTo(pageX: number) {
+    if (!drag) return;
+    const from = photos.findIndex((p) => p.key === drag.key);
+    const dx = pageX - drag.x0;
+    const to = Math.max(0, Math.min(photos.length - 1, Math.round(from + dx / PHOTO_SLOT)));
+    if (to !== from) {
+      movePhoto(drag.key, to);
+      // The photo now sits in a new slot: keep it under your finger.
+      const x0 = drag.x0 + (to - from) * PHOTO_SLOT;
+      setDrag({ ...drag, x0, dx: pageX - x0 });
+    } else {
+      setDrag({ ...drag, dx });
+    }
+  }
 
   // Keys for extra-stop rows: existing stops use 1, 2, 3…; new rows count up from 100.
   const nextKey = useRef(100);
@@ -264,7 +287,12 @@ export function TripForm({
 
           <Question title="Add photos" note={`optional, up to ${MAX_PHOTOS}`}>
             <View style={{ marginHorizontal: -GUTTER }}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: GUTTER }}>
+              <ScrollView
+                horizontal
+                scrollEnabled={!drag}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ gap: PHOTO_GAP, paddingHorizontal: GUTTER, paddingVertical: 6 }}
+              >
                 {photos.map((p, i) => (
                   <PhotoThumb
                     key={p.key}
@@ -272,12 +300,12 @@ export function TripForm({
                     cover={i === 0 && photos.length > 1}
                     index={i}
                     count={photos.length}
-                    selected={moving === p.key}
-                    onPress={() => setMoving(moving === p.key ? null : p.key)}
-                    onRemove={() => {
-                      setPhotos((ps) => ps.filter((x) => x.key !== p.key));
-                      if (moving === p.key) setMoving(null);
-                    }}
+                    dragX={drag?.key === p.key ? drag.dx : null}
+                    onDragStart={(x) => setDrag({ key: p.key, x0: x, dx: 0 })}
+                    onDragMove={dragTo}
+                    onDragEnd={() => setDrag(null)}
+                    onMove={(to) => movePhoto(p.key, to)}
+                    onRemove={() => setPhotos((ps) => ps.filter((x) => x.key !== p.key))}
                   />
                 ))}
                 {roomFor > 0 && (
@@ -286,8 +314,8 @@ export function TripForm({
                     accessibilityRole="button"
                     accessibilityLabel={photos.length ? 'Add more photos' : 'Add photos'}
                     style={{
-                      width: 110,
-                      height: 110,
+                      width: PHOTO_SIZE,
+                      height: PHOTO_SIZE,
                       borderRadius: radius.md,
                       borderWidth: 1.5,
                       borderStyle: 'dashed',
@@ -305,26 +333,9 @@ export function TripForm({
                 )}
               </ScrollView>
             </View>
-            {moving != null && photos.some((p) => p.key === moving) ? (
-              <MoveBar
-                index={photos.findIndex((p) => p.key === moving)}
-                count={photos.length}
-                onMove={(to) =>
-                  setPhotos((ps) => {
-                    const from = ps.findIndex((p) => p.key === moving);
-                    const next = [...ps];
-                    const [item] = next.splice(from, 1);
-                    next.splice(to, 0, item);
-                    return next;
-                  })
-                }
-                onDone={() => setMoving(null)}
-              />
-            ) : (
-              <Text variant="tiny">
-                {photos.length > 1 ? 'Tap a photo to change the order. The first one is the cover. ' : ''}Only you can see your photos. Location data is removed before saving.
-              </Text>
-            )}
+            <Text variant="tiny">
+              {photos.length > 1 ? 'Hold a photo, then drag it to change the order. The first one is the cover. ' : ''}Only you can see your photos. Location data is removed before saving.
+            </Text>
           </Question>
 
           <Question title="Add a note" note="optional">
@@ -479,91 +490,131 @@ export function TripForm({
 
 type PhotoItem = { key: number; path?: string; uri?: string; width?: number };
 
-/** One photo in the form: a saved one (shown through a private link) or a newly picked one. */
+const PHOTO_SIZE = 110;
+const PHOTO_GAP = 12;
+const PHOTO_SLOT = PHOTO_SIZE + PHOTO_GAP;
+const HOLD_MS = 280;
+
+/**
+ * One photo in the form: a saved one (shown through a private link) or a newly picked one.
+ * Hold it for a moment and it lifts up; then drag it left or right to move it.
+ */
 function PhotoThumb({
   item,
   cover,
   index,
   count,
-  selected,
-  onPress,
+  dragX,
+  onDragStart,
+  onDragMove,
+  onDragEnd,
+  onMove,
   onRemove,
 }: {
   item: PhotoItem;
   cover: boolean;
   index: number;
   count: number;
-  selected: boolean;
-  onPress: () => void;
+  /** How far it's been dragged, while it's the one being dragged. */
+  dragX: number | null;
+  onDragStart: (pageX: number) => void;
+  onDragMove: (pageX: number) => void;
+  onDragEnd: () => void;
+  onMove: (to: number) => void;
   onRemove: () => void;
 }) {
   const savedUrl = useTripPhoto(item.path);
   const uri = item.uri ?? savedUrl;
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const holding = useRef(false);
+  const start = useRef({ x: 0, y: 0 });
+  const lifted = dragX != null;
+
+  const stopTimer = () => {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+  };
+  const finish = () => {
+    stopTimer();
+    if (holding.current) onDragEnd();
+    holding.current = false;
+  };
+
   return (
-    <View>
-      <Pressable
-        onPress={onPress}
-        disabled={count < 2}
-        accessibilityRole="button"
-        accessibilityState={{ selected }}
+    <View
+      style={{
+        zIndex: lifted ? 10 : 0,
+        borderRadius: radius.md,
+        transform: [{ translateX: dragX ?? 0 }, { scale: lifted ? 1.07 : 1 }],
+        shadowColor: colors.ink,
+        shadowOpacity: lifted ? 0.28 : 0,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 6 },
+        elevation: lifted ? 8 : 0,
+      }}
+    >
+      <View
+        accessible
+        accessibilityRole="image"
         accessibilityLabel={`Photo ${index + 1} of ${count}${index === 0 ? ', the cover' : ''}`}
-        accessibilityHint={count > 1 ? (selected ? 'Tap to stop moving it' : 'Tap to move it') : undefined}
+        accessibilityActions={count > 1 ? [{ name: 'moveLeft', label: 'Move left' }, { name: 'moveRight', label: 'Move right' }, { name: 'makeCover', label: 'Make cover' }] : undefined}
+        onAccessibilityAction={(e) => {
+          if (e.nativeEvent.actionName === 'moveLeft') onMove(index - 1);
+          if (e.nativeEvent.actionName === 'moveRight') onMove(index + 1);
+          if (e.nativeEvent.actionName === 'makeCover') onMove(0);
+        }}
+        onStartShouldSetResponder={() => count > 1}
+        onResponderGrant={(e) => {
+          start.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
+          holding.current = false;
+          stopTimer();
+          timer.current = setTimeout(() => {
+            holding.current = true;
+            onDragStart(start.current.x);
+          }, HOLD_MS);
+        }}
+        onResponderMove={(e) => {
+          const { pageX, pageY } = e.nativeEvent;
+          if (!holding.current) {
+            // Moved before the hold finished: that's a scroll, not a drag.
+            if (Math.abs(pageX - start.current.x) > 8 || Math.abs(pageY - start.current.y) > 8) stopTimer();
+            return;
+          }
+          onDragMove(pageX);
+        }}
+        onResponderRelease={finish}
+        onResponderTerminate={finish}
+        // Once it's lifted, keep hold of the finger so the page doesn't scroll instead.
+        onResponderTerminationRequest={() => !holding.current}
         style={{
-          width: 110,
-          height: 110,
+          width: PHOTO_SIZE,
+          height: PHOTO_SIZE,
           borderRadius: radius.md,
           overflow: 'hidden',
           backgroundColor: colors.sand,
-          borderWidth: selected ? 3 : 0,
+          borderWidth: lifted ? 3 : 0,
           borderColor: colors.terracotta,
         }}
       >
-        {uri && <Image source={{ uri }} style={{ width: '100%', height: '100%' }} contentFit="cover" />}
-        {selected && (
-          <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(19,38,74,0.7)', paddingVertical: 4 }}>
-            <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, color: colors.onDark, textAlign: 'center' }}>Moving</Text>
-          </View>
-        )}
-      </Pressable>
-      {cover && !selected && (
-        <View style={{ position: 'absolute', left: 6, bottom: 6, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 999, paddingHorizontal: 7, paddingVertical: 2 }}>
+        {/* The picture ignores touches so the card gets them (and browsers don't start dragging the image). */}
+        {uri && <Image source={{ uri }} style={{ width: '100%', height: '100%' }} contentFit="cover" pointerEvents="none" />}
+      </View>
+      {cover && !lifted && (
+        <View pointerEvents="none" style={{ position: 'absolute', left: 6, bottom: 6, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 999, paddingHorizontal: 7, paddingVertical: 2 }}>
           <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 10, color: colors.ink }}>Cover</Text>
         </View>
       )}
-      <Pressable
-        onPress={onRemove}
-        accessibilityRole="button"
-        accessibilityLabel={`Remove photo ${index + 1}`}
-        hitSlop={8}
-        style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(19,38,74,0.75)', alignItems: 'center', justifyContent: 'center' }}
-      >
-        <Text style={{ color: colors.onDark, fontFamily: fonts.sansBold, fontSize: 14, lineHeight: 16 }}>×</Text>
-      </Pressable>
-    </View>
-  );
-}
-
-/** Under the photos while one is picked up: move it left or right, make it the cover, or finish. */
-function MoveBar({ index, count, onMove, onDone }: { index: number; count: number; onMove: (to: number) => void; onDone: () => void }) {
-  const button = (label: string, a11y: string, to: number, disabled: boolean) => (
-    <Pressable
-      onPress={() => onMove(to)}
-      disabled={disabled}
-      accessibilityRole="button"
-      accessibilityLabel={a11y}
-      style={{ borderRadius: radius.pill, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, paddingHorizontal: 14, paddingVertical: 8, opacity: disabled ? 0.4 : 1 }}
-    >
-      <Text style={{ fontFamily: fonts.sansMedium, fontSize: 14, color: colors.ink }}>{label}</Text>
-    </Pressable>
-  );
-  return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
-      {button('‹ Left', 'Move photo left', index - 1, index === 0)}
-      {button('Make cover', 'Make this photo the cover', 0, index === 0)}
-      {button('Right ›', 'Move photo right', index + 1, index === count - 1)}
-      <Pressable onPress={onDone} accessibilityRole="button" hitSlop={8} style={{ paddingHorizontal: 6, paddingVertical: 8 }}>
-        <Text variant="link">Done</Text>
-      </Pressable>
+      {!lifted && (
+        <Pressable
+          onPress={onRemove}
+          accessibilityRole="button"
+          accessibilityLabel={`Remove photo ${index + 1}`}
+          hitSlop={8}
+          style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(19,38,74,0.75)', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <Text style={{ color: colors.onDark, fontFamily: fonts.sansBold, fontSize: 14, lineHeight: 16 }}>×</Text>
+        </Pressable>
+      )}
     </View>
   );
 }

@@ -106,7 +106,7 @@ export default function Explore() {
         ))}
       </Row>
 
-      <View style={{ marginTop: 28, paddingVertical: 22, backgroundColor: colors.blushSoft }}>
+      <View style={{ marginTop: 28 }}>
         <SectionHeader>Trending this month</SectionHeader>
         <Row>
           {trendingThisMonth.map((t) => (

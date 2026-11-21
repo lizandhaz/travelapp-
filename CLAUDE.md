@@ -204,7 +204,7 @@ docs/plan.md              Step-by-step plan
 
 ## Brand rules
 
-The look follows the owner's prototype: **clean, warm and photo-led**. A warm oat-milk background, white rounded cards with thin borders, dark olive-charcoal pill buttons, big serif headings with one italic accent word, and photos framed like postage stamps. No airmail stripes or round postmarks any more.
+The look follows the owner's prototype: **clean, warm and photo-led**. A warm oat-milk background, white rounded cards with thin borders, olive and terracotta pill buttons, big serif headings with one italic accent word, and photos framed like postage stamps. No airmail stripes or round postmarks any more.
 
 ### Colours (`src/constants/theme.ts` → `colors.*`)
 
@@ -217,7 +217,7 @@ From the owner's palette (Nov 2026): Oat Milk, Blush Petal, Terracotta Clay, Sag
 | `line` | `#e2dacb` | Borders, dividers |
 | `sand` | `#e6dccb` | Quiet fills, photo placeholders |
 | `mapLand` | `#b9c3ad` | Dotted land on the travel map (light sage) |
-| `ink` | `#353b2c` | Main text, dark buttons, selected chips/tabs, the + button (deep olive charcoal) |
+| `ink` | `#353b2c` | Main text (deep olive charcoal) |
 | `muted` | `#646858` | Secondary text, labels |
 | `stamp` | `#e7b9b2` | Score stamps, the + sign (Blush Petal) |
 | `sage` | `#a7b59c` | Soft tags (stay type) (Sage Whisper) |
@@ -231,7 +231,7 @@ From the owner's palette (Nov 2026): Oat Milk, Blush Petal, Terracotta Clay, Sag
 | `gold` | `#b9975b` | Hidden-gem pins on place maps |
 | `onDark` | `#faf7f0` | Text on photos and dark buttons |
 
-**Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, For you/Friends and the tab bar's + and active tab are terracotta; dark buttons are olive; Picked for you and Friends feed cards cycle blush/sage/sky; Home's "Made for your taste" sits on a sage band and Explore's Trending on a blush band; You's stats are three coloured tiles; avatars without a photo use olive/terracotta/sky.
+**Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, For you/Friends and the tab bar's + and active tab are terracotta; dark buttons are olive; Home's "Made for your taste" sits on a sage band; You's stats are three coloured tiles; avatars without a photo use olive/terracotta/sky; place score card blush, place facts sky/blush; Saved's Want to go card blush. The owner tried and didn't want tinted cards in Picked for you or the Friends feed, or a band behind Explore's Trending: keep those white/plain.
 
 `accent` is too light for small text on `bg`. Use `accentText` for small text and `accentDeep` behind white text. The place maps in `assets/maps/` have their pins drawn in `olive`/`accent`/`ink`/`gold` (rendered from the prototype's SVGs with those colours swapped in); if those change, redraw the maps so the key still matches.
 
@@ -257,7 +257,7 @@ Warm, short and British English ("holiday", "favourite"). No description lines u
 
 ### Layout
 
-Single column, 20px side padding (`GUTTER`). The tab bar is **Home, Explore, a raised dark + (Add a trip), Saved, You**. Postcards open from Home's paper-plane button, and settings from You. Rows scroll sideways (`Row`). Screens use `<Screen tabBar>` so content clears the tab bar. On web the app is centred at 480px max. Light theme only.
+Single column, 20px side padding (`GUTTER`). The tab bar is **Home, Explore, a raised terracotta + (Add a trip), Saved, You**. Postcards open from Home's paper-plane button, and settings from You. Rows scroll sideways (`Row`). Screens use `<Screen tabBar>` so content clears the tab bar. On web the app is centred at 480px max. Light theme only.
 
 ## Conventions
 

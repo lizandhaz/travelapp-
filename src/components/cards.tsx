@@ -9,7 +9,7 @@ import { MonthPill } from './MonthPill';
 import { PhotoFill, PhotoTile } from './Photo';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { Card } from './ui';
+import { Card, type Tone } from './ui';
 
 const openPlace = (slug: string | null) => slug && router.push(`/place/${slug}`);
 
@@ -107,12 +107,12 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
   );
 }
 
-/** "Picked for you": a white card with photo, stamp and the reason. */
-export function PickCard({ item }: { item: RowItem }) {
+/** "Picked for you": a card (white or a soft palette colour) with photo, stamp and the reason. */
+export function PickCard({ item, tone = 'white' }: { item: RowItem; tone?: Tone }) {
   const { score } = usePersonalScore(item.slug, item.score);
   return (
     <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" style={{ flex: 1 }}>
-      <Card>
+      <Card tone={tone}>
         <View style={{ height: 150 }}>
           <PhotoFill photo={item.photo} />
           {score != null && (
@@ -131,9 +131,9 @@ export function PickCard({ item }: { item: RowItem }) {
 }
 
 /** One friend's trip in the Friends feed. */
-export function FeedCard({ item }: { item: FeedItem }) {
+export function FeedCard({ item, tone = 'white' }: { item: FeedItem; tone?: Tone }) {
   return (
-    <Card>
+    <Card tone={tone}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14 }}>
         <Avatar face={item.face} name={item.who} size={36} />
         <View style={{ flex: 1 }}>

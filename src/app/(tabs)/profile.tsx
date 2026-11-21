@@ -9,8 +9,8 @@ import { PlusIcon, SlidersIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
 import { TravelMapCard } from '@/components/TravelMap';
 import { TripCard } from '@/components/trip/TripCard';
-import { Button, Card, Chip, IconCircle, Screen } from '@/components/ui';
-import { colors, GUTTER } from '@/constants/theme';
+import { Button, Card, Chip, IconCircle, Screen, TONES, toneFill, type Tone } from '@/components/ui';
+import { colors, GUTTER, radius } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { TASTE_LABELS, useTaste } from '@/lib/taste';
 import { beenPlaces, wishPlaces } from '@/lib/travelPlaces';
@@ -92,17 +92,17 @@ export default function You() {
         </Link>
       </View>
 
-      <Card style={{ marginHorizontal: GUTTER, marginTop: 14, flexDirection: 'row' }}>
-        <Stat label="Trips" value={list.length} />
-        <Stat label="Countries" value={countriesIn(list)} border />
-        <Stat label="Avg score" value={avg} border />
-      </Card>
+      <View style={{ marginHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', gap: 8 }}>
+        <Stat label="Trips" value={list.length} tone="blush" />
+        <Stat label="Countries" value={countriesIn(list)} tone="sage" />
+        <Stat label="Avg score" value={avg} tone="sky" />
+      </View>
 
       {taste.tastes.length > 0 && (
         <View style={{ paddingHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
           <Text variant="label">Your taste</Text>
-          {taste.tastes.map((t) => (
-            <View key={t} style={{ backgroundColor: colors.sage + '59', borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
+          {taste.tastes.map((t, i) => (
+            <View key={t} style={{ backgroundColor: toneFill(TONES[i % TONES.length]), borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
               <Text variant="small" style={{ color: colors.ink }}>
                 {TASTE_LABELS[t] ?? t}
               </Text>
@@ -183,9 +183,9 @@ function YearChip({ label, selected, onPress }: { label: string; selected: boole
   );
 }
 
-function Stat({ label, value, border }: { label: string; value: string | number; border?: boolean }) {
+function Stat({ label, value, tone }: { label: string; value: string | number; tone: Tone }) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', paddingVertical: 14, borderLeftWidth: border ? 1 : 0, borderLeftColor: colors.line }}>
+    <View style={{ flex: 1, alignItems: 'center', paddingVertical: 14, borderRadius: radius.md, backgroundColor: toneFill(tone) }}>
       <Text variant="title" style={{ fontSize: 26, lineHeight: 30 }}>
         {value}
       </Text>

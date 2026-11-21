@@ -104,7 +104,7 @@ src/
     +not-found.tsx        "Lost in the post"
   components/
     ui.tsx                Screen, PageTitle, SectionHeader, IconCircle, BackButton, Button (dark/accent/outline),
-                          Input (optional icon), Field, Chip, Segmented, Card, Notice, ErrorNotice
+                          Input (optional icon), Field, Chip, Segmented, Card (tone: white/blush/sage/sky), Notice, ErrorNotice
     Text.tsx              All text goes through <Text variant="…"> (fonts + colours). A bigger fontSize without a
                           lineHeight gets lineHeight ≈ 1.28× automatically, so big numbers aren't clipped on iPhone
     AccentTitle.tsx       Heading with one italic word and a terracotta swash ("Where did *you* go?")
@@ -226,8 +226,12 @@ From the owner's palette (Nov 2026): Oat Milk, Blush Petal, Terracotta Clay, Sag
 | `accentDeep` | `#a95d40` | "Save trip" / "I've been" buttons (white text passes contrast) |
 | `accentText` | `#9a5236` | Small terracotta text: links, taglines, kickers |
 | `olive` | `#636b51` | Olive Grove, a shade deeper so small text passes: stay score stamp, stay pins, Want to go / saved |
+| `blushSoft` / `sageSoft` / `skySoft` | `#f6e1dc` / `#e2e8da` / `#e1e8f0` | Soft fills for cards and bands (`<Card tone="blush">`, `toneFill()`, `TONES` cycle) |
+| `skyDeep` | `#5b7389` | Misty sky deep enough for white initials (avatars) |
 | `gold` | `#b9975b` | Hidden-gem pins on place maps |
 | `onDark` | `#faf7f0` | Text on photos and dark buttons |
+
+**Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, For you/Friends and the tab bar's + and active tab are terracotta; dark buttons are olive; Picked for you and Friends feed cards cycle blush/sage/sky; Home's "Made for your taste" sits on a sage band and Explore's Trending on a blush band; You's stats are three coloured tiles; avatars without a photo use olive/terracotta/sky.
 
 `accent` is too light for small text on `bg`. Use `accentText` for small text and `accentDeep` behind white text. The place maps in `assets/maps/` have their pins drawn in `olive`/`accent`/`ink`/`gold` (rendered from the prototype's SVGs with those colours swapped in); if those change, redraw the maps so the key still matches.
 

@@ -17,6 +17,10 @@ export const colors = {
   accentDeep: '#a95d40', // "Save trip" / "I've been" buttons (white text passes contrast)
   accentText: '#9a5236', // small terracotta text: links, taglines, labels (passes contrast)
   olive: '#636b51', // olive grove (a shade deeper so small text passes): stay score stamp, stay pins, saved
+  blushSoft: '#f6e1dc', // soft blush fill for cards and bands
+  sageSoft: '#e2e8da', // soft sage fill for cards and bands
+  skySoft: '#e1e8f0', // soft misty-sky fill for cards and bands
+  skyDeep: '#5b7389', // misty sky, deep enough for white initials
   gold: '#b9975b', // hidden-gem pins on place maps
   onDark: '#faf7f0', // text on photos and dark buttons
 } as const;

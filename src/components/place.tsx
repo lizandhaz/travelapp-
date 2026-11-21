@@ -44,8 +44,8 @@ export function PlaceFacts({ detail }: { detail: PlaceDetail }) {
     <View style={{ paddingHorizontal: GUTTER, gap: 10 }}>
       {facts.length > 0 && (
         <View style={{ flexDirection: 'row', gap: 8 }}>
-          {facts.map(([label, value]) => (
-            <Card key={label} style={{ flex: 1, padding: 12, borderRadius: radius.md }}>
+          {facts.map(([label, value], i) => (
+            <Card key={label} tone={(['sky', 'blush', 'sage'] as const)[i % 3]} style={{ flex: 1, padding: 12, borderRadius: radius.md }}>
               <Text variant="label">{label}</Text>
               <Text variant="small" style={{ color: colors.ink, marginTop: 2 }}>
                 {value}
@@ -388,7 +388,7 @@ export function YourScore({ result, note }: { result: PlaceResult; note: string 
       ? 'No ratings yet, so we start from 7.0'
       : `Rated ${b.base.toFixed(1)} by ${b.baseFrom === 'everyone' ? 'everyone' : b.baseFrom === 'friends' ? `${b.friendsCount} ${b.friendsCount === 1 ? 'friend' : 'friends'}` : `everyone and ${b.friendsCount} ${b.friendsCount === 1 ? 'friend' : 'friends'}`}`;
   return (
-    <Card style={{ marginHorizontal: GUTTER, marginTop: -30, padding: 14, gap: 12 }}>
+    <Card tone="blush" style={{ marginHorizontal: GUTTER, marginTop: -30, padding: 14, gap: 12 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
         <ScoreStamp score={result.score} size="md" label={result.yours != null ? 'Your rating' : 'Your score'} />
         <View style={{ flex: 1 }}>

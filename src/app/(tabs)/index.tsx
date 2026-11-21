@@ -8,7 +8,7 @@ import { SearchIcon, SendIcon } from '@/components/Icons';
 import { PhotoStamp } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
-import { Chip, IconCircle, Screen, SectionHeader, Segmented } from '@/components/ui';
+import { Chip, IconCircle, Screen, SectionHeader, Segmented, TONES } from '@/components/ui';
 import { Wordmark } from '@/components/Wordmark';
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { friendsFeed, hero as sampleHero, PHOTO_CREDITS, places, rows, TASTES, unreadPostcardCount, type RowItem } from '@/lib/sample';
@@ -130,7 +130,7 @@ function ForYou() {
       <PlaceRow before="Weekends" accent="away" items={byYou(rows.weekends)} />
       <PlaceRow before="One night" accent="away" items={byYou(rows.overnight)} width={170} height={190} />
 
-      <View>
+      <View style={{ backgroundColor: colors.sageSoft, paddingVertical: 24 }}>
         <SectionHeader>
           <AccentTitle before="Made for your" accent="taste" variant="heading" />
         </SectionHeader>
@@ -154,8 +154,8 @@ function ForYou() {
         <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
           {pairs(byScore(rows.picked)).map((pair, i) => (
             <View key={i} style={{ flexDirection: 'row', gap: 12 }}>
-              {pair.map((p) => (
-                <PickCard key={p.slug} item={p} />
+              {pair.map((p, j) => (
+                <PickCard key={p.slug} item={p} tone={TONES[(i * 2 + j) % TONES.length]} />
               ))}
               {pair.length === 1 && <View style={{ flex: 1 }} />}
             </View>
@@ -189,8 +189,8 @@ function Friends() {
   return (
     <View style={{ paddingHorizontal: GUTTER, gap: 18 }}>
       <Text variant="tiny">Preview: these are sample trips. Your friends’ real trips arrive with friends.</Text>
-      {friendsFeed.map((f) => (
-        <FeedCard key={`${f.who}-${f.place}`} item={f} />
+      {friendsFeed.map((f, i) => (
+        <FeedCard key={`${f.who}-${f.place}`} item={f} tone={TONES[i % TONES.length]} />
       ))}
     </View>
   );

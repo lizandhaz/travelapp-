@@ -114,7 +114,7 @@ src/
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
-    trip/TripForm.tsx     Add/edit a trip: place, month, how long (required), slider score, who with, up to 6 photos, note, who can see it, "Add more detail"
+    trip/TripForm.tsx     Add/edit a trip: place, month, how long (required), slider score, who with, up to 6 photos (tap one to move it: Left / Make cover / Right), note, who can see it, "Add more detail"
     trip/PlacePicker.tsx  Search or type a place ("Sintra, Portugal" → name + country)
     trip/NightsPicker.tsx "How long did you stay?": 1 night … two weeks, or "Longer…" (type up to 365)
     trip/MonthPicker.tsx  This month + last 6 months as chips ("Nov 2026"), or "Earlier…"

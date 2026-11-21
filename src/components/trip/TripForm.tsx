@@ -82,6 +82,10 @@ export function TripForm({
   const [saveError, setSaveError] = useState<{ message: string } | null>(null);
   const [saving, setSaving] = useState<false | 'trip' | { done: number; of: number }>(false);
   const scroll = useRef<ComponentRef<typeof ScrollView>>(null);
+  const nightsY = useRef(0);
+  const formY = useRef(0);
+  // An older trip saved before "How long did you stay?" was asked.
+  const needsNights = !!initial && initial.stops[0]?.nights == null && nights == null;
 
   useEffect(() => {
     fetchPlaces().then(setPlaces);
@@ -145,7 +149,11 @@ export function TripForm({
     setSaveError(null);
     setTried(true);
     const { input } = check();
-    if (!input) return;
+    if (!input) {
+      // Missing nights is easy to miss on older trips: jump to that question.
+      if (nights == null) scroll.current?.scrollTo({ y: Math.max(0, formY.current + nightsY.current - 20), animated: true });
+      return;
+    }
     const uploaded: string[] = [];
     try {
       const fresh = photos.filter((p) => p.uri).length;
@@ -197,6 +205,19 @@ export function TripForm({
         : initial
           ? 'Save changes'
           : 'Save trip';
+  const problemsNotice =
+    problems.length > 0 ? (
+            <Notice>
+        <Text variant="strong" style={{ color: colors.terracottaText }}>
+          Nearly there:
+        </Text>
+        {problems.map((p) => (
+          <Text key={p} variant="body" style={{ fontSize: 14 }}>
+            • {p}
+          </Text>
+        ))}
+      </Notice>
+    ) : null;
   const saveButton = <Button title={saveTitle} kind="accent" size="lg" onPress={save} disabled={!!saving} />;
 
   return (
@@ -211,16 +232,23 @@ export function TripForm({
           <AccentTitle before="Where did" accent="you" after="go?" />
         </PageTitle>
 
-        <View style={{ paddingHorizontal: GUTTER, gap: 28 }}>
+        <View style={{ paddingHorizontal: GUTTER, gap: 28 }} onLayout={(e) => (formY.current = e.nativeEvent.layout.y)}>
           <PlacePicker value={place} onChange={setPlace} places={places} accessibilityLabel="Where did you go?" />
 
           <Question title="When did you go?">
             <MonthPicker value={month} onChange={setMonth} />
           </Question>
 
+          <View onLayout={(e) => (nightsY.current = e.nativeEvent.layout.y)}>
           <Question title="How long did you stay?">
+            {needsNights && (
+              <Text variant="small" style={{ color: colors.terracottaText }}>
+                Add this to save your changes. Trips added before it was asked don’t have it yet.
+              </Text>
+            )}
             <NightsPicker value={nights} onChange={setNights} />
           </Question>
+          </View>
 
           <Question title="How was it?">
             <ScorePicker value={score} onChange={setScore} label="How was it" />
@@ -357,18 +385,7 @@ export function TripForm({
             </Pressable>
           )}
 
-          {problems.length > 0 && (
-            <Notice>
-              <Text variant="strong" style={{ color: colors.terracottaText }}>
-                Nearly there:
-              </Text>
-              {problems.map((p) => (
-                <Text key={p} variant="body" style={{ fontSize: 14 }}>
-                  • {p}
-                </Text>
-              ))}
-            </Notice>
-          )}
+          {problemsNotice}
           <ErrorNotice error={saveError} />
 
           {saveButton}
@@ -448,6 +465,7 @@ export function TripForm({
                 />
               </Question>
 
+              {problemsNotice}
               {saveButton}
             </View>
           )}

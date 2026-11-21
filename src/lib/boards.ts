@@ -2,6 +2,7 @@ import { Platform, Share } from 'react-native';
 
 import { APP_NAME } from '@/constants/brand';
 import { supabase } from './supabase';
+import { tasteChanged } from './tasteEvents';
 import { friendlyError, placeLabel, type Place, type Visibility } from './trips';
 
 /**
@@ -96,6 +97,7 @@ export async function updateBoard(id: string, changes: { name?: string; visibili
 export async function deleteBoard(id: string): Promise<void> {
   const { error } = await supabase.from('boards').delete().eq('id', id);
   if (error) throw new Error(friendlyError(error));
+  tasteChanged();
 }
 
 /** Adds a place to a list. Adding a place that's already there does nothing. */
@@ -104,11 +106,13 @@ export async function addToBoard(boardId: string, place: SavePlace): Promise<voi
     .from('board_items')
     .insert({ board_id: boardId, place_slug: place.slug ?? null, name: place.name.trim(), country: place.country.trim() });
   if (error && error.code !== '23505') throw new Error(friendlyError(error));
+  tasteChanged();
 }
 
 export async function removeFromBoard(itemId: string): Promise<void> {
   const { error } = await supabase.from('board_items').delete().eq('id', itemId);
   if (error) throw new Error(friendlyError(error));
+  tasteChanged();
 }
 
 /** Is this place on the list? Matches names the way the database does (ignoring case and spaces). */

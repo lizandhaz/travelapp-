@@ -11,7 +11,9 @@ import { Text } from '@/components/Text';
 import { Chip, IconCircle, Screen, SectionHeader, Segmented } from '@/components/ui';
 import { Wordmark } from '@/components/Wordmark';
 import { colors, fonts, GUTTER } from '@/constants/theme';
-import { friendsFeed, hero, PHOTO_CREDITS, rows, TASTES, unreadPostcardCount } from '@/lib/sample';
+import { friendsFeed, hero as sampleHero, PHOTO_CREDITS, places, rows, TASTES, unreadPostcardCount, type RowItem } from '@/lib/sample';
+import { rankValue } from '@/lib/match';
+import { tasteNote, useTaste } from '@/lib/taste';
 
 export default function Home() {
   const [side, setSide] = useState<'for-you' | 'friends'>('for-you');
@@ -50,7 +52,38 @@ export default function Home() {
 function ForYou() {
   const width = Math.min(Dimensions.get('window').width, 480) - GUTTER * 2;
   const [taste, setTaste] = useState(0);
+  const t = useTaste();
+  const personal = t.profile.evidence > 0;
+  const rankOf = (slug: string) => {
+    const r = t.forSlug(slug);
+    return r ? rankValue(r) : 0;
+  };
+  // Rows sorted for you (score and fit) once we know your taste (otherwise the prototype's order).
+  const byYou = (items: RowItem[]) => (personal ? [...items].sort((a, b) => rankOf(b.slug) - rankOf(a.slug)) : items);
   const tasteItems = rows.taste.filter(TASTES[taste].match);
+
+  // The big picture at the top: your best-scoring place you haven't been to yet.
+  const top = personal
+    ? places
+        .filter((p) => p.score != null && !t.forSlug(p.slug)?.yours)
+        .map((p) => ({ p, r: t.forSlug(p.slug)! }))
+        .sort((a, b) => rankValue(b.r) - rankValue(a.r))[0]
+    : null;
+  const hero = top
+    ? {
+        slug: top.p.slug,
+        name: top.p.name,
+        photo: top.p.photo,
+        kicker: 'Top pick for you',
+        sub: `${top.p.region.split(', ').pop()} · ${top.r.match}% match`,
+        score: top.r.score,
+        reason: top.r.reasons[0] ?? null,
+      }
+    : { ...sampleHero, score: t.forSlug(sampleHero.slug)?.score ?? sampleHero.score, reason: null as string | null };
+
+  // The name shrinks so its longest word fits beside the score stamp (no "Palerm / o").
+  const longest = Math.max(1, ...hero.name.split(/\s+/).map((w) => w.length));
+  const heroSize = Math.max(30, Math.min(52, Math.floor((width - 44 - 118) / (longest * 0.6))));
 
   return (
     <View style={{ gap: 32 }}>
@@ -62,7 +95,7 @@ function ForYou() {
                 <Text variant="label" style={{ color: colors.onDark }}>
                   {hero.kicker}
                 </Text>
-                <Text style={{ fontFamily: fonts.displayBold, fontSize: 52, lineHeight: 57, color: colors.onDark, marginTop: 6 }}>{hero.name}</Text>
+                <Text style={{ fontFamily: fonts.displayBold, fontSize: heroSize, lineHeight: Math.round(heroSize * 1.1), color: colors.onDark, marginTop: 6 }}>{hero.name}</Text>
                 <Text variant="label" style={{ color: colors.onDark, marginTop: 8 }}>
                   {hero.sub} →
                 </Text>
@@ -71,7 +104,12 @@ function ForYou() {
             </View>
           </PhotoStamp>
         </Pressable>
-        <Text variant="tiny">Your score blends ratings from your friends and people with similar taste.</Text>
+        {!!hero.reason && (
+          <Text variant="small" style={{ color: colors.ink }}>
+            ✦ {hero.reason}
+          </Text>
+        )}
+        <Text variant="tiny">{tasteNote(t.profile)}</Text>
       </View>
 
       <View>
@@ -85,9 +123,9 @@ function ForYou() {
         </Row>
       </View>
 
-      <PlaceRow before="Island" accent="escapes" items={rows.islands} width={230} height={260} />
-      <PlaceRow before="Weekends" accent="away" items={rows.weekends} />
-      <PlaceRow before="One night" accent="away" items={rows.overnight} width={170} height={190} />
+      <PlaceRow before="Island" accent="escapes" items={byYou(rows.islands)} width={230} height={260} />
+      <PlaceRow before="Weekends" accent="away" items={byYou(rows.weekends)} />
+      <PlaceRow before="One night" accent="away" items={byYou(rows.overnight)} width={170} height={190} />
 
       <View>
         <SectionHeader>
@@ -111,7 +149,7 @@ function ForYou() {
           <AccentTitle before="Picked for" accent="you" variant="heading" />
         </SectionHeader>
         <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
-          {pairs(rows.picked).map((pair, i) => (
+          {pairs(byYou(rows.picked)).map((pair, i) => (
             <View key={i} style={{ flexDirection: 'row', gap: 12 }}>
               {pair.map((p) => (
                 <PickCard key={p.slug} item={p} />

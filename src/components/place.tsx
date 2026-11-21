@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import type { PlaceResult } from '@/lib/match';
 import type { PlaceDetail } from '@/lib/placeDetails';
-import { formatScore } from '@/lib/score';
+import { formatScore, scoreWord } from '@/lib/score';
 import { Avatar } from './Avatar';
 import { PhotoBadge, Row } from './cards';
 import { PhotoTile } from './Photo';
+import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
 import { Card, SectionHeader } from './ui';
 
@@ -378,5 +380,66 @@ export function MoreAbout({ name, detail }: { name: string; detail: PlaceDetail 
         </View>
       )}
     </View>
+  );
+}
+
+/**
+ * Your score card on a place page: the score, a word, the % match, why, and a
+ * "How we worked this out" breakdown (lib/match.ts).
+ */
+export function YourScore({ result, note }: { result: PlaceResult; note: string }) {
+  const [open, setOpen] = useState(false);
+  const b = result.breakdown;
+  const from =
+    b.baseFrom === 'nobody yet'
+      ? 'No ratings yet, so we start from 7.0'
+      : `Rated ${b.base.toFixed(1)} by ${b.baseFrom === 'everyone' ? 'everyone' : b.baseFrom === 'friends' ? `${b.friendsCount} ${b.friendsCount === 1 ? 'friend' : 'friends'}` : `everyone and ${b.friendsCount} ${b.friendsCount === 1 ? 'friend' : 'friends'}`}`;
+  return (
+    <Card style={{ marginHorizontal: GUTTER, marginTop: -30, padding: 14, gap: 12 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+        <ScoreStamp score={result.score} size="md" label={result.yours != null ? 'Your rating' : 'Your score'} />
+        <View style={{ flex: 1 }}>
+          <Text variant="subheading">
+            {result.yours != null ? 'Your rating' : 'Your score'} · <Text variant="subheading" style={{ fontFamily: fonts.displayItalic }}>{scoreWord(result.score)}</Text>
+          </Text>
+          <Text variant="small">{result.yours != null ? 'You’ve been. This is the score you gave it.' : `${result.match}% match for you`}</Text>
+        </View>
+      </View>
+      {result.reasons.filter((r) => !r.startsWith('You gave')).length > 0 && (
+        <View style={{ gap: 4 }}>
+          {result.reasons
+            .filter((r) => !r.startsWith('You gave'))
+            .map((r) => (
+              <Text key={r} variant="small" style={{ color: colors.ink }}>
+                ✦ {r}
+              </Text>
+            ))}
+        </View>
+      )}
+      <Pressable onPress={() => setOpen((o) => !o)} accessibilityRole="button" accessibilityState={{ expanded: open }} hitSlop={6}>
+        <Text variant="link">{open ? 'Hide how we worked this out' : 'How we worked this out'}</Text>
+      </Pressable>
+      {open && (
+        <View style={{ gap: 10 }}>
+          <Text variant="small" style={{ color: colors.ink }}>
+            {from}. {result.yours == null && b.tasteNudge !== 0 ? `Your taste moves it ${b.tasteNudge > 0 ? 'up' : 'down'} ${Math.abs(b.tasteNudge).toFixed(1)}.` : ''}
+          </Text>
+          {b.parts.map((p) => (
+            <View key={p.label} style={{ gap: 4 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text variant="tiny" style={{ color: colors.ink }}>
+                  {p.label}
+                </Text>
+                <Text variant="tiny">{Math.round(p.value * 100)}%</Text>
+              </View>
+              <View style={{ height: 5, borderRadius: 3, backgroundColor: colors.line, overflow: 'hidden' }}>
+                <View style={{ width: `${Math.round(p.value * 100)}%`, height: 5, backgroundColor: colors.teal }} />
+              </View>
+            </View>
+          ))}
+          <Text variant="tiny">{note}</Text>
+        </View>
+      )}
+    </Card>
   );
 }

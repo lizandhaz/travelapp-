@@ -6,7 +6,7 @@ import { Avatar } from '@/components/Avatar';
 import { WantToGoButton } from '@/components/lists';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
-import { BestTimeChart, DoRow, EatRow, MoreAbout, PlaceFacts, SaidList, StayRow } from '@/components/place';
+import { BestTimeChart, DoRow, EatRow, MoreAbout, PlaceFacts, SaidList, StayRow, YourScore } from '@/components/place';
 import { PhotoBadge, Row } from '@/components/cards';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
@@ -14,8 +14,9 @@ import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { countryOf } from '@/lib/knownPlaces';
 import { placeDetails } from '@/lib/placeDetails';
-import { scoreWord } from '@/lib/score';
 import { aboutPlace, getPlace } from '@/lib/sample';
+import { stayKind } from '@/lib/placeFeatures';
+import { tasteNote, useTaste } from '@/lib/taste';
 import { useWantToGo } from '@/lib/useWantToGo';
 import NotFound from '../+not-found';
 
@@ -26,9 +27,23 @@ export default function PlaceScreen() {
   const place = getPlace(slug);
   const country = place ? countryOf({ name: place.name, country: place.region.split(', ').pop() ?? '' }) : '';
   const wish = useWantToGo({ name: place?.name ?? '', country, slug });
+  const taste = useTaste();
   if (!place) return <NotFound />;
   const detail = placeDetails[slug] ?? null;
   const { said, ideas } = aboutPlace(slug);
+  const result = taste.forSlug(slug);
+  const personal = taste.profile.evidence > 0;
+  // Stays and places to eat with your % match, best first. The featured stay is your top match,
+  // and its "Because…" is only shown when it's true for you.
+  const stays = (detail?.stays ?? [])
+    .map((s) => ({ ...s, match: personal ? taste.stayPercent(s) : s.match, because: null as string | null, featured: false }))
+    .sort((a, b) => (personal ? (b.match ?? 0) - (a.match ?? 0) : 0));
+  if (stays.length) {
+    stays[0].featured = true;
+    const kind = stayKind(stays[0].type);
+    if (personal && (taste.profile.stayTypes[kind] ?? 0) > 0.2) stays[0].because = `Because you rate ${kind === 'B&B' ? 'B&Bs' : kind === 'Other' ? 'places like this' : `${kind.toLowerCase()}s`} highly`;
+  }
+  const eats = (detail?.eats ?? []).map((e) => ({ ...e, match: personal ? taste.eatPercent(e) : e.match })).sort((a, b) => (personal ? (b.match ?? 0) - (a.match ?? 0) : 0));
   const moreSaid = (detail?.said ?? []).filter((s) => !said.some((f) => f.who === s.who));
   const h = Math.min(Dimensions.get('window').width, 480) * 1.0;
 
@@ -54,17 +69,7 @@ export default function PlaceScreen() {
         </View>
       </View>
 
-      {place.score != null && (
-        <Card style={{ marginHorizontal: GUTTER, marginTop: -30, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-          <ScoreStamp score={place.score} size="md" label="Your score" />
-          <View style={{ flex: 1 }}>
-            <Text variant="subheading">
-              Your score · <Text variant="subheading" style={{ fontFamily: fonts.displayItalic }}>{scoreWord(place.score)}</Text>
-            </Text>
-            <Text variant="small">{detail?.scoreNote ?? 'From your friends and people with your taste.'}</Text>
-          </View>
-        </Card>
-      )}
+      {!!result && <YourScore result={result} note={tasteNote(taste.profile)} />}
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 12, flexDirection: 'row', gap: 10 }}>
         <WantToGoButton variant="block" saved={wish.saved} busy={wish.busy || !wish.ready} onPress={wish.toggle} style={{ flex: 1 }} />
@@ -116,8 +121,8 @@ export default function PlaceScreen() {
         </View>
       )}
 
-      {!!detail?.stays.length && <StayRow stays={detail.stays} />}
-      {!!detail?.eats.length && <EatRow eats={detail.eats} />}
+      {stays.length > 0 && <StayRow stays={stays} />}
+      {eats.length > 0 && <EatRow eats={eats} />}
       {!!detail?.dos.length && <DoRow dos={detail.dos} />}
 
       {!detail && ideas.length > 0 && (

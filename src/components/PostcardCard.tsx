@@ -11,11 +11,12 @@ import { Text } from './Text';
 
 /**
  * A friend's trip as a postcard, the same template for everyone: a photo on the front, and on the
- * back their score, who they went with, how long they stayed, where they stayed and ate, and a tip.
- * Tap it (or "Turn over") to flip it. `toName` is who it's addressed to (you).
+ * back their words on the left and the details on the right (score, who with, how long, where they
+ * stayed and ate), split by the line down the middle like a real postcard. No To/From lines.
+ * Tap it (or "Turn over") to flip it.
  */
-export function PostcardCard({ trip, toName, width, flipped, onFlip }: { trip: FriendTrip; toName: string; width: number; flipped: boolean; onFlip: () => void }) {
-  const height = Math.round(width * 1.45);
+export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTrip; width: number; flipped: boolean; onFlip: () => void }) {
+  const height = Math.round(width * 1.3);
   const [turn] = useState(() => new Animated.Value(0));
   useEffect(() => {
     Animated.spring(turn, { toValue: flipped ? 1 : 0, useNativeDriver: true, friction: 8, tension: 40 }).start();
@@ -56,69 +57,73 @@ export function PostcardCard({ trip, toName, width, flipped, onFlip }: { trip: F
         </View>
       </Animated.View>
 
-      {/* Back: the trip */}
+      {/* Back: the trip, laid out like the back of a real postcard */}
       <Animated.View
         style={[
           side('180deg', '360deg', false),
-          { borderRadius: radius.md, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, padding: 20, gap: 14, shadowColor: colors.ink, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } },
+          { borderRadius: radius.md, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, padding: 20, shadowColor: colors.ink, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } },
         ]}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <View style={{ gap: 4, paddingTop: 4 }}>
-            <Text style={{ fontFamily: fonts.display, fontSize: 15, letterSpacing: 5, color: colors.ink }}>POSTCARD</Text>
-            <View style={{ width: 70, height: 2, backgroundColor: colors.accent, borderRadius: 1 }} />
-          </View>
-          <PhotoStamp photo={trip.photos[1] ?? trip.photos[0] ?? null} width={66} height={78} tilt={4} />
-        </View>
-
-        <View style={{ gap: 6 }}>
-          <Text style={{ fontFamily: fonts.display, fontSize: 22, lineHeight: 27, color: colors.ink }}>
-            {trip.who} went to <Text style={{ fontFamily: fonts.displayItalic, fontSize: 22, color: colors.ink }}>{trip.place}</Text>
-          </Text>
-          <View style={{ flexDirection: 'row' }}>
-            <MonthPill month={trip.month} />
-          </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <ScoreStamp score={trip.score} size="md" label={`${trip.who}'s score`} />
-          <View style={{ flex: 1 }}>
-            <Text variant="label" style={{ fontSize: 10 }}>
-              Rated it
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
+          <View style={{ flex: 1, gap: 8 }}>
+            <Text variant="label" style={{ letterSpacing: 4, color: colors.accentText }}>
+              Postcard
             </Text>
-            <Text style={{ fontFamily: fonts.displayItalic, fontSize: 22, lineHeight: 27, color: colors.accentText }}>{scoreWord(trip.score)}</Text>
-          </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', rowGap: 12 }}>
-          <Fact label="Went" value={companionsLabel(trip.companions)} />
-          <Fact label="For" value={nights} />
-          {!!trip.stay && <Fact label="Stayed at" value={`${trip.stay.name}`} sub={trip.stay.type} score={trip.stay.score} />}
-          {!!ate && <Fact label="Ate at" value={ate} />}
-        </View>
-
-        {!!tip && (
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <Text style={{ fontFamily: fonts.display, fontSize: 16, color: colors.accent }}>✦</Text>
-            <Text numberOfLines={3} style={{ flex: 1, fontFamily: fonts.displayItalic, fontSize: 16, lineHeight: 23, color: colors.ink }}>
-              {tip}
+            <Text style={{ fontFamily: fonts.display, fontSize: 24, lineHeight: 29, color: colors.ink }}>
+              {trip.who} went to{' '}
+              <Text style={{ fontFamily: fonts.displayItalic, fontSize: 24, lineHeight: 29, color: colors.ink }}>{trip.place}</Text>
             </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <MonthPill month={trip.month} />
+            </View>
           </View>
-        )}
+          <PhotoStamp photo={trip.photos[1] ?? trip.photos[0] ?? null} width={70} height={84} tilt={4} />
+        </View>
 
-        <View style={{ marginTop: 'auto', borderTopWidth: 1, borderTopColor: colors.line, paddingTop: 10, gap: 6 }}>
-          <AddressLine label="To" value={toName} />
-          <AddressLine label="From" value={trip.who} />
+        <View style={{ flex: 1, flexDirection: 'row', marginTop: 18 }}>
+          {/* Left: in their words */}
+          <View style={{ flex: 1.05, paddingRight: 14, gap: 14 }}>
+            {!!trip.quote && (
+              <Text numberOfLines={6} style={{ fontFamily: fonts.displayItalic, fontSize: 18, lineHeight: 25, color: colors.ink }}>
+                “{trip.quote}”
+              </Text>
+            )}
+            {!!tip && tip !== trip.quote && (
+              <View style={{ gap: 4 }}>
+                <Text variant="label" style={{ fontSize: 10, color: colors.accentText }}>
+                  ✦ Top tip
+                </Text>
+                <Text numberOfLines={6} style={{ fontFamily: fonts.displayItalic, fontSize: 14.5, lineHeight: 21, color: colors.muted }}>
+                  {tip}
+                </Text>
+              </View>
+            )}
+          </View>
+
+          {/* The line down the middle of a postcard */}
+          <View style={{ width: 1, backgroundColor: colors.line }} />
+
+          {/* Right: the details */}
+          <View style={{ flex: 1, paddingLeft: 14, gap: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <ScoreStamp score={trip.score} size="sm" label={`${trip.who}'s score`} />
+              <Text style={{ flex: 1, fontFamily: fonts.displayItalic, fontSize: 18, lineHeight: 22, color: colors.accentText }}>{scoreWord(trip.score)}</Text>
+            </View>
+            <Detail label="Went" value={companionsLabel(trip.companions)} />
+            <Detail label="Stayed" value={nights} />
+            {!!trip.stay && <Detail label="Slept at" value={trip.stay.name} sub={trip.stay.type} score={trip.stay.score} />}
+            {!!ate && <Detail label="Ate at" value={ate} />}
+          </View>
         </View>
       </Animated.View>
     </Pressable>
   );
 }
 
-function Fact({ label, value, sub, score }: { label: string; value: string; sub?: string; score?: number | null }) {
+function Detail({ label, value, sub, score }: { label: string; value: string; sub?: string; score?: number | null }) {
   return (
-    <View style={{ width: '50%', paddingRight: 10, gap: 2 }}>
-      <Text variant="label" style={{ fontSize: 10 }}>
+    <View style={{ gap: 1, borderBottomWidth: 1, borderBottomColor: colors.line, paddingBottom: 8 }}>
+      <Text variant="label" style={{ fontSize: 9.5 }}>
         {label}
       </Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -132,17 +137,6 @@ function Fact({ label, value, sub, score }: { label: string; value: string; sub?
         )}
       </View>
       {!!sub && <Text variant="tiny">{sub}</Text>}
-    </View>
-  );
-}
-
-function AddressLine({ label, value }: { label: string; value: string }) {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 8, borderBottomWidth: 1, borderBottomColor: colors.line, paddingBottom: 3 }}>
-      <Text variant="label" style={{ fontSize: 10, width: 38 }}>
-        {label}
-      </Text>
-      <Text style={{ fontFamily: fonts.displayItalic, fontSize: 16, color: colors.ink }}>{value}</Text>
     </View>
   );
 }

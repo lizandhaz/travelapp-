@@ -2,7 +2,6 @@ import { router } from 'expo-router';
 import { Pressable, ScrollView, View, type ViewStyle } from 'react-native';
 
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
-import { placeDetails } from '@/lib/placeDetails';
 import type { BoardItem, FeedItem, RowItem, TasteItem } from '@/lib/sample';
 import { useTaste } from '@/lib/taste';
 import { Avatar } from './Avatar';
@@ -85,19 +84,14 @@ export function PlaceCard({ item, width = 200, height = 220 }: { item: RowItem; 
 /** "Made for your taste": a thing to eat, drink, do or stay, with why it's picked. */
 export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: number }) {
   const t = useTaste();
-  const d = placeDetails[item.slug];
-  const place = t.forSlug(item.slug);
-  const stay = item.kind === 'Stay' ? d?.stays.find((x) => x.name === item.name) : undefined;
-  const eat = item.kind === 'Eat' ? d?.eats.find((x) => x.name === item.name) : undefined;
-  const personal = t.profile.evidence > 0;
-  const match = !personal ? item.match : stay ? `${t.stayPercent(stay)}% match` : eat ? `${t.eatPercent(eat)}% match` : place ? `${place.match}% match` : item.match;
-  // Only say "because…" when it's true for you (the prototype's lines were made up).
-  const because = place?.reasons.find((r) => !r.startsWith('You gave')) ?? null;
+  // Judged on the thing itself (friends who went, and how much you go for this kind of thing),
+  // not on places you've saved.
+  const { match, note } = t.forItem(item);
   return (
-    <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" style={{ width }}>
+    <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" accessibilityLabel={`${item.kind}: ${item.name}, ${match}% match. ${note}`} style={{ width }}>
       <PhotoTile photo={item.photo} style={{ width, height: 160 }} shade={false}>
         <PhotoBadge text={item.kind} style={{ position: 'absolute', top: 10, left: 10 }} />
-        <PhotoBadge text={match} style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(150,199,184,0.95)' }} />
+        <PhotoBadge text={`${match}% match`} style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(150,199,184,0.95)' }} />
       </PhotoTile>
       <Text variant="subheading" style={{ marginTop: 8 }}>
         {item.name}
@@ -105,13 +99,8 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
       <Text variant="tiny" style={{ color: colors.terracottaText, marginTop: 1 }}>
         {item.where}
       </Text>
-      {!!because && (
-        <Text variant="tiny" style={{ marginTop: 4, color: colors.ink }}>
-          ✦ {because}
-        </Text>
-      )}
-      <Text variant="tiny" style={{ marginTop: 2 }}>
-        {item.friends}
+      <Text variant="tiny" style={{ marginTop: 4, color: colors.ink }}>
+        ✦ {note}
       </Text>
     </Pressable>
   );
@@ -125,20 +114,20 @@ export function PickCard({ item }: { item: RowItem }) {
       <Card>
         <View style={{ height: 150 }}>
           <PhotoFill photo={item.photo} />
-          {score != null && (
-            <View style={{ position: 'absolute', top: 8, right: 8 }}>
-              <ScoreStamp score={score} size="sm" />
-            </View>
+          {/* One number: your % match once we know your taste, otherwise the score. */}
+          {match != null ? (
+            <PhotoBadge text={`${match}% match`} style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(150,199,184,0.95)' }} />
+          ) : (
+            score != null && (
+              <View style={{ position: 'absolute', top: 8, right: 8 }}>
+                <ScoreStamp score={score} size="sm" />
+              </View>
+            )
           )}
         </View>
         <View style={{ padding: 12 }}>
           <Text variant="subheading">{item.name}</Text>
           <Text variant="tiny">{item.sub}</Text>
-          {match != null && (
-            <Text variant="tiny" style={{ color: colors.teal, fontFamily: fonts.sansSemiBold, marginTop: 2 }}>
-              {match}% match
-            </Text>
-          )}
         </View>
       </Card>
     </Pressable>

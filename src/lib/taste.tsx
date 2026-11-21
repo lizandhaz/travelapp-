@@ -3,8 +3,8 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useAuth } from './auth';
 import { fetchBoards } from './boards';
 import { countryOf } from './knownPlaces';
-import { buildProfile, eatMatch, scorePlace, stayMatch, topTastes, type FriendRating, type PlaceResult, type Profile, type Signal } from './match';
-import { featuresForPlace, featuresForSlug, parseStaySub, sampleFriendRatings, stayKind, tagsForListName } from './placeFeatures';
+import { buildProfile, eatMatch, itemMatch, scorePlace, stayMatch, topTastes, type FriendRating, type PlaceResult, type Profile, type Signal } from './match';
+import { featuresForPlace, featuresForSlug, parseStaySub, sampleFriendRatings, stayKind, tagsForListName, tasteItemInfo } from './placeFeatures';
 import { onTasteChanged } from './tasteEvents';
 import { fetchMyTrips, type Place } from './trips';
 import { fetchPlaceViews } from './views';
@@ -27,6 +27,8 @@ type TasteValue = {
   stayPercent: (stay: { type: string; sub: string | null; score: number | null }) => number;
   /** % match for a place to eat. */
   eatPercent: (eat: { score: number | null }) => number;
+  /** % match and a friends' line for a "Made for your taste" item, judged on the item itself. */
+  forItem: (item: { slug: string; kind: string; name: string; friends: string }) => { match: number; note: string };
   /** The holiday types you like most. */
   tastes: string[];
   /** Is this sample place on one of your lists? */
@@ -124,6 +126,13 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
         return stayMatch(profile, { type: stayKind(type), priceFrom, friendScore: friend ? score : null });
       },
       eatPercent: ({ score }) => eatMatch(profile, { friendScore: score }),
+      forItem: (item) => {
+        const info = tasteItemInfo(item);
+        const match = info.stay
+          ? stayMatch(profile, { type: stayKind(info.stay.type), priceFrom: parseStaySub(info.stay.sub).priceFrom, friendScore: info.friendScore })
+          : itemMatch(profile, info);
+        return { match, note: info.note };
+      },
       tastes: topTastes(profile),
       isSaved: (slug) => {
         const f = featuresForSlug(slug);

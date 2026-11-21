@@ -16,12 +16,6 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
   const main = trip.stops[0];
   const cover = trip.photoPaths[0] ?? null;
   const photoUrl = useTripPhoto(cover);
-  const extras = [
-    trip.stops.length > 1 ? `${trip.stops.length} places` : null,
-    trip.stay ? '1 stay' : null,
-    trip.meal ? '1 food & drink' : null,
-    trip.tip ? '1 tip' : null,
-  ].filter(Boolean);
   const nameSize = fitNameSize(main?.name ?? '', width);
   return (
     <Link href={`/trip/${trip.id}`} asChild>
@@ -37,9 +31,6 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
             <Text style={{ fontFamily: fonts.display, fontSize: 20, color: colors.onDark, fontVariant: ['tabular-nums'] }}>{formatScore(trip.score)}</Text>
           </View>
         </PhotoStamp>
-        <Text variant="tiny" style={{ marginTop: 6 }} numberOfLines={1}>
-          {extras.length ? extras.join(' · ') : trip.visibility === 'private' ? 'Just me' : 'Friends'}
-        </Text>
       </Pressable>
     </Link>
   );

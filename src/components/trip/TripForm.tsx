@@ -62,6 +62,8 @@ export function TripForm({
   const photoKey = useRef(1000);
   const [photos, setPhotos] = useState<PhotoItem[]>(() => (initial?.photoPaths ?? []).map((path, i) => ({ key: i + 1, path })));
   const [home, setHome] = useState(false);
+  // The photo picked up to move (tap a photo), by key.
+  const [moving, setMoving] = useState<number | null>(null);
 
   // Keys for extra-stop rows: existing stops use 1, 2, 3…; new rows count up from 100.
   const nextKey = useRef(100);
@@ -241,7 +243,13 @@ export function TripForm({
                     item={p}
                     cover={i === 0 && photos.length > 1}
                     index={i}
-                    onRemove={() => setPhotos((ps) => ps.filter((x) => x.key !== p.key))}
+                    count={photos.length}
+                    selected={moving === p.key}
+                    onPress={() => setMoving(moving === p.key ? null : p.key)}
+                    onRemove={() => {
+                      setPhotos((ps) => ps.filter((x) => x.key !== p.key));
+                      if (moving === p.key) setMoving(null);
+                    }}
                   />
                 ))}
                 {roomFor > 0 && (
@@ -269,7 +277,26 @@ export function TripForm({
                 )}
               </ScrollView>
             </View>
-            <Text variant="tiny">Only you can see your photos. Location data is removed before saving.</Text>
+            {moving != null && photos.some((p) => p.key === moving) ? (
+              <MoveBar
+                index={photos.findIndex((p) => p.key === moving)}
+                count={photos.length}
+                onMove={(to) =>
+                  setPhotos((ps) => {
+                    const from = ps.findIndex((p) => p.key === moving);
+                    const next = [...ps];
+                    const [item] = next.splice(from, 1);
+                    next.splice(to, 0, item);
+                    return next;
+                  })
+                }
+                onDone={() => setMoving(null)}
+              />
+            ) : (
+              <Text variant="tiny">
+                {photos.length > 1 ? 'Tap a photo to change the order. The first one is the cover. ' : ''}Only you can see your photos. Location data is removed before saving.
+              </Text>
+            )}
           </Question>
 
           <Question title="Add a note" note="optional">
@@ -435,15 +462,52 @@ export function TripForm({
 type PhotoItem = { key: number; path?: string; uri?: string; width?: number };
 
 /** One photo in the form: a saved one (shown through a private link) or a newly picked one. */
-function PhotoThumb({ item, cover, index, onRemove }: { item: PhotoItem; cover: boolean; index: number; onRemove: () => void }) {
+function PhotoThumb({
+  item,
+  cover,
+  index,
+  count,
+  selected,
+  onPress,
+  onRemove,
+}: {
+  item: PhotoItem;
+  cover: boolean;
+  index: number;
+  count: number;
+  selected: boolean;
+  onPress: () => void;
+  onRemove: () => void;
+}) {
   const savedUrl = useTripPhoto(item.path);
   const uri = item.uri ?? savedUrl;
   return (
     <View>
-      <View style={{ width: 110, height: 110, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.sand }}>
-        {uri && <Image source={{ uri }} style={{ width: 110, height: 110 }} contentFit="cover" accessibilityLabel={`Photo ${index + 1}`} />}
-      </View>
-      {cover && (
+      <Pressable
+        onPress={onPress}
+        disabled={count < 2}
+        accessibilityRole="button"
+        accessibilityState={{ selected }}
+        accessibilityLabel={`Photo ${index + 1} of ${count}${index === 0 ? ', the cover' : ''}`}
+        accessibilityHint={count > 1 ? (selected ? 'Tap to stop moving it' : 'Tap to move it') : undefined}
+        style={{
+          width: 110,
+          height: 110,
+          borderRadius: radius.md,
+          overflow: 'hidden',
+          backgroundColor: colors.sand,
+          borderWidth: selected ? 3 : 0,
+          borderColor: colors.terracotta,
+        }}
+      >
+        {uri && <Image source={{ uri }} style={{ width: '100%', height: '100%' }} contentFit="cover" />}
+        {selected && (
+          <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(19,38,74,0.7)', paddingVertical: 4 }}>
+            <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, color: colors.onDark, textAlign: 'center' }}>Moving</Text>
+          </View>
+        )}
+      </Pressable>
+      {cover && !selected && (
         <View style={{ position: 'absolute', left: 6, bottom: 6, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 999, paddingHorizontal: 7, paddingVertical: 2 }}>
           <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 10, color: colors.ink }}>Cover</Text>
         </View>
@@ -456,6 +520,31 @@ function PhotoThumb({ item, cover, index, onRemove }: { item: PhotoItem; cover: 
         style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(19,38,74,0.75)', alignItems: 'center', justifyContent: 'center' }}
       >
         <Text style={{ color: colors.onDark, fontFamily: fonts.sansBold, fontSize: 14, lineHeight: 16 }}>×</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+/** Under the photos while one is picked up: move it left or right, make it the cover, or finish. */
+function MoveBar({ index, count, onMove, onDone }: { index: number; count: number; onMove: (to: number) => void; onDone: () => void }) {
+  const button = (label: string, a11y: string, to: number, disabled: boolean) => (
+    <Pressable
+      onPress={() => onMove(to)}
+      disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={a11y}
+      style={{ borderRadius: radius.pill, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, paddingHorizontal: 14, paddingVertical: 8, opacity: disabled ? 0.4 : 1 }}
+    >
+      <Text style={{ fontFamily: fonts.sansMedium, fontSize: 14, color: colors.ink }}>{label}</Text>
+    </Pressable>
+  );
+  return (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+      {button('‹ Left', 'Move photo left', index - 1, index === 0)}
+      {button('Make cover', 'Make this photo the cover', 0, index === 0)}
+      {button('Right ›', 'Move photo right', index + 1, index === count - 1)}
+      <Pressable onPress={onDone} accessibilityRole="button" hitSlop={8} style={{ paddingHorizontal: 6, paddingVertical: 8 }}>
+        <Text variant="link">Done</Text>
       </Pressable>
     </View>
   );

@@ -23,7 +23,7 @@ export default function Settings() {
   async function clearViews() {
     try {
       await clearPlaceViews();
-      setCleared('Cleared. Your matches no longer use the places you’ve looked at.');
+      setCleared('Cleared. Your scores no longer use the places you’ve looked at.');
     } catch (e) {
       setCleared(e instanceof Error ? e.message : 'Something went wrong.');
     }
@@ -53,12 +53,12 @@ export default function Settings() {
             {profile?.canGoPublic ? 'Public profiles are coming soon.' : 'Public profiles are for over-18s. Until then, your profile is just for friends.'}
           </Text>
         </Section>
-        <Section label="Your matches">
+        <Section label="Your scores">
           <View style={{ padding: 16, gap: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
               <View style={{ flex: 1 }}>
                 <Text variant="strong">Use the places I look at</Text>
-                <Text variant="small">Places you open (and how long you spend on them) help your scores and matches. Only you can see this.</Text>
+                <Text variant="small">Places you open (and how long you spend on them) help your scores. Only you can see this.</Text>
               </View>
               <Switch
                 value={useViews}
@@ -67,12 +67,12 @@ export default function Settings() {
                   setViewsEnabled(on);
                 }}
                 trackColor={{ true: colors.teal, false: colors.line }}
-                accessibilityLabel="Use the places I look at for my matches"
+                accessibilityLabel="Use the places I look at for my scores"
               />
             </View>
             <Button title="Clear the places I’ve looked at" kind="outline" size="sm" onPress={clearViews} />
             {!!cleared && <Text variant="small">{cleared}</Text>}
-            <Text variant="tiny">Your matches also use your trips, your saved places and your friends’ ratings.</Text>
+            <Text variant="tiny">Your scores also use your trips, your saved places and your friends’ ratings.</Text>
           </View>
         </Section>
         {!!profile?.avatarPath && (

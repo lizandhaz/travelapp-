@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useAuth } from './auth';
 import { fetchBoards } from './boards';
 import { countryOf } from './knownPlaces';
-import { buildProfile, eatMatch, itemMatch, scorePlace, stayMatch, topTastes, type FriendRating, type PlaceResult, type Profile, type Signal } from './match';
+import { buildProfile, itemScore, scorePlace, stayScore, topTastes, type FriendRating, type PlaceResult, type Profile, type Signal } from './match';
 import { featuresForPlace, featuresForSlug, parseStaySub, sampleFriendRatings, stayKind, tagsForListName, tasteItemInfo } from './placeFeatures';
 import { onTasteChanged } from './tasteEvents';
 import { fetchMyTrips, type Place } from './trips';
@@ -12,23 +12,24 @@ import { fetchPlaceViews } from './views';
 /**
  * Your taste, for the whole app: built from your trips and saved places (and friends'
  * ratings), and rebuilt whenever one of those changes. Screens use useTaste() to get
- * your personal score and % match for any place. The maths is in lib/match.ts.
+ * your personal score out of 10 for any place (the app shows scores only, no % match).
+ * The maths is in lib/match.ts.
  */
 
 type TasteValue = {
   /** False until your trips and lists have loaded (numbers are neutral until then). */
   ready: boolean;
   profile: Profile;
-  /** Your score, % match and reasons for a sample place page. */
+  /** Your score and reasons for a sample place page. */
   forSlug: (slug: string) => PlaceResult | null;
   /** The same for any place by name. */
   forPlace: (place: Place) => PlaceResult;
-  /** % match for a stay on a place page. */
-  stayPercent: (stay: { type: string; sub: string | null; score: number | null }) => number;
-  /** % match for a place to eat. */
-  eatPercent: (eat: { score: number | null }) => number;
-  /** % match and a friends' line for a "Made for your taste" item, judged on the item itself. */
-  forItem: (item: { slug: string; kind: string; name: string; friends: string }) => { match: number; note: string };
+  /** Your score out of 10 for a stay on a place page. */
+  stayScoreFor: (stay: { type: string; sub: string | null; score: number | null }) => number;
+  /** Your score out of 10 for a place to eat on a place page. */
+  eatScoreFor: (eat: { score: number | null; from: string | null }) => number;
+  /** Your score and a friends' line for a "Made for your taste" item, judged on the item itself. */
+  forItem: (item: { slug: string; kind: string; name: string; friends: string }) => { score: number; note: string };
   /** The holiday types you like most. */
   tastes: string[];
   /** Is this sample place on one of your lists? */
@@ -121,17 +122,17 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
         return cache.get(slug)!;
       },
       forPlace: (place) => scorePlace(profile, featuresForPlace(place), friends),
-      stayPercent: ({ type, sub, score }) => {
+      stayScoreFor: ({ type, sub, score }) => {
         const { priceFrom, friend } = parseStaySub(sub);
-        return stayMatch(profile, { type: stayKind(type), priceFrom, friendScore: friend ? score : null });
+        return stayScore(profile, { type: stayKind(type), priceFrom, friendScore: friend ? score : null });
       },
-      eatPercent: ({ score }) => eatMatch(profile, { friendScore: score }),
+      eatScoreFor: ({ score, from }) => itemScore(profile, { tasteTag: 'food', friendScore: score, friendRecommended: !!from }),
       forItem: (item) => {
         const info = tasteItemInfo(item);
-        const match = info.stay
-          ? stayMatch(profile, { type: stayKind(info.stay.type), priceFrom: parseStaySub(info.stay.sub).priceFrom, friendScore: info.friendScore })
-          : itemMatch(profile, info);
-        return { match, note: info.note };
+        const score = info.stay
+          ? stayScore(profile, { type: stayKind(info.stay.type), priceFrom: parseStaySub(info.stay.sub).priceFrom, friendScore: info.friendScore })
+          : itemScore(profile, info);
+        return { score, note: info.note };
       },
       tastes: topTastes(profile),
       isSaved: (slug) => {
@@ -183,6 +184,6 @@ export function tasteNote(p: Profile): string {
     p.counts.views ? `the ${p.counts.views === 1 ? 'place' : `${p.counts.views} places`} you’ve looked at` : null,
   ].filter(Boolean);
   return bits.length
-    ? `Your scores and matches use your ${bits.length > 1 ? `${bits.slice(0, -1).join(', ')} and ${bits[bits.length - 1]}` : bits[0]}, plus your friends’ ratings.`
-    : 'Add trips and save places, and these scores and matches become yours.';
+    ? `Your scores use your ${bits.length > 1 ? `${bits.slice(0, -1).join(', ')} and ${bits[bits.length - 1]}` : bits[0]}, plus your friends’ ratings.`
+    : 'Add trips and save places, and these scores become yours.';
 }

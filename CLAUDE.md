@@ -84,11 +84,13 @@ src/
     (tabs)/index.tsx      Home: wordmark, search + Postcards buttons, For you (hero + rows) / Friends (feed)
     (tabs)/explore.tsx    "Describe your perfect trip" search, filter chips, collections, Trending this month, board
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
-    (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list
-    (tabs)/profile.tsx    You: profile picture (tap to change), stats, Your travel map, your real trips as photo stamps (highest score first)
+    (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list (tile shaped like a list)
+    (tabs)/profile.tsx    You: profile picture (tap to change), stats, Your taste, travel map card (tap → map), your trips as photo
+                          stamps: Newest (default) / Oldest / Top rated, and a year filter
     list/[id].tsx         One list: photo-collage cover with the name, Share/Edit circles, places as a 2-column grid of
                           photo cards (score stamp, × to remove, tap → place page), Add a place card, Delete (confirm)
     list/new.tsx          New list, or rename/who-can-see with ?id=; with ?place= it also adds that place
+    map.tsx               The full travel map: All/Been/Want to go, names on pins, pinch to zoom (iPhone), Whole world, place chips
     save.tsx              "Save to a list" from a place page: tick lists (Want to go first), + New list
     postcards.tsx         Postcards (sample), opened from Home's paper-plane button
     settings.tsx          Settings (public-profile note, Your matches: use/clear places you've looked at, sign out), opened from You
@@ -110,8 +112,8 @@ src/
     Avatar.tsx            Face photo or initials
     cards.tsx             Row, TrendCard, PlaceCard, TasteCard, PickCard, FeedCard, BoardTile, PhotoBadge
     lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, WantToGoButton, photoForItem, placeSlugForItem
-    TravelMap.tsx         "Your travel map": world map that zooms to your places ("Whole world" to see it all), Been pins +
-                          Want to go stars with names (placed so they don't overlap), filter chips, place chips
+    TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
+                          TravelMapFull (map screen: names placed so they don't overlap, filters, pinch zoom, place chips)
     place.tsx             Place page pieces: PlaceFacts, BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
@@ -137,6 +139,7 @@ src/
     useTripPhoto.ts       Hook: a signed URL for one of your photos (trip photos and profile picture)
     knownPlaces.ts        ~525 popular holiday places + countries + WORLD_PLACES: suggestions, countryOf(), plain()
     worldPlaces.ts        Generated: ~10,400 towns/cities with positions (GeoNames, CC BY 4.0; credited in Settings)
+    travelPlaces.ts       beenPlaces/wishPlaces (your map's places) + useTravelPlaces() for the map screen
     useWantToGo.ts        Hook: is a place on your Want to go list, and toggle() it in one tap
     match.ts              The matching engine (pure, tested in tests/match.test.mjs): profile, fit, % match, score, reasons
     placeFeatures.ts      Places in the engine's terms (holiday types, position, warmth, who it suits, base rating)

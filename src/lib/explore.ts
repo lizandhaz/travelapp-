@@ -3,7 +3,7 @@ import { currentMonth } from './months';
 import type { PhotoName } from './photos';
 import { placeDetails } from './placeDetails';
 import { featuresForSlug, parseStaySub } from './placeFeatures';
-import { friendsFeed, getPlace, places, type RowItem } from './sample';
+import { board, friendsFeed, getPlace, places, type BoardItem, type RowItem } from './sample';
 
 /**
  * Explore's collections, worked out from each sample place's details (holiday types,
@@ -182,7 +182,7 @@ export const itemCollections: ItemCollection[] = [
           key: `${slug}-${c.name}`,
           slug,
           place,
-          kind: c.when ? `${c.tag} · ${c.when}` : c.tag,
+          kind: `Culture · ${c.tag}`,
           scoreKind: 'Do' as const,
           name: c.name,
           what: c.what,
@@ -206,4 +206,60 @@ export function searchExplore(query: string): { places: RowItem[]; items: Explor
     places: placeHits.map((p) => ({ slug: p.slug, name: p.name, sub: p.region, photo: p.photo, score: p.score ?? undefined })),
     items: itemHits.filter((i, n, a) => a.findIndex((x) => x.key === i.key) === n).slice(0, 30),
   };
+}
+
+// ---------------------------------------------------------------------------
+// The Explore feed: the prototype's board, then every other place and thing, mixed
+// ---------------------------------------------------------------------------
+
+/** A tile in the Explore feed. `href` opens a collection instead of a place. */
+export type FeedItem = BoardItem & { href?: string };
+
+const STAY_KINDS = ['Hotel', 'Villa', 'B&B', 'Airbnb', 'Riad', 'Ryokan', 'Other'];
+
+/**
+ * The long Explore feed: the prototype's 64 tiles first (its collection tiles open the
+ * matching collection, or are left out), then every other place and thing to stay, eat,
+ * do and see from all 39 places, taking turns so the feed never runs one kind for long.
+ */
+export function exploreFeed(): FeedItem[] {
+  const cols = [...placeCollections(), ...itemCollections];
+  const byTitle = new Map(cols.map((c) => [c.title.toLowerCase().replace(/’/g, "'"), c.id]));
+  const seen = new Set<string>();
+  const out: FeedItem[] = [];
+
+  for (const b of board) {
+    if (b.kind === 'Collection') {
+      const id = byTitle.get(b.name.toLowerCase().replace(/’/g, "'"));
+      if (id) out.push({ ...b, href: `/collection/${id}` });
+      continue;
+    }
+    seen.add(b.kind === 'place' ? `place:${b.slug}` : `${b.slug}:${b.name.toLowerCase()}`);
+    out.push(b);
+  }
+
+  const morePlaces: FeedItem[] = places
+    .filter((p) => !seen.has(`place:${p.slug}`))
+    .map((p) => ({ slug: p.slug, kind: 'place', name: `${p.name}, ${p.region}`, sub: kicker(p.slug) || p.region, photo: p.photo, score: p.score ?? undefined }));
+  const things = itemCollections.flatMap((c) => c.items());
+  const asTile = (i: ExploreItem): FeedItem => ({ slug: i.slug, kind: i.kind, name: i.name, sub: i.place, photo: i.photo });
+  const fresh = (i: ExploreItem) => !seen.has(`${i.slug}:${i.name.toLowerCase()}`);
+  const pools = [
+    morePlaces,
+    things.filter((i) => i.kind === 'Eat' && fresh(i)).map(asTile),
+    things.filter((i) => STAY_KINDS.includes(i.kind) && fresh(i)).map(asTile),
+    things.filter((i) => i.scoreKind === 'Do' && i.kind !== 'Hidden gem' && !i.kind.includes('·') && fresh(i)).map(asTile),
+    things.filter((i) => (i.kind === 'Hidden gem' || i.kind.includes('·')) && fresh(i)).map(asTile),
+  ];
+  // Take turns from each pool (a place, a meal, a stay, something to do, a gem or festival…).
+  while (pools.some((p) => p.length)) {
+    for (const p of pools) {
+      const next = p.shift();
+      if (next && !seen.has(`${next.slug}:${next.name.toLowerCase()}`)) {
+        seen.add(`${next.slug}:${next.name.toLowerCase()}`);
+        out.push(next);
+      }
+    }
+  }
+  return out;
 }

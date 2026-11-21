@@ -179,11 +179,16 @@ export function FeedCard({ item }: { item: FeedItem }) {
 }
 
 /** A tile on the Explore board (masonry style). */
-export function BoardTile({ item, height }: { item: BoardItem; height: number }) {
+export function BoardTile({ item, height }: { item: BoardItem & { href?: string }; height: number }) {
   const isPlace = item.kind === 'place';
   const { score } = usePersonalScore(isPlace ? item.slug : null, item.score);
   return (
-    <Pressable onPress={() => openPlace(item.slug)} accessibilityRole={item.slug ? 'link' : undefined} style={{ marginBottom: 14 }}>
+    <Pressable
+      onPress={() => (item.href ? router.push(item.href as never) : openPlace(item.slug))}
+      accessibilityRole={item.slug || item.href ? 'link' : undefined}
+      accessibilityLabel={`${item.kind === 'place' ? '' : `${item.kind}: `}${item.name}. ${item.sub}`}
+      style={{ marginBottom: 14 }}
+    >
       <PhotoTile photo={item.photo} style={{ height, borderRadius: radius.md }} shade={false}>
         {isPlace && score != null ? (
           <View style={{ position: 'absolute', top: 8, left: 8 }}>

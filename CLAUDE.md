@@ -83,8 +83,8 @@ src/
     signup.tsx, login.tsx Join (name, email, date of birth) / Log in (email), then the 6-digit code
     (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
     (tabs)/index.tsx      Home: wordmark, search + Postcards buttons, For you (hero + rows) / Friends (feed)
-    (tabs)/explore.tsx    Long browse page: search (places + food/stays/things), ~24 collection tiles, Trending this month,
-                          ~20 rows (place collections and things, best for you first, "See all"), Browse everything board
+    (tabs)/explore.tsx    Explore (prototype layout): search, filter chips, "Find your next trip" collection tiles (24, each opens
+                          its collection), Trending this month, and a long two-column photo feed (60 at a time, "Show more")
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
     (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list (tile shaped like a list)
     (tabs)/profile.tsx    You: profile picture (tap to change), stats, Your taste, travel map card (tap → map), your trips as photo
@@ -114,7 +114,7 @@ src/
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
     cards.tsx             Row, TrendCard, PlaceCard, TasteCard, PickCard, FeedCard, BoardTile, PhotoBadge
-    explore.tsx           CollectionTile, PlaceSection / ItemSection (titled rows with See all), ItemCard, sorting helpers
+    explore.tsx           CollectionTile, ItemCard, sorting helpers (used by Explore and collection pages)
     lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, WantToGoButton, photoForItem, placeSlugForItem
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
                           TravelMapFull (map screen: names placed so they don't overlap, filters, pinch zoom, place chips)
@@ -146,7 +146,8 @@ src/
     knownPlaces.ts        ~525 popular holiday places + countries + WORLD_PLACES: suggestions, countryOf(), plain()
     worldPlaces.ts        Generated: ~10,400 towns/cities with positions (GeoNames, CC BY 4.0; credited in Settings)
     explore.ts            Explore's collections (worked out from place details: "Sunshine in <month>" from monthly temps,
-                          Island escapes, Holiday without flying, Good value…), things gathered from every place, search
+                          Island escapes, Holiday without flying, Good value…), things gathered from every place, exploreFeed()
+                          (the prototype's board first, then every other place, stay, restaurant, thing to do and gem)
     travelPlaces.ts       beenPlaces/wishPlaces (your map's places) + useTravelPlaces() for the map screen
     useWantToGo.ts        Hook: is a place on your Want to go list, and toggle() it in one tap
     match.ts              The matching engine (pure, tested in tests/match.test.mjs): profile, fit, % match, score, reasons

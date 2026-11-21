@@ -6,12 +6,10 @@ import type { ExploreItem } from '@/lib/explore';
 import type { PhotoName } from '@/lib/photos';
 import type { RowItem } from '@/lib/sample';
 import { useTaste } from '@/lib/taste';
-import { AccentTitle } from './AccentTitle';
-import { PhotoBadge, PlaceCard, Row } from './cards';
+import { PhotoBadge } from './cards';
 import { PhotoTile } from './Photo';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { SectionHeader } from './ui';
 
 /** A photo tile with a collection's name ("Island escapes"), opening its page. */
 export function CollectionTile({ id, title, photo, count }: { id: string; title: string; photo: PhotoName; count: number }) {
@@ -31,24 +29,6 @@ export function CollectionTile({ id, title, photo, count }: { id: string; title:
 export function useSortedForYou(items: RowItem[]): RowItem[] {
   const taste = useTaste();
   return [...items].sort((a, b) => (taste.forSlug(b.slug)?.score ?? b.score ?? 0) - (taste.forSlug(a.slug)?.score ?? a.score ?? 0));
-}
-
-/** A titled row of places with "See all" (opens the collection). */
-export function PlaceSection({ id, title, items }: { id: string; title: string; items: RowItem[] }) {
-  const sorted = useSortedForYou(items);
-  const [first, ...rest] = title.split(' ');
-  return (
-    <View>
-      <SectionHeader action={`See all ${items.length}`} onAction={() => router.push(`/collection/${id}`)}>
-        {rest.length ? <AccentTitle before={first} accent={rest.join(' ')} variant="heading" /> : title}
-      </SectionHeader>
-      <Row>
-        {sorted.slice(0, 10).map((i) => (
-          <PlaceCard key={i.slug} item={i} width={180} height={200} />
-        ))}
-      </Row>
-    </View>
-  );
 }
 
 /** A restaurant, stay, thing to do or festival from a place, with your score and why. */
@@ -89,21 +69,3 @@ export function useSortedItems(items: ExploreItem[]): ExploreItem[] {
   const score = (i: ExploreItem) => taste.forItem({ slug: i.slug, kind: i.scoreKind, name: i.name, friends: '' }).score;
   return [...items].sort((a, b) => score(b) - score(a));
 }
-
-/** A titled row of things (restaurants, stays, things to do…) with "See all". */
-export function ItemSection({ id, title, items }: { id: string; title: string; items: ExploreItem[] }) {
-  const sorted = useSortedItems(items);
-  return (
-    <View>
-      <SectionHeader action={`See all ${items.length}`} onAction={() => router.push(`/collection/${id}`)}>
-        {title}
-      </SectionHeader>
-      <Row gap={14}>
-        {sorted.slice(0, 10).map((i) => (
-          <ItemCard key={i.key} item={i} />
-        ))}
-      </Row>
-    </View>
-  );
-}
-

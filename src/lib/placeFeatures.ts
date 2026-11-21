@@ -262,3 +262,43 @@ export function tagsForListName(name: string): Tags {
   for (const [re, t] of LIST_WORDS) if (re.test(n)) for (const [k, v] of Object.entries(t)) tags[k] = Math.max(tags[k] ?? 0, v);
   return tags;
 }
+
+/**
+ * What we know about one "Made for your taste" item (a restaurant, café, drink, thing to
+ * do or stay) from friends: who went, their score, and a line saying so. Also which kind
+ * of taste it appeals to (food for cafés, culture for a museum…).
+ */
+export function tasteItemInfo(item: { slug: string; kind: string; name: string; friends: string }) {
+  const d = placeDetails[item.slug];
+  const stay = d?.stays.find((x) => x.name === item.name);
+  const eat = d?.eats.find((x) => x.name === item.name);
+  const todo = d?.dos.find((x) => x.name === item.name);
+  const hasBeen = /friends? (has|have) been/.test(item.friends);
+  const fallback = /new to your friends/i.test(item.friends) ? 'New to your friends' : item.friends;
+
+  if (stay) {
+    const { friend } = parseStaySub(stay.sub);
+    return {
+      stay,
+      tasteTag: null,
+      friendScore: friend ? stay.score : null,
+      friendRecommended: !!friend || hasBeen,
+      note: friend && stay.score != null ? `${friend} stayed and gave it ${stay.score.toFixed(1)}` : fallback,
+    };
+  }
+  const tasteTag = item.kind === 'Do' ? doTasteTag(todo?.tag) : item.kind === 'Drink' ? 'nightlife' : 'food';
+  if (eat?.from) {
+    return { stay: null, tasteTag, friendScore: eat.score, friendRecommended: true, note: eat.score != null ? `${eat.from} gave it ${eat.score.toFixed(1)}` : `Recommended by ${eat.from}` };
+  }
+  if (todo?.from) {
+    return { stay: null, tasteTag, friendScore: null, friendRecommended: true, note: `${todo.gem ? 'Found' : 'Recommended'} by ${todo.from}` };
+  }
+  return { stay: null, tasteTag, friendScore: null, friendRecommended: hasBeen, note: fallback };
+}
+
+/** The kind of taste a thing to do appeals to ("History" → history). */
+function doTasteTag(tag: string | undefined): string {
+  const t = tag ? ACTIVITY[tag] : undefined;
+  if (!t) return 'culture';
+  return Object.entries(t).sort((a, b) => b[1] - a[1])[0][0];
+}

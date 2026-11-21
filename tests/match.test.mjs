@@ -204,3 +204,15 @@ test('a list called "Ski trips" makes ski resorts a better match', () => {
   const withList = buildProfile([...cityTrips, { kind: 'interest', tags: { ski: 1, mountains: 0.6 }, label: 'Ski trips' }], [], NOW);
   assert.ok(scorePlace(withList, zermatt, []).match > scorePlace(without, zermatt, []).match);
 });
+
+test('a restaurant is matched on the restaurant: friends who loved it, and how much you like food', async () => {
+  const { itemMatch } = await import('../src/lib/match.ts');
+  const foodie = buildProfile([trip(place('Bologna', 'Italy', { food: 1 }), 9.5)], [], NOW);
+  const loved = itemMatch(foodie, { tasteTag: 'food', friendScore: 9.3, friendRecommended: true });
+  const unknown = itemMatch(foodie, { tasteTag: 'food', friendScore: null, friendRecommended: false });
+  const meh = itemMatch(foodie, { tasteTag: 'food', friendScore: 6.5, friendRecommended: true });
+  assert.ok(loved > unknown && unknown > meh, `${loved} > ${unknown} > ${meh}`);
+  // Saving faraway islands doesn't change how a café is matched.
+  const islander = buildProfile([{ kind: 'save', place: maldives, wish: true }], [], NOW);
+  assert.equal(itemMatch(islander, { tasteTag: 'food', friendScore: 9, friendRecommended: true }) > 0, true);
+});

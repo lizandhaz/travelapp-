@@ -568,10 +568,15 @@ export function reasonsFor(profile: Profile, place: PlaceFeatures, friends: Frie
 export function stayMatch(profile: Profile, stay: { type: string; priceFrom: number | null; friendScore: number | null }): number {
   const parts: [number, number][] = [];
   const pref = profile.stayTypes[stay.type];
-  if (pref != null) parts.push([0.5, 0.5 + 0.5 * Math.tanh(pref)]);
-  if (profile.price != null && stay.priceFrom != null) parts.push([0.3, Math.exp(-((Math.log(stay.priceFrom / profile.price) / 0.6) ** 2))]);
-  if (stay.friendScore != null) parts.push([0.2, clamp((stay.friendScore - 6) / 4, 0, 1)]);
-  if (!parts.length) return 70;
+  // The kind of stay: what you've rated before, or neutral if you haven't rated one yet.
+  parts.push([pref != null ? 0.5 : 0.3, pref != null ? 0.5 + 0.5 * Math.tanh(pref) : 0.5]);
+  if (profile.price != null && stay.priceFrom != null) {
+    // Pricier than you usually go for counts against it; cheaper only a little.
+    const r = Math.log(stay.priceFrom / profile.price);
+    parts.push([0.3, r > 0 ? Math.exp(-((r / 0.6) ** 2)) : Math.max(0.75, Math.exp(-((r / 1.2) ** 2)))]);
+  }
+  if (stay.friendScore != null) parts.push([0.3, clamp(0.1 + (0.85 * (stay.friendScore - 6.5)) / 3, 0, 1)]);
+  if (pref == null && profile.price == null && stay.friendScore == null) return 70;
   const w = parts.reduce((a, [pw]) => a + pw, 0);
   const fit = parts.reduce((a, [pw, v]) => a + pw * v, 0) / w;
   return matchPercent(0.5 + (fit - 0.5) * Math.max(0.4, profile.confidence));
@@ -601,4 +606,23 @@ export function topTastes(profile: Profile, n = 4): string[] {
  */
 export function rankValue(r: { score: number; match: number }): number {
   return 0.6 * r.score + 0.04 * r.match;
+}
+
+/**
+ * % match for a single thing to eat, drink, do or stay at ("Made for your taste"), from
+ * the thing itself: how much you go for that kind of thing (e.g. food for cafés, culture
+ * for a museum) and what friends made of it (a friend's score, or just a recommendation).
+ */
+export function itemMatch(profile: Profile, item: { tasteTag: string | null; friendScore: number | null; friendRecommended: boolean }): number {
+  const parts: [number, number][] = [];
+  // How much this kind of thing stands out among your interests (your top interest = 1).
+  const top = Math.max(0, ...Object.values(profile.tags));
+  if (item.tasteTag && top > 0) parts.push([0.5, 0.25 + 0.7 * clamp((profile.tags[item.tasteTag] ?? 0) / top, 0, 1)]);
+  // What friends made of it: their score, a recommendation, or a little below neutral if none of them has been.
+  const friend =
+    item.friendScore != null ? clamp(0.1 + (0.85 * (item.friendScore - 6.5)) / 3, 0, 1) : item.friendRecommended ? 0.6 : 0.4;
+  parts.push([0.5, friend]);
+  const w = parts.reduce((a, [pw]) => a + pw, 0);
+  const fit = parts.reduce((a, [pw, v]) => a + pw * v, 0) / w;
+  return matchPercent(0.5 + (fit - 0.5) * Math.max(0.4, profile.confidence));
 }

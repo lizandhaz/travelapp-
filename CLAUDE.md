@@ -75,6 +75,7 @@ app.json                  Icon, splash, plugins, Expo project link
 app.config.ts             Adds the app name (from src/constants/brand.json) on top of app.json
 assets/images/            App icon, splash, Android adaptive icons, favicon
 assets/photos/            Sample photos from the design prototype (Unsplash)
+assets/maps/              Illustrated place maps from the prototype ("On the map"), drawn to JPEG
 src/
   app/                    Every file is a screen (Expo Router)
     _layout.tsx           Fonts, AuthProvider, Stack + Stack.Protected (signed in / signed out)
@@ -94,7 +95,7 @@ src/
     save.tsx              "Save to a list" from a place page: tick lists (Want to go first), + New list
     postcards.tsx         Postcards (sample), opened from Home's paper-plane button
     settings.tsx          Settings (public-profile note, Your matches: use/clear places you've looked at, sign out), opened from You
-    place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, best time, what friends said, where to stay/eat, things to do,
+    place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, On the map, best time, what friends said, where to stay/eat, things to do,
                           culture and top tips, "I've been" (opens Add a trip with the place filled in)
     trip/[id]/index.tsx   One of your trips, with Edit and Delete (confirm first)
     trip/[id]/edit.tsx    Edit a trip (same TripForm, prefilled)
@@ -114,7 +115,8 @@ src/
     lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, WantToGoButton, photoForItem, placeSlugForItem
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
                           TravelMapFull (map screen: names placed so they don't overlap, filters, pinch zoom, place chips)
-    place.tsx             Place page pieces: PlaceFacts, BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
+    place.tsx             Place page pieces: YourScore, PlaceFacts, PlaceMapSection (map + numbered key with your score for
+                          each spot, tap for why, full screen with pinch zoom), BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
@@ -129,6 +131,7 @@ src/
   lib/
     sample.ts             Sample content from the prototype: hero, rows, places, feed, board, boards, postcards
     photos.ts             Sample photo names → files
+    placeMaps.ts          Each sample place's map picture and its numbered pins (stay / eat / do / hidden gem)
     placeDetails.ts       Sample place details from the prototype (stays, food, things to do, best time, tips)
     score.ts              formatScore, clampScore, scoreWord
     trips.ts              Trip types, fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces, photo upload + signed URLs
@@ -213,7 +216,8 @@ The look follows the owner's prototype: **clean, warm and photo-led**. A warm of
 | `terracotta` | `#cc754a` | Swash under accent words, star, slider fill, large text only |
 | `terracottaDeep` | `#b05e37` | "Save trip" button (white text passes contrast) |
 | `terracottaText` | `#a9552c` | Small terracotta text: links, taglines, kickers |
-| `teal` | `#2e7a7d` | Stay score stamp |
+| `teal` | `#2e7a7d` | Stay score stamp, stay pins |
+| `gold` | `#c9962e` | Hidden-gem pins on place maps |
 | `onDark` | `#fffaf5` | Text on photos and navy |
 
 `#cc754a` is too light for small text on `bg`. Use `terracottaText` for small text and `terracottaDeep` behind white text.

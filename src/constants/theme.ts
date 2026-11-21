@@ -16,6 +16,7 @@ export const colors = {
   terracottaDeep: '#b05e37', // "Save trip" button (white text passes contrast)
   terracottaText: '#a9552c', // small terracotta text: links, taglines, labels (passes contrast)
   teal: '#2e7a7d', // stay score stamp, success
+  gold: '#c9962e', // hidden-gem pins on place maps
   onDark: '#fffaf5', // text on photos and navy
 } as const;
 

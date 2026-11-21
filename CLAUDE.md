@@ -84,7 +84,8 @@ src/
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
     (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list
     (tabs)/profile.tsx    You: profile picture (tap to change), stats, Your travel map, your real trips as photo stamps (highest score first)
-    list/[id].tsx         One list: its places (tap → place page), add a place, remove (×), Share, Edit, Delete (confirm)
+    list/[id].tsx         One list: photo-collage cover with the name, Share/Edit circles, places as a 2-column grid of
+                          photo cards (score stamp, × to remove, tap → place page), Add a place card, Delete (confirm)
     list/new.tsx          New list, or rename/who-can-see with ?id=; with ?place= it also adds that place
     save.tsx              "Save to a list" from a place page: tick lists (Want to go first), + New list
     postcards.tsx         Postcards (sample), opened from Home's paper-plane button

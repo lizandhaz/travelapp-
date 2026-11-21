@@ -65,7 +65,7 @@ export default function TripScreen() {
           ) : trip === null ? (
             <Text variant="body">That trip couldn’t be found. It may have been deleted.</Text>
           ) : (
-            <ActivityIndicator color={colors.terracotta} />
+            <ActivityIndicator color={colors.accent} />
           )}
         </View>
       </Screen>
@@ -160,14 +160,14 @@ export default function TripScreen() {
           <Section title="Where you stayed">
             <Card style={{ padding: 16, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
               <View style={{ flex: 1, gap: 4 }}>
-                <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(150,199,184,0.35)', borderRadius: 999, paddingHorizontal: 8, paddingVertical: 2 }}>
-                  <Text variant="label" style={{ fontSize: 9, color: colors.teal }}>
+                <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(167,182,154,0.35)', borderRadius: 999, paddingHorizontal: 8, paddingVertical: 2 }}>
+                  <Text variant="label" style={{ fontSize: 9, color: colors.sea }}>
                     {trip.stay.type}
                   </Text>
                 </View>
                 <Text variant="subheading">{trip.stay.name}</Text>
               </View>
-              <ScoreStamp score={trip.stay.score} tone="teal" label="Stay" />
+              <ScoreStamp score={trip.stay.score} tone="sea" label="Stay" />
             </Card>
           </Section>
         )}

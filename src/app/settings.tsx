@@ -66,7 +66,7 @@ export default function Settings() {
                   setUseViews(on);
                   setViewsEnabled(on);
                 }}
-                trackColor={{ true: colors.teal, false: colors.line }}
+                trackColor={{ true: colors.sea, false: colors.line }}
                 accessibilityLabel="Use the places I look at for my scores"
               />
             </View>

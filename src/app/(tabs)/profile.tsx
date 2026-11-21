@@ -102,7 +102,7 @@ export default function You() {
         <View style={{ paddingHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
           <Text variant="label">Your taste</Text>
           {taste.tastes.map((t) => (
-            <View key={t} style={{ backgroundColor: colors.mint + '59', borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
+            <View key={t} style={{ backgroundColor: colors.sage + '59', borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
               <Text variant="small" style={{ color: colors.ink }}>
                 {TASTE_LABELS[t] ?? t}
               </Text>
@@ -123,7 +123,7 @@ export default function You() {
             </Pressable>
           </Card>
         ) : !trips ? (
-          <ActivityIndicator color={colors.terracotta} />
+          <ActivityIndicator color={colors.accent} />
         ) : trips.length === 0 ? (
           <Card style={{ padding: 20, gap: 12, alignItems: 'flex-start' }}>
             <Text variant="body">No trips yet. Add the last place you went and how it was.</Text>
@@ -174,7 +174,7 @@ function YearChip({ label, selected, onPress }: { label: string; selected: boole
       accessibilityRole="button"
       accessibilityState={{ selected }}
       accessibilityLabel={label === 'All years' ? 'Show trips from all years' : `Show trips from ${label}`}
-      style={{ borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5, backgroundColor: selected ? colors.mint + '73' : 'transparent', borderWidth: 1, borderColor: selected ? 'transparent' : colors.line }}
+      style={{ borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5, backgroundColor: selected ? colors.sage + '73' : 'transparent', borderWidth: 1, borderColor: selected ? 'transparent' : colors.line }}
     >
       <Text variant="small" style={{ color: colors.ink, fontVariant: ['tabular-nums'] }}>
         {label}
@@ -248,7 +248,7 @@ function ProfilePicture({ name }: { name: string }) {
           justifyContent: 'center',
         }}
       >
-        {busy ? <ActivityIndicator size="small" color={colors.peach} /> : <PlusIcon color={colors.peach} size={14} strokeWidth={2.6} />}
+        {busy ? <ActivityIndicator size="small" color={colors.stamp} /> : <PlusIcon color={colors.stamp} size={14} strokeWidth={2.6} />}
       </View>
     </Pressable>
   );

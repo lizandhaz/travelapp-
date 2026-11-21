@@ -110,7 +110,7 @@ export default function ListScreen() {
           ) : board === null ? (
             <Text variant="body">That list couldn’t be found. It may have been deleted.</Text>
           ) : (
-            <ActivityIndicator color={colors.terracotta} />
+            <ActivityIndicator color={colors.accent} />
           )}
         </View>
       </Screen>
@@ -164,7 +164,7 @@ export default function ListScreen() {
       <View style={{ paddingHorizontal: GUTTER, marginTop: 22 }}>
         {n === 0 ? (
           <Card style={{ padding: 24, alignItems: 'center', gap: 10 }}>
-            <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: colors.mint + '40', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: colors.sage + '40', alignItems: 'center', justifyContent: 'center' }}>
               <WishStar size={24} />
             </View>
             <Text variant="subheading">Nothing here yet</Text>
@@ -202,7 +202,7 @@ export default function ListScreen() {
               justifyContent: 'center',
             }}
           >
-            {busy ? <ActivityIndicator color={colors.onDark} /> : <PlusIcon color={adding?.name.trim() ? colors.peach : colors.muted} size={22} />}
+            {busy ? <ActivityIndicator color={colors.onDark} /> : <PlusIcon color={adding?.name.trim() ? colors.stamp : colors.muted} size={22} />}
           </Pressable>
         </View>
         {!!note && <Text variant="small">{note}</Text>}
@@ -242,7 +242,7 @@ function Cover({ items, isWish, name }: { items: BoardItem[]; isWish: boolean; n
   if (unique.length === 0) {
     return (
       <>
-        <LinearGradient colors={isWish ? [colors.teal, colors.ink] : [colors.terracotta, colors.ink]} style={{ position: 'absolute', inset: 0 }} />
+        <LinearGradient colors={isWish ? [colors.sea, colors.ink] : [colors.accent, colors.ink]} style={{ position: 'absolute', inset: 0 }} />
         <View style={{ position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center', opacity: 0.25 }}>
           {isWish ? <WishStar size={120} color={colors.onDark} /> : <Text style={{ fontFamily: fonts.displayBold, fontSize: 160, color: colors.onDark }}>{name.trim()[0]?.toUpperCase()}</Text>}
         </View>
@@ -291,7 +291,7 @@ function PlaceTile({ item, width, onRemove }: { item: BoardItem; width: number; 
           {photo ? (
             <PhotoFill photo={photo} />
           ) : (
-            <LinearGradient colors={[colors.peach, colors.terracottaDeep]} style={{ position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center' }}>
+            <LinearGradient colors={[colors.stamp, colors.accentDeep]} style={{ position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center' }}>
               <Text style={{ fontFamily: fonts.displayBold, fontSize: 56, color: colors.card, opacity: 0.9 }}>{item.name.trim()[0]?.toUpperCase()}</Text>
             </LinearGradient>
           )}

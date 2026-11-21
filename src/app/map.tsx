@@ -18,7 +18,7 @@ export default function MapScreen() {
       <PageTitle label={data ? `${data.countries} ${data.countries === 1 ? 'country' : 'countries'}` : 'Your travel map'}>
         <AccentTitle before="Your travel" accent="map" />
       </PageTitle>
-      {data ? <TravelMapFull been={data.been} wish={data.wish} /> : <ActivityIndicator color={colors.terracotta} />}
+      {data ? <TravelMapFull been={data.been} wish={data.wish} /> : <ActivityIndicator color={colors.accent} />}
       {data && !data.been.length && !data.wish.length && (
         <Text variant="small" style={{ paddingHorizontal: GUTTER, marginTop: 12 }}>
           Add trips and save places, and they’ll appear here.

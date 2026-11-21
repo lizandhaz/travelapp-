@@ -12,10 +12,10 @@ const variants = {
   small: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 20, color: colors.muted },
   tiny: { fontFamily: fonts.sans, fontSize: 12, lineHeight: 16, color: colors.muted },
   label: { fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, letterSpacing: 1.8, textTransform: 'uppercase', color: colors.muted },
-  kicker: { fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, letterSpacing: 1.8, textTransform: 'uppercase', color: colors.terracottaText },
+  kicker: { fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, letterSpacing: 1.8, textTransform: 'uppercase', color: colors.accentText },
   strong: { fontFamily: fonts.sansSemiBold, fontSize: 15, lineHeight: 20, color: colors.ink },
   quote: { fontFamily: fonts.displayRegular, fontSize: 19, lineHeight: 26, color: colors.ink },
-  link: { fontFamily: fonts.sansSemiBold, fontSize: 14, lineHeight: 20, color: colors.terracottaText },
+  link: { fontFamily: fonts.sansSemiBold, fontSize: 14, lineHeight: 20, color: colors.accentText },
   score: { fontFamily: fonts.display, fontSize: 30, lineHeight: 34, color: colors.ink, fontVariant: ['tabular-nums'] },
 } satisfies Record<string, TextStyle>;
 

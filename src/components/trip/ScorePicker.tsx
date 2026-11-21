@@ -66,7 +66,7 @@ export function ScorePicker({
         style={{ height: 30, justifyContent: 'center' }}
       >
         <View pointerEvents="none" style={{ height: 6, borderRadius: 3, backgroundColor: value == null ? colors.line : colors.ink, overflow: 'hidden' }}>
-          <View style={{ width: `${pct}%`, height: 6, backgroundColor: colors.terracotta }} />
+          <View style={{ width: `${pct}%`, height: 6, backgroundColor: colors.accent }} />
         </View>
         {value != null && (
           <View

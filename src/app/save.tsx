@@ -76,7 +76,7 @@ export default function SaveToList() {
             <Text variant="tiny">{meta}</Text>
           </View>
           {busyId === key ? (
-            <ActivityIndicator color={colors.terracotta} />
+            <ActivityIndicator color={colors.accent} />
           ) : (
             <View
               style={{
@@ -107,7 +107,7 @@ export default function SaveToList() {
         <Text variant="title">{place}</Text>
       </PageTitle>
       {!boards && !error ? (
-        <ActivityIndicator color={colors.terracotta} />
+        <ActivityIndicator color={colors.accent} />
       ) : (
         <View style={{ paddingHorizontal: GUTTER, gap: 10 }}>
           {row(wish, WISH_LIST_NAME, wish ? boardMeta(wish) : 'Places you’d love to go', true)}

@@ -31,7 +31,7 @@ export default function EditTrip() {
         ) : trip === null ? (
           <Text variant="body">That trip couldn’t be found. It may have been deleted.</Text>
         ) : (
-          <ActivityIndicator color={colors.terracotta} />
+          <ActivityIndicator color={colors.accent} />
         )}
       </View>
     </Screen>

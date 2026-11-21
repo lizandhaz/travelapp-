@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
-import { View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { BoardTile, Row, TrendCard } from '@/components/cards';
 import { CollectionTile } from '@/components/explore';
 import { SearchIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
-import { Button, Chip, Input, Screen, SectionHeader } from '@/components/ui';
+import { Chip, Input, Screen, SectionHeader } from '@/components/ui';
 import { colors, GUTTER } from '@/constants/theme';
 import { exploreFeed, itemCollections, placeCollections, placesIn, type FeedItem } from '@/lib/explore';
 import { trendingThisMonth } from '@/lib/sample';
@@ -27,13 +27,13 @@ const FILTERS: { id: string; label: string; match: (b: FeedItem) => boolean }[] 
   { id: 'culture', label: 'Culture', match: (b) => b.kind.startsWith('Culture') },
 ];
 
-/** How many tiles to show at first, and how many more each "Show more" adds. */
+/** How many tiles to show at first, and how many more load as you near the bottom. */
 const PAGE = 60;
 
 /**
  * Explore: search, filter chips, "Find your next trip" collection tiles (each opens its
  * collection), Trending this month, and a long two-column feed of places and things to
- * stay, eat, do and see, with "Show more" at the bottom.
+ * stay, eat, do and see, which keeps loading as you scroll.
  */
 export default function Explore() {
   const [query, setQuery] = useState('');
@@ -65,7 +65,16 @@ export default function Explore() {
   };
 
   return (
-    <Screen tabBar>
+    <Screen
+      tabBar
+      scrollEventThrottle={200}
+      onScroll={({ nativeEvent: { layoutMeasurement, contentOffset, contentSize } }) => {
+        // Load the next batch on its own when you're within about two screens of the bottom.
+        if (shown.length > limit && contentOffset.y + layoutMeasurement.height > contentSize.height - layoutMeasurement.height * 2) {
+          setLimit((l) => Math.min(l + PAGE, shown.length));
+        }
+      }}
+    >
       <View style={{ paddingHorizontal: GUTTER, paddingTop: 16 }}>
         <Input
           value={query}
@@ -116,8 +125,8 @@ export default function Explore() {
         ))}
       </View>
       {shown.length > limit && (
-        <View style={{ paddingHorizontal: GUTTER, marginTop: 6 }}>
-          <Button title={`Show more (${shown.length - limit} left)`} kind="outline" onPress={() => setLimit((l) => l + PAGE)} />
+        <View style={{ paddingVertical: 18, alignItems: 'center' }} accessibilityLabel="Loading more">
+          <ActivityIndicator color={colors.muted} />
         </View>
       )}
       {shown.length === 0 && (

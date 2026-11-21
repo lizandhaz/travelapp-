@@ -105,7 +105,9 @@ src/
                           "Greetings from <place>"; tap/"Turn over" for the back: "<who> went to <place>" + month and a photo stamp,
                           then like a real postcard a line down the middle: their quote and top tip on the left; score + word, who
                           with, nights, where they slept (+ score), where they ate on the right). No personal messages and no
-                          To/From lines (owner, Nov 2026). Then "See <who>'s whole trip" and "More about <place>"
+                          To/From lines (owner, Nov 2026). Anything not filled in is left out and the card rearranges: no words →
+                          a big photo on the left (or details full width), no photos → a coloured front with a star, and the back's
+                          content sets the card's height. Then big photos, "See <who>'s whole trip" and "More about <place>"
     friend-trip/[id].tsx  A friend's trip (id "maya-hydra"; sample, lib/friendTrips): their score, who with, nights, quote, photos,
                           where they stayed, where they ate, what they did, their tips, "More about <place>"
     settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places
@@ -171,7 +173,7 @@ src/
     views.ts              Place pages you've looked at: recordPlaceView, fetchPlaceViews, clearPlaceViews, on/off setting
     matchSettings.ts      What scores may use (trips, saves, friends; stored on the phone): getMatchSettings/setMatchSetting
     friendTrips.ts        Sample friends' trips from the Friends feed or the place details naming that friend (getTrip, getFriendTrip,
-                          tripId, companionsLabel); who-with and nights are sample values
+                          tripId, companionsLabel); who-with and nights are sample values and may be null (not filled in)
     postcards.ts          Sample Postcards, each linked to the friend's trip it's about (postcards, getPostcard)
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)

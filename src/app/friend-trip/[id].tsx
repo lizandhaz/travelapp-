@@ -51,10 +51,12 @@ export default function FriendTripScreen() {
           </View>
           <ScoreStamp score={trip.score} size="md" label={`${trip.who}'s score for ${trip.place}`} />
         </View>
-        <View style={{ flexDirection: 'row', gap: 10 }}>
-          <Fact label="Went" value={companionsLabel(trip.companions)} />
-          <Fact label="For" value={`${trip.nights} ${trip.nights === 1 ? 'night' : 'nights'}`} />
-        </View>
+        {(!!trip.companions || !!trip.nights) && (
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            {!!trip.companions && <Fact label="Went" value={companionsLabel(trip.companions)} />}
+            {!!trip.nights && <Fact label="For" value={`${trip.nights} ${trip.nights === 1 ? 'night' : 'nights'}`} />}
+          </View>
+        )}
         {!!trip.quote && <Text variant="quote">“{trip.quote}”</Text>}
       </Card>
 
@@ -63,7 +65,7 @@ export default function FriendTripScreen() {
           <SectionHeader>Their photos</SectionHeader>
           <Row gap={10}>
             {trip.photos.map((p) => (
-              <PhotoTile key={p} photo={p} style={{ width: 150, height: 190 }} shade={false} />
+              <PhotoTile key={p} photo={p} style={{ width: 260, height: 325 }} shade={false} />
             ))}
           </Row>
         </View>

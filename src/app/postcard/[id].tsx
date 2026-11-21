@@ -4,7 +4,9 @@ import { Dimensions, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { PostcardCard } from '@/components/PostcardCard';
-import { BackButton, Button, PageTitle, Screen } from '@/components/ui';
+import { Row } from '@/components/cards';
+import { PhotoTile } from '@/components/Photo';
+import { BackButton, Button, PageTitle, Screen, SectionHeader } from '@/components/ui';
 import { GUTTER } from '@/constants/theme';
 import { getPostcard } from '@/lib/postcards';
 import NotFound from '../+not-found';
@@ -29,6 +31,20 @@ export default function PostcardScreen() {
       <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
         <PostcardCard trip={trip} width={width} flipped={flipped} onFlip={() => setFlipped((f) => !f)} />
         <Button title={flipped ? 'See the front' : 'Turn over'} kind="outline" onPress={() => setFlipped((f) => !f)} />
+      </View>
+
+      {trip.photos.length > 0 && (
+        <View style={{ marginTop: 26 }}>
+          <SectionHeader>{`${trip.who}’s photos`}</SectionHeader>
+          <Row gap={12}>
+            {trip.photos.map((p) => (
+              <PhotoTile key={p} photo={p} style={{ width: Math.round(width * 0.78), height: Math.round(width * 0.98) }} shade={false} />
+            ))}
+          </Row>
+        </View>
+      )}
+
+      <View style={{ paddingHorizontal: GUTTER, gap: 12, marginTop: 26 }}>
         <Button title={`See ${trip.who}’s whole trip`} kind="dark" onPress={() => router.push(`/friend-trip/${trip.id}`)} />
         <Button title={`More about ${trip.place}`} kind="outline" onPress={() => router.push(`/place/${trip.slug}`)} />
       </View>

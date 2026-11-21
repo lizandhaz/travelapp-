@@ -19,8 +19,9 @@ export type FriendTrip = {
   month: string;
   score: number;
   quote: string | null;
-  companions: Companions;
-  nights: number;
+  /** Who they went with, and how many nights, if they said. */
+  companions: Companions | null;
+  nights: number | null;
   photos: PhotoName[];
   stay: { name: string; type: string; score: number | null; sub: string | null; photo: PhotoName | null } | null;
   eats: PlaceDetail['eats'];

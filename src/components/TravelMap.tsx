@@ -1,13 +1,15 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
-import Svg, { Circle, Defs, G, Line, LinearGradient, Path, Rect, Stop, Text as SvgText } from 'react-native-svg';
+import Svg, { Circle, Defs, G, LinearGradient, Path, Rect, Stop, Text as SvgText } from 'react-native-svg';
 
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { positionOf, toMap } from '@/lib/geo';
-import { placeLabel, type Place } from '@/lib/trips';
+import type { MapPlace } from '@/lib/travelPlaces';
+import { placeLabel } from '@/lib/trips';
 import { WORLD_LAND_PATH, WORLD_VIEWBOX } from '@/lib/worldMap';
 import { AccentTitle } from './AccentTitle';
+import { ChevronIcon } from './Icons';
 import { WishStar } from './lists';
 import { Text } from './Text';
 
@@ -16,25 +18,27 @@ const W = WORLD_VIEWBOX.width;
 const H = WORLD_VIEWBOX.height;
 // A taller frame than the world itself (extra sea above and below), so the map isn't a thin strip.
 const ASPECT = 1.8;
-const FULL = { x: 0, y: (H - W / ASPECT) / 2, w: W, h: W / ASPECT };
+const fullFor = (aspect: number) => ({ x: 0, y: (H - W / aspect) / 2, w: W, h: W / aspect });
+const FULL = fullFor(1.2); // the sea is drawn this tall, enough for both frames
 
-export type MapPlace = Place & { href: string | null };
+export type { MapPlace };
 type Show = 'all' | 'been' | 'wish';
 type Pin = { x: number; y: number; key: string; name: string; kind: 'been' | 'wish' };
 
 /** The part of the world to show: just around your places (zoomed in), or everything. */
-function frame(pins: Pin[], whole: boolean) {
-  if (whole || pins.length === 0) return FULL;
+function frame(pins: Pin[], whole: boolean, aspect = ASPECT) {
+  const full = fullFor(aspect);
+  if (whole || pins.length === 0) return full;
   const xs = pins.map((p) => p.x);
   const ys = pins.map((p) => p.y);
   let w = Math.max(Math.max(...xs) - Math.min(...xs) + 70, 80); // room around the pins and labels; never closer than ~4.5×
   let h = Math.max(...ys) - Math.min(...ys) + 40;
-  if (w / h < ASPECT) w = h * ASPECT;
-  else h = w / ASPECT;
-  if (w > W * 0.85) return FULL;
+  if (w / h < aspect) w = h * aspect;
+  else h = w / aspect;
+  if (w > W * 0.85) return full;
   const cx = (Math.max(...xs) + Math.min(...xs)) / 2;
   const cy = (Math.max(...ys) + Math.min(...ys)) / 2;
-  return { x: Math.min(W - w, Math.max(0, cx - w / 2)), y: Math.min(FULL.y + FULL.h - h, Math.max(FULL.y, cy - h / 2)), w, h };
+  return { x: Math.min(W - w, Math.max(0, cx - w / 2)), y: Math.min(full.y + full.h - h, Math.max(full.y, cy - h / 2)), w, h };
 }
 
 /**
@@ -71,64 +75,146 @@ function placeLabels(pins: Pin[], view: { x: number; y: number; w: number; h: nu
   return out;
 }
 
-/**
- * "Your travel map": a world map with places you've been (terracotta
- * pins, from your trips) and places you want to go (teal stars, from your
- * Want to go list). It zooms to your places, with "Whole world" to see it all.
- * Roughly placed: never a live location.
- */
-export function TravelMap({ been, wish, countries }: { been: MapPlace[]; wish: MapPlace[]; countries: number }) {
-  const [show, setShow] = useState<Show>('all');
-  const [whole, setWhole] = useState(false);
+function toPins(list: MapPlace[], kind: Pin['kind']): Pin[] {
+  return list.flatMap((p) => {
+    const pos = positionOf(p);
+    return pos ? [{ ...toMap(pos), key: kind + placeLabel(p), name: p.name, kind }] : [];
+  });
+}
 
-  const pins = useMemo(() => {
-    const toPins = (list: MapPlace[], kind: Pin['kind']) =>
-      list.flatMap((p) => {
-        const pos = positionOf(p);
-        return pos ? [{ ...toMap(pos), key: kind + placeLabel(p), name: p.name, kind }] : [];
-      });
-    return [...(show !== 'been' ? toPins(wish, 'wish') : []), ...(show !== 'wish' ? toPins(been, 'been') : [])];
-  }, [been, wish, show]);
-
-  const view = frame(pins, whole);
+/** The map itself: sea, land, your pins and (optionally) their names. */
+function MapCanvas({ pins, view, aspect, labels, description }: { pins: Pin[]; view: { x: number; y: number; w: number; h: number }; aspect: number; labels: boolean; description: string }) {
   const z = W / view.w; // how far we're zoomed in; pins and labels keep the same size on screen
-  const labels = pins.length <= 16;
-  const describe = (label: string, list: MapPlace[]) => (list.length ? `${label}: ${list.map((p) => p.name).join(', ')}.` : '');
-  const zoomable = pins.length > 0 && frame(pins, false).w < W;
-  // Sizes in screen pixels: the map is about as many pixels wide as the world is units wide.
+  return (
+    <View accessible accessibilityRole="image" accessibilityLabel={description}>
+      <Svg viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`} style={{ width: '100%', aspectRatio: aspect }}>
+        <Defs>
+          <LinearGradient id="tm-sea" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={colors.card} />
+            <Stop offset="1" stopColor={colors.bg} />
+          </LinearGradient>
+        </Defs>
+        <Rect x="0" y={FULL.y} width={W} height={FULL.h} fill="url(#tm-sea)" />
+        <Path d={WORLD_LAND_PATH} fill={colors.mapLand} fillOpacity={0.62} stroke={colors.card} strokeWidth={0.5 / z} strokeLinejoin="round" />
+        {pins.map((p) =>
+          p.kind === 'wish' ? (
+            <G key={p.key} transform={`translate(${p.x} ${p.y}) scale(${1 / z})`}>
+              <Circle r={9} fill={colors.teal} opacity={0.14} />
+              <Path d={STAR} transform="scale(0.62) translate(-12 -12)" fill={colors.teal} stroke={colors.card} strokeWidth={1.4} />
+            </G>
+          ) : (
+            <G key={p.key} transform={`translate(${p.x} ${p.y}) scale(${1 / z})`}>
+              <Circle r={9} fill={colors.terracotta} opacity={0.16} />
+              <Circle r={4.4} fill={colors.terracotta} stroke={colors.card} strokeWidth={1.6} />
+            </G>
+          ),
+        )}
+        {labels &&
+          placeLabels(pins, view, z).map(({ pin, x, y, anchor }) => {
+            const props = { x, y, fontSize: 10.5 / z, fontFamily: fonts.sansSemiBold, textAnchor: anchor };
+            return (
+              <G key={'l' + pin.key}>
+                <SvgText {...props} stroke={colors.card} strokeWidth={3 / z} strokeLinejoin="round" fill={colors.card}>
+                  {pin.name}
+                </SvgText>
+                <SvgText {...props} fill={pin.kind === 'wish' ? colors.teal : colors.ink}>
+                  {pin.name}
+                </SvgText>
+              </G>
+            );
+          })}
+      </Svg>
+    </View>
+  );
+}
 
+const describe = (been: MapPlace[], wish: MapPlace[]) =>
+  `World map. ${been.length ? `Been: ${been.map((p) => p.name).join(', ')}. ` : ''}${wish.length ? `Want to go: ${wish.map((p) => p.name).join(', ')}.` : ''}`.trim();
+
+const cardStyle = {
+  borderRadius: radius.xl,
+  borderWidth: 1,
+  borderColor: colors.line,
+  overflow: 'hidden' as const,
+  backgroundColor: colors.card,
+};
+
+/**
+ * "Your travel map" on You: a calm map zoomed to your places (pins only, no names)
+ * and a one-line key. Tap it for the full map with names and zoom.
+ */
+export function TravelMapCard({ been, wish, countries }: { been: MapPlace[]; wish: MapPlace[]; countries: number }) {
+  const pins = useMemo(() => [...toPins(wish, 'wish'), ...toPins(been, 'been')], [been, wish]);
+  const view = frame(pins, false);
   return (
     <View style={{ paddingHorizontal: GUTTER, marginTop: 30, gap: 12 }}>
       <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
         <AccentTitle before="Your travel" accent="map" variant="heading" />
         <Text variant="small">
-          {countries} of 195 {countries === 1 ? 'country' : 'countries'}
+          {countries} {countries === 1 ? 'country' : 'countries'}
         </Text>
       </View>
+      <Pressable onPress={() => router.push('/map')} accessibilityRole="button" accessibilityLabel={`${describe(been, wish)} Opens the full map.`} style={({ pressed }) => [cardStyle, { opacity: pressed ? 0.9 : 1 }]}>
+        <MapCanvas pins={pins} view={view} aspect={ASPECT} labels={false} description="" />
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 14, paddingVertical: 11, borderTopWidth: 1, borderTopColor: colors.line }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.terracotta }} />
+            <Text variant="small" style={{ color: colors.ink }}>
+              {been.length} been
+            </Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <WishStar size={10} />
+            <Text variant="small" style={{ color: colors.ink }}>
+              {wish.length} want to go
+            </Text>
+          </View>
+          <View style={{ flex: 1 }} />
+          <Text variant="link">Open</Text>
+          <ChevronIcon color={colors.terracottaText} size={14} />
+        </View>
+      </Pressable>
+    </View>
+  );
+}
 
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-      <View accessibilityRole="tablist" accessibilityLabel="Show on the map" style={{ flexDirection: 'row', gap: 8, flex: 1, flexWrap: 'wrap' }}>
-        {(
-          [
-            ['all', 'All'],
-            ['been', `Been · ${been.length}`],
-            ['wish', `Want to go · ${wish.length}`],
-          ] as const
-        ).map(([id, label]) => {
-          const on = show === id;
-          return (
-            <Pressable
-              key={id}
-              onPress={() => setShow(id)}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: on }}
-              style={{ borderRadius: radius.pill, borderWidth: 1, borderColor: on ? colors.ink : colors.line, backgroundColor: on ? colors.ink : colors.card, paddingHorizontal: 14, paddingVertical: 7 }}
-            >
-              <Text style={{ fontFamily: fonts.sansMedium, fontSize: 13, color: on ? colors.onDark : colors.ink }}>{label}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
+/**
+ * The full travel map (its own screen): All / Been / Want to go, names on the pins,
+ * pinch to zoom (on iPhone), "Whole world" / "Zoom to my places", and your places listed below.
+ */
+export function TravelMapFull({ been, wish }: { been: MapPlace[]; wish: MapPlace[] }) {
+  const [show, setShow] = useState<Show>('all');
+  const [whole, setWhole] = useState(false);
+  const pins = useMemo(() => [...(show !== 'been' ? toPins(wish, 'wish') : []), ...(show !== 'wish' ? toPins(been, 'been') : [])], [been, wish, show]);
+  const aspect = 1.55;
+  const view = frame(pins, whole, aspect);
+  const zoomable = pins.length > 0 && frame(pins, false, aspect).w < W;
+
+  return (
+    <View style={{ gap: 14 }}>
+      <View style={{ paddingHorizontal: GUTTER, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <View accessibilityRole="tablist" accessibilityLabel="Show on the map" style={{ flexDirection: 'row', gap: 8, flex: 1, flexWrap: 'wrap' }}>
+          {(
+            [
+              ['all', 'All'],
+              ['been', `Been · ${been.length}`],
+              ['wish', `Want to go · ${wish.length}`],
+            ] as const
+          ).map(([id, label]) => {
+            const on = show === id;
+            return (
+              <Pressable
+                key={id}
+                onPress={() => setShow(id)}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: on }}
+                style={{ borderRadius: radius.pill, borderWidth: 1, borderColor: on ? colors.ink : colors.line, backgroundColor: on ? colors.ink : colors.card, paddingHorizontal: 14, paddingVertical: 7 }}
+              >
+                <Text style={{ fontFamily: fonts.sansMedium, fontSize: 13, color: on ? colors.onDark : colors.ink }}>{label}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
         {zoomable && (
           <Pressable onPress={() => setWhole((w) => !w)} accessibilityRole="button" accessibilityLabel={whole ? 'Zoom to my places' : 'Show the whole world'} hitSlop={8}>
             <Text variant="link">{whole ? 'Zoom in' : 'Whole world'}</Text>
@@ -136,81 +222,21 @@ export function TravelMap({ been, wish, countries }: { been: MapPlace[]; wish: M
         )}
       </View>
 
-      <View
-        style={{
-          borderRadius: radius.xl,
-          borderWidth: 1,
-          borderColor: colors.line,
-          overflow: 'hidden',
-          backgroundColor: colors.card,
-          shadowColor: colors.ink,
-          shadowOpacity: 0.06,
-          shadowRadius: 12,
-          shadowOffset: { width: 0, height: 4 },
-          elevation: 1,
-        }}
-      >
-        <View accessible accessibilityRole="image" accessibilityLabel={`World map. ${describe('Been', show === 'wish' ? [] : been)} ${describe('Want to go', show === 'been' ? [] : wish)}`.trim()}>
-          <Svg viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`} style={{ width: '100%', aspectRatio: ASPECT }}>
-            <Defs>
-              <LinearGradient id="tm-sea" x1="0" y1="0" x2="0" y2="1">
-                <Stop offset="0" stopColor={colors.card} />
-                <Stop offset="1" stopColor={colors.bg} />
-              </LinearGradient>
-            </Defs>
-            <Rect x="0" y={FULL.y} width={W} height={FULL.h} fill="url(#tm-sea)" />
-            {/* The equator and tropics, faintly */}
-            {[toMap([0, 0]).y, toMap([23.4, 0]).y, toMap([-23.4, 0]).y].map((y, i) => (
-              <Line key={i} x1="0" x2={W} y1={y} y2={y} stroke={colors.line} strokeWidth={0.6 / z} strokeDasharray={`${2 / z} ${2 / z}`} />
-            ))}
-            <Path d={WORLD_LAND_PATH} fill={colors.mapLand} fillOpacity={0.62} stroke={colors.card} strokeWidth={0.5 / z} strokeLinejoin="round" />
+      <View style={[cardStyle, { marginHorizontal: GUTTER }]}>
+        {/* Pinch to zoom on iPhone (ScrollView zooming); the buttons above work everywhere. */}
+        <ScrollView maximumZoomScale={5} minimumZoomScale={1} bouncesZoom centerContent showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+          <MapCanvas pins={pins} view={view} aspect={aspect} labels={pins.length <= 16} description={describe(show === 'wish' ? [] : been, show === 'been' ? [] : wish)} />
+        </ScrollView>
+      </View>
+      <Text variant="tiny" style={{ paddingHorizontal: GUTTER }}>
+        Pinch the map to zoom in. Tap a place below to open it.
+      </Text>
 
-            {pins.map((p) =>
-              p.kind === 'wish' ? (
-                <G key={p.key} transform={`translate(${p.x} ${p.y}) scale(${1 / z})`}>
-                  <Circle r={9} fill={colors.teal} opacity={0.14} />
-                  <Path d={STAR} transform="scale(0.62) translate(-12 -12)" fill={colors.teal} stroke={colors.card} strokeWidth={1.4} />
-                </G>
-              ) : (
-                <G key={p.key} transform={`translate(${p.x} ${p.y}) scale(${1 / z})`}>
-                  <Circle r={9} fill={colors.terracotta} opacity={0.16} />
-                  <Circle r={4.4} fill={colors.terracotta} stroke={colors.card} strokeWidth={1.6} />
-                </G>
-              ),
-            )}
-
-            {labels &&
-              placeLabels(pins, view, z).map(({ pin, x, y, anchor }) => {
-                const props = { x, y, fontSize: 10.5 / z, fontFamily: fonts.sansSemiBold, textAnchor: anchor };
-                return (
-                  <G key={'l' + pin.key}>
-                    <SvgText {...props} stroke={colors.card} strokeWidth={3 / z} strokeLinejoin="round" fill={colors.card}>
-                      {pin.name}
-                    </SvgText>
-                    <SvgText {...props} fill={pin.kind === 'wish' ? colors.teal : colors.ink}>
-                      {pin.name}
-                    </SvgText>
-                  </G>
-                );
-              })}
-          </Svg>
-
-        </View>
-
-        <View style={{ padding: 14, paddingTop: 12, gap: 12, borderTopWidth: 1, borderTopColor: colors.line }}>
-          {show !== 'wish' && (
-            <ChipRow
-              title="Been"
-              icon={<View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.terracotta }} />}
-              places={been}
-              empty="Add a trip and it’ll appear here."
-              tone="been"
-            />
-          )}
-          {show !== 'been' && (
-            <ChipRow title="Want to go" icon={<WishStar size={10} />} places={wish} empty="Tap “Want to go” on any place page to add it here." tone="wish" />
-          )}
-        </View>
+      <View style={{ paddingHorizontal: GUTTER, gap: 14 }}>
+        {show !== 'wish' && (
+          <ChipRow title="Been" icon={<View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.terracotta }} />} places={been} empty="Add a trip and it’ll appear here." tone="been" />
+        )}
+        {show !== 'been' && <ChipRow title="Want to go" icon={<WishStar size={10} />} places={wish} empty="Tap “Want to go” on any place page to add it here." tone="wish" />}
       </View>
     </View>
   );

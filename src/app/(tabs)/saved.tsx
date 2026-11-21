@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
+import { PlusIcon } from '@/components/Icons';
 import { ListCover, WishStar } from '@/components/lists';
 import { Text } from '@/components/Text';
 import { Button, Card, PageTitle, Screen } from '@/components/ui';
@@ -107,26 +108,27 @@ export default function Saved() {
                   <Text variant="tiny">{boardMeta(b)}</Text>
                 </Pressable>
               ))}
-              <Pressable
-                onPress={() => router.push('/list/new')}
-                accessibilityRole="button"
-                accessibilityLabel="New list"
-                style={{
-                  width: '47%',
-                  aspectRatio: 1,
-                  borderRadius: radius.lg,
-                  borderWidth: 1.5,
-                  borderStyle: 'dashed',
-                  borderColor: colors.line,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 6,
-                }}
-              >
-                <Text variant="heading" style={{ color: colors.muted }}>
-                  +
+              {/* Same shape as a list: a square, then a name and a line underneath. */}
+              <Pressable onPress={() => router.push('/list/new')} accessibilityRole="button" accessibilityLabel="New list" style={{ width: '47%' }}>
+                <View
+                  style={{
+                    aspectRatio: 1,
+                    borderRadius: radius.lg,
+                    borderWidth: 1.5,
+                    borderStyle: 'dashed',
+                    borderColor: colors.line,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.ink, alignItems: 'center', justifyContent: 'center' }}>
+                    <PlusIcon color={colors.peach} size={22} strokeWidth={2.4} />
+                  </View>
+                </View>
+                <Text variant="strong" style={{ marginTop: 8 }}>
+                  New list
                 </Text>
-                <Text variant="small">New list</Text>
+                <Text variant="tiny">Start a list</Text>
               </Pressable>
             </View>
           </View>

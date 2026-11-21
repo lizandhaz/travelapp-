@@ -1,9 +1,12 @@
+import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Modal, Pressable, ScrollView, View } from 'react-native';
 
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import type { PlaceResult } from '@/lib/match';
-import type { PlaceDetail } from '@/lib/placeDetails';
+import { placeDetails, type PlaceDetail } from '@/lib/placeDetails';
+import { placeMaps } from '@/lib/placeMaps';
+import { useTaste } from '@/lib/taste';
 import { formatScore, scoreWord } from '@/lib/score';
 import { Avatar } from './Avatar';
 import { PhotoBadge, Row } from './cards';
@@ -428,5 +431,108 @@ export function YourScore({ result, note }: { result: PlaceResult; note: string 
         </View>
       )}
     </Card>
+  );
+}
+
+const PIN_COLOURS: Record<string, string> = { Stay: colors.teal, Eat: colors.terracotta, Do: colors.ink, 'Hidden gem': colors.gold };
+
+/**
+ * "On the map": the place's illustrated map with numbered pins (stay, eat, do, hidden gem)
+ * and a key underneath with your score for each spot (from friends and your taste).
+ * Tap the map to open it full screen and pinch to zoom; tap a spot for why it's there.
+ */
+export function PlaceMapSection({ slug, name }: { slug: string; name: string }) {
+  const taste = useTaste();
+  const [open, setOpen] = useState(false);
+  const [picked, setPicked] = useState<number | null>(null);
+  const map = placeMaps[slug];
+  if (!map) return null;
+  const d = placeDetails[slug];
+  const spots = map.pins.map((p) => {
+    const kind = p.kind === 'Stay' ? 'Stay' : p.kind === 'Eat' ? 'Eat' : 'Do';
+    const { score, note } = taste.forItem({ slug, kind, name: p.name, friends: '' });
+    const what =
+      d?.stays.find((x) => x.name === p.name)?.sub ?? d?.eats.find((x) => x.name === p.name)?.what ?? d?.dos.find((x) => x.name === p.name)?.what ?? null;
+    return { ...p, score, note, what };
+  });
+  const top = [...spots].sort((a, b) => b.score - a.score)[0]?.n;
+
+  const key = (
+    <View style={{ gap: 2 }}>
+      {spots.map((s) => {
+        const on = picked === s.n;
+        return (
+          <Pressable
+            key={s.n}
+            onPress={() => setPicked(on ? null : s.n)}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: on }}
+            accessibilityLabel={`${s.n}. ${s.name}, ${s.kind}, ${formatScore(s.score)} out of 10${s.n === top ? ', top pick for you' : ''}`}
+            style={{ paddingVertical: 8, gap: 6 }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: PIN_COLOURS[s.kind] ?? colors.ink, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontFamily: fonts.sansBold, fontSize: 11, lineHeight: 13, color: colors.onDark }}>{s.n}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text variant="strong" numberOfLines={1} style={{ fontSize: 14 }}>
+                  {s.name}
+                </Text>
+                <Text variant="tiny">
+                  {s.kind}
+                  {s.n === top ? ' · ✦ Top pick for you' : ''}
+                </Text>
+              </View>
+              <Text style={{ fontFamily: fonts.display, fontSize: 18, color: colors.ink, fontVariant: ['tabular-nums'] }}>{formatScore(s.score)}</Text>
+            </View>
+            {on && (
+              <View style={{ marginLeft: 32, gap: 2 }}>
+                {!!s.what && <Text variant="small">{s.what}</Text>}
+                {!!s.note && (
+                  <Text variant="small" style={{ color: colors.ink }}>
+                    ✦ {s.note}
+                  </Text>
+                )}
+              </View>
+            )}
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+
+  return (
+    <View style={{ marginTop: 28 }}>
+      <SectionHeader action="Full screen" onAction={() => setOpen(true)}>
+        On the map
+      </SectionHeader>
+      <Card style={{ marginHorizontal: GUTTER, overflow: 'hidden' }}>
+        <Pressable onPress={() => setOpen(true)} accessibilityRole="button" accessibilityLabel={`Map of ${name} with ${spots.length} spots. Opens full screen.`}>
+          <Image source={map.image} style={{ width: '100%', aspectRatio: 400 / 250 }} contentFit="cover" />
+        </Pressable>
+        <View style={{ paddingHorizontal: 14, paddingVertical: 6 }}>{key}</View>
+      </Card>
+
+      <Modal visible={open} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setOpen(false)}>
+        <View style={{ flex: 1, backgroundColor: colors.bg }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: GUTTER, paddingTop: 18, paddingBottom: 10 }}>
+            <Text variant="heading">{name}</Text>
+            <Pressable onPress={() => setOpen(false)} accessibilityRole="button" accessibilityLabel="Close the map" hitSlop={10}>
+              <Text variant="link">Done</Text>
+            </Pressable>
+          </View>
+          <ScrollView>
+            {/* Pinch to zoom on iPhone. */}
+            <ScrollView maximumZoomScale={4} minimumZoomScale={1} bouncesZoom centerContent showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+              <Image source={map.image} style={{ width: '100%', aspectRatio: 400 / 250 }} contentFit="cover" accessibilityLabel={`Map of ${name}`} />
+            </ScrollView>
+            <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 8 }}>
+              Pinch the map to zoom in. Tap a spot for why it’s here.
+            </Text>
+            <View style={{ paddingHorizontal: GUTTER, paddingVertical: 10 }}>{key}</View>
+          </ScrollView>
+        </View>
+      </Modal>
+    </View>
   );
 }

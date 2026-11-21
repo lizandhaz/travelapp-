@@ -7,7 +7,7 @@ import { Avatar } from '@/components/Avatar';
 import { WantToGoButton } from '@/components/lists';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
-import { BestTimeChart, DoRow, EatRow, MoreAbout, PlaceFacts, SaidList, StayRow, YourScore } from '@/components/place';
+import { BestTimeChart, DoRow, EatRow, MoreAbout, PlaceFacts, PlaceMapSection, SaidList, StayRow, YourScore } from '@/components/place';
 import { PhotoBadge, Row } from '@/components/cards';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
@@ -101,6 +101,8 @@ export default function PlaceScreen() {
           <PlaceFacts detail={detail} />
         </View>
       )}
+
+      <PlaceMapSection slug={slug} name={place.name} />
 
       {detail && <BestTimeChart detail={detail} />}
 

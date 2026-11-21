@@ -2,7 +2,7 @@
 
 Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations** and **where they stayed** (hotel, Airbnb, villa and so on) out of 10, and add photos, food picks and top tips.
 
-**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **Lists are real too:** Saved holds your "Want to go" list and lists you make, and You has a travel map of where you've been and want to go. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips and lists (Home's picks and Friends feed, Explore, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts`. The roadmap is in `docs/plan.md`.
+**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **Lists are real too:** Saved holds your "Want to go" list and lists you make, and You has a travel map of where you've been and want to go. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips and lists (Home's picks and Friends feed, Explore, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts` (39 places, each with details and a map). The roadmap is in `docs/plan.md`.
 
 **App name:** the name is a placeholder, currently **XYZX**. It lives in **one place**, `src/constants/brand.json` (`appName`). Code uses `APP_NAME` from `src/constants/brand.ts`, and `app.config.ts` reads the same JSON for the name under the icon. Never type the app's name anywhere else. (The project was originally called "Postcard"; that's still the Expo `slug` and the repo's history, and the notifications feature is still called "Postcards".)
 
@@ -83,7 +83,8 @@ src/
     signup.tsx, login.tsx Join (name, email, date of birth) / Log in (email), then the 6-digit code
     (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
     (tabs)/index.tsx      Home: wordmark, search + Postcards buttons, For you (hero + rows) / Friends (feed)
-    (tabs)/explore.tsx    "Describe your perfect trip" search, filter chips, collections, Trending this month, board
+    (tabs)/explore.tsx    Long browse page: search (places + food/stays/things), ~24 collection tiles, Trending this month,
+                          ~20 rows (place collections and things, best for you first, "See all"), Browse everything board
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
     (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list (tile shaped like a list)
     (tabs)/profile.tsx    You: profile picture (tap to change), stats, Your taste, travel map card (tap → map), your trips as photo
@@ -91,6 +92,7 @@ src/
     list/[id].tsx         One list: photo-collage cover with the name, Share/Edit circles, places as a 2-column grid of
                           photo cards (score stamp, × to remove, tap → place page), Add a place card, Delete (confirm)
     list/new.tsx          New list, or rename/who-can-see with ?id=; with ?place= it also adds that place
+    collection/[id].tsx   One Explore collection (places or things) as a 2-column grid, best for you first
     map.tsx               The full travel map: All/Been/Want to go, names on pins, pinch to zoom (iPhone), Whole world, place chips
     save.tsx              "Save to a list" from a place page: tick lists (Want to go first), + New list
     postcards.tsx         Postcards (sample), opened from Home's paper-plane button
@@ -112,6 +114,7 @@ src/
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
     cards.tsx             Row, TrendCard, PlaceCard, TasteCard, PickCard, FeedCard, BoardTile, PhotoBadge
+    explore.tsx           CollectionTile, PlaceSection / ItemSection (titled rows with See all), ItemCard, sorting helpers
     lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, WantToGoButton, photoForItem, placeSlugForItem
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
                           TravelMapFull (map screen: names placed so they don't overlap, filters, pinch zoom, place chips)
@@ -142,6 +145,8 @@ src/
     useTripPhoto.ts       Hook: a signed URL for one of your photos (trip photos and profile picture)
     knownPlaces.ts        ~525 popular holiday places + countries + WORLD_PLACES: suggestions, countryOf(), plain()
     worldPlaces.ts        Generated: ~10,400 towns/cities with positions (GeoNames, CC BY 4.0; credited in Settings)
+    explore.ts            Explore's collections (worked out from place details: "Sunshine in <month>" from monthly temps,
+                          Island escapes, Holiday without flying, Good value…), things gathered from every place, search
     travelPlaces.ts       beenPlaces/wishPlaces (your map's places) + useTravelPlaces() for the map screen
     useWantToGo.ts        Hook: is a place on your Want to go list, and toggle() it in one tap
     match.ts              The matching engine (pure, tested in tests/match.test.mjs): profile, fit, % match, score, reasons

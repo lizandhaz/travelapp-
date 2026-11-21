@@ -688,6 +688,160 @@ export const placeDetails: Record<string, PlaceDetail> = {
     ],
     "credits": "Photos: Tim Alex, Johannes W, Olivier Chatel, Alessandro Rossi on Unsplash"
   },
+  "chamonix": {
+    "kicker": "Ski · Mountains",
+    "scoreNote": "From 3 friends and people with your taste.",
+    "bestTime": "January to March",
+    "staysFrom": "from £240 a night",
+    "goodFor": [
+      "Friends",
+      "Solo"
+    ],
+    "temps": [
+      0,
+      2,
+      6,
+      10,
+      15,
+      19,
+      22,
+      21,
+      17,
+      12,
+      5,
+      1
+    ],
+    "bestMonths": [
+      0,
+      1,
+      2
+    ],
+    "crowds": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      3,
+      3,
+      2,
+      1,
+      1,
+      3
+    ],
+    "said": [
+      {
+        "who": "Sam",
+        "month": "Jan 2026",
+        "quote": "A real mountain town, not just a resort.",
+        "score": 8.6,
+        "face": "face-sam"
+      }
+    ],
+    "stays": [
+      {
+        "name": "Les Grands Montets Hotel",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £280 a night · Pool and spa by the Argentière lifts.",
+        "because": "Because you loved breakfast in the garden at Es Molí",
+        "score": null,
+        "photo": "chamonix-1"
+      },
+      {
+        "name": "Hameau Albert 1er",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £420 a night · Sophie stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": "chalet-2"
+      },
+      {
+        "name": "Chalet Les Praz",
+        "type": "Airbnb",
+        "match": 85,
+        "featured": false,
+        "sub": "from £240 a night · Tom stayed",
+        "because": null,
+        "score": 8.5,
+        "photo": "cabin-1"
+      },
+      {
+        "name": "Hôtel Mont-Blanc Chamonix",
+        "type": "Hotel",
+        "match": 82,
+        "featured": false,
+        "sub": "from £340 a night · Sam stayed",
+        "because": null,
+        "score": 8.7,
+        "photo": "chalet-1"
+      }
+    ],
+    "eats": [
+      {
+        "name": "La Crèmerie du Glacier",
+        "price": "££",
+        "what": "Croûte au fromage in the woods",
+        "score": 9.0,
+        "from": "Sam",
+        "match": 88,
+        "photo": "food-table"
+      },
+      {
+        "name": "Refuge du Lac Blanc",
+        "price": "££",
+        "what": "Lunch by a frozen lake",
+        "score": 8.8,
+        "from": "Sophie",
+        "match": 85,
+        "photo": "food-table"
+      },
+      {
+        "name": "Le Cap Horn",
+        "price": "££",
+        "what": "Fondue and après",
+        "score": 8.4,
+        "from": "Tom",
+        "match": 76,
+        "photo": "food-wine"
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Hidden gem",
+        "name": "Montenvers train",
+        "what": "Old rack railway up to the Mer de Glace glacier.",
+        "from": "Sam",
+        "gem": true
+      },
+      {
+        "tag": "Views",
+        "name": "Aiguille du Midi",
+        "what": "Cable car to 3,842m. Go first thing on a clear day.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Ski",
+        "name": "Vallée Blanche",
+        "what": "A famous 20km off-piste run. Go with a guide.",
+        "from": "Sam",
+        "gem": false
+      }
+    ],
+    "culture": [],
+    "tips": [
+      {
+        "tip": "Take the Aiguille du Midi cable car on a clear morning, even if you don't ski.",
+        "from": "Sam"
+      }
+    ],
+    "credits": "Photos: J dG, Baptx, Tristan Gevaux, Sekwang Chia, orva studio, Olivier Chatel on Unsplash"
+  },
   "cheltenham": {
     "kicker": "Spa town · One night",
     "scoreNote": "From 5 friends and people with your taste.",
@@ -1505,6 +1659,160 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": "Photos: Adrian Cole, Vicky Hincks, George Ciobra, Bjørn-Magnus Kristiansen, James Shaw, Kateryna Hliznitsova, orva studio, Yuliya Matuzava on Unsplash"
+  },
+  "courchevel": {
+    "kicker": "Ski · Luxury",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "January to March",
+    "staysFrom": "from £560 a night",
+    "goodFor": [
+      "Families",
+      "Couples"
+    ],
+    "temps": [
+      -2,
+      -1,
+      3,
+      7,
+      12,
+      16,
+      19,
+      19,
+      14,
+      9,
+      3,
+      -1
+    ],
+    "bestMonths": [
+      0,
+      1,
+      2
+    ],
+    "crowds": [
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      1,
+      3
+    ],
+    "said": [
+      {
+        "who": "Maya",
+        "month": "Mar 2026",
+        "quote": "Immaculate pistes. Bring a big budget.",
+        "score": 8.7,
+        "face": "face-maya"
+      }
+    ],
+    "stays": [
+      {
+        "name": "Le K2 Altitude",
+        "type": "Hotel",
+        "match": 89,
+        "featured": true,
+        "sub": "from £1200 a night · Chalet suites hidden in the forest.",
+        "because": "Because you gave Villa Limone a 9.0",
+        "score": null,
+        "photo": "courchevel-1"
+      },
+      {
+        "name": "Les Grandes Alpes",
+        "type": "Hotel",
+        "match": 86,
+        "featured": false,
+        "sub": "from £780 a night · Sophie stayed",
+        "because": null,
+        "score": 8.9,
+        "photo": "chalet-1"
+      },
+      {
+        "name": "Hotel Le Lana",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £560 a night · Mum stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": "bath-1"
+      },
+      {
+        "name": "Hôtel des Trois Vallées",
+        "type": "Hotel",
+        "match": 80,
+        "featured": false,
+        "sub": "from £690 a night · Maya stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": "chalet-2"
+      }
+    ],
+    "eats": [
+      {
+        "name": "Le Bel Air",
+        "price": "£££",
+        "what": "Long lunch on the terrace",
+        "score": 8.7,
+        "from": "Maya",
+        "match": 82,
+        "photo": "food-wine"
+      },
+      {
+        "name": "Le Chalet de Pierres",
+        "price": "£££",
+        "what": "Lunch by the Verdons piste",
+        "score": 8.9,
+        "from": "Sophie",
+        "match": 81,
+        "photo": "food-table"
+      },
+      {
+        "name": "La Saulire",
+        "price": "££",
+        "what": "Classic Savoyard dinner",
+        "score": 8.6,
+        "from": "Mum",
+        "match": 79,
+        "photo": "food-wine"
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Hidden gem",
+        "name": "Le Praz",
+        "what": "A tiny old village at the bottom with the best-value lunch.",
+        "from": "Maya",
+        "gem": true
+      },
+      {
+        "tag": "Ski",
+        "name": "Ski the Three Valleys",
+        "what": "600km of pistes, all on one pass.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Family",
+        "name": "Aquamotion",
+        "what": "A huge indoor pool and spa for a day off.",
+        "from": "Maya",
+        "gem": false
+      }
+    ],
+    "culture": [],
+    "tips": [
+      {
+        "tip": "Stay in 1650 or Le Praz for half the price and the same lift pass.",
+        "from": "Maya"
+      }
+    ],
+    "credits": "Photos: Piotr Figlarz, Tristan Gevaux, Baptx, James Shaw, Olivier Chatel, orva studio on Unsplash"
   },
   "crete": {
     "kicker": "Islands · Beach · Food",
@@ -5372,6 +5680,165 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": "Photos: Marc Schmittbuhl, Romello Williams, Milin John, Olivier Chatel, orva studio on Unsplash"
+  },
+  "valthorens": {
+    "kicker": "Ski · Après",
+    "scoreNote": "From 4 friends and people with your taste.",
+    "bestTime": "December to April",
+    "staysFrom": "from £320 a night",
+    "goodFor": [
+      "Friends"
+    ],
+    "temps": [
+      -4,
+      -3,
+      0,
+      3,
+      7,
+      12,
+      15,
+      15,
+      11,
+      6,
+      0,
+      -3
+    ],
+    "bestMonths": [
+      10
+    ],
+    "crowds": [
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      1,
+      3
+    ],
+    "said": [
+      {
+        "who": "Maya",
+        "month": "Jan 2026",
+        "quote": "Snow is brilliant even in April. Great for groups.",
+        "score": 8.4,
+        "face": "face-maya"
+      }
+    ],
+    "stays": [
+      {
+        "name": "Altapura",
+        "type": "Hotel",
+        "match": 87,
+        "featured": true,
+        "sub": "from £520 a night · Ski-in, ski-out with a big outdoor pool.",
+        "because": "Because you gave Villa Limone a 9.0",
+        "score": null,
+        "photo": "valthorens-1"
+      },
+      {
+        "name": "Fitz Roy",
+        "type": "Hotel",
+        "match": 86,
+        "featured": false,
+        "sub": "from £520 a night · Sophie stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": "chalet-1"
+      },
+      {
+        "name": "Ski-in Chalet Cîmes",
+        "type": "Hotel",
+        "match": 80,
+        "featured": false,
+        "sub": "from £320 a night · Maya stayed",
+        "because": null,
+        "score": 8.5,
+        "photo": "chalet-1"
+      },
+      {
+        "name": "Koh-I Nor",
+        "type": "Hotel",
+        "match": 79,
+        "featured": false,
+        "sub": "from £480 a night · Sam stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": "chalet-2"
+      }
+    ],
+    "eats": [
+      {
+        "name": "La Folie Douce",
+        "price": "££",
+        "what": "Long lunch and dancing on the tables",
+        "score": 8.7,
+        "from": "Maya",
+        "match": 83,
+        "photo": "valthorens-2"
+      },
+      {
+        "name": "Les Chalets du Thorens",
+        "price": "££",
+        "what": "Lunch on the slopes",
+        "score": 8.6,
+        "from": "Sophie",
+        "match": 82,
+        "photo": "food-table"
+      },
+      {
+        "name": "Le Bouchon",
+        "price": "££",
+        "what": "Tartiflette after skiing",
+        "score": 8.3,
+        "from": "Sam",
+        "match": 81,
+        "photo": "food-wine"
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Hidden gem",
+        "name": "Sunrise first lift",
+        "what": "Be on the first chair and have the whole mountain to yourself for an hour.",
+        "from": "Maya",
+        "gem": true
+      },
+      {
+        "tag": "Ski",
+        "name": "Three Valleys ski day",
+        "what": "Ski across to Méribel and back in a day. Start early.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Fun",
+        "name": "Toboggan run",
+        "what": "A 6km sledge run lit up at night.",
+        "from": "Maya",
+        "gem": false
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Food ritual",
+        "when": null,
+        "name": "Savoyard dinners",
+        "what": "Raclette, fondue and tartiflette. Book a mountain restaurant for a cheese night.",
+        "from": "Maya"
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Book the Three Valleys pass. You can ski over to Méribel and Courchevel for lunch.",
+        "from": "Maya"
+      }
+    ],
+    "credits": "Photos: Dominik Lückmann, Joan Oger, Samuel Arkwright, Baptx, Tristan Gevaux, orva studio, Olivier Chatel on Unsplash"
   },
   "verbier": {
     "kicker": "Ski · Mountains",

@@ -143,3 +143,64 @@ test('ranking for you prefers a great fit over a famous place you would half enj
   const { rankValue } = await import('../src/lib/match.ts');
   assert.ok(rankValue({ score: 9.0, match: 89 }) > rankValue({ score: 9.2, match: 70 }));
 });
+
+// --- What you want next: Want to go, lists, list names and pages you look at ---
+
+const mauritius = place('Mauritius', 'Mauritius', { island: 1, beach: 1 }, { pos: [-20.2, 57.5], warmth: 28, goodFor: ['couples'], baseScore: 9 });
+const ladigue = place('La Digue', 'Seychelles', { island: 1, beach: 1 }, { pos: [-4.4, 55.8], warmth: 30, goodFor: ['couples'], baseScore: 9.2 });
+const borabora = place('Bora Bora', 'French Polynesia', { island: 1, beach: 1, luxury: 0.4 }, { pos: [-16.5, -151.7], warmth: 29, goodFor: ['couples'], baseScore: 9.3 });
+const lisbon = place('Lisbon', 'Portugal', { city: 1, food: 1 }, { pos: [38.7, -9.1], warmth: 24, goodFor: ['friends'], baseScore: 8.7 });
+const cityTrips = [trip(paris, 9.5, { companions: 'friends' }), trip(york, 9, { companions: 'friends' }), trip(place('Rome', 'Italy', { city: 1, culture: 1, food: 1 }, { pos: [41.9, 12.5], warmth: 27 }), 9, { companions: 'friends' })];
+const wishes = [maldives, ladigue, borabora].map((p) => ({ kind: 'save', place: p, wish: true, savedAt: '2026-11-10' }));
+
+test('your Want to go list has as much say as all your trips put together', () => {
+  const tripsOnly = buildProfile(cityTrips, [], NOW);
+  const withWishes = buildProfile([...cityTrips, ...wishes], [], NOW);
+  const before = scorePlace(tripsOnly, mauritius, []);
+  const after = scorePlace(withWishes, mauritius, []);
+  assert.ok(after.match - before.match >= 10, `Mauritius ${before.match}% → ${after.match}%`);
+  // …and a city break you'd enjoy still scores well, so it's a balance, not a switch.
+  assert.ok(scorePlace(withWishes, lisbon, []).match > 70, 'still above neutral');
+});
+
+test('who your wish-list places suit counts towards "who you travel with"', () => {
+  const p = buildProfile([...cityTrips, ...wishes], [], NOW);
+  assert.ok(p.nextGoodFor.couples > 0.9);
+  const forCouples = { ...mauritius, key: 'c|x' };
+  const forFriends = { ...mauritius, key: 'f|x', goodFor: ['friends'] };
+  assert.ok(scorePlace(p, forCouples, []).match > scorePlace(buildProfile(cityTrips, [], NOW), forCouples, []).match);
+  assert.ok(scorePlace(p, forFriends, []).match > 0);
+});
+
+test('saves fade slowly but never below 60%', async () => {
+  const { saveWeight } = await import('../src/lib/match.ts');
+  assert.equal(saveWeight(true, '2026-11-21', NOW), 1);
+  assert.ok(Math.abs(saveWeight(true, '2025-11-21', NOW) - 0.6) < 0.01, 'a year old: 0.5 → floor 0.6');
+  assert.equal(saveWeight(false, '2026-11-21', NOW), 0.7);
+});
+
+test('looking at a place again and again lifts it, and the lift fades with time', async () => {
+  const { viewWeight } = await import('../src/lib/match.ts');
+  const base = [...cityTrips, ...wishes];
+  const plain = scorePlace(buildProfile(base, [], NOW), mauritius, []);
+  const keen = scorePlace(buildProfile([...base, { kind: 'view', place: mauritius, views: 4, seconds: 260, lastViewed: '2026-11-20' }], [], NOW), mauritius, []);
+  const old = scorePlace(buildProfile([...base, { kind: 'view', place: mauritius, views: 4, seconds: 260, lastViewed: '2026-07-20' }], [], NOW), mauritius, []);
+  assert.ok(keen.match >= plain.match + 8, `${plain.match}% → ${keen.match}%`);
+  assert.ok(keen.score > plain.score);
+  assert.ok(old.match < keen.match && old.match >= plain.match);
+  assert.ok(keen.reasons.includes('You’ve looked at it 4 times'), keen.reasons.join(' / '));
+  assert.ok(viewWeight(1, 2, '2026-11-21', NOW) < viewWeight(5, 400, '2026-11-21', NOW));
+  assert.ok(viewWeight(50, 100000, '2026-11-21', NOW) <= 0.5, 'browsing never outweighs a loved trip');
+});
+
+test('no extra lift for looking at somewhere already saved or been', async () => {
+  const { interestLift } = await import('../src/lib/match.ts');
+  const p = buildProfile([...wishes, { kind: 'view', place: maldives, views: 9, seconds: 900, lastViewed: '2026-11-20' }], [], NOW);
+  assert.equal(interestLift(p, maldives), 0);
+});
+
+test('a list called "Ski trips" makes ski resorts a better match', () => {
+  const without = buildProfile(cityTrips, [], NOW);
+  const withList = buildProfile([...cityTrips, { kind: 'interest', tags: { ski: 1, mountains: 0.6 }, label: 'Ski trips' }], [], NOW);
+  assert.ok(scorePlace(withList, zermatt, []).match > scorePlace(without, zermatt, []).match);
+});

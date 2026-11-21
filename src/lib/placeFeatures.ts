@@ -235,3 +235,30 @@ export function stayKind(type: string): string {
   if (type === 'Riad' || type === 'Ryokan') return 'B&B';
   return 'Other';
 }
+
+/** Words in a list's name that say what kind of trip it's for ("Ski trips", "Honeymoon ideas"). */
+const LIST_WORDS: [RegExp, Tags][] = [
+  [/\b(ski|skiing|snow|slopes?|apres|après)\b/, { ski: 1, mountains: 0.6 }],
+  [/\b(beach|beaches|sun|sunny|seaside)\b/, { beach: 1 }],
+  [/\b(islands?)\b/, { island: 1, beach: 0.5 }],
+  [/\b(honeymoon|romantic|romance|couples?)\b/, { luxury: 0.6, slow: 0.4 }],
+  [/\b(luxury|splurge|treat|bucket list)\b/, { luxury: 1 }],
+  [/\b(food|foodie|eat|eats|restaurants?|lunch(es)?|dinners?|wine)\b/, { food: 1 }],
+  [/\b(city|cities|weekend|weekends|break|breaks)\b/, { city: 0.8, shortbreak: 0.6 }],
+  [/\b(hike|hikes|hiking|walks?|walking|trek|outdoors?)\b/, { hiking: 1, outdoors: 0.6 }],
+  [/\b(family|kids|children)\b/, { family: 1 }],
+  [/\b(spa|spas|wellness|retreat)\b/, { wellness: 1 }],
+  [/\b(culture|art|museums?|history)\b/, { culture: 1 }],
+  [/\b(lakes?)\b/, { lakes: 1 }],
+  [/\b(mountains?|alps)\b/, { mountains: 1 }],
+  [/\b(safari|wildlife)\b/, { wildlife: 1 }],
+  [/\b(party|nightlife|clubs?)\b/, { nightlife: 1 }],
+  [/\b(countryside|cottages?|cabins?|road ?trip)\b/, { countryside: 1 }],
+];
+
+export function tagsForListName(name: string): Tags {
+  const n = norm(name);
+  const tags: Tags = {};
+  for (const [re, t] of LIST_WORDS) if (re.test(n)) for (const [k, v] of Object.entries(t)) tags[k] = Math.max(tags[k] ?? 0, v);
+  return tags;
+}

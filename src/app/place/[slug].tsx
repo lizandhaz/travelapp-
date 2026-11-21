@@ -1,4 +1,5 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback } from 'react';
 import { Dimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -18,6 +19,7 @@ import { aboutPlace, getPlace } from '@/lib/sample';
 import { stayKind } from '@/lib/placeFeatures';
 import { tasteNote, useTaste } from '@/lib/taste';
 import { useWantToGo } from '@/lib/useWantToGo';
+import { recordPlaceView } from '@/lib/views';
 import NotFound from '../+not-found';
 
 /** A place page (sample content from the prototype for now; real place pages come in plan Step E). */
@@ -28,6 +30,17 @@ export default function PlaceScreen() {
   const country = place ? countryOf({ name: place.name, country: place.region.split(', ').pop() ?? '' }) : '';
   const wish = useWantToGo({ name: place?.name ?? '', country, slug });
   const taste = useTaste();
+  // Count this visit (and how long you stay) towards your matches when you leave the page.
+  const placeName = place?.name ?? '';
+  useFocusEffect(
+    useCallback(() => {
+      if (!placeName) return;
+      const start = Date.now();
+      return () => {
+        recordPlaceView(slug, placeName, country, (Date.now() - start) / 1000);
+      };
+    }, [slug, placeName, country]),
+  );
   if (!place) return <NotFound />;
   const detail = placeDetails[slug] ?? null;
   const { said, ideas } = aboutPlace(slug);

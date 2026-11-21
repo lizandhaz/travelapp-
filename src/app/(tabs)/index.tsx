@@ -62,10 +62,10 @@ function ForYou() {
   const byYou = (items: RowItem[]) => (personal ? [...items].sort((a, b) => rankOf(b.slug) - rankOf(a.slug)) : items);
   const tasteItems = rows.taste.filter(TASTES[taste].match);
 
-  // The big picture at the top: your best-scoring place you haven't been to yet.
+  // The big picture at the top: your best match that's new to you (not been, not already saved).
   const top = personal
     ? places
-        .filter((p) => p.score != null && !t.forSlug(p.slug)?.yours)
+        .filter((p) => p.score != null && !t.forSlug(p.slug)?.yours && !t.isSaved(p.slug))
         .map((p) => ({ p, r: t.forSlug(p.slug)! }))
         .sort((a, b) => rankValue(b.r) - rankValue(a.r))[0]
     : null;

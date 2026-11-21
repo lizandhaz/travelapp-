@@ -4,9 +4,10 @@ import { useAuth } from './auth';
 import { fetchBoards } from './boards';
 import { countryOf } from './knownPlaces';
 import { buildProfile, eatMatch, scorePlace, stayMatch, topTastes, type FriendRating, type PlaceResult, type Profile, type Signal } from './match';
-import { featuresForPlace, featuresForSlug, parseStaySub, sampleFriendRatings, stayKind } from './placeFeatures';
+import { featuresForPlace, featuresForSlug, parseStaySub, sampleFriendRatings, stayKind, tagsForListName } from './placeFeatures';
 import { onTasteChanged } from './tasteEvents';
 import { fetchMyTrips, type Place } from './trips';
+import { fetchPlaceViews } from './views';
 
 /**
  * Your taste, for the whole app: built from your trips and saved places (and friends'
@@ -28,6 +29,8 @@ type TasteValue = {
   eatPercent: (eat: { score: number | null }) => number;
   /** The holiday types you like most. */
   tastes: string[];
+  /** Is this sample place on one of your lists? */
+  isSaved: (slug: string) => boolean;
 };
 
 const EMPTY = buildProfile([]);
@@ -44,7 +47,7 @@ const Ctx = createContext<TasteValue | null>(null);
 
 /** Your trips and saved places as signals for the engine. */
 async function loadSignals(): Promise<Signal[]> {
-  const [trips, boards] = await Promise.all([fetchMyTrips(), fetchBoards().catch(() => [])]);
+  const [trips, boards, views] = await Promise.all([fetchMyTrips(), fetchBoards().catch(() => []), fetchPlaceViews().catch(() => [])]);
   const next: Signal[] = [];
   for (const t of trips) {
     t.stops.forEach((s, i) =>
@@ -61,11 +64,20 @@ async function loadSignals(): Promise<Signal[]> {
       }),
     );
   }
-  for (const b of boards)
+  for (const b of boards) {
     for (const item of b.items) {
       const place = item.slug ? (featuresForSlug(item.slug) ?? featuresForPlace(item)) : featuresForPlace({ name: item.name, country: countryOf(item) });
-      next.push({ kind: 'save', place, wish: b.kind === 'wish' });
+      next.push({ kind: 'save', place, wish: b.kind === 'wish', savedAt: item.createdAt });
     }
+    // A list's name can say what it's for ("Ski trips").
+    const hint = b.kind === 'list' ? tagsForListName(b.name) : {};
+    if (Object.keys(hint).length) next.push({ kind: 'interest', tags: hint, label: b.name });
+  }
+  // Views come after saves, so a view of somewhere already saved counts for little.
+  for (const v of views) {
+    const place = featuresForSlug(v.slug) ?? featuresForPlace({ name: v.name, country: v.country });
+    next.push({ kind: 'view', place, views: v.views, seconds: v.seconds, lastViewed: v.lastViewed });
+  }
   return next;
 }
 
@@ -113,6 +125,10 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
       },
       eatPercent: ({ score }) => eatMatch(profile, { friendScore: score }),
       tastes: topTastes(profile),
+      isSaved: (slug) => {
+        const f = featuresForSlug(slug);
+        return !!f && profile.saved[f.key] != null;
+      },
     };
   }, [profile, friends, signals]);
 
@@ -155,8 +171,9 @@ export function tasteNote(p: Profile): string {
   const bits = [
     p.counts.trips ? `${p.counts.trips} ${p.counts.trips === 1 ? 'trip' : 'trips'}` : null,
     p.counts.wish + p.counts.lists ? `${p.counts.wish + p.counts.lists} saved ${p.counts.wish + p.counts.lists === 1 ? 'place' : 'places'}` : null,
+    p.counts.views ? `the ${p.counts.views === 1 ? 'place' : `${p.counts.views} places`} you’ve looked at` : null,
   ].filter(Boolean);
   return bits.length
-    ? `Your scores and matches use your ${bits.join(' and ')}, plus your friends’ ratings.`
+    ? `Your scores and matches use your ${bits.length > 1 ? `${bits.slice(0, -1).join(', ')} and ${bits[bits.length - 1]}` : bits[0]}, plus your friends’ ratings.`
     : 'Add trips and save places, and these scores and matches become yours.';
 }

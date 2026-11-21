@@ -56,22 +56,45 @@ export type Signal =
       /** An extra stop on a trip already counted (shapes taste, but isn't a separate trip). */
       extraStop?: boolean;
     }
-  | { kind: 'save'; place: PlaceFeatures; wish: boolean };
+  /** A place on a list: Want to go (wish) or one of your own lists. savedAt is an ISO date. */
+  | { kind: 'save'; place: PlaceFeatures; wish: boolean; savedAt?: string | null }
+  /** A place page you've looked at: how many times, for how long in total, and when last. */
+  | { kind: 'view'; place: PlaceFeatures; views: number; seconds: number; lastViewed: string }
+  /** A hint with no place, e.g. a list called "Ski trips" (holiday types only). */
+  | { kind: 'interest'; tags: Tags; label: string };
 
 /** A friend's rating of a place (or of a stay at a place). */
 export type FriendRating = { friend: string; placeKey: string; score: number };
 
-export type Anchor = { name: string; kind: 'trip' | 'wish' | 'list'; weight: number; score?: number; place: PlaceFeatures };
+export type Anchor = {
+  name: string;
+  kind: 'trip' | 'wish' | 'list' | 'view';
+  weight: number;
+  score?: number;
+  place: PlaceFeatures;
+};
+
+/**
+ * One half of someone's taste. "Enjoyed" comes from trips (what they've liked);
+ * "next" comes from saves, list names and pages they look at (what they want now).
+ */
+export type TasteHalf = { tags: Tags; anchors: Anchor[]; warmth: number | null; evidence: number };
 
 export type Profile = {
-  /** Signed sums per holiday type (positive = likes, negative = dislikes). */
+  /** What they've enjoyed (trips). */
+  enjoyed: TasteHalf;
+  /** What they want next (Want to go, lists, list names, pages they look at). */
+  next: TasteHalf;
+  /** Both halves added up (for "Your taste" and food). */
   tags: Tags;
-  /** Places that shape the taste, with their weights (for nearness and "Because…"). */
+  /** Every place that shapes the taste (for "Because…"). */
   anchors: Anchor[];
-  /** Preferred warmth, °C (weighted by how much they loved each place). */
+  /** Preferred warmth, °C: the two halves count equally. */
   warmth: number | null;
   /** Share of trips with each kind of company. */
   companions: Partial<Record<Companions, number>>;
+  /** Who the places they want next suit ("couples": 0.8…), from Want to go and lists. */
+  nextGoodFor: Record<string, number>;
   /** Signed preference per kind of stay ("Villa": +1.2…). */
   stayTypes: Record<string, number>;
   /** Typical stay price they liked, £ a night. */
@@ -82,9 +105,13 @@ export type Profile = {
   confidence: number;
   /** Places they've been, by key, with their own score. */
   been: Record<string, number>;
+  /** Places on their lists, by key. */
+  saved: Record<string, 'wish' | 'list'>;
+  /** Place pages they've looked at, by key. */
+  viewed: Record<string, { views: number; seconds: number; weight: number }>;
   /** How much each friend's ratings count (friends who agree with you count more). */
   friendWeights: Record<string, number>;
-  counts: { trips: number; wish: number; lists: number };
+  counts: { trips: number; wish: number; lists: number; views: number };
 };
 
 export type PlaceResult = {
@@ -116,7 +143,7 @@ const round1 = (n: number) => Math.round(n * 10) / 10;
 export function plainText(s: string): string {
   return s
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .trim()
     .replace(/^the /, '');
@@ -170,52 +197,114 @@ export function tripWeight(score: number, month: string, nights: number | null, 
   return liking * recency * length;
 }
 
-export const SAVE_WEIGHT = { wish: 0.6, list: 0.4 };
+/**
+ * Saves are what you want next, so a Want to go place counts as much as a loved trip
+ * (a list a little less). They fade slowly: half as much after a year, never below 60%.
+ */
+export const SAVE_WEIGHT = { wish: 1, list: 0.7 };
+export function saveWeight(wish: boolean, savedAt: string | null | undefined, now = new Date()): number {
+  const years = savedAt ? Math.max(0, (now.getTime() - new Date(savedAt).getTime()) / (365.25 * 864e5)) : 0;
+  return (wish ? SAVE_WEIGHT.wish : SAVE_WEIGHT.list) * Math.max(0.6, 0.5 ** years);
+}
 
 /**
- * Builds someone's taste from their signals. Friends' ratings are used to work out
- * how much each friend agrees with them (on places both have been).
+ * Looking at a place page is a light hint: more visits and more time count more
+ * (up to 0.5, half a loved trip), fading by half every 45 days.
+ */
+export function viewWeight(views: number, seconds: number, lastViewed: string, now = new Date()): number {
+  if (views <= 0) return 0;
+  const days = Math.max(0, (now.getTime() - new Date(lastViewed).getTime()) / 864e5);
+  const dwell = 1 + Math.min(1, seconds / views / 45); // 45 seconds a visit on average doubles it
+  return Math.min(0.5, 0.12 * views ** 0.6 * dwell) * 0.5 ** (days / 45);
+}
+
+/** A list name that says something ("Ski trips") counts like a small save of that kind of place. */
+export const INTEREST_WEIGHT = 0.35;
+
+function emptyHalf(): TasteHalf & { warmthSum: number; warmthW: number } {
+  return { tags: {}, anchors: [], warmth: null, evidence: 0, warmthSum: 0, warmthW: 0 };
+}
+
+/**
+ * Builds someone's taste from their signals, in two halves (enjoyed / want next).
+ * Friends' ratings are used to work out how much each friend agrees with them.
  */
 export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = [], now = new Date()): Profile {
-  const tags: Tags = {};
-  const anchors: Anchor[] = [];
+  const halves = { enjoyed: emptyHalf(), next: emptyHalf() };
   const stayTypes: Record<string, number> = {};
   const companionCount: Partial<Record<Companions, number>> = {};
   const been: Record<string, number> = {};
-  let warmthSum = 0;
-  let warmthW = 0;
+  const saved: Record<string, 'wish' | 'list'> = {};
+  const viewed: Record<string, { views: number; seconds: number; weight: number }> = {};
   let priceSum = 0;
   let priceW = 0;
-  let evidence = 0;
-  const counts = { trips: 0, wish: 0, lists: 0 };
+  const counts = { trips: 0, wish: 0, lists: 0, views: 0 };
+  const goodForSum: Record<string, number> = {};
+  let goodForW = 0;
 
   for (const s of signals) {
+    if (s.kind === 'interest') {
+      const h = halves.next;
+      for (const [t, v] of Object.entries(s.tags)) h.tags[t] = (h.tags[t] ?? 0) + INTEREST_WEIGHT * v;
+      h.evidence += INTEREST_WEIGHT;
+      continue;
+    }
     let w: number;
+    let half: 'enjoyed' | 'next';
     if (s.kind === 'trip') {
+      half = 'enjoyed';
       w = tripWeight(s.score, s.month, s.nights, now);
       if (!s.extraStop) counts.trips++;
       // Several trips to one place: keep the best score as "yours".
       been[s.place.key] = Math.max(been[s.place.key] ?? 0, s.score);
       if (s.companions) companionCount[s.companions] = (companionCount[s.companions] ?? 0) + 1;
       if (s.stay) stayTypes[s.stay.type] = (stayTypes[s.stay.type] ?? 0) + clamp((s.stay.score - 6.5) / 3, -1, 1);
-      anchors.push({ name: s.place.name, kind: 'trip', weight: w, score: s.score, place: s.place });
-    } else {
-      w = s.wish ? SAVE_WEIGHT.wish : SAVE_WEIGHT.list;
+      halves.enjoyed.anchors.push({ name: s.place.name, kind: 'trip', weight: w, score: s.score, place: s.place });
+    } else if (s.kind === 'save') {
+      half = 'next';
+      w = saveWeight(s.wish, s.savedAt, now);
       if (s.wish) counts.wish++;
       else counts.lists++;
-      anchors.push({ name: s.place.name, kind: s.wish ? 'wish' : 'list', weight: w, place: s.place });
+      if (saved[s.place.key] !== 'wish') saved[s.place.key] = s.wish ? 'wish' : 'list';
+      if (s.place.goodFor.length) {
+        for (const g of s.place.goodFor) goodForSum[g] = (goodForSum[g] ?? 0) + w / s.place.goodFor.length;
+        goodForW += w;
+      }
+      halves.next.anchors.push({ name: s.place.name, kind: s.wish ? 'wish' : 'list', weight: w, place: s.place });
+    } else {
+      half = 'next';
+      // Looking again at somewhere you've saved or been adds little.
+      const known = been[s.place.key] != null || saved[s.place.key] != null;
+      w = viewWeight(s.views, s.seconds, s.lastViewed, now) * (known ? 0.3 : 1);
+      counts.views++;
+      viewed[s.place.key] = { views: s.views, seconds: s.seconds, weight: w };
+      if (w > 0.01) halves.next.anchors.push({ name: s.place.name, kind: 'view', weight: w, place: s.place });
     }
-    evidence += Math.abs(w);
-    for (const [t, v] of Object.entries(s.place.tags)) tags[t] = (tags[t] ?? 0) + w * v;
+    const h = halves[half];
+    h.evidence += Math.abs(w);
+    for (const [t, v] of Object.entries(s.place.tags)) h.tags[t] = (h.tags[t] ?? 0) + w * v;
     if (w > 0 && s.place.warmth != null) {
-      warmthSum += w * s.place.warmth;
-      warmthW += w;
+      h.warmthSum += w * s.place.warmth;
+      h.warmthW += w;
     }
     if (w > 0 && s.place.priceFrom != null) {
       priceSum += w * s.place.priceFrom;
       priceW += w;
     }
   }
+
+  const finish = (h: ReturnType<typeof emptyHalf>): TasteHalf => ({
+    tags: h.tags,
+    anchors: h.anchors,
+    warmth: h.warmthW > 0 ? h.warmthSum / h.warmthW : null,
+    evidence: h.evidence,
+  });
+  const enjoyed = finish(halves.enjoyed);
+  const next = finish(halves.next);
+
+  const tags: Tags = { ...enjoyed.tags };
+  for (const [t, v] of Object.entries(next.tags)) tags[t] = (tags[t] ?? 0) + v;
+  const warmths = [enjoyed.warmth, next.warmth].filter((x): x is number => x != null);
 
   const totalCompany = Object.values(companionCount).reduce((a, b) => a + (b ?? 0), 0);
   const companions: Partial<Record<Companions, number>> = {};
@@ -236,16 +325,25 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
     friendWeights[friend] = clamp(1 + trust * (1 - meanGap / 1.5), 0.4, 2);
   }
 
+  const nextGoodFor: Record<string, number> = {};
+  for (const [g, v] of Object.entries(goodForSum)) nextGoodFor[g] = v / goodForW;
+
+  const evidence = enjoyed.evidence + next.evidence;
   return {
+    enjoyed,
+    next,
     tags,
-    anchors,
-    warmth: warmthW > 0 ? warmthSum / warmthW : null,
+    anchors: [...enjoyed.anchors, ...next.anchors],
+    warmth: warmths.length ? warmths.reduce((a, b) => a + b, 0) / warmths.length : null,
     companions,
+    nextGoodFor,
     stayTypes,
     price: priceW > 0 ? priceSum / priceW : null,
     evidence,
     confidence: 1 - Math.exp(-evidence / 1.5), // ~50% after one loved trip, ~85% after three
     been,
+    saved,
+    viewed,
     friendWeights,
     counts,
   };
@@ -258,44 +356,62 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
 const COMPANY_TO_GOOD_FOR: Record<Companions, string> = { solo: 'solo', partner: 'couples', friends: 'friends', family: 'families' };
 const PART_WEIGHTS = { kind: 0.45, near: 0.2, warmth: 0.2, company: 0.15 };
 
-/** The four parts of fit, each 0–1 (or null when we can't tell). */
-export function fitParts(profile: Profile, place: PlaceFeatures) {
-  // Same kind of holiday: overlap with what they like, minus overlap with what they don't.
+/** How much "want next" counts against "enjoyed" when both are known: an equal say. */
+export const NEXT_SHARE = 0.5;
+
+/** Blends the two halves' answers: equal say when both know something, else whichever does. */
+function blend(enjoyed: number | null, next: number | null): number | null {
+  if (enjoyed == null) return next;
+  if (next == null) return enjoyed;
+  return (1 - NEXT_SHARE) * enjoyed + NEXT_SHARE * next;
+}
+
+/** Same kind of holiday, for one half: overlap with likes, minus overlap with dislikes. */
+function kindFit(tags: Tags, place: PlaceFeatures): number | null {
   const likes: Tags = {};
   const dislikes: Tags = {};
-  for (const [t, v] of Object.entries(profile.tags)) {
+  for (const [t, v] of Object.entries(tags)) {
     if (v > 0) likes[t] = v;
     else if (v < 0) dislikes[t] = -v;
   }
-  const hasTaste = Object.keys(likes).length > 0 || Object.keys(dislikes).length > 0;
-  const kind =
-    hasTaste && Object.keys(place.tags).length
-      ? clamp(0.2 + 0.8 * tagSimilarity(likes, place.tags) - 0.6 * tagSimilarity(dislikes, place.tags), 0, 1)
-      : null;
+  if (!Object.keys(likes).length && !Object.keys(dislikes).length) return null;
+  if (!Object.keys(place.tags).length) return null;
+  return clamp(0.2 + 0.8 * tagSimilarity(likes, place.tags) - 0.6 * tagSimilarity(dislikes, place.tags), 0, 1);
+}
 
-  // Near places they loved (a 1,200 km falloff: the same region, not the same town).
-  let near: number | null = null;
-  if (place.pos) {
-    let pull = 0;
-    let total = 0;
-    for (const a of profile.anchors) {
-      if (!a.place.pos) continue;
-      const k = Math.exp(-distanceKm(a.place.pos, place.pos) / 1200);
-      pull += a.weight * k;
-      total += Math.abs(a.weight);
-    }
-    if (total > 0) near = clamp(0.3 + 0.7 * (pull / total), 0, 1);
+/** Near places in one half (a 1,200 km falloff: the same region, not the same town). */
+function nearFit(anchors: Anchor[], place: PlaceFeatures): number | null {
+  if (!place.pos) return null;
+  let pull = 0;
+  let total = 0;
+  for (const a of anchors) {
+    if (!a.place.pos) continue;
+    pull += a.weight * Math.exp(-distanceKm(a.place.pos, place.pos) / 1200);
+    total += Math.abs(a.weight);
   }
+  return total > 0 ? clamp(0.3 + 0.7 * (pull / total), 0, 1) : null;
+}
 
-  // The warmth they usually go for (gentle: 7 °C off is still fine).
+/** The four parts of fit, each 0–1 (or null when we can't tell). */
+export function fitParts(profile: Profile, place: PlaceFeatures) {
+  const kind = blend(kindFit(profile.enjoyed.tags, place), kindFit(profile.next.tags, place));
+  const near = blend(nearFit(profile.enjoyed.anchors, place), nearFit(profile.next.anchors, place));
+
+  // The warmth they go for (gentle: 7 °C off is still fine).
   const warmth = profile.warmth != null && place.warmth != null ? Math.exp(-(((place.warmth - profile.warmth) / 7) ** 2)) : null;
 
-  // Suits who they travel with.
-  let company: number | null = null;
+  // Suits who they travel with (from trips) and who the places they want next suit.
+  let past: number | null = null;
   const shares = Object.entries(profile.companions);
   if (shares.length && place.goodFor.length) {
-    company = 0.25 + 0.75 * shares.reduce((a, [c, share]) => a + (place.goodFor.includes(COMPANY_TO_GOOD_FOR[c as Companions]) ? (share ?? 0) : 0), 0);
+    past = 0.25 + 0.75 * shares.reduce((a, [c, share]) => a + (place.goodFor.includes(COMPANY_TO_GOOD_FOR[c as Companions]) ? (share ?? 0) : 0), 0);
   }
+  let ahead: number | null = null;
+  const wanted = Object.entries(profile.nextGoodFor);
+  if (wanted.length && place.goodFor.length) {
+    ahead = 0.25 + 0.75 * wanted.reduce((a, [g, share]) => a + (place.goodFor.includes(g) ? share : 0), 0);
+  }
+  const company = blend(past, ahead);
 
   return { kind, near, warmth, company };
 }
@@ -312,7 +428,17 @@ export function fitFor(profile: Profile, place: PlaceFeatures): number {
     w += pw;
   }
   const raw = w ? sum / w : 0.5;
-  return 0.5 + (raw - 0.5) * profile.confidence;
+  return clamp(0.5 + (raw - 0.5) * profile.confidence + interestLift(profile, place), 0, 1);
+}
+
+/**
+ * Somewhere you keep coming back to look at gets a direct lift (up to +0.15 fit,
+ * about +10% match), fading as the views get older. Not for places you've saved or been.
+ */
+export function interestLift(profile: Profile, place: PlaceFeatures): number {
+  const v = profile.viewed[place.key];
+  if (!v || profile.been[place.key] != null || profile.saved[place.key] != null) return 0;
+  return 0.15 * Math.min(1, v.weight / 0.5);
 }
 
 /** Fit as a percentage: 40–99, with 0.5 (neutral) at 70%. */
@@ -398,8 +524,16 @@ export function reasonsFor(profile: Profile, place: PlaceFeatures, friends: Frie
         ? `Like ${a.name}, which you gave ${a.score!.toFixed(1)}`
         : a.kind === 'wish'
           ? `Like ${a.name} on your Want to go list`
-          : `Like ${a.name}, which you saved`;
+          : a.kind === 'list'
+            ? `Like ${a.name}, which you saved`
+            : `Like ${a.name}, which you’ve been looking at`;
     out.push({ text, strength: 1 + best.sim });
+  }
+
+  // Somewhere they keep coming back to look at.
+  const seen = profile.viewed[place.key];
+  if (seen && seen.views >= 2 && profile.been[place.key] == null && profile.saved[place.key] == null) {
+    out.push({ text: `You’ve looked at it ${seen.views} times`, strength: 0.9 + Math.min(0.5, seen.views / 20) });
   }
 
   // The friend who loved it most.

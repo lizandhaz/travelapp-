@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Switch, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { Text } from '@/components/Text';
@@ -7,12 +7,27 @@ import { APP_NAME } from '@/constants/brand';
 import { colors, GUTTER } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { setProfilePicture } from '@/lib/trips';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { clearPlaceViews, setViewsEnabled, viewsEnabled } from '@/lib/views';
 
 /** Settings. Privacy switches, blocking, data download and deleting your account come in plan Step J. */
 export default function Settings() {
   const { profile, session, signOut, refreshProfile } = useAuth();
   const [removing, setRemoving] = useState(false);
+  const [useViews, setUseViews] = useState(true);
+  const [cleared, setCleared] = useState<string | null>(null);
+  useEffect(() => {
+    viewsEnabled().then(setUseViews);
+  }, []);
+
+  async function clearViews() {
+    try {
+      await clearPlaceViews();
+      setCleared('Cleared. Your matches no longer use the places you’ve looked at.');
+    } catch (e) {
+      setCleared(e instanceof Error ? e.message : 'Something went wrong.');
+    }
+  }
 
   async function removePicture() {
     setRemoving(true);
@@ -37,6 +52,28 @@ export default function Settings() {
           <Text variant="tiny" style={{ paddingHorizontal: 16, paddingBottom: 14 }}>
             {profile?.canGoPublic ? 'Public profiles are coming soon.' : 'Public profiles are for over-18s. Until then, your profile is just for friends.'}
           </Text>
+        </Section>
+        <Section label="Your matches">
+          <View style={{ padding: 16, gap: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <View style={{ flex: 1 }}>
+                <Text variant="strong">Use the places I look at</Text>
+                <Text variant="small">Places you open (and how long you spend on them) help your scores and matches. Only you can see this.</Text>
+              </View>
+              <Switch
+                value={useViews}
+                onValueChange={(on) => {
+                  setUseViews(on);
+                  setViewsEnabled(on);
+                }}
+                trackColor={{ true: colors.teal, false: colors.line }}
+                accessibilityLabel="Use the places I look at for my matches"
+              />
+            </View>
+            <Button title="Clear the places I’ve looked at" kind="outline" size="sm" onPress={clearViews} />
+            {!!cleared && <Text variant="small">{cleared}</Text>}
+            <Text variant="tiny">Your matches also use your trips, your saved places and your friends’ ratings.</Text>
+          </View>
         </Section>
         {!!profile?.avatarPath && (
           <Section label="Profile picture">

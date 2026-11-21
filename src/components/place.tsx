@@ -168,7 +168,7 @@ export function SaidList({ items }: { items: PlaceDetail['said'] }) {
   );
 }
 
-/** Where to stay: photo cards with the type, how well it matches your taste, and a friend's score. */
+/** Where to stay: photo cards with the type and your score out of 10. */
 export function StayRow({ stays }: { stays: PlaceDetail['stays'] }) {
   return (
     <View style={{ marginTop: 28 }}>
@@ -180,16 +180,11 @@ export function StayRow({ stays }: { stays: PlaceDetail['stays'] }) {
             <View
               key={s.name}
               accessible
-              accessibilityLabel={[s.name, s.type, s.match ? `${s.match}% match` : null, s.sub, s.because, s.score != null ? `${formatScore(s.score)} out of 10` : null].filter(Boolean).join(', ')}
+              accessibilityLabel={[s.name, s.type, s.sub, s.because, s.score != null ? `${formatScore(s.score)} out of 10` : null].filter(Boolean).join(', ')}
               style={{ width: w, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.card, borderWidth: s.featured ? 2 : 1, borderColor: s.featured ? colors.teal : colors.line }}
             >
               <PhotoTile photo={s.photo} shade={false} style={{ width: '100%', height: w * 0.72, borderRadius: 0 }}>
                 <PhotoBadge text={s.type} style={{ position: 'absolute', top: 10, left: 10 }} />
-                {s.match != null && (
-                  <View style={{ position: 'absolute', top: 10, right: 10, borderRadius: 999, paddingHorizontal: 8, paddingVertical: 3, backgroundColor: s.featured ? colors.teal : 'rgba(255,255,255,0.95)' }}>
-                    <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, color: s.featured ? colors.onDark : colors.teal }}>{s.match}% match</Text>
-                  </View>
-                )}
                 {s.featured && <PhotoBadge text="✦ We think you’d like" style={{ position: 'absolute', bottom: 10, left: 10 }} />}
               </PhotoTile>
               <View style={{ padding: 12, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -218,7 +213,7 @@ export function StayRow({ stays }: { stays: PlaceDetail['stays'] }) {
   );
 }
 
-/** Where to eat: a photo (or the first letter), price, what to order and a friend's score. */
+/** Where to eat: a photo (or the first letter), price, what to order and your score out of 10. */
 export function EatRow({ eats }: { eats: PlaceDetail['eats'] }) {
   return (
     <View style={{ marginTop: 28 }}>
@@ -238,11 +233,6 @@ export function EatRow({ eats }: { eats: PlaceDetail['eats'] }) {
                 <Text style={{ fontFamily: fonts.display, fontSize: 32, color: colors.terracotta }}>{e.name[0]}</Text>
               </View>
             )}
-            {e.match != null && (
-              <View style={{ position: 'absolute', top: 10, right: 10, borderRadius: 999, paddingHorizontal: 8, paddingVertical: 3, backgroundColor: 'rgba(255,255,255,0.95)' }}>
-                <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, color: colors.teal }}>{e.match}% match</Text>
-              </View>
-            )}
             <View style={{ padding: 12, flex: 1 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <Text variant="strong" numberOfLines={1} style={{ flex: 1 }}>
@@ -257,7 +247,7 @@ export function EatRow({ eats }: { eats: PlaceDetail['eats'] }) {
               )}
               <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, marginTop: 8 }}>
                 {e.score != null && <Text style={{ fontFamily: fonts.display, fontSize: 17, color: colors.terracottaText, fontVariant: ['tabular-nums'] }}>{formatScore(e.score)}</Text>}
-                {!!e.from && <Text variant="tiny">from {e.from}</Text>}
+                {!!e.from && <Text variant="tiny">· {e.from}’s pick</Text>}
               </View>
             </View>
           </View>
@@ -384,7 +374,7 @@ export function MoreAbout({ name, detail }: { name: string; detail: PlaceDetail 
 }
 
 /**
- * Your score card on a place page: the score, a word, the % match, why, and a
+ * Your score card on a place page: the score, a word, why, and a
  * "How we worked this out" breakdown (lib/match.ts).
  */
 export function YourScore({ result, note }: { result: PlaceResult; note: string }) {
@@ -402,7 +392,7 @@ export function YourScore({ result, note }: { result: PlaceResult; note: string 
           <Text variant="subheading">
             {result.yours != null ? 'Your rating' : 'Your score'} · <Text variant="subheading" style={{ fontFamily: fonts.displayItalic }}>{scoreWord(result.score)}</Text>
           </Text>
-          <Text variant="small">{result.yours != null ? 'You’ve been. This is the score you gave it.' : `${result.match}% match for you`}</Text>
+          <Text variant="small">{result.yours != null ? 'You’ve been. This is the score you gave it.' : 'Worked out for you'}</Text>
         </View>
       </View>
       {result.reasons.filter((r) => !r.startsWith('You gave')).length > 0 && (
@@ -426,12 +416,9 @@ export function YourScore({ result, note }: { result: PlaceResult; note: string 
           </Text>
           {b.parts.map((p) => (
             <View key={p.label} style={{ gap: 4 }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text variant="tiny" style={{ color: colors.ink }}>
-                  {p.label}
-                </Text>
-                <Text variant="tiny">{Math.round(p.value * 100)}%</Text>
-              </View>
+              <Text variant="tiny" style={{ color: colors.ink }}>
+                {p.label}
+              </Text>
               <View style={{ height: 5, borderRadius: 3, backgroundColor: colors.line, overflow: 'hidden' }}>
                 <View style={{ width: `${Math.round(p.value * 100)}%`, height: 5, backgroundColor: colors.teal }} />
               </View>

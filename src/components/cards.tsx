@@ -17,7 +17,7 @@ const openPlace = (slug: string | null) => slug && router.push(`/place/${slug}`)
 function usePersonalScore(slug: string | null, fallback: number | undefined) {
   const t = useTaste();
   const r = slug ? t.forSlug(slug) : null;
-  return { score: r?.score ?? fallback ?? null, match: r && t.profile.evidence > 0 ? r.match : null };
+  return { score: r?.score ?? fallback ?? null };
 }
 
 /** A sideways-scrolling row of cards with the screen's side padding. */
@@ -29,7 +29,7 @@ export function Row({ children, gap = 12 }: { children: React.ReactNode; gap?: n
   );
 }
 
-/** White pill badge on a photo ("#1", "Eat", "95% match"). */
+/** White pill badge on a photo ("#1", "Eat"). */
 export function PhotoBadge({ text, style }: { text: string; style?: ViewStyle }) {
   return (
     <View style={[{ backgroundColor: 'rgba(255,255,255,0.94)', borderRadius: 999, paddingHorizontal: 9, paddingVertical: 3 }, style]}>
@@ -62,7 +62,7 @@ export function TrendCard({ item, width = 150, height = 190 }: { item: RowItem; 
 
 /** Photo with a score stamp, name and a line below (Island escapes, Weekends away…). */
 export function PlaceCard({ item, width = 200, height = 220 }: { item: RowItem; width?: number; height?: number }) {
-  const { score, match } = usePersonalScore(item.slug, item.score);
+  const { score } = usePersonalScore(item.slug, item.score);
   return (
     <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" accessibilityLabel={`${item.name}, ${item.sub}`} style={{ width }}>
       <PhotoTile photo={item.photo} style={{ width, height }} shade={false}>
@@ -71,7 +71,6 @@ export function PlaceCard({ item, width = 200, height = 220 }: { item: RowItem; 
             <ScoreStamp score={score} size="sm" />
           </View>
         )}
-        {match != null && <PhotoBadge text={`${match}% match`} style={{ position: 'absolute', left: 8, bottom: 8, backgroundColor: 'rgba(150,199,184,0.95)' }} />}
       </PhotoTile>
       <Text variant="subheading" style={{ marginTop: 8 }}>
         {item.name}
@@ -86,12 +85,14 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
   const t = useTaste();
   // Judged on the thing itself (friends who went, and how much you go for this kind of thing),
   // not on places you've saved.
-  const { match, note } = t.forItem(item);
+  const { score, note } = t.forItem(item);
   return (
-    <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" accessibilityLabel={`${item.kind}: ${item.name}, ${match}% match. ${note}`} style={{ width }}>
+    <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" accessibilityLabel={`${item.kind}: ${item.name}, ${score.toFixed(1)} out of 10. ${note}`} style={{ width }}>
       <PhotoTile photo={item.photo} style={{ width, height: 160 }} shade={false}>
         <PhotoBadge text={item.kind} style={{ position: 'absolute', top: 10, left: 10 }} />
-        <PhotoBadge text={`${match}% match`} style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(150,199,184,0.95)' }} />
+        <View style={{ position: 'absolute', top: 8, right: 8 }}>
+          <ScoreStamp score={score} size="sm" />
+        </View>
       </PhotoTile>
       <Text variant="subheading" style={{ marginTop: 8 }}>
         {item.name}
@@ -108,21 +109,16 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
 
 /** "Picked for you": a white card with photo, stamp and the reason. */
 export function PickCard({ item }: { item: RowItem }) {
-  const { score, match } = usePersonalScore(item.slug, item.score);
+  const { score } = usePersonalScore(item.slug, item.score);
   return (
     <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" style={{ flex: 1 }}>
       <Card>
         <View style={{ height: 150 }}>
           <PhotoFill photo={item.photo} />
-          {/* One number: your % match once we know your taste, otherwise the score. */}
-          {match != null ? (
-            <PhotoBadge text={`${match}% match`} style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(150,199,184,0.95)' }} />
-          ) : (
-            score != null && (
-              <View style={{ position: 'absolute', top: 8, right: 8 }}>
-                <ScoreStamp score={score} size="sm" />
-              </View>
-            )
+          {score != null && (
+            <View style={{ position: 'absolute', top: 8, right: 8 }}>
+              <ScoreStamp score={score} size="sm" />
+            </View>
           )}
         </View>
         <View style={{ padding: 12 }}>

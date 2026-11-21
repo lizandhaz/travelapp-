@@ -626,3 +626,51 @@ export function itemMatch(profile: Profile, item: { tasteTag: string | null; fri
   const fit = parts.reduce((a, [pw, v]) => a + pw * v, 0) / w;
   return matchPercent(0.5 + (fit - 0.5) * Math.max(0.4, profile.confidence));
 }
+
+// ---------------------------------------------------------------------------
+// Scores out of 10 for single things (the app shows only scores, no % match)
+// ---------------------------------------------------------------------------
+
+/** How much a kind of thing stands out among your interests (your top interest = 0.95), or null. */
+function interestFor(profile: Profile, tag: string | null): number | null {
+  const top = Math.max(0, ...Object.values(profile.tags));
+  if (!tag || top <= 0) return null;
+  return 0.25 + 0.5 * clamp((profile.tags[tag] ?? 0) / top, 0, 1); // 0.25 (not your thing) – 0.75 (your top interest)
+}
+
+/** How far taste moves a single thing's score: gentle, about ±0.6 at most. A friend's score leads. */
+const ITEM_SWING = 2.4;
+
+/** A base nudged by fit, gentler while we know little. */
+function nudge(base: number, fit: number | null, profile: Profile): number {
+  const f = fit == null ? 0.5 : 0.5 + (fit - 0.5) * Math.max(0.4, profile.confidence);
+  return round1(clamp(base + ITEM_SWING * (f - 0.5), 1, 10));
+}
+
+/**
+ * Your score out of 10 for a restaurant, café, drink or thing to do: the friend's score
+ * (or a starting point: 7.6 if a friend recommends it, 7.2 if none has been), nudged by
+ * how much you go for that kind of thing.
+ */
+export function itemScore(profile: Profile, item: { tasteTag: string | null; friendScore: number | null; friendRecommended: boolean }): number {
+  const base = item.friendScore ?? (item.friendRecommended ? 7.6 : 7.2);
+  return nudge(base, interestFor(profile, item.tasteTag), profile);
+}
+
+/**
+ * Your score out of 10 for a stay: the friend's score (or 7.6), nudged by the kind of
+ * stay you rate well and a price like you usually pay (cheaper only a little minus).
+ */
+export function stayScore(profile: Profile, stay: { type: string; priceFrom: number | null; friendScore: number | null }): number {
+  const parts: [number, number][] = [];
+  const pref = profile.stayTypes[stay.type];
+  if (pref != null) parts.push([0.6, 0.5 + 0.25 * Math.tanh(pref)]); // a kind of stay you rate well: up to +; badly: up to −
+  if (profile.price != null && stay.priceFrom != null) {
+    // Your usual price is a small plus; pricier counts against it; cheaper is roughly neutral.
+    const r = Math.log(stay.priceFrom / profile.price);
+    parts.push([0.4, r > 0 ? 0.25 + 0.4 * Math.exp(-((r / 0.6) ** 2)) : 0.5 + 0.15 * Math.exp(-((r / 0.6) ** 2))]);
+  }
+  const w = parts.reduce((a, [pw]) => a + pw, 0);
+  const fit = w ? parts.reduce((a, [pw, v]) => a + pw * v, 0) / w : null;
+  return nudge(stay.friendScore ?? 7.6, fit, profile);
+}

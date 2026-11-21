@@ -216,3 +216,17 @@ test('a restaurant is matched on the restaurant: friends who loved it, and how m
   const islander = buildProfile([{ kind: 'save', place: maldives, wish: true }], [], NOW);
   assert.equal(itemMatch(islander, { tasteTag: 'food', friendScore: 9, friendRecommended: true }) > 0, true);
 });
+
+test('things and stays get a score out of 10: friends first, nudged by your taste', async () => {
+  const { itemScore, stayScore } = await import('../src/lib/match.ts');
+  const foodie = buildProfile([trip(place('Bologna', 'Italy', { food: 1, city: 0.3 }), 9.5)], [], NOW);
+  const loved = itemScore(foodie, { tasteTag: 'food', friendScore: 9.3, friendRecommended: true });
+  const unknown = itemScore(foodie, { tasteTag: 'food', friendScore: null, friendRecommended: false });
+  const notYourThing = itemScore(foodie, { tasteTag: 'nightlife', friendScore: 9.3, friendRecommended: true });
+  assert.ok(loved > unknown, `${loved} > ${unknown}`);
+  assert.ok(loved > notYourThing, `food lover: café ${loved} > bar ${notYourThing}`);
+  assert.ok(loved <= 10 && notYourThing >= 1);
+  const villaFan = buildProfile([trip(algarve, 9, { stay: { type: 'Villa', score: 9.5 } })], [], NOW);
+  assert.ok(stayScore(villaFan, { type: 'Villa', priceFrom: null, friendScore: 8.5 }) > stayScore(villaFan, { type: 'Hotel', priceFrom: null, friendScore: 8.5 }) - 0.001);
+  assert.equal(stayScore(buildProfile([], [], NOW), { type: 'B&B', priceFrom: null, friendScore: 8.8 }), 8.8);
+});

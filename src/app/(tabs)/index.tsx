@@ -61,9 +61,9 @@ function ForYou() {
   // Rows sorted for you (score and fit) once we know your taste (otherwise the prototype's order).
   const byYou = (items: RowItem[]) => (personal ? [...items].sort((a, b) => rankOf(b.slug) - rankOf(a.slug)) : items);
   // Best match first once we know your taste.
-  // "Picked for you" shows only the % match, so it's ordered by match.
-  const byMatch = (items: RowItem[]) => (personal ? [...items].sort((a, b) => (t.forSlug(b.slug)?.match ?? 0) - (t.forSlug(a.slug)?.match ?? 0)) : items);
-  const tasteItems = rows.taste.filter(TASTES[taste].match).sort((a, b) => (personal ? t.forItem(b).match - t.forItem(a).match : 0));
+  // "Picked for you" is ordered by the score you see on each card.
+  const byScore = (items: RowItem[]) => (personal ? [...items].sort((a, b) => (t.forSlug(b.slug)?.score ?? 0) - (t.forSlug(a.slug)?.score ?? 0) || rankOf(b.slug) - rankOf(a.slug)) : items);
+  const tasteItems = rows.taste.filter(TASTES[taste].match).sort((a, b) => (personal ? t.forItem(b).score - t.forItem(a).score : 0));
 
   // The big picture at the top: your best match that's new to you (not been, not already saved).
   const top = personal
@@ -78,7 +78,7 @@ function ForYou() {
         name: top.p.name,
         photo: top.p.photo,
         kicker: 'Top pick for you',
-        sub: `${top.p.region.split(', ').pop()} · ${top.r.match}% match`,
+        sub: top.p.region,
         score: top.r.score,
         reason: top.r.reasons[0] ?? null,
       }
@@ -152,7 +152,7 @@ function ForYou() {
           <AccentTitle before="Picked for" accent="you" variant="heading" />
         </SectionHeader>
         <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
-          {pairs(byMatch(rows.picked)).map((pair, i) => (
+          {pairs(byScore(rows.picked)).map((pair, i) => (
             <View key={i} style={{ flexDirection: 'row', gap: 12 }}>
               {pair.map((p) => (
                 <PickCard key={p.slug} item={p} />

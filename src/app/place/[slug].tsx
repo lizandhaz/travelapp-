@@ -46,17 +46,19 @@ export default function PlaceScreen() {
   const { said, ideas } = aboutPlace(slug);
   const result = taste.forSlug(slug);
   const personal = taste.profile.evidence > 0;
-  // Stays and places to eat with your % match, best first. The featured stay is your top match,
+  // Stays and places to eat with your score out of 10 (no % match), best first. The featured stay is your top one,
   // and its "Because…" is only shown when it's true for you.
   const stays = (detail?.stays ?? [])
-    .map((s) => ({ ...s, match: personal ? taste.stayPercent(s) : s.match, because: null as string | null, featured: false }))
-    .sort((a, b) => (personal ? (b.match ?? 0) - (a.match ?? 0) : 0));
+    .map((s) => ({ ...s, score: personal ? taste.stayScoreFor(s) : s.score, match: null as number | null, because: null as string | null, featured: false }))
+    .sort((a, b) => (personal ? (b.score ?? 0) - (a.score ?? 0) : 0));
   if (stays.length) {
     stays[0].featured = true;
     const kind = stayKind(stays[0].type);
     if (personal && (taste.profile.stayTypes[kind] ?? 0) > 0.2) stays[0].because = `Because you rate ${kind === 'B&B' ? 'B&Bs' : kind === 'Other' ? 'places like this' : `${kind.toLowerCase()}s`} highly`;
   }
-  const eats = (detail?.eats ?? []).map((e) => ({ ...e, match: personal ? taste.eatPercent(e) : e.match })).sort((a, b) => (personal ? (b.match ?? 0) - (a.match ?? 0) : 0));
+  const eats = (detail?.eats ?? [])
+    .map((e) => ({ ...e, score: personal ? taste.eatScoreFor(e) : e.score, match: null as number | null }))
+    .sort((a, b) => (personal ? (b.score ?? 0) - (a.score ?? 0) : 0));
   const moreSaid = (detail?.said ?? []).filter((s) => !said.some((f) => f.who === s.who));
   const h = Math.min(Dimensions.get('window').width, 480) * 1.0;
 

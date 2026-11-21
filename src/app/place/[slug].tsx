@@ -91,7 +91,7 @@ export default function PlaceScreen() {
         <Button title="I’ve been" kind="accent" style={{ flex: 1 }} onPress={() => router.navigate({ pathname: '/add', params: { place: place.name, country } })} />
       </View>
       {!!wish.error && (
-        <Text variant="small" style={{ paddingHorizontal: GUTTER, marginTop: 6, color: colors.terracottaText }}>
+        <Text variant="small" style={{ paddingHorizontal: GUTTER, marginTop: 6, color: colors.accentText }}>
           {wish.error}
         </Text>
       )}
@@ -125,7 +125,7 @@ export default function PlaceScreen() {
                   <Text variant="small" style={{ flex: 1 }}>
                     Stayed at <Text variant="strong">{s.stayName}</Text> ({s.stayType})
                   </Text>
-                  <ScoreStamp score={s.stayScore} size="sm" tone="teal" label={s.stayType} />
+                  <ScoreStamp score={s.stayScore} size="sm" tone="sea" label={s.stayType} />
                 </View>
               </Card>
             ))}

@@ -51,7 +51,7 @@ export function ItemCard({ item, width = 210 }: { item: ExploreItem; width?: num
       <Text variant="subheading" numberOfLines={2} style={{ marginTop: 8 }}>
         {item.name}
       </Text>
-      <Text variant="tiny" style={{ color: colors.terracottaText, marginTop: 1 }}>
+      <Text variant="tiny" style={{ color: colors.accentText, marginTop: 1 }}>
         {item.place}
       </Text>
       {!!note && (

@@ -19,7 +19,7 @@ const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const CROWD_WORDS = ['', 'quiet', 'busy', 'very busy'];
 
-/** Soft tint of a theme colour (e.g. mint at 35%). */
+/** Soft tint of a theme colour (e.g. sage at 35%). */
 const tint = (hex: string, alpha: number) =>
   hex +
   Math.round(alpha * 255)
@@ -58,7 +58,7 @@ export function PlaceFacts({ detail }: { detail: PlaceDetail }) {
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
           <Text variant="label">Good for</Text>
           {detail.goodFor.map((g) => (
-            <View key={g} style={{ backgroundColor: tint(colors.mint, 0.35), borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
+            <View key={g} style={{ backgroundColor: tint(colors.sage, 0.35), borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
               <Text variant="small" style={{ color: colors.ink }}>
                 {g}
               </Text>
@@ -70,7 +70,7 @@ export function PlaceFacts({ detail }: { detail: PlaceDetail }) {
   );
 }
 
-/** Average temperature for each month as bars, best months in teal, and how busy it gets. */
+/** Average temperature for each month as bars, best months in ocean blue, and how busy it gets. */
 export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
   const temps = detail.temps;
   if (!temps) return null;
@@ -90,16 +90,16 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
           <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 4, height: 96 }}>
             {temps.map((t, i) => (
               <View key={i} style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={{ fontFamily: best.has(i) ? fonts.sansSemiBold : fonts.sans, fontSize: 10, lineHeight: 13, color: best.has(i) ? colors.teal : colors.muted, marginBottom: 3 }}>
+                <Text style={{ fontFamily: best.has(i) ? fonts.sansSemiBold : fonts.sans, fontSize: 10, lineHeight: 13, color: best.has(i) ? colors.sea : colors.muted, marginBottom: 3 }}>
                   {t}°
                 </Text>
-                <View style={{ width: '100%', height: barHeight(t), borderTopLeftRadius: 5, borderTopRightRadius: 5, backgroundColor: best.has(i) ? colors.teal : colors.sand }} />
+                <View style={{ width: '100%', height: barHeight(t), borderTopLeftRadius: 5, borderTopRightRadius: 5, backgroundColor: best.has(i) ? colors.sea : colors.sand }} />
               </View>
             ))}
           </View>
           <View style={{ flexDirection: 'row', gap: 4, marginTop: 6 }}>
             {MONTH_LETTERS.map((m, i) => (
-              <Text key={i} style={{ flex: 1, textAlign: 'center', fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, color: best.has(i) ? colors.teal : colors.muted }}>
+              <Text key={i} style={{ flex: 1, textAlign: 'center', fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, color: best.has(i) ? colors.sea : colors.muted }}>
                 {m}
               </Text>
             ))}
@@ -109,7 +109,7 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
               {detail.crowds.map((c, i) => (
                 <View key={i} style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 2 }}>
                   {[1, 2, 3].map((d) => (
-                    <View key={d} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: d <= c ? colors.terracotta : colors.line }} />
+                    <View key={d} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: d <= c ? colors.accent : colors.line }} />
                   ))}
                 </View>
               ))}
@@ -119,7 +119,7 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', columnGap: 14, rowGap: 4, marginTop: 12 }}>
           {best.size > 0 && (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-              <View style={{ width: 9, height: 9, borderRadius: 2, backgroundColor: colors.teal }} />
+              <View style={{ width: 9, height: 9, borderRadius: 2, backgroundColor: colors.sea }} />
               <Text variant="tiny">Best months</Text>
             </View>
           )}
@@ -128,7 +128,7 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
               <View style={{ flexDirection: 'row', gap: 2 }}>
                 {[0, 1, 2].map((d) => (
-                  <View key={d} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: colors.terracotta }} />
+                  <View key={d} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: colors.accent }} />
                 ))}
               </View>
               <Text variant="tiny">Crowds</Text>
@@ -184,7 +184,7 @@ export function StayRow({ stays }: { stays: PlaceDetail['stays'] }) {
               key={s.name}
               accessible
               accessibilityLabel={[s.name, s.type, s.sub, s.because, s.score != null ? `${formatScore(s.score)} out of 10` : null].filter(Boolean).join(', ')}
-              style={{ width: w, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.card, borderWidth: s.featured ? 2 : 1, borderColor: s.featured ? colors.teal : colors.line }}
+              style={{ width: w, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.card, borderWidth: s.featured ? 2 : 1, borderColor: s.featured ? colors.sea : colors.line }}
             >
               <PhotoTile photo={s.photo} shade={false} style={{ width: '100%', height: w * 0.72, borderRadius: 0 }}>
                 <PhotoBadge text={s.type} style={{ position: 'absolute', top: 10, left: 10 }} />
@@ -201,12 +201,12 @@ export function StayRow({ stays }: { stays: PlaceDetail['stays'] }) {
                     </Text>
                   )}
                   {!!s.because && (
-                    <Text variant="tiny" style={{ color: colors.teal, marginTop: 6, fontSize: 12.5 }}>
+                    <Text variant="tiny" style={{ color: colors.sea, marginTop: 6, fontSize: 12.5 }}>
                       {s.because}
                     </Text>
                   )}
                 </View>
-                {s.score != null && <Text style={{ fontFamily: fonts.display, fontSize: 20, color: colors.teal, fontVariant: ['tabular-nums'] }}>{formatScore(s.score)}</Text>}
+                {s.score != null && <Text style={{ fontFamily: fonts.display, fontSize: 20, color: colors.sea, fontVariant: ['tabular-nums'] }}>{formatScore(s.score)}</Text>}
               </View>
             </View>
           );
@@ -232,8 +232,8 @@ export function EatRow({ eats }: { eats: PlaceDetail['eats'] }) {
             {e.photo ? (
               <PhotoTile photo={e.photo} shade={false} style={{ width: '100%', height: 144, borderRadius: 0 }} />
             ) : (
-              <View style={{ height: 144, backgroundColor: tint(colors.peach, 0.4), alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontFamily: fonts.display, fontSize: 32, color: colors.terracotta }}>{e.name[0]}</Text>
+              <View style={{ height: 144, backgroundColor: tint(colors.stamp, 0.4), alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontFamily: fonts.display, fontSize: 32, color: colors.accent }}>{e.name[0]}</Text>
               </View>
             )}
             <View style={{ padding: 12, flex: 1 }}>
@@ -249,7 +249,7 @@ export function EatRow({ eats }: { eats: PlaceDetail['eats'] }) {
                 </Text>
               )}
               <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, marginTop: 8 }}>
-                {e.score != null && <Text style={{ fontFamily: fonts.display, fontSize: 17, color: colors.terracottaText, fontVariant: ['tabular-nums'] }}>{formatScore(e.score)}</Text>}
+                {e.score != null && <Text style={{ fontFamily: fonts.display, fontSize: 17, color: colors.accentText, fontVariant: ['tabular-nums'] }}>{formatScore(e.score)}</Text>}
                 {!!e.from && <Text variant="tiny">· {e.from}’s pick</Text>}
               </View>
             </View>
@@ -273,7 +273,7 @@ export function DoRow({ dos }: { dos: PlaceDetail['dos'] }) {
             accessibilityLabel={[d.tag, d.name, d.what, d.from ? `${d.gem ? 'found by' : 'from'} ${d.from}` : null].filter(Boolean).join(', ')}
             style={{ width: 220, borderRadius: radius.lg, padding: 16, backgroundColor: d.gem ? colors.ink : colors.card, borderWidth: d.gem ? 0 : 1, borderColor: colors.line }}
           >
-            <Pill text={d.tag} bg={d.gem ? colors.peach : tint(colors.peach, 0.4)} />
+            <Pill text={d.tag} bg={d.gem ? colors.stamp : tint(colors.stamp, 0.4)} />
             <Text variant="subheading" style={{ marginTop: 10, color: d.gem ? colors.onDark : colors.ink }}>
               {d.name}
             </Text>
@@ -311,7 +311,7 @@ export function MoreAbout({ name, detail }: { name: string; detail: PlaceDetail 
           <Text variant="subheading">More about {name}</Text>
           <Text variant="small">Culture and top tips</Text>
         </View>
-        <Text style={{ fontFamily: fonts.sans, fontSize: 26, color: colors.terracotta, transform: [{ rotate: open ? '45deg' : '0deg' }] }}>+</Text>
+        <Text style={{ fontFamily: fonts.sans, fontSize: 26, color: colors.accent, transform: [{ rotate: open ? '45deg' : '0deg' }] }}>+</Text>
       </Pressable>
       {open && (
         <View>
@@ -327,8 +327,8 @@ export function MoreAbout({ name, detail }: { name: string; detail: PlaceDetail 
                     style={{ width: 240, borderRadius: radius.lg, padding: 16, backgroundColor: tint(colors.sand, 0.6), borderWidth: 1, borderColor: colors.line }}
                   >
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                      <Pill text={c.tag} bg={colors.card} color={colors.teal} />
-                      {!!c.when && <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, color: colors.terracottaText }}>{c.when}</Text>}
+                      <Pill text={c.tag} bg={colors.card} color={colors.sea} />
+                      {!!c.when && <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, color: colors.accentText }}>{c.when}</Text>}
                     </View>
                     <Text variant="subheading" style={{ marginTop: 10 }}>
                       {c.name}
@@ -353,8 +353,8 @@ export function MoreAbout({ name, detail }: { name: string; detail: PlaceDetail 
               <SectionHeader>Top tips</SectionHeader>
               <View style={{ paddingHorizontal: GUTTER, gap: 10 }}>
                 {detail.tips.map((t, i) => (
-                  <View key={t.tip} style={{ flexDirection: 'row', gap: 12, borderRadius: radius.lg, padding: 16, backgroundColor: tint(colors.mint, 0.25), borderWidth: 1, borderColor: colors.line }}>
-                    <Text style={{ fontFamily: fonts.display, fontSize: 20, lineHeight: 22, color: colors.teal }}>{i + 1}</Text>
+                  <View key={t.tip} style={{ flexDirection: 'row', gap: 12, borderRadius: radius.lg, padding: 16, backgroundColor: tint(colors.sage, 0.25), borderWidth: 1, borderColor: colors.line }}>
+                    <Text style={{ fontFamily: fonts.display, fontSize: 20, lineHeight: 22, color: colors.sea }}>{i + 1}</Text>
                     <View style={{ flex: 1 }}>
                       <Text variant="small" style={{ color: colors.ink }}>
                         {t.tip}
@@ -423,7 +423,7 @@ export function YourScore({ result, note }: { result: PlaceResult; note: string 
                 {p.label}
               </Text>
               <View style={{ height: 5, borderRadius: 3, backgroundColor: colors.line, overflow: 'hidden' }}>
-                <View style={{ width: `${Math.round(p.value * 100)}%`, height: 5, backgroundColor: colors.teal }} />
+                <View style={{ width: `${Math.round(p.value * 100)}%`, height: 5, backgroundColor: colors.sea }} />
               </View>
             </View>
           ))}
@@ -434,7 +434,7 @@ export function YourScore({ result, note }: { result: PlaceResult; note: string 
   );
 }
 
-const PIN_COLOURS: Record<string, string> = { Stay: colors.teal, Eat: colors.terracotta, Do: colors.ink, 'Hidden gem': colors.gold };
+const PIN_COLOURS: Record<string, string> = { Stay: colors.sea, Eat: colors.accent, Do: colors.ink, 'Hidden gem': colors.gold };
 
 /**
  * "On the map": the place's illustrated map with numbered pins (stay, eat, do, hidden gem)

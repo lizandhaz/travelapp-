@@ -74,7 +74,7 @@ export default function ListForm() {
         <Text variant="title">{editing ? (kind === 'wish' ? 'Want to go' : 'Rename your list') : place ? `Save ${place} to a new list` : 'Start a new list'}</Text>
       </PageTitle>
       {loading ? (
-        <ActivityIndicator color={colors.terracotta} />
+        <ActivityIndicator color={colors.accent} />
       ) : (
         <View style={{ paddingHorizontal: GUTTER, gap: 22 }}>
           {kind !== 'wish' && (

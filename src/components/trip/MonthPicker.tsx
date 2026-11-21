@@ -39,7 +39,7 @@ export function MonthPicker({ value, onChange }: { value: string | null; onChang
         <View style={{ gap: 10 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18 }}>
             <Pressable accessibilityRole="button" accessibilityLabel="Previous year" disabled={year <= 1950} onPress={() => setYear((y) => y - 1)} hitSlop={10}>
-              <Text variant="heading" style={{ color: colors.terracottaText }}>
+              <Text variant="heading" style={{ color: colors.accentText }}>
                 ‹
               </Text>
             </Pressable>
@@ -54,7 +54,7 @@ export function MonthPicker({ value, onChange }: { value: string | null; onChang
               hitSlop={10}
               style={{ opacity: year >= yearOf(now) ? 0.3 : 1 }}
             >
-              <Text variant="heading" style={{ color: colors.terracottaText }}>
+              <Text variant="heading" style={{ color: colors.accentText }}>
                 ›
               </Text>
             </Pressable>

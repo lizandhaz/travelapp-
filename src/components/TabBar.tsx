@@ -42,7 +42,7 @@ export const TabButton = forwardRef<ComponentRef<typeof Pressable>, TabTriggerSl
       >
         {primary ? (
           <View style={styles.primary}>
-            <PlusIcon color={colors.peach} size={24} strokeWidth={2.4} />
+            <PlusIcon color={colors.stamp} size={24} strokeWidth={2.4} />
           </View>
         ) : (
           <>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     flexDirection: 'row',
     alignItems: 'flex-end',
-    backgroundColor: 'rgba(251,249,245,0.97)',
+    backgroundColor: 'rgba(250,247,242,0.97)',
     borderTopWidth: 1,
     borderTopColor: colors.line,
     paddingHorizontal: 8,

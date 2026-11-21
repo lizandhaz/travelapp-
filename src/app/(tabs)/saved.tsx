@@ -66,7 +66,7 @@ export default function Saved() {
           </Pressable>
         </Card>
       ) : !boards ? (
-        <ActivityIndicator color={colors.terracotta} />
+        <ActivityIndicator color={colors.accent} />
       ) : (
         <View style={{ paddingHorizontal: GUTTER, gap: 22 }}>
           <Pressable
@@ -90,7 +90,7 @@ export default function Saved() {
                 </View>
                 <Text variant="small">{wish && wish.items.length ? boardMeta(wish) : 'Places you’d love to go. Save them from any place page.'}</Text>
               </View>
-              {opening && <ActivityIndicator color={colors.terracotta} />}
+              {opening && <ActivityIndicator color={colors.accent} />}
             </Card>
           </Pressable>
 
@@ -122,7 +122,7 @@ export default function Saved() {
                   }}
                 >
                   <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.ink, alignItems: 'center', justifyContent: 'center' }}>
-                    <PlusIcon color={colors.peach} size={22} strokeWidth={2.4} />
+                    <PlusIcon color={colors.stamp} size={22} strokeWidth={2.4} />
                   </View>
                 </View>
                 <Text variant="strong" style={{ marginTop: 8 }}>

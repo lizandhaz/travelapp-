@@ -5,7 +5,7 @@ import { Text } from './Text';
 
 /** A trip month in a slightly tilted outline pill, like a postmark: "JUN 2026". */
 export function MonthPill({ month, onPhoto = false, tilt = -4 }: { month: string; onPhoto?: boolean; tilt?: number }) {
-  const color = onPhoto ? colors.onDark : colors.terracottaText;
+  const color = onPhoto ? colors.onDark : colors.accentText;
   return (
     <View
       style={{

@@ -5,7 +5,7 @@ import { colors, fonts } from '@/constants/theme';
 import { Text, type TextVariant } from './Text';
 
 /**
- * A heading with one italic word and a hand-drawn terracotta swash under it,
+ * A heading with one italic word and a hand-drawn olive swash under it,
  * e.g. "Where did *you* go?" → <AccentTitle before="Where did" accent="you" after="go?" />.
  */
 export function AccentTitle({
@@ -42,7 +42,7 @@ export function AccentTitle({
           preserveAspectRatio="none"
           style={{ position: 'absolute', left: 0, bottom: -size * 0.1 }}
         >
-          <Path d="M2 7 C 25 1, 55 1, 98 5" stroke={colors.terracotta} strokeWidth={2.4} fill="none" strokeLinecap="round" />
+          <Path d="M2 7 C 25 1, 55 1, 98 5" stroke={colors.accent} strokeWidth={2.4} fill="none" strokeLinecap="round" />
         </Svg>
       </View>
       {!!after && <Text variant={variant}> {after}</Text>}

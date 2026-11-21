@@ -99,13 +99,13 @@ function MapCanvas({ pins, view, aspect, labels, description }: { pins: Pin[]; v
         {pins.map((p) =>
           p.kind === 'wish' ? (
             <G key={p.key} transform={`translate(${p.x} ${p.y}) scale(${1 / z})`}>
-              <Circle r={9} fill={colors.teal} opacity={0.14} />
-              <Path d={STAR} transform="scale(0.62) translate(-12 -12)" fill={colors.teal} stroke={colors.card} strokeWidth={1.4} />
+              <Circle r={9} fill={colors.sea} opacity={0.14} />
+              <Path d={STAR} transform="scale(0.62) translate(-12 -12)" fill={colors.sea} stroke={colors.card} strokeWidth={1.4} />
             </G>
           ) : (
             <G key={p.key} transform={`translate(${p.x} ${p.y}) scale(${1 / z})`}>
-              <Circle r={9} fill={colors.terracotta} opacity={0.16} />
-              <Circle r={4.4} fill={colors.terracotta} stroke={colors.card} strokeWidth={1.6} />
+              <Circle r={9} fill={colors.accent} opacity={0.16} />
+              <Circle r={4.4} fill={colors.accent} stroke={colors.card} strokeWidth={1.6} />
             </G>
           ),
         )}
@@ -117,7 +117,7 @@ function MapCanvas({ pins, view, aspect, labels, description }: { pins: Pin[]; v
                 <SvgText {...props} stroke={colors.card} strokeWidth={3 / z} strokeLinejoin="round" fill={colors.card}>
                   {pin.name}
                 </SvgText>
-                <SvgText {...props} fill={pin.kind === 'wish' ? colors.teal : colors.ink}>
+                <SvgText {...props} fill={pin.kind === 'wish' ? colors.sea : colors.ink}>
                   {pin.name}
                 </SvgText>
               </G>
@@ -158,7 +158,7 @@ export function TravelMapCard({ been, wish, countries }: { been: MapPlace[]; wis
         <MapCanvas pins={pins} view={view} aspect={ASPECT} labels={false} description="" />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 14, paddingVertical: 11, borderTopWidth: 1, borderTopColor: colors.line }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.terracotta }} />
+            <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.accent }} />
             <Text variant="small" style={{ color: colors.ink }}>
               {been.length} been
             </Text>
@@ -171,7 +171,7 @@ export function TravelMapCard({ been, wish, countries }: { been: MapPlace[]; wis
           </View>
           <View style={{ flex: 1 }} />
           <Text variant="link">Open</Text>
-          <ChevronIcon color={colors.terracottaText} size={14} />
+          <ChevronIcon color={colors.accentText} size={14} />
         </View>
       </Pressable>
     </View>
@@ -234,7 +234,7 @@ export function TravelMapFull({ been, wish }: { been: MapPlace[]; wish: MapPlace
 
       <View style={{ paddingHorizontal: GUTTER, gap: 14 }}>
         {show !== 'wish' && (
-          <ChipRow title="Been" icon={<View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.terracotta }} />} places={been} empty="Add a trip and it’ll appear here." tone="been" />
+          <ChipRow title="Been" icon={<View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.accent }} />} places={been} empty="Add a trip and it’ll appear here." tone="been" />
         )}
         {show !== 'been' && <ChipRow title="Want to go" icon={<WishStar size={10} />} places={wish} empty="Tap “Want to go” on any place page to add it here." tone="wish" />}
       </View>
@@ -264,7 +264,7 @@ function ChipRow({ title, icon, places, empty, tone }: { title: string; icon: Re
                 borderRadius: radius.pill,
                 paddingHorizontal: 12,
                 paddingVertical: 5,
-                backgroundColor: tone === 'wish' ? colors.mint + '40' : colors.card,
+                backgroundColor: tone === 'wish' ? colors.sage + '40' : colors.card,
                 borderWidth: tone === 'wish' ? 0 : 1,
                 borderColor: colors.line,
               }}

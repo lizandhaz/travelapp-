@@ -112,7 +112,7 @@ export function Button({
   disabled,
   ...props
 }: PressableProps & { title: string; kind?: ButtonKind; size?: 'md' | 'lg' | 'sm'; style?: ViewStyle }) {
-  const bg = kind === 'dark' ? colors.ink : kind === 'accent' ? colors.terracottaDeep : colors.card;
+  const bg = kind === 'dark' ? colors.ink : kind === 'accent' ? colors.accentDeep : colors.card;
   const fg = kind === 'outline' ? colors.ink : colors.onDark;
   const pad = size === 'lg' ? 18 : size === 'sm' ? 9 : 14;
   return (
@@ -147,7 +147,7 @@ export const Input = forwardRef<ComponentRef<typeof TextInput>, TextInputProps &
   return (
     <View style={[styles.inputWrap, props.multiline && { alignItems: 'flex-start' }]}>
       {icon}
-      <TextInput ref={ref} placeholderTextColor="rgba(102,112,138,0.75)" style={[styles.input, style]} {...props} />
+      <TextInput ref={ref} placeholderTextColor="rgba(95,111,120,0.75)" style={[styles.input, style]} {...props} />
     </View>
   );
 });
@@ -236,8 +236,8 @@ export function Notice({ tone = 'error', children }: { tone?: 'error' | 'info'; 
       style={{
         borderRadius: radius.md,
         borderWidth: 1,
-        borderColor: tone === 'error' ? 'rgba(169,85,44,0.35)' : colors.line,
-        backgroundColor: tone === 'error' ? 'rgba(246,176,150,0.18)' : colors.card,
+        borderColor: tone === 'error' ? 'rgba(154,138,122,0.45)' : colors.line,
+        backgroundColor: tone === 'error' ? 'rgba(229,213,188,0.35)' : colors.card,
         padding: 14,
         gap: 2,
       }}
@@ -314,7 +314,7 @@ export const styles = StyleSheet.create({
     minWidth: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: colors.terracottaDeep,
+    backgroundColor: colors.accentDeep,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 4,

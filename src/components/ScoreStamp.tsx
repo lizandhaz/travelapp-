@@ -26,18 +26,18 @@ export function perforatedPath(w: number, h: number, r: number) {
 }
 
 /**
- * A score in a small perforated stamp: navy number on peach (or white on teal
+ * A score in a small perforated stamp: dark number on soft green (or white on ocean blue
  * for a stay). Always one decimal place, out of 10.
  */
 export function ScoreStamp({
   score,
   size = 'md',
-  tone = 'peach',
+  tone = 'stamp',
   label,
 }: {
   score: number;
   size?: keyof typeof SIZES;
-  tone?: 'peach' | 'teal';
+  tone?: 'stamp' | 'sea';
   label?: string;
 }) {
   const s = SIZES[size];
@@ -60,12 +60,12 @@ export function ScoreStamp({
           top: inset,
           right: inset,
           bottom: inset,
-          backgroundColor: tone === 'peach' ? colors.peach : colors.teal,
+          backgroundColor: tone === 'stamp' ? colors.stamp : colors.sea,
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <Text style={{ fontFamily: fonts.display, fontSize: s * 0.36, color: tone === 'peach' ? colors.ink : colors.onDark, fontVariant: ['tabular-nums'] }}>
+        <Text style={{ fontFamily: fonts.display, fontSize: s * 0.36, color: tone === 'stamp' ? colors.ink : colors.onDark, fontVariant: ['tabular-nums'] }}>
           {shown}
         </Text>
       </View>

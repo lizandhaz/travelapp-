@@ -231,7 +231,7 @@ export function TripForm({
   const problemsNotice =
     problems.length > 0 ? (
             <Notice>
-        <Text variant="strong" style={{ color: colors.terracottaText }}>
+        <Text variant="strong" style={{ color: colors.accentText }}>
           Nearly there:
         </Text>
         {problems.map((p) => (
@@ -265,7 +265,7 @@ export function TripForm({
           <View onLayout={(e) => (nightsY.current = e.nativeEvent.layout.y)}>
           <Question title="How long did you stay?">
             {needsNights && (
-              <Text variant="small" style={{ color: colors.terracottaText }}>
+              <Text variant="small" style={{ color: colors.accentText }}>
                 Add this to save your changes. Trips added before it was asked don’t have it yet.
               </Text>
             )}
@@ -593,7 +593,7 @@ function PhotoThumb({
           overflow: 'hidden',
           backgroundColor: colors.sand,
           borderWidth: lifted ? 3 : 0,
-          borderColor: colors.terracotta,
+          borderColor: colors.accent,
         }}
       >
         {/* The picture ignores touches so the card gets them (and browsers don't start dragging the image). */}
@@ -610,7 +610,7 @@ function PhotoThumb({
           accessibilityRole="button"
           accessibilityLabel={`Remove photo ${index + 1}`}
           hitSlop={8}
-          style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(19,38,74,0.75)', alignItems: 'center', justifyContent: 'center' }}
+          style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(44,66,80,0.75)', alignItems: 'center', justifyContent: 'center' }}
         >
           <Text style={{ color: colors.onDark, fontFamily: fonts.sansBold, fontSize: 14, lineHeight: 16 }}>×</Text>
         </Pressable>

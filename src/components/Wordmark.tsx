@@ -5,7 +5,7 @@ import { APP_NAME } from '@/constants/brand';
 import { colors, fonts } from '@/constants/theme';
 import { Text } from './Text';
 
-/** The app name in big spaced serif capitals, with a small terracotta star. */
+/** The app name in big spaced serif capitals, with a small olive star. */
 export function Wordmark({ size = 34, tagline = true, center = false }: { size?: number; tagline?: boolean; center?: boolean }) {
   return (
     <View style={{ alignItems: center ? 'center' : 'flex-start' }} accessible accessibilityRole="header" accessibilityLabel={APP_NAME}>
@@ -24,7 +24,7 @@ export function Wordmark({ size = 34, tagline = true, center = false }: { size?:
   );
 }
 
-export function Star({ size = 16, color = colors.terracotta, style }: { size?: number; color?: string; style?: object }) {
+export function Star({ size = 16, color = colors.accent, style }: { size?: number; color?: string; style?: object }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" style={style}>
       <Path d="M12 1 C13 8 16 11 23 12 C16 13 13 16 12 23 C11 16 8 13 1 12 C8 11 11 8 12 1 Z" fill={color} />

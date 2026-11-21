@@ -51,6 +51,7 @@ export default function Settings() {
             <Button title="Sign out" kind="outline" onPress={signOut} />
           </View>
         </Section>
+        <Text variant="tiny">Place names and map positions include data from GeoNames (geonames.org), CC BY 4.0.</Text>
       </View>
     </Screen>
   );

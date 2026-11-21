@@ -89,7 +89,7 @@ src/
     save.tsx              "Save to a list" from a place page: tick lists (Want to go first), + New list
     postcards.tsx         Postcards (sample), opened from Home's paper-plane button
     settings.tsx          Settings (public-profile note, sign out), opened from You
-    place/[slug].tsx      A sample place: photo, score, best time, what friends said, where to stay/eat, things to do,
+    place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, best time, what friends said, where to stay/eat, things to do,
                           culture and top tips, "I've been" (opens Add a trip with the place filled in)
     trip/[id]/index.tsx   One of your trips, with Edit and Delete (confirm first)
     trip/[id]/edit.tsx    Edit a trip (same TripForm, prefilled)
@@ -106,14 +106,16 @@ src/
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
     cards.tsx             Row, TrendCard, PlaceCard, TasteCard, PickCard, FeedCard, BoardTile, PhotoBadge
-    lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, photoForItem, placeSlugForItem
-    TravelMap.tsx         "Your travel map": dotted world map, Been dots + Want to go stars, filter chips, place chips
+    lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, WantToGoButton, photoForItem, placeSlugForItem
+    TravelMap.tsx         "Your travel map": world map that zooms to your places ("Whole world" to see it all), Been pins +
+                          Want to go stars with names (placed so they don't overlap), filter chips, place chips
     place.tsx             Place page pieces: PlaceFacts, BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
-    trip/TripForm.tsx     Add/edit a trip: place, month, slider score, who with, up to 6 photos, note, who can see it, "Add more detail"
+    trip/TripForm.tsx     Add/edit a trip: place, month, how long (required), slider score, who with, up to 6 photos, note, who can see it, "Add more detail"
     trip/PlacePicker.tsx  Search or type a place ("Sintra, Portugal" → name + country)
+    trip/NightsPicker.tsx "How long did you stay?": 1 night … two weeks, or "Longer…" (type up to 365)
     trip/MonthPicker.tsx  This month + last 6 months as chips ("Nov 2026"), or "Earlier…"
     trip/ScorePicker.tsx  "Slide to rate out of 10": 1.0–10.0 in 0.1 steps; accessibilityRole "adjustable"
     trip/TripCard.tsx     One of your trips as a photo stamp
@@ -130,7 +132,9 @@ src/
     geo.ts                Rough map positions for popular places (country middle as fallback) + toMap()
     worldMap.ts           The world outline for the travel map (from the prototype, 360 × 158)
     useTripPhoto.ts       Hook: a signed URL for one of your photos (trip photos and profile picture)
-    knownPlaces.ts        Popular places with countries: suggestions + countryOf()
+    knownPlaces.ts        ~525 popular holiday places + countries + WORLD_PLACES: suggestions, countryOf(), plain()
+    worldPlaces.ts        Generated: ~10,400 towns/cities with positions (GeoNames, CC BY 4.0; credited in Settings)
+    useWantToGo.ts        Hook: is a place on your Want to go list, and toggle() it in one tap
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)
@@ -157,7 +161,8 @@ docs/plan.md              Step-by-step plan
   - **Photos and profile picture** (`20261121120000_photos_and_avatar.sql`): `trips.photo_paths text[]` (up to 6, the first is the cover; every path must be in the owner's folder via `paths_in_own_folder()`), replacing the earlier single `photo_path`. `profiles.avatar_path` (in the owner's folder; only that column is newly editable).
   - **Photo storage:** a private Storage bucket `trip-photos` (JPEG only, 5 MB max) holds trip photos and profile pictures (`avatar-…jpg`). Each person's files live at `<user id>/<name>.jpg`, and storage policies allow only their own folder. `uploadTripPhoto()` shrinks the photo to 1600px and re-encodes it with expo-image-manipulator, which drops EXIF/GPS (product rule 2), before uploading. Photos are shown through 1-hour signed URLs (`tripPhotoUrl`, `useTripPhoto`). Profile pictures are 800px. Replacing, removing or deleting deletes the old files.
 - **Lists** (`20261122120000_boards.sql`): `boards` (owner_id, name 1–60, kind `wish` = the one "Want to go" list per person or `list`, visibility `friends`/`private`, updated_at kept fresh by triggers) and `board_items` (board_id, owner_id, optional `place_slug` for sample place pages, name, country; the same place can't be on a list twice, ignoring case and spaces). Owner-only RLS (friends read "friends" lists in Step C). Only name and visibility can be updated. Limits: 50 lists each, 300 places a list. The app makes the Want to go list the first time it's needed (`ensureWishList`). **Share** uses React Native's `Share` (text list), not a link.
-- **Places and countries:** `src/lib/knownPlaces.ts` lists about 235 popular places with countries. It feeds place suggestions, and `countryOf()` fills in the country for trips saved without one (for the Countries stat and the trip page).
+- **Places and countries:** `src/lib/knownPlaces.ts` lists about 525 popular holiday places with countries, plus every country and ~10,400 towns and cities from `worldPlaces.ts` (generated from GeoNames via the `all-the-cities` package: cities over 100k, towns over 15k in Europe/the Mediterranean, capitals; CC BY 4.0, credited in Settings). Suggestions (`PlacePicker`) ignore accents and rank exact name, then starts-with, then word matches. `countryOf()` fills in the country for trips saved without one. Map positions: `geo.ts` (hand-picked places, then GeoNames towns, then the country's middle or capital).
+- **How long you stayed** (`20261123120000_trip_nights.sql`): the main place (`trip_stops.position = 0`) must have nights (check constraint `main_stop_has_nights`, `NOT VALID` so older trips without nights still load; editing one asks for nights).
 - **Changing the database:** add a new file in `supabase/migrations/` named `YYYYMMDDHHMMSS_what_it_does.sql` (never edit one that's already been applied). **Database updates are automatic:** when a merge to `main` touches `supabase/migrations/`, the GitHub Actions job `.github/workflows/supabase-database.yml` runs `supabase db push`, which applies new files in order, each once (tracked by Supabase's migration history). The owner no longer pastes SQL.
   - The job needs GitHub secrets `SUPABASE_ACCESS_TOKEN` and `SUPABASE_DB_PASSWORD`. The project id is in the workflow file. It can be started by hand from GitHub → Actions → "Update Supabase database" → Run workflow.
   - The first three migrations were pasted by hand, and the job marks them as applied (`supabase migration repair`) before pushing. `20261121120000_photos_and_avatar.sql` is written to be safe to run twice, in case it was pasted too.

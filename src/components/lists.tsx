@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { View, type ViewStyle } from 'react-native';
+import { Pressable, View, type ViewStyle } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 import { colors, fonts, radius } from '@/constants/theme';
@@ -72,5 +72,55 @@ export function ListCover({ board, style }: { board: Board; style?: ViewStyle })
         </>
       )}
     </View>
+  );
+}
+
+/**
+ * One-tap "Want to go": a pill on a photo (variant "photo") or a full-width
+ * button (variant "block"). Teal with a tick once it's on your list.
+ */
+export function WantToGoButton({
+  saved,
+  busy,
+  onPress,
+  variant,
+  style,
+}: {
+  saved: boolean;
+  busy?: boolean;
+  onPress: () => void;
+  variant: 'photo' | 'block';
+  style?: ViewStyle;
+}) {
+  const block = variant === 'block';
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={busy}
+      accessibilityRole="button"
+      accessibilityState={{ selected: saved, busy }}
+      accessibilityLabel={saved ? 'On your Want to go list. Tap to remove' : 'Add to your Want to go list'}
+      hitSlop={6}
+      style={[
+        {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 7,
+          borderRadius: radius.pill,
+          paddingHorizontal: block ? 18 : 14,
+          paddingVertical: block ? 14 : 9,
+          backgroundColor: saved ? colors.teal : block ? colors.card : 'rgba(255,255,255,0.94)',
+          borderWidth: block && !saved ? 1.5 : 0,
+          borderColor: colors.teal,
+        },
+        style,
+      ]}
+    >
+      <WishStar size={block ? 16 : 14} color={saved ? colors.onDark : colors.teal} />
+      <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: block ? 16 : 14, color: saved ? colors.onDark : colors.teal }}>
+        {saved ? 'Want to go ✓' : 'Want to go'}
+      </Text>
+    </Pressable>
   );
 }

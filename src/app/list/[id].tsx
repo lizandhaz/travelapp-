@@ -1,19 +1,26 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Pressable, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { placeSlugForItem, PlaceThumb, WishStar } from '@/components/lists';
+import { LockIcon, PencilIcon, PlusIcon, ShareIcon } from '@/components/Icons';
+import { photoForItem, placeSlugForItem, WishStar } from '@/components/lists';
+import { PhotoFill, Shade } from '@/components/Photo';
+import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { PlacePicker } from '@/components/trip/PlacePicker';
-import { BackButton, Button, Card, ErrorNotice, Notice, Screen } from '@/components/ui';
-import { colors, fonts, GUTTER } from '@/constants/theme';
-import { addToBoard, boardMeta, deleteBoard, fetchBoard, findOnBoard, removeFromBoard, shareBoard, type Board } from '@/lib/boards';
+import { BackButton, Button, Card, ErrorNotice, IconCircle, Notice, Screen } from '@/components/ui';
+import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { addToBoard, deleteBoard, fetchBoard, findOnBoard, removeFromBoard, shareBoard, type Board, type BoardItem } from '@/lib/boards';
 import { countryOf } from '@/lib/knownPlaces';
+import { getPlace } from '@/lib/sample';
 import { fetchPlaces, placeLabel, type Place } from '@/lib/trips';
 
-/** One of your lists: its places, add a place, share, rename and delete. */
+/** One of your lists: a photo cover, its places as photo cards, add a place, share, edit and delete. */
 export default function ListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const insets = useSafeAreaInsets();
   const [board, setBoard] = useState<Board | null | undefined>(undefined);
   const [error, setError] = useState<{ message: string } | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
@@ -111,83 +118,105 @@ export default function ListScreen() {
   }
 
   const isWish = board.kind === 'wish';
+  const n = board.items.length;
+  const screenW = Math.min(Dimensions.get('window').width, 480);
+  const tileW = (screenW - GUTTER * 2 - 12) / 2;
 
   return (
-    <Screen>
-      <View style={{ paddingHorizontal: GUTTER, paddingTop: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <BackButton />
-        <View style={{ flexDirection: 'row', gap: 10 }}>
-          <Button title="Share" kind="outline" size="sm" onPress={share} accessibilityHint="Send this list to friends by message or email" />
-          <Button title="Edit" kind="outline" size="sm" onPress={() => router.push({ pathname: '/list/new', params: { id: board.id } })} />
+    <Screen noTopInset>
+      {/* Cover: the list's places as a photo collage, with the name on it */}
+      <View style={{ height: screenW * 0.92, backgroundColor: colors.sand }}>
+        <Cover items={board.items} isWish={isWish} name={board.name} />
+        <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER, right: GUTTER, flexDirection: 'row', justifyContent: 'space-between' }}>
+          <BackButton onPhoto />
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            <IconCircle label="Share this list" onPress={share} style={{ borderWidth: 0 }}>
+              <ShareIcon color={colors.ink} />
+            </IconCircle>
+            <IconCircle label="Edit this list" onPress={() => router.push({ pathname: '/list/new', params: { id: board.id } })} style={{ borderWidth: 0 }}>
+              <PencilIcon color={colors.ink} />
+            </IconCircle>
+          </View>
         </View>
-      </View>
-
-      <View style={{ paddingHorizontal: GUTTER, marginTop: 18, gap: 4 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          {isWish && <WishStar size={18} />}
-          <Text variant="title" accessibilityRole="header" style={{ flexShrink: 1 }}>
+        <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: 22 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            {isWish && <WishStar size={12} color={colors.onDark} />}
+            <Text variant="label" style={{ color: colors.onDark, opacity: 0.95 }}>
+              {isWish ? 'Your wish list' : 'Your list'}
+            </Text>
+          </View>
+          <Text accessibilityRole="header" style={{ fontFamily: fonts.displayBold, fontSize: 42, lineHeight: 46, color: colors.onDark, marginTop: 2 }}>
             {board.name}
           </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
+            <Text variant="small" style={{ color: colors.onDark }}>
+              {n} {n === 1 ? 'place' : 'places'} ·
+            </Text>
+            {board.visibility === 'private' && <LockIcon color={colors.onDark} size={12} />}
+            <Text variant="small" style={{ color: colors.onDark }}>
+              {board.visibility === 'friends' ? 'Friends can see' : 'Just me'}
+            </Text>
+          </View>
         </View>
-        <Text variant="small">{boardMeta(board)}</Text>
       </View>
 
-      <View style={{ paddingHorizontal: GUTTER, marginTop: 20, gap: 10 }}>
+      {/* Places */}
+      <View style={{ paddingHorizontal: GUTTER, marginTop: 22 }}>
+        {n === 0 ? (
+          <Card style={{ padding: 24, alignItems: 'center', gap: 10 }}>
+            <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: colors.mint + '40', alignItems: 'center', justifyContent: 'center' }}>
+              <WishStar size={24} />
+            </View>
+            <Text variant="subheading">Nothing here yet</Text>
+            <Text variant="small" style={{ textAlign: 'center' }}>
+              Add a place below, or tap {isWish ? '“Want to go”' : '“Save to a list”'} on any place page.
+            </Text>
+          </Card>
+        ) : (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, rowGap: 14 }}>
+            {board.items.map((item) => (
+              <PlaceTile key={item.id} item={item} width={tileW} onRemove={() => remove(item.id)} />
+            ))}
+          </View>
+        )}
+      </View>
+
+      {/* Add a place */}
+      <Card style={{ marginHorizontal: GUTTER, marginTop: 22, padding: 14, gap: 10 }}>
         <Text variant="label">Add a place</Text>
         <View style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
           <View style={{ flex: 1 }}>
             <PlacePicker key={pickerKey} value={adding} onChange={setAdding} places={places} accessibilityLabel="Add a place" />
           </View>
-          <Button title={busy ? '…' : 'Add'} disabled={busy || !adding?.name.trim()} onPress={add} style={{ paddingHorizontal: 18 }} />
+          <Pressable
+            onPress={add}
+            disabled={busy || !adding?.name.trim()}
+            accessibilityRole="button"
+            accessibilityLabel="Add"
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: 26,
+              backgroundColor: adding?.name.trim() ? colors.ink : colors.line,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {busy ? <ActivityIndicator color={colors.onDark} /> : <PlusIcon color={adding?.name.trim() ? colors.peach : colors.muted} size={22} />}
+          </Pressable>
         </View>
         {!!note && <Text variant="small">{note}</Text>}
+      </Card>
+      <View style={{ paddingHorizontal: GUTTER, marginTop: 10 }}>
         <ErrorNotice error={error} />
       </View>
 
-      <View style={{ paddingHorizontal: GUTTER, marginTop: 22, gap: 10 }}>
-        {board.items.length === 0 ? (
-          <Card style={{ padding: 18 }}>
-            <Text variant="body">No places yet. Add one above, or tap “Save to a list” on any place page.</Text>
-          </Card>
-        ) : (
-          board.items.map((item) => {
-            const slug = placeSlugForItem(item);
-            return (
-              <Card key={item.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 10 }}>
-                <Pressable
-                  style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 }}
-                  disabled={!slug}
-                  onPress={() => slug && router.push(`/place/${slug}`)}
-                  accessibilityRole={slug ? 'link' : 'text'}
-                  accessibilityLabel={placeLabel(item)}
-                >
-                  <PlaceThumb item={item} />
-                  <View style={{ flex: 1 }}>
-                    <Text variant="strong" numberOfLines={1}>
-                      {item.name}
-                    </Text>
-                    {!!item.country && <Text variant="tiny">{item.country}</Text>}
-                  </View>
-                </Pressable>
-                <Pressable
-                  onPress={() => remove(item.id)}
-                  hitSlop={10}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Remove ${item.name} from this list`}
-                  style={{ width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg }}
-                >
-                  <Text style={{ fontFamily: fonts.sans, fontSize: 20, lineHeight: 22, color: colors.muted }}>×</Text>
-                </Pressable>
-              </Card>
-            );
-          })
-        )}
-      </View>
-
       {!isWish && (
-        <View style={{ paddingHorizontal: GUTTER, marginTop: 30 }}>
+        <View style={{ paddingHorizontal: GUTTER, marginTop: 26, alignItems: 'center' }}>
           {!confirming ? (
-            <Button title="Delete list" kind="outline" onPress={() => setConfirming(true)} />
+            <Pressable onPress={() => setConfirming(true)} accessibilityRole="button" hitSlop={10}>
+              <Text variant="link">Delete this list</Text>
+            </Pressable>
           ) : (
             <Notice>
               <Text variant="strong">Delete “{board.name}”?</Text>
@@ -203,5 +232,95 @@ export default function ListScreen() {
         </View>
       )}
     </Screen>
+  );
+}
+
+/** The cover: one photo, or a collage of up to three; a soft gradient with a star or letter when there are none. */
+function Cover({ items, isWish, name }: { items: BoardItem[]; isWish: boolean; name: string }) {
+  const photos = items.map(photoForItem).filter((p): p is NonNullable<typeof p> => !!p);
+  const unique = [...new Set(photos)].slice(0, 3);
+  if (unique.length === 0) {
+    return (
+      <>
+        <LinearGradient colors={isWish ? [colors.teal, colors.ink] : [colors.terracotta, colors.ink]} style={{ position: 'absolute', inset: 0 }} />
+        <View style={{ position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center', opacity: 0.25 }}>
+          {isWish ? <WishStar size={120} color={colors.onDark} /> : <Text style={{ fontFamily: fonts.displayBold, fontSize: 160, color: colors.onDark }}>{name.trim()[0]?.toUpperCase()}</Text>}
+        </View>
+        <Shade strength={0.35} />
+      </>
+    );
+  }
+  return (
+    <>
+      <View style={{ position: 'absolute', inset: 0, flexDirection: 'row', gap: 2 }}>
+        <View style={{ flex: 2 }}>
+          <PhotoFill photo={unique[0]} />
+        </View>
+        {unique.length > 1 && (
+          <View style={{ flex: 1, gap: 2 }}>
+            {unique.slice(1).map((p) => (
+              <View key={p} style={{ flex: 1 }}>
+                <PhotoFill photo={p} />
+              </View>
+            ))}
+          </View>
+        )}
+      </View>
+      <LinearGradient colors={['rgba(0,0,0,0.28)', 'transparent']} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 120 }} />
+      <Shade strength={0.62} />
+    </>
+  );
+}
+
+/** A place on the list as a photo card: name on the photo, its score if we know it, and × to remove. */
+function PlaceTile({ item, width, onRemove }: { item: BoardItem; width: number; onRemove: () => void }) {
+  const slug = placeSlugForItem(item);
+  const photo = photoForItem(item);
+  const score = slug ? getPlace(slug)?.score : null;
+  return (
+    <View style={{ width }}>
+      <Pressable
+        disabled={!slug}
+        onPress={() => slug && router.push(`/place/${slug}`)}
+        accessibilityRole={slug ? 'link' : 'text'}
+        accessibilityLabel={placeLabel(item)}
+        style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
+      >
+        <View style={{ height: width * 1.22, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.sand }}>
+          {photo ? (
+            <PhotoFill photo={photo} />
+          ) : (
+            <LinearGradient colors={[colors.peach, colors.terracottaDeep]} style={{ position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontFamily: fonts.displayBold, fontSize: 56, color: colors.card, opacity: 0.9 }}>{item.name.trim()[0]?.toUpperCase()}</Text>
+            </LinearGradient>
+          )}
+          <Shade strength={0.72} />
+          {score != null && (
+            <View style={{ position: 'absolute', top: 10, left: 10 }}>
+              <ScoreStamp score={score} size="sm" />
+            </View>
+          )}
+          <View style={{ position: 'absolute', left: 12, right: 12, bottom: 12 }}>
+            <Text numberOfLines={2} style={{ fontFamily: fonts.display, fontSize: 19, lineHeight: 22, color: colors.onDark }}>
+              {item.name}
+            </Text>
+            {!!item.country && item.country !== item.name && (
+              <Text variant="tiny" style={{ color: colors.onDark, opacity: 0.9, marginTop: 2 }}>
+                {item.country}
+              </Text>
+            )}
+          </View>
+        </View>
+      </Pressable>
+      <Pressable
+        onPress={onRemove}
+        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel={`Remove ${item.name} from this list`}
+        style={{ position: 'absolute', top: 10, right: 10, width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(255,255,255,0.9)', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 16, lineHeight: 18, color: colors.ink }}>×</Text>
+      </Pressable>
+    </View>
   );
 }

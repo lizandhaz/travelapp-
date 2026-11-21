@@ -41,3 +41,11 @@ export const BackIcon = ({ color, size = 20, strokeWidth = 2 }: P) => (
 export const ChevronIcon = ({ color, size = 16, strokeWidth = 2 }: P) => (
   <Svg {...base(size)}><Path d="m9 5 7 7-7 7" {...line(color, strokeWidth)} /></Svg>
 );
+/** Share: a box with an arrow up. */
+export const ShareIcon = ({ color, size = 20, strokeWidth = 1.8 }: P) => (
+  <Svg {...base(size)}><Path d="M12 3v12M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" {...line(color, strokeWidth)} /></Svg>
+);
+/** Pencil: edit. */
+export const PencilIcon = ({ color, size = 19, strokeWidth = 1.8 }: P) => (
+  <Svg {...base(size)}><Path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z" {...line(color, strokeWidth)} /><Path d="m13.5 6.5 4 4" {...line(color, strokeWidth)} /></Svg>
+);

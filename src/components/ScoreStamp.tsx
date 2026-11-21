@@ -26,7 +26,7 @@ export function perforatedPath(w: number, h: number, r: number) {
 }
 
 /**
- * A score in a small perforated stamp: dark number on champagne (or white on ocean blue
+ * A score in a small perforated stamp: dark number on blush (or white on olive
  * for a stay). Always one decimal place, out of 10.
  */
 export function ScoreStamp({
@@ -37,7 +37,7 @@ export function ScoreStamp({
 }: {
   score: number;
   size?: keyof typeof SIZES;
-  tone?: 'stamp' | 'sea';
+  tone?: 'stamp' | 'olive';
   label?: string;
 }) {
   const s = SIZES[size];
@@ -60,7 +60,7 @@ export function ScoreStamp({
           top: inset,
           right: inset,
           bottom: inset,
-          backgroundColor: tone === 'stamp' ? colors.stamp : colors.sea,
+          backgroundColor: tone === 'stamp' ? colors.stamp : colors.olive,
           alignItems: 'center',
           justifyContent: 'center',
         }}

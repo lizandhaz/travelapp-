@@ -30,7 +30,7 @@ export function useTabBarStyle() {
 
 export const TabButton = forwardRef<ComponentRef<typeof Pressable>, TabTriggerSlotProps & { label: string; Icon: Icon; primary?: boolean }>(
   function TabButton({ label, Icon, primary, isFocused, ...props }, ref) {
-    const color = isFocused ? colors.ink : colors.muted;
+    const color = isFocused ? colors.accentText : colors.muted;
     return (
       <Pressable
         ref={ref}
@@ -42,7 +42,7 @@ export const TabButton = forwardRef<ComponentRef<typeof Pressable>, TabTriggerSl
       >
         {primary ? (
           <View style={styles.primary}>
-            <PlusIcon color={colors.stamp} size={24} strokeWidth={2.4} />
+            <PlusIcon color={colors.onDark} size={24} strokeWidth={2.4} />
           </View>
         ) : (
           <>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     flexDirection: 'row',
     alignItems: 'flex-end',
-    backgroundColor: 'rgba(250,247,242,0.97)',
+    backgroundColor: 'rgba(242,237,226,0.97)',
     borderTopWidth: 1,
     borderTopColor: colors.line,
     paddingHorizontal: 8,
@@ -76,13 +76,13 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 18,
-    backgroundColor: colors.ink,
+    backgroundColor: colors.accentDeep,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 4,
     borderColor: colors.bg,
-    shadowColor: colors.ink,
-    shadowOpacity: 0.25,
+    shadowColor: colors.accentDeep,
+    shadowOpacity: 0.3,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 6 },
     elevation: 6,

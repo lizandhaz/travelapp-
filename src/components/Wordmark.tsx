@@ -5,7 +5,7 @@ import { APP_NAME } from '@/constants/brand';
 import { colors, fonts } from '@/constants/theme';
 import { Text } from './Text';
 
-/** The app name in big spaced serif capitals, with a small olive star. */
+/** The app name in big spaced serif capitals, with a small terracotta star. */
 export function Wordmark({ size = 34, tagline = true, center = false }: { size?: number; tagline?: boolean; center?: boolean }) {
   return (
     <View style={{ alignItems: center ? 'center' : 'flex-start' }} accessible accessibilityRole="header" accessibilityLabel={APP_NAME}>

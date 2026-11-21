@@ -112,7 +112,7 @@ export function Button({
   disabled,
   ...props
 }: PressableProps & { title: string; kind?: ButtonKind; size?: 'md' | 'lg' | 'sm'; style?: ViewStyle }) {
-  const bg = kind === 'dark' ? colors.ink : kind === 'accent' ? colors.accentDeep : colors.card;
+  const bg = kind === 'dark' ? colors.olive : kind === 'accent' ? colors.accentDeep : colors.card;
   const fg = kind === 'outline' ? colors.ink : colors.onDark;
   const pad = size === 'lg' ? 18 : size === 'sm' ? 9 : 14;
   return (
@@ -147,7 +147,7 @@ export const Input = forwardRef<ComponentRef<typeof TextInput>, TextInputProps &
   return (
     <View style={[styles.inputWrap, props.multiline && { alignItems: 'flex-start' }]}>
       {icon}
-      <TextInput ref={ref} placeholderTextColor="rgba(95,111,120,0.75)" style={[styles.input, style]} {...props} />
+      <TextInput ref={ref} placeholderTextColor="rgba(100,104,88,0.75)" style={[styles.input, style]} {...props} />
     </View>
   );
 });
@@ -182,8 +182,8 @@ export function Chip({
       style={{
         borderRadius: radius.pill,
         borderWidth: 1,
-        borderColor: selected ? colors.ink : colors.line,
-        backgroundColor: selected ? colors.ink : colors.card,
+        borderColor: selected ? colors.accentDeep : colors.line,
+        backgroundColor: selected ? colors.accentDeep : colors.card,
         paddingHorizontal: 16,
         paddingVertical: 9,
       }}
@@ -215,7 +215,7 @@ export function Segmented<T extends string>({
             accessibilityRole="tab"
             accessibilityState={{ selected: on }}
             onPress={() => onChange(id)}
-            style={{ flex: 1, borderRadius: radius.pill, paddingVertical: 11, backgroundColor: on ? colors.ink : 'transparent' }}
+            style={{ flex: 1, borderRadius: radius.pill, paddingVertical: 11, backgroundColor: on ? colors.accentDeep : 'transparent' }}
           >
             <Text style={{ textAlign: 'center', fontFamily: fonts.sansSemiBold, fontSize: 15, color: on ? colors.onDark : colors.muted }}>{text}</Text>
           </Pressable>
@@ -225,8 +225,14 @@ export function Segmented<T extends string>({
   );
 }
 
-export function Card({ children, style }: { children: React.ReactNode; style?: ViewStyle }) {
-  return <View style={[styles.card, style]}>{children}</View>;
+/** Soft colour fills from the palette, for cards and bands. */
+export type Tone = 'white' | 'blush' | 'sage' | 'sky';
+export const TONES: Tone[] = ['blush', 'sage', 'sky'];
+export const toneFill = (tone: Tone) =>
+  tone === 'blush' ? colors.blushSoft : tone === 'sage' ? colors.sageSoft : tone === 'sky' ? colors.skySoft : colors.card;
+
+export function Card({ children, style, tone = 'white' }: { children: React.ReactNode; style?: ViewStyle; tone?: Tone }) {
+  return <View style={[styles.card, tone !== 'white' && { backgroundColor: toneFill(tone), borderColor: 'transparent' }, style]}>{children}</View>;
 }
 
 export function Notice({ tone = 'error', children }: { tone?: 'error' | 'info'; children: React.ReactNode }) {
@@ -236,8 +242,8 @@ export function Notice({ tone = 'error', children }: { tone?: 'error' | 'info'; 
       style={{
         borderRadius: radius.md,
         borderWidth: 1,
-        borderColor: tone === 'error' ? 'rgba(154,138,122,0.45)' : colors.line,
-        backgroundColor: tone === 'error' ? 'rgba(229,213,188,0.35)' : colors.card,
+        borderColor: tone === 'error' ? 'rgba(196,122,92,0.4)' : colors.line,
+        backgroundColor: tone === 'error' ? 'rgba(231,185,178,0.22)' : colors.card,
         padding: 14,
         gap: 2,
       }}

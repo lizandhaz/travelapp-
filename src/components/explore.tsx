@@ -18,7 +18,6 @@ export function CollectionTile({ id, title, photo, count }: { id: string; title:
       <PhotoTile photo={photo} style={{ width: 128, height: 160 }}>
         <View style={{ position: 'absolute', left: 10, right: 10, bottom: 10 }}>
           <Text style={{ fontFamily: fonts.display, fontSize: 17, lineHeight: 20, color: colors.onDark }}>{title}</Text>
-          <Text style={{ fontFamily: fonts.sansMedium, fontSize: 11, color: colors.onDark, opacity: 0.9, marginTop: 2 }}>{count}</Text>
         </View>
       </PhotoTile>
     </Pressable>

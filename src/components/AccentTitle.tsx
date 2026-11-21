@@ -5,7 +5,7 @@ import { colors, fonts } from '@/constants/theme';
 import { Text, type TextVariant } from './Text';
 
 /**
- * A heading with one italic word and a hand-drawn olive swash under it,
+ * A heading with one italic word and a hand-drawn terracotta swash under it,
  * e.g. "Where did *you* go?" → <AccentTitle before="Where did" accent="you" after="go?" />.
  */
 export function AccentTitle({

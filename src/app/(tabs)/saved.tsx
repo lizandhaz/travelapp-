@@ -75,11 +75,11 @@ export default function Saved() {
             accessibilityRole="button"
             accessibilityLabel={`${WISH_LIST_NAME}, ${wish ? boardMeta(wish) : 'no places yet'}`}
           >
-            <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 14, padding: 12 }}>
+            <Card tone="blush" style={{ flexDirection: 'row', alignItems: 'center', gap: 14, padding: 12 }}>
               {wish ? (
                 <ListCover board={wish} style={{ width: 76, borderRadius: radius.md }} />
               ) : (
-                <View style={{ width: 76, height: 76, borderRadius: radius.md, backgroundColor: colors.sand, alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ width: 76, height: 76, borderRadius: radius.md, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' }}>
                   <WishStar size={26} />
                 </View>
               )}

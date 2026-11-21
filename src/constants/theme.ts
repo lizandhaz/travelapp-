@@ -1,23 +1,28 @@
 /**
- * Brand tokens, from the owner's "POSTCARD - Branding" palette (Lake Como, ocean breeze, sand dunes, Italian coast).
+ * Brand tokens, from the owner's palette (Oat Milk, Blush Petal, Terracotta Clay, Sage Whisper, Misty Sky, Olive Grove).
  * Use these, never raw hex values, in components.
  */
 export const colors = {
-  bg: '#faf7f2', // page background: ivory
+  bg: '#f2ede2', // page background: oat milk
   card: '#ffffff', // cards, inputs, stamp frames
-  line: '#e6e1d8', // borders, dividers
-  sand: '#e5d5bc', // quiet fills, placeholders: champagne
-  mapLand: '#c3c9b4', // dotted land on the travel map: pale sage
-  ink: '#2c4250', // main text, dark buttons, selected chips/tabs: deep ocean slate
-  muted: '#5f6f78', // secondary text, labels
-  stamp: '#e8d9bf', // score stamps, the "+" on the Add button: champagne
-  sage: '#a7b69a', // soft tags (e.g. stay type)
-  accent: '#7a8664', // olive: swash under italic words, star, slider fill, shapes, large text
-  accentDeep: '#5c6b4c', // "Save trip" button (white text passes contrast)
-  accentText: '#56653f', // small olive text: links, taglines, labels (passes contrast)
-  sea: '#3f7a90', // Italian ocean blue: stay score stamp, saved / success
-  gold: '#b9a36f', // hidden-gem pins on place maps
-  onDark: '#faf7f2', // text on photos and dark buttons
+  line: '#e2dacb', // borders, dividers
+  sand: '#e6dccb', // quiet fills, placeholders
+  mapLand: '#b9c3ad', // dotted land on the travel map: light sage
+  ink: '#353b2c', // main text, dark buttons, selected chips/tabs: deep olive charcoal
+  muted: '#646858', // secondary text, labels
+  stamp: '#e7b9b2', // score stamps, the "+" on the Add button: blush petal
+  sage: '#a7b59c', // soft tags (e.g. stay type): sage whisper
+  sky: '#b7c6d6', // misty sky: the quieter months in the best-time chart
+  accent: '#c47a5c', // terracotta clay: swash under italic words, star, slider fill, shapes, large text
+  accentDeep: '#a95d40', // "Save trip" / "I've been" buttons (white text passes contrast)
+  accentText: '#9a5236', // small terracotta text: links, taglines, labels (passes contrast)
+  olive: '#636b51', // olive grove (a shade deeper so small text passes): stay score stamp, stay pins, saved
+  blushSoft: '#f6e1dc', // soft blush fill for cards and bands
+  sageSoft: '#e2e8da', // soft sage fill for cards and bands
+  skySoft: '#e1e8f0', // soft misty-sky fill for cards and bands
+  skyDeep: '#5b7389', // misty sky, deep enough for white initials
+  gold: '#b9975b', // hidden-gem pins on place maps
+  onDark: '#faf7f0', // text on photos and dark buttons
 } as const;
 
 /** Font family names, loaded in src/app/_layout.tsx. */

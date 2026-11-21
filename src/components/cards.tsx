@@ -161,10 +161,10 @@ export function FeedCard({ item }: { item: FeedItem }) {
               {item.place}
             </Text>
           </View>
-          <ScoreStamp score={item.stayScore} size="sm" tone="sea" label={item.stayType} />
+          <ScoreStamp score={item.stayScore} size="sm" tone="olive" label={item.stayType} />
           <View style={{ flex: 1 }}>
             <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(167,182,154,0.35)', borderRadius: 999, paddingHorizontal: 7, paddingVertical: 1 }}>
-              <Text variant="label" style={{ fontSize: 9, color: colors.sea }}>
+              <Text variant="label" style={{ fontSize: 9, color: colors.olive }}>
                 {item.stayType}
               </Text>
             </View>

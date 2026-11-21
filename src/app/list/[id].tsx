@@ -242,7 +242,7 @@ function Cover({ items, isWish, name }: { items: BoardItem[]; isWish: boolean; n
   if (unique.length === 0) {
     return (
       <>
-        <LinearGradient colors={isWish ? [colors.sea, colors.ink] : [colors.accent, colors.ink]} style={{ position: 'absolute', inset: 0 }} />
+        <LinearGradient colors={isWish ? [colors.olive, colors.ink] : [colors.accent, colors.ink]} style={{ position: 'absolute', inset: 0 }} />
         <View style={{ position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center', opacity: 0.25 }}>
           {isWish ? <WishStar size={120} color={colors.onDark} /> : <Text style={{ fontFamily: fonts.displayBold, fontSize: 160, color: colors.onDark }}>{name.trim()[0]?.toUpperCase()}</Text>}
         </View>

@@ -20,8 +20,8 @@ export function placeSlugForItem(item: Pick<BoardItem, 'slug' | 'name'>): string
   return places.find((p) => p.name.toLowerCase().replace(/^the /, '') === n)?.slug ?? null;
 }
 
-/** The four-point star used for "Want to go" (ocean blue). */
-export function WishStar({ size = 12, color = colors.sea }: { size?: number; color?: string }) {
+/** The four-point star used for "Want to go" (olive). */
+export function WishStar({ size = 12, color = colors.olive }: { size?: number; color?: string }) {
   return (
     <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
       <Svg width={size} height={size} viewBox="0 0 24 24">
@@ -110,15 +110,15 @@ export function WantToGoButton({
           borderRadius: radius.pill,
           paddingHorizontal: block ? 18 : 14,
           paddingVertical: block ? 14 : 9,
-          backgroundColor: saved ? colors.sea : block ? colors.card : 'rgba(255,255,255,0.94)',
+          backgroundColor: saved ? colors.olive : block ? colors.card : 'rgba(255,255,255,0.94)',
           borderWidth: block && !saved ? 1.5 : 0,
-          borderColor: colors.sea,
+          borderColor: colors.olive,
         },
         style,
       ]}
     >
-      <WishStar size={block ? 16 : 14} color={saved ? colors.onDark : colors.sea} />
-      <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: block ? 16 : 14, color: saved ? colors.onDark : colors.sea }}>
+      <WishStar size={block ? 16 : 14} color={saved ? colors.onDark : colors.olive} />
+      <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: block ? 16 : 14, color: saved ? colors.onDark : colors.olive }}>
         {saved ? 'Want to go ✓' : 'Want to go'}
       </Text>
     </Pressable>

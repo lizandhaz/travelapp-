@@ -161,13 +161,13 @@ export default function TripScreen() {
             <Card style={{ padding: 16, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
               <View style={{ flex: 1, gap: 4 }}>
                 <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(167,182,154,0.35)', borderRadius: 999, paddingHorizontal: 8, paddingVertical: 2 }}>
-                  <Text variant="label" style={{ fontSize: 9, color: colors.sea }}>
+                  <Text variant="label" style={{ fontSize: 9, color: colors.olive }}>
                     {trip.stay.type}
                   </Text>
                 </View>
                 <Text variant="subheading">{trip.stay.name}</Text>
               </View>
-              <ScoreStamp score={trip.stay.score} tone="sea" label="Stay" />
+              <ScoreStamp score={trip.stay.score} tone="olive" label="Stay" />
             </Card>
           </Section>
         )}

@@ -107,9 +107,9 @@ src/
                           Input (optional icon), Field, Chip, Segmented, Card, Notice, ErrorNotice
     Text.tsx              All text goes through <Text variant="…"> (fonts + colours). A bigger fontSize without a
                           lineHeight gets lineHeight ≈ 1.28× automatically, so big numbers aren't clipped on iPhone
-    AccentTitle.tsx       Heading with one italic word and an olive swash ("Where did *you* go?")
-    Wordmark.tsx          The app name in spaced serif capitals + olive star, and the tagline
-    ScoreStamp.tsx        Score in a perforated stamp: ink on champagne (or white on ocean blue for a stay)
+    AccentTitle.tsx       Heading with one italic word and a terracotta swash ("Where did *you* go?")
+    Wordmark.tsx          The app name in spaced serif capitals + terracotta star, and the tagline
+    ScoreStamp.tsx        Score in a perforated stamp: ink on blush (or white on olive for a stay)
     Photo.tsx             PhotoFill, Shade, PhotoTile (rounded photo), PhotoStamp (photo in a perforated frame)
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
@@ -204,44 +204,45 @@ docs/plan.md              Step-by-step plan
 
 ## Brand rules
 
-The look follows the owner's prototype: **clean, warm and photo-led**. A warm off-white background, white rounded cards with thin borders, dark slate pill buttons, big serif headings with one italic accent word, and photos framed like postage stamps. No airmail stripes or round postmarks any more.
+The look follows the owner's prototype: **clean, warm and photo-led**. A warm oat-milk background, white rounded cards with thin borders, dark olive-charcoal pill buttons, big serif headings with one italic accent word, and photos framed like postage stamps. No airmail stripes or round postmarks any more.
 
 ### Colours (`src/constants/theme.ts` → `colors.*`)
 
-From the owner's Pinterest board "POSTCARD - Branding" (Lake Como, ocean breeze, sand dunes, Italian coast palettes; Nov 2026).
+From the owner's palette (Nov 2026): Oat Milk, Blush Petal, Terracotta Clay, Sage Whisper, Misty Sky, Olive Grove. The palette has no dark colour, so text and dark buttons use a deep olive charcoal.
 
 | Token | Hex | Use |
 |---|---|---|
-| `bg` | `#faf7f2` | Page background (ivory) |
+| `bg` | `#f2ede2` | Page background (Oat Milk) |
 | `card` | `#ffffff` | Cards, inputs, stamp frames |
-| `line` | `#e6e1d8` | Borders, dividers |
-| `sand` | `#e5d5bc` | Quiet fills, photo placeholders (champagne) |
-| `mapLand` | `#c3c9b4` | Dotted land on the travel map (pale sage) |
-| `ink` | `#2c4250` | Main text, dark buttons, selected chips/tabs, the + button (deep ocean slate) |
-| `muted` | `#5f6f78` | Secondary text, labels |
-| `stamp` | `#e8d9bf` | Score stamps, the + sign (champagne; owner picked it over soft green, Nov 2026) |
-| `sage` | `#a7b69a` | Soft tags (stay type) |
-| `accent` | `#7a8664` | Olive: swash under accent words, star, slider fill, large text only |
-| `accentDeep` | `#5c6b4c` | "Save trip" / "I've been" buttons (white text passes contrast) |
-| `accentText` | `#56653f` | Small olive text: links, taglines, kickers |
-| `sea` | `#3f7a90` | Italian ocean blue: stay score stamp, stay pins, saved |
-| `gold` | `#b9a36f` | Hidden-gem pins on place maps |
-| `onDark` | `#faf7f2` | Text on photos and dark buttons |
+| `line` | `#e2dacb` | Borders, dividers |
+| `sand` | `#e6dccb` | Quiet fills, photo placeholders |
+| `mapLand` | `#b9c3ad` | Dotted land on the travel map (light sage) |
+| `ink` | `#353b2c` | Main text, dark buttons, selected chips/tabs, the + button (deep olive charcoal) |
+| `muted` | `#646858` | Secondary text, labels |
+| `stamp` | `#e7b9b2` | Score stamps, the + sign (Blush Petal) |
+| `sage` | `#a7b59c` | Soft tags (stay type) (Sage Whisper) |
+| `sky` | `#b7c6d6` | Quieter months in the best-time chart (Misty Sky) |
+| `accent` | `#c47a5c` | Terracotta Clay: swash under accent words, star, slider fill, large text only |
+| `accentDeep` | `#a95d40` | "Save trip" / "I've been" buttons (white text passes contrast) |
+| `accentText` | `#9a5236` | Small terracotta text: links, taglines, kickers |
+| `olive` | `#636b51` | Olive Grove, a shade deeper so small text passes: stay score stamp, stay pins, Want to go / saved |
+| `gold` | `#b9975b` | Hidden-gem pins on place maps |
+| `onDark` | `#faf7f0` | Text on photos and dark buttons |
 
-`accent` is too light for small text on `bg`. Use `accentText` for small text and `accentDeep` behind white text. The place maps in `assets/maps/` have their pins drawn in `sea`/`accent`/`ink`/`gold`; if those change, redraw the maps so the key still matches.
+`accent` is too light for small text on `bg`. Use `accentText` for small text and `accentDeep` behind white text. The place maps in `assets/maps/` have their pins drawn in `olive`/`accent`/`ink`/`gold` (rendered from the prototype's SVGs with those colours swapped in); if those change, redraw the maps so the key still matches.
 
 ### Type (`fonts.*`, via `<Text variant>`)
 
 - **Fraunces** for headings (`title` 32, `heading` 22, `subheading` 18), scores and quotes. **Fraunces Italic** for the accent word in `AccentTitle`.
 - **DM Sans** for everything else.
-- `label`: small uppercase letter-spaced muted text ("ADD A TRIP", "WHO CAN SEE THIS"). `kicker`: the same in olive (the tagline).
+- `label`: small uppercase letter-spaced muted text ("ADD A TRIP", "WHO CAN SEE THIS"). `kicker`: the same in terracotta (the tagline).
 - Each weight is its own font family (e.g. `Fraunces-SemiBold`). Don't use `fontWeight` with custom fonts.
 
 ### Motifs
 
-- **Wordmark**: the app name in wide-spaced serif capitals with a small olive four-point star, and the tagline "Picked by you and those you trust".
-- **AccentTitle**: one italic word with a hand-drawn olive swash ("Your *trips*", "Find your *next* trip").
-- **ScoreStamp**: every score sits in a small perforated stamp, dark ink on champagne (white on ocean blue for stays).
+- **Wordmark**: the app name in wide-spaced serif capitals with a small terracotta four-point star, and the tagline "Picked by you and those you trust".
+- **AccentTitle**: one italic word with a hand-drawn terracotta swash ("Your *trips*", "Find your *next* trip").
+- **ScoreStamp**: every score sits in a small perforated stamp, dark ink on blush (white on olive for stays).
 - **PhotoStamp**: hero photos and your trips in a white perforated frame with a dotted inner border.
 - **MonthPill**: a trip month in a slightly tilted outline pill ("JUN 2026"). Never a current date or location.
 - **App icon**: still the earlier red stamp with "P". Update it when the name is final.

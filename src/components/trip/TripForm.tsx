@@ -610,7 +610,7 @@ function PhotoThumb({
           accessibilityRole="button"
           accessibilityLabel={`Remove photo ${index + 1}`}
           hitSlop={8}
-          style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(44,66,80,0.75)', alignItems: 'center', justifyContent: 'center' }}
+          style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(53,59,44,0.75)', alignItems: 'center', justifyContent: 'center' }}
         >
           <Text style={{ color: colors.onDark, fontFamily: fonts.sansBold, fontSize: 14, lineHeight: 16 }}>×</Text>
         </Pressable>

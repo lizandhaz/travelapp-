@@ -147,7 +147,7 @@ export const Input = forwardRef<ComponentRef<typeof TextInput>, TextInputProps &
   return (
     <View style={[styles.inputWrap, props.multiline && { alignItems: 'flex-start' }]}>
       {icon}
-      <TextInput ref={ref} placeholderTextColor="rgba(95,111,120,0.75)" style={[styles.input, style]} {...props} />
+      <TextInput ref={ref} placeholderTextColor="rgba(100,104,88,0.75)" style={[styles.input, style]} {...props} />
     </View>
   );
 });
@@ -236,8 +236,8 @@ export function Notice({ tone = 'error', children }: { tone?: 'error' | 'info'; 
       style={{
         borderRadius: radius.md,
         borderWidth: 1,
-        borderColor: tone === 'error' ? 'rgba(154,138,122,0.45)' : colors.line,
-        backgroundColor: tone === 'error' ? 'rgba(229,213,188,0.35)' : colors.card,
+        borderColor: tone === 'error' ? 'rgba(196,122,92,0.4)' : colors.line,
+        backgroundColor: tone === 'error' ? 'rgba(231,185,178,0.22)' : colors.card,
         padding: 14,
         gap: 2,
       }}

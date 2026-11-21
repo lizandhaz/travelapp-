@@ -99,8 +99,8 @@ function MapCanvas({ pins, view, aspect, labels, description }: { pins: Pin[]; v
         {pins.map((p) =>
           p.kind === 'wish' ? (
             <G key={p.key} transform={`translate(${p.x} ${p.y}) scale(${1 / z})`}>
-              <Circle r={9} fill={colors.sea} opacity={0.14} />
-              <Path d={STAR} transform="scale(0.62) translate(-12 -12)" fill={colors.sea} stroke={colors.card} strokeWidth={1.4} />
+              <Circle r={9} fill={colors.olive} opacity={0.14} />
+              <Path d={STAR} transform="scale(0.62) translate(-12 -12)" fill={colors.olive} stroke={colors.card} strokeWidth={1.4} />
             </G>
           ) : (
             <G key={p.key} transform={`translate(${p.x} ${p.y}) scale(${1 / z})`}>
@@ -117,7 +117,7 @@ function MapCanvas({ pins, view, aspect, labels, description }: { pins: Pin[]; v
                 <SvgText {...props} stroke={colors.card} strokeWidth={3 / z} strokeLinejoin="round" fill={colors.card}>
                   {pin.name}
                 </SvgText>
-                <SvgText {...props} fill={pin.kind === 'wish' ? colors.sea : colors.ink}>
+                <SvgText {...props} fill={pin.kind === 'wish' ? colors.olive : colors.ink}>
                   {pin.name}
                 </SvgText>
               </G>

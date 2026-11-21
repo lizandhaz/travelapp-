@@ -99,11 +99,14 @@ src/
     collection/[id].tsx   One Explore collection (places or things) as a 2-column grid, best for you first
     map.tsx               The full travel map: All/Been/Want to go, names on pins, pinch to zoom (iPhone), Whole world, place chips
     save.tsx              "Save to a list" from a place page: tick lists (Want to go first), + New list
-    postcards.tsx         Postcards (sample), opened from Home's paper-plane button; each opens postcard/[id]
-    postcard/[id].tsx     One Postcard as a digital postcard (components/PostcardCard: photo front, tap/"Turn over" to flip to the
-                          handwritten-style message "Dear <your first name>", To/From, their score), their photos, the place
-    friend-trip/[id].tsx  A friend's trip from the Friends feed (sample, lib/friendTrips): their score and quote, photos, where they
-                          stayed, where they ate, what they did, their tips, "More about <place>"
+    postcards.tsx         Postcards (sample), opened from Home's paper-plane button; ones about a friend's trip open postcard/[id],
+                          the rest (the app's news, a friend joining) open the place
+    postcard/[id].tsx     A friend's trip as a postcard, the same template for everyone (components/PostcardCard: photo front
+                          "Greetings from <place>"; tap/"Turn over" for the back: "<who> went to <place>", month, their score + word,
+                          who they went with, nights, where they stayed (+ score), where they ate, a tip, To/From). No personal
+                          handwritten messages (owner, Nov 2026). Then "See <who>'s whole trip" and "More about <place>"
+    friend-trip/[id].tsx  A friend's trip (id "maya-hydra"; sample, lib/friendTrips): their score, who with, nights, quote, photos,
+                          where they stayed, where they ate, what they did, their tips, "More about <place>"
     settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places
                           I look at, clear viewed places, sign out), opened from You
     place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, On the map, best time, what friends said, where to stay/eat, things to do,
@@ -166,8 +169,9 @@ src/
     tasteEvents.ts        tasteChanged()/onTasteChanged(): saveTrip/deleteTrip, list changes and new views call it
     views.ts              Place pages you've looked at: recordPlaceView, fetchPlaceViews, clearPlaceViews, on/off setting
     matchSettings.ts      What scores may use (trips, saves, friends; stored on the phone): getMatchSettings/setMatchSetting
-    friendTrips.ts        Sample friends' trip summaries for friend-trip/[id] (friendTripId, getFriendTrip)
-    postcards.ts          Sample Postcards with a message and photos for postcard/[id] (postcards, getPostcard)
+    friendTrips.ts        Sample friends' trips from the Friends feed or the place details naming that friend (getTrip, getFriendTrip,
+                          tripId, companionsLabel); who-with and nights are sample values
+    postcards.ts          Sample Postcards, each linked to the friend's trip it's about (postcards, getPostcard)
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)

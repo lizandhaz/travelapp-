@@ -10,7 +10,7 @@ import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
-import { getFriendTrip } from '@/lib/friendTrips';
+import { companionsLabel, getFriendTrip } from '@/lib/friendTrips';
 import { scoreWord } from '@/lib/score';
 import NotFound from '../+not-found';
 
@@ -20,38 +20,42 @@ export default function FriendTripScreen() {
   const insets = useSafeAreaInsets();
   const trip = getFriendTrip(id);
   if (!trip) return <NotFound />;
-  const { item, stay, eats, dos, tips } = trip;
+  const { stay, eats, dos, tips } = trip;
   const h = Math.min(Dimensions.get('window').width, 480) * 0.95;
 
   return (
     <Screen noTopInset>
       <View style={{ height: h }}>
-        <PhotoFill photo={trip.photos[0] ?? null} label={item.place} />
+        <PhotoFill photo={trip.photos[0] ?? null} label={trip.place} />
         <Shade strength={0.6} />
         <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER }}>
           <BackButton onPhoto />
         </View>
         <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: 40 }}>
-          <MonthPill month={item.month} onPhoto />
+          <MonthPill month={trip.month} onPhoto />
           <Text style={{ fontFamily: fonts.displayBold, fontSize: 40, lineHeight: 44, color: colors.onDark, marginTop: 10 }}>
-            {item.who}’s trip to {item.place}
+            {trip.who}’s trip to {trip.place}
           </Text>
           <Text variant="body" style={{ color: colors.onDark }}>
-            {item.region}
+            {trip.region}
           </Text>
         </View>
       </View>
 
       <Card tone="blush" style={{ marginHorizontal: GUTTER, marginTop: -24, padding: 16, gap: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <Avatar face={item.face} name={item.who} size={40} />
+          <Avatar face={trip.face} name={trip.who} size={40} />
           <View style={{ flex: 1 }}>
-            <Text variant="strong">{item.who} rated it</Text>
-            <Text style={{ fontFamily: fonts.displayItalic, fontSize: 17, color: colors.accentText }}>{scoreWord(item.score)}</Text>
+            <Text variant="strong">{trip.who} rated it</Text>
+            <Text style={{ fontFamily: fonts.displayItalic, fontSize: 17, color: colors.accentText }}>{scoreWord(trip.score)}</Text>
           </View>
-          <ScoreStamp score={item.score} size="md" label={`${item.who}'s score for ${item.place}`} />
+          <ScoreStamp score={trip.score} size="md" label={`${trip.who}'s score for ${trip.place}`} />
         </View>
-        {!!item.quote && <Text variant="quote">{item.quote}</Text>}
+        <View style={{ flexDirection: 'row', gap: 10 }}>
+          <Fact label="Went" value={companionsLabel(trip.companions)} />
+          <Fact label="For" value={`${trip.nights} ${trip.nights === 1 ? 'night' : 'nights'}`} />
+        </View>
+        {!!trip.quote && <Text variant="quote">“{trip.quote}”</Text>}
       </Card>
 
       {trip.photos.length > 1 && (
@@ -65,6 +69,7 @@ export default function FriendTripScreen() {
         </View>
       )}
 
+      {stay && (
       <View style={{ marginTop: 26 }}>
         <SectionHeader>Where they stayed</SectionHeader>
         <Card style={{ marginHorizontal: GUTTER, overflow: 'hidden' }}>
@@ -78,10 +83,11 @@ export default function FriendTripScreen() {
               <Text variant="subheading">{stay.name}</Text>
               <Text variant="tiny">{[stay.type, stay.sub].filter(Boolean).join(' · ')}</Text>
             </View>
-            <ScoreStamp score={stay.score} size="sm" tone="olive" label={`${item.who}'s score for ${stay.name}`} />
+            {stay.score != null && <ScoreStamp score={stay.score} size="sm" tone="olive" label={`${trip.who}'s score for ${stay.name}`} />}
           </View>
         </Card>
       </View>
+      )}
 
       {eats.length > 0 && (
         <View style={{ marginTop: 26 }}>
@@ -95,7 +101,7 @@ export default function FriendTripScreen() {
                     <Text variant="strong" style={{ flex: 1 }}>
                       {e.name}
                     </Text>
-                    {e.score != null && <ScoreStamp score={e.score} size="sm" label={`${item.who}'s score for ${e.name}`} />}
+                    {e.score != null && <ScoreStamp score={e.score} size="sm" label={`${trip.who}'s score for ${e.name}`} />}
                   </View>
                   {!!e.what && (
                     <Text variant="tiny" numberOfLines={3}>
@@ -129,7 +135,7 @@ export default function FriendTripScreen() {
 
       {tips.length > 0 && (
         <View style={{ marginTop: 26 }}>
-          <SectionHeader>{`${item.who}’s top tips`}</SectionHeader>
+          <SectionHeader>{`${trip.who}’s top tips`}</SectionHeader>
           <View style={{ paddingHorizontal: GUTTER, gap: 10 }}>
             {tips.map((t) => (
               <View key={t.tip} style={{ flexDirection: 'row', gap: 10 }}>
@@ -144,11 +150,24 @@ export default function FriendTripScreen() {
       )}
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 30 }}>
-        <Button title={`More about ${item.place}`} kind="outline" onPress={() => router.push(`/place/${item.slug}`)} />
+        <Button title={`More about ${trip.place}`} kind="outline" onPress={() => router.push(`/place/${trip.slug}`)} />
       </View>
       <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 14 }}>
         Sample trip for now. Your friends’ real trips arrive with friends.
       </Text>
     </Screen>
+  );
+}
+
+function Fact({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.card, borderRadius: radius.md, paddingHorizontal: 12, paddingVertical: 8 }}>
+      <Text variant="label" style={{ fontSize: 10 }}>
+        {label}
+      </Text>
+      <Text variant="strong" style={{ fontSize: 14 }}>
+        {value}
+      </Text>
+    </View>
   );
 }

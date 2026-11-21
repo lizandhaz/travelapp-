@@ -9,7 +9,7 @@ import { MonthPill } from './MonthPill';
 import { PhotoFill, PhotoTile } from './Photo';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { Card, type Tone } from './ui';
+import { Card, toneFill, type Tone } from './ui';
 
 const openPlace = (slug: string | null) => slug && router.push(`/place/${slug}`);
 
@@ -29,11 +29,11 @@ export function Row({ children, gap = 12 }: { children: React.ReactNode; gap?: n
   );
 }
 
-/** White pill badge on a photo ("#1", "Eat"). */
-export function PhotoBadge({ text, style }: { text: string; style?: ViewStyle }) {
+/** Pill badge on a photo ("#1", "Eat"): white, or terracotta with `accent`. */
+export function PhotoBadge({ text, style, accent = false }: { text: string; style?: ViewStyle; accent?: boolean }) {
   return (
-    <View style={[{ backgroundColor: 'rgba(255,255,255,0.94)', borderRadius: 999, paddingHorizontal: 9, paddingVertical: 3 }, style]}>
-      <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, color: colors.ink }}>{text}</Text>
+    <View style={[{ backgroundColor: accent ? colors.accentDeep : 'rgba(255,255,255,0.94)', borderRadius: 999, paddingHorizontal: 9, paddingVertical: 3 }, style]}>
+      <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, color: accent ? colors.onDark : colors.ink }}>{text}</Text>
     </View>
   );
 }
@@ -43,7 +43,7 @@ export function TrendCard({ item, width = 150, height = 190 }: { item: RowItem; 
   return (
     <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" accessibilityLabel={`${item.rank} ${item.name}, ${item.sub}`} style={{ width }}>
       <PhotoTile photo={item.photo} style={{ width, height }}>
-        {!!item.rank && <PhotoBadge text={item.rank} style={{ position: 'absolute', top: 10, left: 10 }} />}
+        {!!item.rank && <PhotoBadge text={item.rank} accent style={{ position: 'absolute', top: 10, left: 10 }} />}
         <View style={{ position: 'absolute', left: 12, right: 12, bottom: 12 }}>
           <Text style={{ fontFamily: fonts.display, fontSize: 19, lineHeight: 22, color: colors.onDark }}>{item.name}</Text>
           {item.score == null && width <= 160 && (
@@ -52,7 +52,7 @@ export function TrendCard({ item, width = 150, height = 190 }: { item: RowItem; 
         </View>
       </PhotoTile>
       {width > 160 && (
-        <Text variant="tiny" style={{ marginTop: 6 }}>
+        <Text variant="tiny" style={{ marginTop: 6, color: colors.accentText }}>
           {item.sub}
         </Text>
       )}
@@ -107,12 +107,13 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
   );
 }
 
-/** "Picked for you": a card (white or a soft palette colour) with photo, stamp and the reason. */
+/** "Picked for you": a white card with a palette-coloured edge, photo, stamp and the country. */
 export function PickCard({ item, tone = 'white' }: { item: RowItem; tone?: Tone }) {
+  const edge = tone === 'blush' ? colors.stamp : tone === 'sage' ? colors.sage : tone === 'sky' ? colors.sky : colors.line;
   const { score } = usePersonalScore(item.slug, item.score);
   return (
     <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" style={{ flex: 1 }}>
-      <Card tone={tone}>
+      <Card style={{ borderColor: edge, borderWidth: tone === 'white' ? 1 : 2 }}>
         <View style={{ height: 150 }}>
           <PhotoFill photo={item.photo} />
           {score != null && (
@@ -123,7 +124,7 @@ export function PickCard({ item, tone = 'white' }: { item: RowItem; tone?: Tone 
         </View>
         <View style={{ padding: 12 }}>
           <Text variant="subheading">{item.name}</Text>
-          <Text variant="tiny">{item.sub}</Text>
+          <Text variant="tiny" style={{ color: colors.accentText }}>{item.sub}</Text>
         </View>
       </Card>
     </Pressable>
@@ -133,8 +134,8 @@ export function PickCard({ item, tone = 'white' }: { item: RowItem; tone?: Tone 
 /** One friend's trip in the Friends feed. */
 export function FeedCard({ item, tone = 'white' }: { item: FeedItem; tone?: Tone }) {
   return (
-    <Card tone={tone}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14 }}>
+    <Card>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, backgroundColor: toneFill(tone) }}>
         <Avatar face={item.face} name={item.who} size={36} />
         <View style={{ flex: 1 }}>
           <Text variant="body" style={{ fontSize: 15 }}>

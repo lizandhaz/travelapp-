@@ -26,7 +26,7 @@ export function perforatedPath(w: number, h: number, r: number) {
 }
 
 /**
- * A score in a small perforated stamp: dark number on soft green (or white on ocean blue
+ * A score in a small perforated stamp: dark number on champagne (or white on ocean blue
  * for a stay). Always one decimal place, out of 10.
  */
 export function ScoreStamp({

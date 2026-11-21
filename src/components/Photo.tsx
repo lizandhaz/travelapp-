@@ -13,7 +13,7 @@ export function PhotoFill({ photo, uri, label }: { photo?: PhotoName | null; uri
   if (!source) {
     return (
       <LinearGradient
-        colors={[colors.sand, colors.stamp]}
+        colors={[colors.sand, colors.sage]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{ position: 'absolute', inset: 0 }}

@@ -109,7 +109,7 @@ src/
                           lineHeight gets lineHeight ≈ 1.28× automatically, so big numbers aren't clipped on iPhone
     AccentTitle.tsx       Heading with one italic word and an olive swash ("Where did *you* go?")
     Wordmark.tsx          The app name in spaced serif capitals + olive star, and the tagline
-    ScoreStamp.tsx        Score in a perforated stamp: ink on soft green (or white on ocean blue for a stay)
+    ScoreStamp.tsx        Score in a perforated stamp: ink on champagne (or white on ocean blue for a stay)
     Photo.tsx             PhotoFill, Shade, PhotoTile (rounded photo), PhotoStamp (photo in a perforated frame)
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
@@ -219,7 +219,7 @@ From the owner's Pinterest board "POSTCARD - Branding" (Lake Como, ocean breeze,
 | `mapLand` | `#c3c9b4` | Dotted land on the travel map (pale sage) |
 | `ink` | `#2c4250` | Main text, dark buttons, selected chips/tabs, the + button (deep ocean slate) |
 | `muted` | `#5f6f78` | Secondary text, labels |
-| `stamp` | `#b6b184` | Score stamps, the + sign (soft green) |
+| `stamp` | `#e8d9bf` | Score stamps, the + sign (champagne; owner picked it over soft green, Nov 2026) |
 | `sage` | `#a7b69a` | Soft tags (stay type) |
 | `accent` | `#7a8664` | Olive: swash under accent words, star, slider fill, large text only |
 | `accentDeep` | `#5c6b4c` | "Save trip" / "I've been" buttons (white text passes contrast) |
@@ -241,7 +241,7 @@ From the owner's Pinterest board "POSTCARD - Branding" (Lake Como, ocean breeze,
 
 - **Wordmark**: the app name in wide-spaced serif capitals with a small olive four-point star, and the tagline "Picked by you and those you trust".
 - **AccentTitle**: one italic word with a hand-drawn olive swash ("Your *trips*", "Find your *next* trip").
-- **ScoreStamp**: every score sits in a small perforated stamp, dark ink on soft green (white on ocean blue for stays).
+- **ScoreStamp**: every score sits in a small perforated stamp, dark ink on champagne (white on ocean blue for stays).
 - **PhotoStamp**: hero photos and your trips in a white perforated frame with a dotted inner border.
 - **MonthPill**: a trip month in a slightly tilted outline pill ("JUN 2026"). Never a current date or location.
 - **App icon**: still the earlier red stamp with "P". Update it when the name is final.

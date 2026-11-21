@@ -10,7 +10,7 @@ export const colors = {
   mapLand: '#c3c9b4', // dotted land on the travel map: pale sage
   ink: '#2c4250', // main text, dark buttons, selected chips/tabs: deep ocean slate
   muted: '#5f6f78', // secondary text, labels
-  stamp: '#b6b184', // score stamps, the "+" on the Add button: soft green
+  stamp: '#e8d9bf', // score stamps, the "+" on the Add button: champagne
   sage: '#a7b69a', // soft tags (e.g. stay type)
   accent: '#7a8664', // olive: swash under italic words, star, slider fill, shapes, large text
   accentDeep: '#5c6b4c', // "Save trip" button (white text passes contrast)

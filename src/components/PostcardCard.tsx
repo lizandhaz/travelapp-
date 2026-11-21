@@ -1,31 +1,50 @@
 import { useEffect, useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Animated, Pressable, View } from 'react-native';
 
 import { colors, fonts, radius } from '@/constants/theme';
-import type { Postcard } from '@/lib/postcards';
-import { PhotoFill, PhotoStamp, Shade } from './Photo';
+import { companionsLabel, type FriendTrip } from '@/lib/friendTrips';
+import { scoreWord } from '@/lib/score';
+import { MonthPill } from './MonthPill';
+import { PhotoFill, PhotoStamp, PhotoTile, Shade } from './Photo';
+import { Star } from './Wordmark';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
 
 /**
- * A digital postcard: a photo on the front and a handwritten-style message on the back.
- * Tap it (or "Turn over") to flip it. `toName` is who it's addressed to (you).
+ * A friend's trip as a postcard, the same template for everyone: a photo on the front, and on the
+ * back their words on the left and the details on the right (score, who with, how long, where they
+ * stayed and ate), split by the line down the middle like a real postcard. No To/From lines.
+ * Tap it (or "Turn over") to flip it.
  */
-export function PostcardCard({ card, toName, width, flipped, onFlip }: { card: Postcard; toName: string; width: number; flipped: boolean; onFlip: () => void }) {
-  const height = Math.round(width * 1.32);
+export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTrip; width: number; flipped: boolean; onFlip: () => void }) {
+  // The back sets the card's height (so a half-filled postcard is shorter); the front fills the same space.
+  const minHeight = Math.round(width * 0.82);
   const [turn] = useState(() => new Animated.Value(0));
   useEffect(() => {
     Animated.spring(turn, { toValue: flipped ? 1 : 0, useNativeDriver: true, friction: 8, tension: 40 }).start();
   }, [flipped, turn]);
   const side = (from: string, to: string, visibleFirst: boolean) => ({
-    position: 'absolute' as const,
-    inset: 0,
     backfaceVisibility: 'hidden' as const,
     opacity: turn.interpolate({ inputRange: [0, 0.5, 0.501, 1], outputRange: visibleFirst ? [1, 1, 0, 0] : [0, 0, 1, 1] }),
     transform: [{ perspective: 1200 }, { rotateY: turn.interpolate({ inputRange: [0, 1], outputRange: [from, to] }) }],
   });
-  const front = card.place ? `Greetings from` : 'Hello from';
-  const frontName = card.place || card.from;
+  // Anything they didn't fill in is simply left out, and the card rearranges around what's there.
+  const nights = trip.nights ? `${trip.nights} ${trip.nights === 1 ? 'night' : 'nights'}` : null;
+  const ate = trip.eats[0]?.name ?? null;
+  const tip = trip.tips[0]?.tip ?? null;
+  const front = trip.photos[0] ?? null;
+  const stamp = trip.photos[1] ?? trip.photos[0] ?? null;
+  const hasWords = !!trip.quote || !!tip;
+  // No words? Show a big photo on the left instead (if there is one).
+  const leftPhoto = !hasWords ? (trip.photos[2] ?? trip.photos[1] ?? trip.photos[0] ?? null) : null;
+  const hasLeft = hasWords || !!leftPhoto;
+  type DetailRow = { label: string; value: string; sub?: string; score?: number | null };
+  const details: DetailRow[] = [];
+  if (trip.companions) details.push({ label: 'Went', value: companionsLabel(trip.companions) });
+  if (nights) details.push({ label: 'Stayed', value: nights });
+  if (trip.stay) details.push({ label: 'Slept at', value: trip.stay.name, sub: trip.stay.type, score: trip.stay.score });
+  if (ate) details.push({ label: 'Ate at', value: ate });
 
   return (
     <Pressable
@@ -34,64 +53,128 @@ export function PostcardCard({ card, toName, width, flipped, onFlip }: { card: P
       accessibilityHint="Turns the postcard over"
       accessibilityLabel={
         flipped
-          ? `Back of the postcard. Dear ${toName}, ${card.message} ${card.signoff}`
-          : `Postcard from ${card.from}: ${front} ${frontName}. Tap to read the message`
+          ? [
+              `${trip.who} went to ${trip.place}, ${trip.month}. Rated it ${trip.score.toFixed(1)} out of 10.`,
+              trip.quote,
+              ...details.map((d) => `${d.label} ${d.value}.`),
+              tip && `Tip: ${tip}`,
+            ]
+              .filter(Boolean)
+              .join(' ')
+          : `Postcard from ${trip.who}: greetings from ${trip.place}. Tap to turn over`
       }
-      style={{ width, height }}
+      style={{ width, minHeight }}
     >
       {/* Front: the photo */}
-      <Animated.View style={[side('0deg', '180deg', true), { borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.sand }]}>
-        <PhotoFill photo={card.photos[0] ?? null} label={frontName} />
-        <Shade strength={0.55} />
+      <Animated.View style={[side('0deg', '180deg', true), { position: 'absolute', inset: 0, zIndex: 1, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.sand }]}>
+        {front ? (
+          <>
+            <PhotoFill photo={front} label={trip.place} />
+            <Shade strength={0.55} />
+          </>
+        ) : (
+          // No photos: a coloured card in the palette instead.
+          <LinearGradient colors={[colors.olive, colors.accentDeep]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center' }}>
+            <Star size={width * 0.28} color={colors.onDark} />
+          </LinearGradient>
+        )}
         <View style={{ position: 'absolute', inset: 10, borderWidth: 1.5, borderColor: colors.onDark, borderRadius: radius.sm, opacity: 0.85 }} />
         <View style={{ position: 'absolute', left: 26, right: 26, bottom: 30 }}>
           <Text variant="label" style={{ color: colors.onDark, letterSpacing: 3 }}>
-            {front}
+            Greetings from
           </Text>
-          <Text style={{ fontFamily: fonts.displayItalic, fontSize: 46, lineHeight: 52, color: colors.onDark }}>{frontName}</Text>
+          <Text style={{ fontFamily: fonts.displayItalic, fontSize: 46, lineHeight: 52, color: colors.onDark }}>{trip.place}</Text>
         </View>
       </Animated.View>
 
-      {/* Back: the message */}
+      {/* Back: the trip, laid out like the back of a real postcard */}
       <Animated.View
         style={[
           side('180deg', '360deg', false),
-          { borderRadius: radius.md, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, padding: 20, shadowColor: colors.ink, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } },
+          { minHeight, borderRadius: radius.md, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, padding: 20, shadowColor: colors.ink, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } },
         ]}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <View style={{ gap: 4, paddingTop: 4 }}>
-            <Text style={{ fontFamily: fonts.display, fontSize: 15, letterSpacing: 5, color: colors.ink }}>POSTCARD</Text>
-            <View style={{ width: 70, height: 2, backgroundColor: colors.accent, borderRadius: 1 }} />
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
+          <View style={{ flex: 1, gap: 8 }}>
+            <Text variant="label" style={{ letterSpacing: 4, color: colors.accentText }}>
+              Postcard
+            </Text>
+            <Text style={{ fontFamily: fonts.display, fontSize: 24, lineHeight: 29, color: colors.ink }}>
+              {trip.who} went to{' '}
+              <Text style={{ fontFamily: fonts.displayItalic, fontSize: 24, lineHeight: 29, color: colors.ink }}>{trip.place}</Text>
+            </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <MonthPill month={trip.month} />
+            </View>
           </View>
-          <PhotoStamp photo={card.photos[0] ?? null} width={74} height={88} tilt={4} />
+          {!!stamp && <PhotoStamp photo={stamp} width={Math.round(width * 0.29)} height={Math.round(width * 0.35)} tilt={4} />}
         </View>
 
-        <View style={{ flex: 1, marginTop: 14, gap: 10 }}>
-          <Text style={{ fontFamily: fonts.displayItalic, fontSize: 21, lineHeight: 26, color: colors.ink }}>Dear {toName},</Text>
-          <Text style={{ fontFamily: fonts.displayItalic, fontSize: width < 340 ? 16 : 17.5, lineHeight: width < 340 ? 23 : 26, color: colors.ink }}>{card.message}</Text>
-          <Text style={{ fontFamily: fonts.displayItalic, fontSize: 21, lineHeight: 26, color: colors.accentText, textAlign: 'right', marginTop: 4 }}>{card.signoff}</Text>
-        </View>
+        <View style={{ flexGrow: 1, flexDirection: 'row', marginTop: 18 }}>
+          {hasLeft && (
+            <>
+              {/* Left: in their words (or a big photo if they didn't write anything) */}
+              <View style={{ flex: 1.05, paddingRight: 14, gap: 14 }}>
+                {!!trip.quote && (
+                  <Text numberOfLines={tip ? 5 : 9} style={{ fontFamily: fonts.displayItalic, fontSize: 18, lineHeight: 25, color: colors.ink }}>
+                    “{trip.quote}”
+                  </Text>
+                )}
+                {!!tip && (
+                  <View style={{ gap: 4 }}>
+                    <Text variant="label" style={{ fontSize: 10, color: colors.accentText }}>
+                      ✦ Top tip
+                    </Text>
+                    <Text numberOfLines={trip.quote ? 5 : 9} style={{ fontFamily: fonts.displayItalic, fontSize: trip.quote ? 14.5 : 17, lineHeight: trip.quote ? 21 : 24, color: trip.quote ? colors.muted : colors.ink }}>
+                      {tip}
+                    </Text>
+                  </View>
+                )}
+                {!!leftPhoto && <PhotoTile photo={leftPhoto} style={{ flex: 1, minHeight: Math.round(width * 0.5), borderRadius: radius.sm }} shade={false} />}
+              </View>
 
-        <View style={{ borderTopWidth: 1, borderTopColor: colors.line, paddingTop: 12, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <View style={{ flex: 1, gap: 6 }}>
-            <AddressLine label="To" value={toName} />
-            <AddressLine label="From" value={card.from} />
+              {/* The line down the middle of a postcard */}
+              <View style={{ width: 1, backgroundColor: colors.line }} />
+            </>
+          )}
+
+          {/* Right (or the whole width): the details */}
+          <View style={{ flex: 1, paddingLeft: hasLeft ? 14 : 0, gap: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <ScoreStamp score={trip.score} size={hasLeft ? 'sm' : 'md'} label={`${trip.who}'s score`} />
+              <Text style={{ flex: 1, fontFamily: fonts.displayItalic, fontSize: hasLeft ? 18 : 24, lineHeight: hasLeft ? 22 : 29, color: colors.accentText }}>{scoreWord(trip.score)}</Text>
+            </View>
+            <View style={hasLeft ? { gap: 12 } : { flexDirection: 'row', flexWrap: 'wrap', columnGap: 14, rowGap: 12 }}>
+              {details.map((d) => (
+                <View key={d.label} style={hasLeft ? undefined : { width: '47%' }}>
+                  <Detail {...d} />
+                </View>
+              ))}
+            </View>
           </View>
-          {card.score != null && <ScoreStamp score={card.score} size="sm" label={`${card.from}'s score`} />}
         </View>
       </Animated.View>
     </Pressable>
   );
 }
 
-function AddressLine({ label, value }: { label: string; value: string }) {
+function Detail({ label, value, sub, score }: { label: string; value: string; sub?: string; score?: number | null }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 8, borderBottomWidth: 1, borderBottomColor: colors.line, paddingBottom: 3 }}>
-      <Text variant="label" style={{ fontSize: 10, width: 38 }}>
+    <View style={{ gap: 1, borderBottomWidth: 1, borderBottomColor: colors.line, paddingBottom: 8 }}>
+      <Text variant="label" style={{ fontSize: 9.5 }}>
         {label}
       </Text>
-      <Text style={{ fontFamily: fonts.displayItalic, fontSize: 16, color: colors.ink }}>{value}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <Text variant="strong" numberOfLines={2} style={{ flexShrink: 1, fontSize: 14, lineHeight: 19 }}>
+          {value}
+        </Text>
+        {score != null && (
+          <View style={{ backgroundColor: colors.olive, borderRadius: 6, paddingHorizontal: 5, paddingVertical: 1 }}>
+            <Text style={{ fontFamily: fonts.display, fontSize: 12, color: colors.onDark }}>{score.toFixed(1)}</Text>
+          </View>
+        )}
+      </View>
+      {!!sub && <Text variant="tiny">{sub}</Text>}
     </View>
   );
 }

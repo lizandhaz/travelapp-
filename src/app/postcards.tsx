@@ -27,7 +27,7 @@ export default function Postcards() {
         {postcards.map((p) => (
           <Pressable
             key={p.id}
-            onPress={() => router.push(`/postcard/${p.id}`)}
+            onPress={() => router.push(p.trip ? `/postcard/${p.id}` : `/place/${p.slug}`)}
             accessibilityRole="link"
             accessibilityLabel={`Postcard from ${p.from}: ${p.line}. ${p.when}`}
             style={{ flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: colors.line }}

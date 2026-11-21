@@ -3,24 +3,22 @@ import { useState } from 'react';
 import { Dimensions, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
+import { PostcardCard } from '@/components/PostcardCard';
 import { Row } from '@/components/cards';
 import { PhotoTile } from '@/components/Photo';
-import { PostcardCard } from '@/components/PostcardCard';
 import { BackButton, Button, PageTitle, Screen, SectionHeader } from '@/components/ui';
 import { GUTTER } from '@/constants/theme';
-import { useAuth } from '@/lib/auth';
 import { getPostcard } from '@/lib/postcards';
 import NotFound from '../+not-found';
 
-/** One Postcard, opened from the Postcards list: the card itself (tap to turn over), their photos, and the place. */
+/** One Postcard about a friend's trip: the trip as a postcard (tap to turn over), then their whole trip or the place. */
 export default function PostcardScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { profile } = useAuth();
   const [flipped, setFlipped] = useState(false);
   const card = getPostcard(id);
-  if (!card) return <NotFound />;
+  if (!card?.trip) return <NotFound />;
+  const trip = card.trip;
   const width = Math.min(Dimensions.get('window').width, 480) - GUTTER * 2;
-  const toName = profile?.name?.split(/\s+/)[0] || 'you';
 
   return (
     <Screen>
@@ -28,29 +26,28 @@ export default function PostcardScreen() {
         <BackButton />
       </View>
       <PageTitle label="Postcard">
-        <AccentTitle before="From" accent={card.from} />
+        <AccentTitle before="From" accent={trip.who} />
       </PageTitle>
-      <View style={{ paddingHorizontal: GUTTER, gap: 14 }}>
-        <PostcardCard card={card} toName={toName} width={width} flipped={flipped} onFlip={() => setFlipped((f) => !f)} />
-        <Button title={flipped ? 'See the front' : 'Turn over to read'} kind="outline" onPress={() => setFlipped((f) => !f)} />
+      <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
+        <PostcardCard trip={trip} width={width} flipped={flipped} onFlip={() => setFlipped((f) => !f)} />
+        <Button title={flipped ? 'See the front' : 'Turn over'} kind="outline" onPress={() => setFlipped((f) => !f)} />
       </View>
 
-      {card.photos.length > 1 && (
+      {trip.photos.length > 0 && (
         <View style={{ marginTop: 26 }}>
-          <SectionHeader>{`Photos from ${card.from}`}</SectionHeader>
-          <Row gap={10}>
-            {card.photos.map((p) => (
-              <PhotoTile key={p} photo={p} style={{ width: 150, height: 190 }} shade={false} />
+          <SectionHeader>{`${trip.who}’s photos`}</SectionHeader>
+          <Row gap={12}>
+            {trip.photos.map((p) => (
+              <PhotoTile key={p} photo={p} style={{ width: Math.round(width * 0.78), height: Math.round(width * 0.98) }} shade={false} />
             ))}
           </Row>
         </View>
       )}
 
-      {!!card.place && (
-        <View style={{ paddingHorizontal: GUTTER, marginTop: 26 }}>
-          <Button title={`More about ${card.place}`} kind="dark" onPress={() => router.push(`/place/${card.slug}`)} />
-        </View>
-      )}
+      <View style={{ paddingHorizontal: GUTTER, gap: 12, marginTop: 26 }}>
+        <Button title={`See ${trip.who}’s whole trip`} kind="dark" onPress={() => router.push(`/friend-trip/${trip.id}`)} />
+        <Button title={`More about ${trip.place}`} kind="outline" onPress={() => router.push(`/place/${trip.slug}`)} />
+      </View>
     </Screen>
   );
 }

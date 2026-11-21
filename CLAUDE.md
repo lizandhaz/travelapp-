@@ -61,9 +61,10 @@ EXPO_TOKEN=proxy-injected npx eas-cli@latest update --branch preview --environme
 ## Publishing to the owner's phone
 
 The owner has **no computer**, only an iPhone (with Expo Go) and an iPad. Claude publishes with **EAS Update** from the cloud session:
-- Expo project `@lizandhaz/postcard` (projectId in `app.json` → `extra.eas.projectId`), `runtimeVersion` policy `appVersion`, and the channel `preview` linked to the branch `preview`.
+- Expo project `@postcardapp/postcard`, in the **postcardapp** organisation (moved from the personal account lizandhaz on 21 Nov 2026 so testers can be invited as View only; a project can only be transferred four times). projectId in `app.json` → `extra.eas.projectId`, `runtimeVersion` policy `appVersion`, and the channel `preview` linked to the branch `preview`.
 - The QR code in `docs/expo-go-qr.png` encodes `exp://u.expo.dev/9e899203-22d1-447f-babc-27279789d30a?runtime-version=1.0.0&channel-name=preview` and always opens the latest `preview` update.
 - The cloud environment "travelapp-" allows expo.dev, api.expo.dev, u.expo.dev and exp.host, and injects the owner's Expo token for api.expo.dev. Set `EXPO_TOKEN=proxy-injected` (a placeholder; the proxy supplies the real one).
+- **Testers:** the project is private ("hidden"). Invite people to the postcardapp organisation as **View only** (expo.dev → postcardapp → Settings → Members); they sign in to Expo Go with their own Expo account and scan the QR code. Log-in codes only reach the owner's email until a domain is verified in Resend, so a tester's app account uses a "+" alias of the owner's email and the owner passes the code on.
 - After merging a change, publish an update and tell the owner to fully close and reopen Postcard in Expo Go.
 - Changing `version` in `app.json` changes the runtime version, which breaks the QR link. Update the QR code if you ever do.
 

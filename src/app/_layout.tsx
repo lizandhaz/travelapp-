@@ -76,6 +76,7 @@ function Navigator() {
             <Stack.Screen name="list/[id]" />
             <Stack.Screen name="save" />
             <Stack.Screen name="map" />
+            <Stack.Screen name="collection/[id]" />
           </Stack.Protected>
           <Stack.Protected guard={!signedIn} redirectTo="/">
             <Stack.Screen name="welcome" />

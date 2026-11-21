@@ -885,6 +885,36 @@ export const places: SamplePlace[] = [
     "photos": [
       "comporta-1"
     ]
+  },
+  {
+    "slug": "chamonix",
+    "name": "Chamonix",
+    "region": "French Alps",
+    "score": 8.6,
+    "photo": "chamonix-1",
+    "photos": [
+      "chamonix-1"
+    ]
+  },
+  {
+    "slug": "courchevel",
+    "name": "Courchevel",
+    "region": "French Alps",
+    "score": 8.7,
+    "photo": "courchevel-1",
+    "photos": [
+      "courchevel-1"
+    ]
+  },
+  {
+    "slug": "valthorens",
+    "name": "Val Thorens",
+    "region": "French Alps",
+    "score": 8.4,
+    "photo": "valthorens-1",
+    "photos": [
+      "valthorens-1"
+    ]
   }
 ] as SamplePlace[];
 

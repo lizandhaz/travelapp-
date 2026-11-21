@@ -9,6 +9,7 @@ import { useAuth } from '@/lib/auth';
 import { setProfilePicture } from '@/lib/trips';
 import { useEffect, useState } from 'react';
 import { clearPlaceViews, setViewsEnabled, viewsEnabled } from '@/lib/views';
+import { DEFAULT_MATCH_SETTINGS, getMatchSettings, setMatchSetting, type MatchSettings } from '@/lib/matchSettings';
 
 /** Settings. Privacy switches, blocking, data download and deleting your account come in plan Step J. */
 export default function Settings() {
@@ -16,9 +17,15 @@ export default function Settings() {
   const [removing, setRemoving] = useState(false);
   const [useViews, setUseViews] = useState(true);
   const [cleared, setCleared] = useState<string | null>(null);
+  const [uses, setUses] = useState<MatchSettings>(DEFAULT_MATCH_SETTINGS);
   useEffect(() => {
     viewsEnabled().then(setUseViews);
+    getMatchSettings().then(setUses);
   }, []);
+  const toggle = (key: keyof MatchSettings) => (on: boolean) => {
+    setUses((u) => ({ ...u, [key]: on }));
+    setMatchSetting(key, on);
+  };
 
   async function clearViews() {
     try {
@@ -54,25 +61,22 @@ export default function Settings() {
           </Text>
         </Section>
         <Section label="Your scores">
-          <View style={{ padding: 16, gap: 12 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-              <View style={{ flex: 1 }}>
-                <Text variant="strong">Use the places I look at</Text>
-                <Text variant="small">Places you open (and how long you spend on them) help your scores. Only you can see this.</Text>
-              </View>
-              <Switch
-                value={useViews}
-                onValueChange={(on) => {
-                  setUseViews(on);
-                  setViewsEnabled(on);
-                }}
-                trackColor={{ true: colors.olive, false: colors.line }}
-                accessibilityLabel="Use the places I look at for my scores"
-              />
-            </View>
+          <View style={{ padding: 16, gap: 16 }}>
+            <Text variant="small">Choose what your scores and picks are based on.</Text>
+            <SwitchRow title="My trips" sub="Where you’ve been and how you rated it." value={uses.trips} onChange={toggle('trips')} />
+            <SwitchRow title="My saved places" sub="Your Want to go list and your other lists." value={uses.saves} onChange={toggle('saves')} />
+            <SwitchRow title="My friends’ scores" sub="What friends rated places, stays and restaurants." value={uses.friends} onChange={toggle('friends')} />
+            <SwitchRow
+              title="The places I look at"
+              sub="Places you open (and how long you spend on them). Only you can see this."
+              value={useViews}
+              onChange={(on) => {
+                setUseViews(on);
+                setViewsEnabled(on);
+              }}
+            />
             <Button title="Clear the places I’ve looked at" kind="outline" size="sm" onPress={clearViews} />
             {!!cleared && <Text variant="small">{cleared}</Text>}
-            <Text variant="tiny">Your scores also use your trips, your saved places and your friends’ ratings.</Text>
           </View>
         </Section>
         {!!profile?.avatarPath && (
@@ -99,6 +103,18 @@ function Section({ label, children }: { label: string; children: React.ReactNode
     <View style={{ gap: 8 }}>
       <Text variant="label">{label}</Text>
       <Card>{children}</Card>
+    </View>
+  );
+}
+
+function SwitchRow({ title, sub, value, onChange }: { title: string; sub: string; value: boolean; onChange: (on: boolean) => void }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+      <View style={{ flex: 1 }}>
+        <Text variant="strong">{title}</Text>
+        <Text variant="small">{sub}</Text>
+      </View>
+      <Switch value={value} onValueChange={onChange} trackColor={{ true: colors.olive, false: colors.line }} accessibilityLabel={`Use ${title.toLowerCase()} for my scores`} />
     </View>
   );
 }

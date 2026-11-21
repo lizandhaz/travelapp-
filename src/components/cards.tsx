@@ -10,6 +10,7 @@ import { PhotoFill, PhotoTile } from './Photo';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
 import { Card, toneFill, type Tone } from './ui';
+import { friendTripId } from '@/lib/friendTrips';
 
 const openPlace = (slug: string | null) => slug && router.push(`/place/${slug}`);
 
@@ -134,48 +135,55 @@ export function PickCard({ item, tone = 'white' }: { item: RowItem; tone?: Tone 
 /** One friend's trip in the Friends feed. */
 export function FeedCard({ item, tone = 'white' }: { item: FeedItem; tone?: Tone }) {
   return (
-    <Card>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, backgroundColor: toneFill(tone) }}>
-        <Avatar face={item.face} name={item.who} size={36} />
-        <View style={{ flex: 1 }}>
-          <Text variant="body" style={{ fontSize: 15 }}>
-            <Text variant="strong">{item.who}</Text> went to <Text variant="strong">{item.place}</Text>
-          </Text>
-          <Text variant="tiny">{item.region}</Text>
-        </View>
-        <MonthPill month={item.month} />
-      </View>
-      {item.photo && (
-        <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" accessibilityLabel={`Open ${item.place}`} style={{ height: 300 }}>
-          <PhotoFill photo={item.photo} />
-        </Pressable>
-      )}
-      <View style={{ padding: 16, gap: 14 }}>
-        {!!item.quote && <Text variant="quote">{item.quote}</Text>}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <ScoreStamp score={item.score} size="sm" label="Destination" />
+    <Pressable
+      onPress={() => router.push(`/friend-trip/${friendTripId(item)}`)}
+      accessibilityRole="link"
+      accessibilityLabel={`${item.who}'s trip to ${item.place}, ${item.month}. ${item.score.toFixed(1)} out of 10. Open their trip`}
+      style={({ pressed }) => pressed && { opacity: 0.92 }}
+    >
+      <Card>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, backgroundColor: toneFill(tone) }}>
+          <Avatar face={item.face} name={item.who} size={36} />
           <View style={{ flex: 1 }}>
-            <Text variant="label" style={{ fontSize: 10 }}>
-              Destination
+            <Text variant="body" style={{ fontSize: 15 }}>
+              <Text variant="strong">{item.who}</Text> went to <Text variant="strong">{item.place}</Text>
             </Text>
-            <Text variant="body" style={{ fontSize: 14 }}>
-              {item.place}
-            </Text>
+            <Text variant="tiny">{item.region}</Text>
           </View>
-          <ScoreStamp score={item.stayScore} size="sm" tone="olive" label={item.stayType} />
-          <View style={{ flex: 1 }}>
-            <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(167,182,154,0.35)', borderRadius: 999, paddingHorizontal: 7, paddingVertical: 1 }}>
-              <Text variant="label" style={{ fontSize: 9, color: colors.olive }}>
-                {item.stayType}
+          <MonthPill month={item.month} />
+        </View>
+        {item.photo && (
+          <View style={{ height: 300 }}>
+            <PhotoFill photo={item.photo} />
+          </View>
+        )}
+        <View style={{ padding: 16, gap: 14 }}>
+          {!!item.quote && <Text variant="quote">{item.quote}</Text>}
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <ScoreStamp score={item.score} size="sm" label="Destination" />
+            <View style={{ flex: 1 }}>
+              <Text variant="label" style={{ fontSize: 10 }}>
+                Destination
+              </Text>
+              <Text variant="body" style={{ fontSize: 14 }}>
+                {item.place}
               </Text>
             </View>
-            <Text variant="body" style={{ fontSize: 14 }}>
-              {item.stayName}
-            </Text>
+            <ScoreStamp score={item.stayScore} size="sm" tone="olive" label={item.stayType} />
+            <View style={{ flex: 1 }}>
+              <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(167,182,154,0.35)', borderRadius: 999, paddingHorizontal: 7, paddingVertical: 1 }}>
+                <Text variant="label" style={{ fontSize: 9, color: colors.olive }}>
+                  {item.stayType}
+                </Text>
+              </View>
+              <Text variant="body" style={{ fontSize: 14 }}>
+                {item.stayName}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
-    </Card>
+      </Card>
+    </Pressable>
   );
 }
 

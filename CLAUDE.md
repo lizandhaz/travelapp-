@@ -82,9 +82,13 @@ src/
     welcome.tsx           Signed out: wordmark, Hydra photo stamp, "Where your friends loved staying", Join / Log in
     signup.tsx, login.tsx Join (name, email, date of birth) / Log in (email), then the 6-digit code
     (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
-    (tabs)/index.tsx      Home: wordmark, search + Postcards buttons, For you (hero + rows) / Friends (feed)
-    (tabs)/explore.tsx    Explore (prototype layout): search, filter chips, "Find your next trip" collection tiles (24, each opens
-                          its collection), Trending this month, and a long two-column photo feed (60 at a time, more load as you scroll)
+    (tabs)/index.tsx      Home: wordmark + Postcards button, For you / Friends, then a pinned bar (search → Explore, and on For you
+                          chips that jump to Trending / Islands & beaches / Weekends / One night away / Made for your taste /
+                          Picked for you, highlighting as you scroll); "Where's trending with <app name> users"; Friends feed cards
+                          open the friend's trip
+    (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
+                          jumps down to it), "Find your next trip" collection tiles (24, each opens its collection, no counts),
+                          Trending this month, and "Just for you": a long two-column photo feed (60 at a time, more as you scroll)
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
     (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list (tile shaped like a list)
     (tabs)/profile.tsx    You: profile picture (tap to change), stats, Your taste, travel map card (tap → map), your trips as photo
@@ -95,8 +99,13 @@ src/
     collection/[id].tsx   One Explore collection (places or things) as a 2-column grid, best for you first
     map.tsx               The full travel map: All/Been/Want to go, names on pins, pinch to zoom (iPhone), Whole world, place chips
     save.tsx              "Save to a list" from a place page: tick lists (Want to go first), + New list
-    postcards.tsx         Postcards (sample), opened from Home's paper-plane button
-    settings.tsx          Settings (public-profile note, Your matches: use/clear places you've looked at, sign out), opened from You
+    postcards.tsx         Postcards (sample), opened from Home's paper-plane button; each opens postcard/[id]
+    postcard/[id].tsx     One Postcard as a digital postcard (components/PostcardCard: photo front, tap/"Turn over" to flip to the
+                          handwritten-style message "Dear <your first name>", To/From, their score), their photos, the place
+    friend-trip/[id].tsx  A friend's trip from the Friends feed (sample, lib/friendTrips): their score and quote, photos, where they
+                          stayed, where they ate, what they did, their tips, "More about <place>"
+    settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places
+                          I look at, clear viewed places, sign out), opened from You
     place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, On the map, best time, what friends said, where to stay/eat, things to do,
                           culture and top tips, "I've been" (opens Add a trip with the place filled in)
     trip/[id]/index.tsx   One of your trips, with Edit and Delete (confirm first)
@@ -156,6 +165,9 @@ src/
     taste.tsx             TasteProvider/useTaste(): your profile from trips + lists, rebuilt on tasteChanged()
     tasteEvents.ts        tasteChanged()/onTasteChanged(): saveTrip/deleteTrip, list changes and new views call it
     views.ts              Place pages you've looked at: recordPlaceView, fetchPlaceViews, clearPlaceViews, on/off setting
+    matchSettings.ts      What scores may use (trips, saves, friends; stored on the phone): getMatchSettings/setMatchSetting
+    friendTrips.ts        Sample friends' trip summaries for friend-trip/[id] (friendTripId, getFriendTrip)
+    postcards.ts          Sample Postcards with a message and photos for postcard/[id] (postcards, getPostcard)
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)
@@ -199,6 +211,7 @@ docs/plan.md              Step-by-step plan
   - Every card reads scores through `useTaste()`, so Home, Explore, place pages (score card + "How we worked this out", stays/eats % match), lists and "Your taste" update after a trip, a save, or leaving a place page.
   - The React Compiler memoises values inside components, so per-profile caches live outside them (`resultsByProfile` WeakMap in taste.tsx). Don't create caches with `new Map()` inside a component.
   - `npm test` runs the engine's tests (Node's built-in runner, `--experimental-strip-types`).
+- **What scores use** (owner, Nov 2026): Settings → Your scores has a switch each for trips, saved places, friends' scores and the places you look at. `taste.tsx` leaves switched-off signals out; with friends off, no friend ratings, friend reasons or friend-based item scores are used (items say "Judged on your taste"), and `tasteNote` drops "plus your friends' ratings".
 - **Place views** (`20261124120000_place_views.sql`): `place_views` (owner_id + place_slug, views, seconds, first/last viewed). Owner-only: select and delete directly; recording only via `record_place_view(slug, name, country, seconds)` (security definer, own row only, at most 600 s a visit). The place page records a visit when you leave it (3 s minimum, `lib/views.ts`). Settings → Your matches: "Use the places I look at" (stored on the phone; off = nothing recorded or used) and "Clear the places I've looked at". Mention viewing history in the privacy policy (plan Step J).
 - **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 

@@ -8,6 +8,7 @@ import { featuresForPlace, featuresForSlug, parseStaySub, sampleFriendRatings, s
 import { onTasteChanged } from './tasteEvents';
 import { fetchMyTrips, type Place } from './trips';
 import { fetchPlaceViews } from './views';
+import { DEFAULT_MATCH_SETTINGS, getMatchSettings, type MatchSettings } from './matchSettings';
 
 /**
  * Your taste, for the whole app: built from your trips and saved places (and friends'
@@ -20,6 +21,8 @@ type TasteValue = {
   /** False until your trips and lists have loaded (numbers are neutral until then). */
   ready: boolean;
   profile: Profile;
+  /** Whether friends' ratings are used (Settings → Your scores). */
+  usingFriends: boolean;
   /** Your score and reasons for a sample place page. */
   forSlug: (slug: string) => PlaceResult | null;
   /** The same for any place by name. */
@@ -48,9 +51,14 @@ function resultsFor(profile: Profile) {
 }
 const Ctx = createContext<TasteValue | null>(null);
 
-/** Your trips and saved places as signals for the engine. */
-async function loadSignals(): Promise<Signal[]> {
-  const [trips, boards, views] = await Promise.all([fetchMyTrips(), fetchBoards().catch(() => []), fetchPlaceViews().catch(() => [])]);
+/** Your trips and saved places as signals for the engine, leaving out anything switched off in Settings. */
+async function loadSignals(): Promise<{ signals: Signal[]; settings: MatchSettings }> {
+  const settings = await getMatchSettings();
+  const [trips, boards, views] = await Promise.all([
+    settings.trips ? fetchMyTrips() : [],
+    settings.saves ? fetchBoards().catch(() => []) : [],
+    fetchPlaceViews().catch(() => []),
+  ]);
   const next: Signal[] = [];
   for (const t of trips) {
     t.stops.forEach((s, i) =>
@@ -81,20 +89,20 @@ async function loadSignals(): Promise<Signal[]> {
     const place = featuresForSlug(v.slug) ?? featuresForPlace({ name: v.name, country: v.country });
     next.push({ kind: 'view', place, views: v.views, seconds: v.seconds, lastViewed: v.lastViewed });
   }
-  return next;
+  return { signals: next, settings };
 }
 
 export function TasteProvider({ children }: { children: React.ReactNode }) {
   const { session } = useAuth();
   const userId = session?.user.id ?? null;
-  const [loaded, setLoaded] = useState<{ user: string; signals: Signal[] } | null>(null);
+  const [loaded, setLoaded] = useState<{ user: string; signals: Signal[]; settings: MatchSettings } | null>(null);
 
   useEffect(() => {
     if (!userId) return;
     let active = true;
     const refresh = () =>
       loadSignals()
-        .then((signals) => active && setLoaded({ user: userId, signals }))
+        .then(({ signals, settings }) => active && setLoaded({ user: userId, signals, settings }))
         .catch(() => {}); // keep what we had; numbers stay as they were
     refresh();
     const stop = onTasteChanged(refresh);
@@ -106,7 +114,9 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
 
   // Only use signals that belong to whoever is signed in now.
   const signals = loaded && loaded.user === userId ? loaded.signals : null;
-  const friends: FriendRating[] = useMemo(() => sampleFriendRatings(), []);
+  const usingFriends = (loaded && loaded.user === userId ? loaded.settings : DEFAULT_MATCH_SETTINGS).friends;
+  // Friends' ratings only count when "Use my friends' scores" is on.
+  const friends: FriendRating[] = useMemo(() => (usingFriends ? sampleFriendRatings() : []), [usingFriends]);
   const profile = useMemo(() => (signals ? buildProfile(signals, friends) : EMPTY), [signals, friends]);
 
   const value = useMemo<TasteValue>(() => {
@@ -114,6 +124,7 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
     return {
       ready: signals != null,
       profile,
+      usingFriends,
       forSlug: (slug) => {
         if (!cache.has(slug)) {
           const f = featuresForSlug(slug);
@@ -124,11 +135,14 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
       forPlace: (place) => scorePlace(profile, featuresForPlace(place), friends),
       stayScoreFor: ({ type, sub, score }) => {
         const { priceFrom, friend } = parseStaySub(sub);
-        return stayScore(profile, { type: stayKind(type), priceFrom, friendScore: friend ? score : null });
+        return stayScore(profile, { type: stayKind(type), priceFrom, friendScore: usingFriends && friend ? score : null });
       },
-      eatScoreFor: ({ score, from }) => itemScore(profile, { tasteTag: 'food', friendScore: score, friendRecommended: !!from }),
+      eatScoreFor: ({ score, from }) =>
+        itemScore(profile, { tasteTag: 'food', friendScore: usingFriends ? score : null, friendRecommended: usingFriends && !!from }),
       forItem: (item) => {
-        const info = tasteItemInfo(item);
+        const raw = tasteItemInfo(item);
+        // With friends' scores switched off, judge it on your taste alone.
+        const info = usingFriends ? raw : { ...raw, friendScore: null, friendRecommended: false, note: 'Judged on your taste' };
         const score = info.stay
           ? stayScore(profile, { type: stayKind(info.stay.type), priceFrom: parseStaySub(info.stay.sub).priceFrom, friendScore: info.friendScore })
           : itemScore(profile, info);
@@ -140,7 +154,7 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
         return !!f && profile.saved[f.key] != null;
       },
     };
-  }, [profile, friends, signals]);
+  }, [profile, friends, signals, usingFriends]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
@@ -177,13 +191,15 @@ export const TASTE_LABELS: Record<string, string> = {
 };
 
 /** One line on how your scores are worked out, e.g. under Home's top pick. */
-export function tasteNote(p: Profile): string {
+export function tasteNote(p: Profile, usingFriends = true): string {
   const bits = [
     p.counts.trips ? `${p.counts.trips} ${p.counts.trips === 1 ? 'trip' : 'trips'}` : null,
     p.counts.wish + p.counts.lists ? `${p.counts.wish + p.counts.lists} saved ${p.counts.wish + p.counts.lists === 1 ? 'place' : 'places'}` : null,
     p.counts.views ? `the ${p.counts.views === 1 ? 'place' : `${p.counts.views} places`} you’ve looked at` : null,
   ].filter(Boolean);
   return bits.length
-    ? `Your scores use your ${bits.length > 1 ? `${bits.slice(0, -1).join(', ')} and ${bits[bits.length - 1]}` : bits[0]}, plus your friends’ ratings.`
-    : 'Add trips and save places, and these scores become yours.';
+    ? `Your scores use your ${bits.length > 1 ? `${bits.slice(0, -1).join(', ')} and ${bits[bits.length - 1]}` : bits[0]}${usingFriends ? ', plus your friends’ ratings' : ''}.`
+    : usingFriends
+      ? 'Add trips and save places, and these scores become yours.'
+      : 'Add trips and save places, and these scores become yours. Friends’ scores are switched off.';
 }

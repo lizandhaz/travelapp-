@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { useMemo, useRef, useState, type ComponentRef } from 'react';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { BoardTile, Row, TrendCard } from '@/components/cards';
@@ -59,81 +60,104 @@ export default function Explore() {
   const right = visible.filter((_, i) => i % 2 === 1);
   const heights = [230, 170, 200, 250, 180];
 
+  // The search bar and chips stay pinned at the top; picking a chip (or searching) jumps down to the feed.
+  const insets = useSafeAreaInsets();
+  const scroller = useRef<ComponentRef<typeof ScrollView>>(null);
+  const spots = useRef({ feed: 0, bar: 0 });
+  const toFeed = () => scroller.current?.scrollTo({ y: Math.max(0, spots.current.feed - spots.current.bar - 6), animated: true });
+
   const pick = (id: string) => {
     setFilter(id);
     setLimit(PAGE);
+    toFeed();
   };
 
   return (
-    <Screen
-      tabBar
-      scrollEventThrottle={200}
-      onScroll={({ nativeEvent: { layoutMeasurement, contentOffset, contentSize } }) => {
-        // Load the next batch on its own when you're within about two screens of the bottom.
-        if (shown.length > limit && contentOffset.y + layoutMeasurement.height > contentSize.height - layoutMeasurement.height * 2) {
-          setLimit((l) => Math.min(l + PAGE, shown.length));
-        }
-      }}
-    >
-      <View style={{ paddingHorizontal: GUTTER, paddingTop: 16 }}>
-        <Input
-          value={query}
-          onChangeText={(t) => {
-            setQuery(t);
-            setLimit(PAGE);
-          }}
-          placeholder="Describe your perfect trip"
-          accessibilityLabel="Describe your perfect trip"
-          returnKeyType="search"
-          icon={<SearchIcon color={colors.muted} />}
-          style={{ paddingVertical: 14 }}
-        />
-      </View>
-      <View style={{ marginTop: 12 }}>
-        <Row gap={8}>
-          {FILTERS.map((f) => (
-            <Chip key={f.id} label={f.label} selected={filter === f.id} onPress={() => pick(f.id)} />
-          ))}
-        </Row>
-      </View>
+    <View style={{ flex: 1, backgroundColor: colors.bg, paddingTop: insets.top }}>
+      <Screen
+        ref={scroller}
+        tabBar
+        noTopInset
+        stickyHeaderIndices={[0]}
+        scrollEventThrottle={200}
+        onScroll={({ nativeEvent: { layoutMeasurement, contentOffset, contentSize } }) => {
+          // Load the next batch on its own when you're within about two screens of the bottom.
+          if (shown.length > limit && contentOffset.y + layoutMeasurement.height > contentSize.height - layoutMeasurement.height * 2) {
+            setLimit((l) => Math.min(l + PAGE, shown.length));
+          }
+        }}
+      >
+        <View onLayout={(e) => (spots.current.bar = e.nativeEvent.layout.height)} style={{ backgroundColor: colors.bg, paddingTop: 16, paddingBottom: 12 }}>
+          <View style={{ paddingHorizontal: GUTTER }}>
+            <Input
+              value={query}
+              onChangeText={(t) => {
+                if (!query && t) toFeed();
+                setQuery(t);
+                setLimit(PAGE);
+              }}
+              onSubmitEditing={toFeed}
+              placeholder="Describe your perfect trip"
+              accessibilityLabel="Describe your perfect trip"
+              returnKeyType="search"
+              icon={<SearchIcon color={colors.muted} />}
+              style={{ paddingVertical: 14 }}
+            />
+          </View>
+          <View style={{ marginTop: 12 }}>
+            <Row gap={8}>
+              {FILTERS.map((f) => (
+                <Chip key={f.id} label={f.label} selected={filter === f.id} onPress={() => pick(f.id)} />
+              ))}
+            </Row>
+          </View>
+        </View>
 
-      <View style={{ paddingHorizontal: GUTTER, marginTop: 22, marginBottom: 14 }}>
-        <AccentTitle before="Find your" accent="next" after="trip" />
-      </View>
-      <Row>
-        {collections.map((c) => (
-          <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.items[0]} count={c.items.length} />
-        ))}
-      </Row>
+        <View>
+          <View style={{ paddingHorizontal: GUTTER, marginTop: 10, marginBottom: 14 }}>
+            <AccentTitle before="Find your" accent="next" after="trip" />
+          </View>
+          <Row>
+            {collections.map((c) => (
+              <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.items[0]} count={c.items.length} />
+            ))}
+          </Row>
+        </View>
 
-      <View style={{ marginTop: 28 }}>
-        <SectionHeader>Trending this month</SectionHeader>
-        <Row>
-          {trendingThisMonth.map((t) => (
-            <TrendCard key={t.slug} item={t} width={170} height={180} />
-          ))}
-        </Row>
-      </View>
+        <View style={{ marginTop: 28 }}>
+          <SectionHeader>Trending this month</SectionHeader>
+          <Row>
+            {trendingThisMonth.map((t) => (
+              <TrendCard key={t.slug} item={t} width={170} height={180} />
+            ))}
+          </Row>
+        </View>
 
-      <View style={{ paddingHorizontal: GUTTER, marginTop: 28, flexDirection: 'row', gap: 12 }}>
-        {[left, right].map((col, c) => (
-          <View key={c} style={{ flex: 1 }}>
-            {col.map((b, i) => (
-              <BoardTile key={`${b.slug}-${b.name}`} item={b} height={heights[(i * 2 + c) % heights.length]} />
+        <View onLayout={(e) => (spots.current.feed = e.nativeEvent.layout.y)} style={{ paddingTop: 30 }}>
+          <View style={{ paddingHorizontal: GUTTER, marginBottom: 14 }}>
+            <AccentTitle before="Just" accent="for you" variant="heading" />
+          </View>
+          <View style={{ paddingHorizontal: GUTTER, flexDirection: 'row', gap: 12 }}>
+            {[left, right].map((col, c) => (
+              <View key={c} style={{ flex: 1 }}>
+                {col.map((b, i) => (
+                  <BoardTile key={`${b.slug}-${b.name}`} item={b} height={heights[(i * 2 + c) % heights.length]} />
+                ))}
+              </View>
             ))}
           </View>
-        ))}
-      </View>
-      {shown.length > limit && (
-        <View style={{ paddingVertical: 18, alignItems: 'center' }} accessibilityLabel="Loading more">
-          <ActivityIndicator color={colors.muted} />
+          {shown.length > limit && (
+            <View style={{ paddingVertical: 18, alignItems: 'center' }} accessibilityLabel="Loading more">
+              <ActivityIndicator color={colors.muted} />
+            </View>
+          )}
+          {shown.length === 0 && (
+            <Text variant="bodySoft" style={{ textAlign: 'center', marginTop: 24, paddingHorizontal: GUTTER }}>
+              Nothing matches that yet. Try other words, or tap All.
+            </Text>
+          )}
         </View>
-      )}
-      {shown.length === 0 && (
-        <Text variant="bodySoft" style={{ textAlign: 'center', marginTop: 24, paddingHorizontal: GUTTER }}>
-          Nothing matches that yet. Try other words, or tap All.
-        </Text>
-      )}
-    </Screen>
+      </Screen>
+    </View>
   );
 }

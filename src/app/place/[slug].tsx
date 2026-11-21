@@ -84,7 +84,7 @@ export default function PlaceScreen() {
         </View>
       </View>
 
-      {!!result && <YourScore result={result} note={tasteNote(taste.profile)} />}
+      {!!result && <YourScore result={result} note={tasteNote(taste.profile, taste.usingFriends)} />}
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 12, flexDirection: 'row', gap: 10 }}>
         <WantToGoButton variant="block" saved={wish.saved} busy={wish.busy || !wish.ready} onPress={wish.toggle} style={{ flex: 1 }} />

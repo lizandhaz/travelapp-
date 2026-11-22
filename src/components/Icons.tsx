@@ -13,8 +13,16 @@ export const CompassIcon = ({ color, size = 22, strokeWidth = 1.8 }: P) => (
 export const PlusIcon = ({ color, size = 22, strokeWidth = 2.2 }: P) => (
   <Svg {...base(size)}><Path d="M12 5v14M5 12h14" {...line(color, strokeWidth)} /></Svg>
 );
-export const HeartIcon = ({ color, size = 22, strokeWidth = 1.8 }: P) => (
-  <Svg {...base(size)}><Path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z" {...line(color, strokeWidth)} /></Svg>
+export const HeartIcon = ({ color, size = 22, strokeWidth = 1.8, filled = false }: P & { filled?: boolean }) => (
+  <Svg {...base(size)}><Path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z" {...line(color, strokeWidth)} fill={filled ? color : 'none'} /></Svg>
+);
+/** A speech bubble: comments. */
+export const CommentIcon = ({ color, size = 22, strokeWidth = 1.8 }: P) => (
+  <Svg {...base(size)}><Path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" {...line(color, strokeWidth)} /></Svg>
+);
+/** A bookmark: save to a list. */
+export const BookmarkIcon = ({ color, size = 22, strokeWidth = 1.8 }: P) => (
+  <Svg {...base(size)}><Path d="M6 3h12v18l-6-4.5L6 21z" {...line(color, strokeWidth)} /></Svg>
 );
 export const PersonIcon = ({ color, size = 22, strokeWidth = 1.8 }: P) => (
   <Svg {...base(size)}><Circle cx={12} cy={8} r={4} {...line(color, strokeWidth)} /><Path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" {...line(color, strokeWidth)} /></Svg>

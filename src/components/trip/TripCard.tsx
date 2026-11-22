@@ -7,6 +7,7 @@ import { Text } from '@/components/Text';
 import { colors, fonts } from '@/constants/theme';
 import { monthYear } from '@/lib/months';
 import { photoForPlaceName } from '@/lib/sample';
+import { fitWordSize } from '@/lib/fit';
 import { formatScore } from '@/lib/score';
 import type { Trip } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
@@ -16,7 +17,8 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
   const main = trip.stops[0];
   const cover = trip.photoPaths[0] ?? null;
   const photoUrl = useTripPhoto(cover);
-  const nameSize = fitNameSize(main?.name ?? '', width);
+  // Room: card minus frame, padding and the score stamp.
+  const nameSize = fitWordSize(main?.name ?? '', width - 2 * Math.max(6, Math.round(width * 0.025)) - 32 - 40, 19, 12);
   return (
     <Link href={`/trip/${trip.id}`} asChild>
       <Pressable accessibilityRole="link" accessibilityLabel={`${main?.name}, ${monthYear(trip.month)}, ${formatScore(trip.score)} out of 10`} style={{ width }}>
@@ -34,14 +36,4 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
       </Pressable>
     </Link>
   );
-}
-
-/**
- * A font size that keeps the longest word of a place name on one line, so a
- * long single word like "Singapore" shrinks a little instead of breaking ("Singapor / e").
- */
-function fitNameSize(name: string, cardWidth: number) {
-  const longest = Math.max(1, ...name.split(/\s+/).map((w) => w.length));
-  const room = cardWidth - 2 * Math.max(6, Math.round(cardWidth * 0.025)) - 32 - 40; // frame, padding, score
-  return Math.max(12, Math.min(19, Math.floor(room / (longest * 0.6))));
 }

@@ -158,6 +158,8 @@ src/
     placeMaps.ts          Each sample place's map picture and its numbered pins (stay / eat / do / hidden gem)
     placeDetails.ts       Sample place details from the prototype (stays, food, things to do, best time, tips)
     score.ts              formatScore, clampScore, scoreWord
+    fit.ts                fitWordSize(): a font size that keeps a place name's longest word on one line (Fraunces is wide,
+                          wider on iPhone: 0.74 × size per letter). Use it wherever a name sits beside a score stamp
     trips.ts              Trip types, fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces, photo upload + signed URLs
     boards.ts             Lists: fetchBoards/fetchBoard/createBoard/ensureWishList/updateBoard/deleteBoard,
                           addToBoard/removeFromBoard, findOnBoard, shareBoard (phone share sheet)

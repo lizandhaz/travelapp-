@@ -1,10 +1,11 @@
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Pressable, ScrollView, View, type ViewStyle } from 'react-native';
+import { Dimensions, Pressable, ScrollView, View, type ViewStyle } from 'react-native';
 
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import type { BoardItem, FeedItem, RowItem, TasteItem } from '@/lib/sample';
 import { useTaste } from '@/lib/taste';
+import { fitWordSize } from '@/lib/fit';
 import { Avatar } from './Avatar';
 import { MonthPill } from './MonthPill';
 import { PhotoFill, PhotoTile, Shade } from './Photo';
@@ -112,6 +113,8 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
 /** One friend's trip in the Friends feed: a big photo with who, when, where and their score, then their words and stay. */
 export function FeedCard({ item }: { item: FeedItem }) {
   const open = () => router.push(`/friend-trip/${friendTripId(item)}`);
+  // The place name shrinks so a long word fits beside the score stamp (card ~ screen minus margins, padding and stamp).
+  const feedSize = fitWordSize(item.place, Math.min(Dimensions.get('window').width, 480) - 40 - 36 - 70, 34, 20);
   const label = `${item.who}'s ${item.place} trip, ${item.month}. ${item.score.toFixed(1)} out of 10. Open their trip`;
   return (
     <Pressable onPress={open} accessibilityRole="link" accessibilityLabel={label} style={({ pressed }) => pressed && { opacity: 0.92 }}>
@@ -130,7 +133,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
             </View>
             <View style={{ position: 'absolute', left: 18, right: 18, bottom: 18, flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: fonts.displayBold, fontSize: 34, lineHeight: 38, color: colors.onDark }}>{item.place}</Text>
+                <Text style={{ fontFamily: fonts.displayBold, fontSize: feedSize, lineHeight: Math.round(feedSize * 1.12), color: colors.onDark }}>{item.place}</Text>
                 <Text variant="label" style={{ color: colors.onDark, marginTop: 2 }}>
                   {item.region}
                 </Text>

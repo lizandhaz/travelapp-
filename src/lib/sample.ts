@@ -915,6 +915,16 @@ export const places: SamplePlace[] = [
     "photos": [
       "valthorens-1"
     ]
+  },
+  {
+    "slug": "southafrica",
+    "name": "South Africa",
+    "region": "Cape Town & Kruger, South Africa",
+    "score": 9.1,
+    "photo": "safari-1",
+    "photos": [
+      "safari-1"
+    ]
   }
 ] as SamplePlace[];
 

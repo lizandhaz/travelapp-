@@ -32,6 +32,9 @@ export type FriendTrip = {
 export const tripId = (who: string, slug: string) => `${who}-${slug}`.toLowerCase();
 export const friendTripId = (f: { who: string; slug: string }) => tripId(f.who, f.slug);
 
+/** The place as it reads in "Maya's Maldives trip" (no leading "The"). */
+export const tripPlace = (t: { place: string }) => t.place.replace(/^The\s+/i, '');
+
 /** "With friends", "On their own"… */
 export function companionsLabel(c: Companions): string {
   return { solo: 'On their own', partner: 'With their partner', friends: 'With friends', family: 'With family' }[c];

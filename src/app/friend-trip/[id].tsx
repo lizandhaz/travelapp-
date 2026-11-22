@@ -10,7 +10,7 @@ import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
-import { companionsLabel, getFriendTrip } from '@/lib/friendTrips';
+import { companionsLabel, getFriendTrip, tripPlace } from '@/lib/friendTrips';
 import { scoreWord } from '@/lib/score';
 import NotFound from '../+not-found';
 
@@ -34,7 +34,7 @@ export default function FriendTripScreen() {
         <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: 40 }}>
           <MonthPill month={trip.month} onPhoto />
           <Text style={{ fontFamily: fonts.displayBold, fontSize: 40, lineHeight: 44, color: colors.onDark, marginTop: 10 }}>
-            {trip.who}’s trip to {trip.place}
+            {trip.who}’s {tripPlace(trip)} trip
           </Text>
           <Text variant="body" style={{ color: colors.onDark }}>
             {trip.region}

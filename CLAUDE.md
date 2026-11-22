@@ -2,7 +2,7 @@
 
 Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations** and **where they stayed** (hotel, Airbnb, villa and so on) out of 10, and add photos, food picks and top tips.
 
-**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **Lists are real too:** Saved holds your "Want to go" list and lists you make, and You has a travel map of where you've been and want to go. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips and lists (Home's picks and Friends feed, Explore, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts` (39 places, each with details and a map). The roadmap is in `docs/plan.md`.
+**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **Lists are real too:** Saved holds your "Want to go" list and lists you make, and You has a travel map of where you've been and want to go. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips and lists (Home's picks and Friends feed, Explore, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts` (40 places, each with details; 39 have a map, South Africa doesn't yet). The roadmap is in `docs/plan.md`.
 
 **App name:** the name is a placeholder, currently **XYZX**. It lives in **one place**, `src/constants/brand.json` (`appName`). Code uses `APP_NAME` from `src/constants/brand.ts`, and `app.config.ts` reads the same JSON for the name under the icon. Never type the app's name anywhere else. (The project was originally called "Postcard"; that's still the Expo `slug` and the repo's history, and the notifications feature is still called "Postcards".)
 
@@ -84,14 +84,14 @@ src/
     (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
     (tabs)/index.tsx      Home: wordmark + Postcards button, For you / Friends, then a pinned bar (search → Explore, and on For you
                           chips that jump to Trending / Islands & beaches / Weekends / One night away / Made for your taste /
-                          Picked for you, highlighting as you scroll); "Where's trending with <app name> users"; Friends feed cards
-                          open the friend's trip
+                          Picked for you, highlighting as you scroll); a Find friends button beside Postcards; Friends side starts with
+                          a "Find your friends" card, and its feed cards open the friend's trip
     (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
                           jumps down to it), "Find your next trip" collection tiles (24, each opens its collection, no counts),
                           Trending this month, and "Just for you": a long two-column photo feed (60 at a time, more as you scroll)
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
     (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list (tile shaped like a list)
-    (tabs)/profile.tsx    You: profile picture (tap to change), stats, Your taste, travel map card (tap → map), your trips as photo
+    (tabs)/profile.tsx    You: profile picture (tap to change), Find friends / Add a trip buttons, stats, Your taste, travel map card (tap → map), your trips as photo
                           stamps: Newest (default) / Oldest / Top rated, and a year filter
     list/[id].tsx         One list: photo-collage cover with the name, Share/Edit circles, places as a 2-column grid of
                           photo cards (score stamp, × to remove, tap → place page), Add a place card, Delete (confirm)
@@ -101,8 +101,11 @@ src/
     save.tsx              "Save to a list" from a place page: tick lists (Want to go first), + New list
     postcards.tsx         Postcards (sample), opened from Home's paper-plane button; ones about a friend's trip open postcard/[id],
                           the rest (the app's news, a friend joining) open the place
-    postcard/[id].tsx     A friend's trip as a postcard, the same template for everyone (components/PostcardCard: photo front
-                          "Greetings from <place>"; tap/"Turn over" for the back: "<who> went to <place>" + month and a photo stamp,
+    people.tsx            Find people (real): search by name or @username, Add / Accept / Requested / Friends, friend requests,
+                          your friends, requests you've sent, and Invite friends (share sheet with your @username)
+    postcard/[id].tsx     A friend's trip as a postcard, titled "<who>'s <place> trip", the same template for everyone (components/
+                          PostcardCard: photo front "Greetings from <place>"; tap/"Turn over" for the back: the place, region and
+                          month and a photo stamp,
                           then like a real postcard a line down the middle: their quote and top tip on the left; score + word, who
                           with, nights, where they slept (+ score), where they ate on the right). No personal messages and no
                           To/From lines (owner, Nov 2026). Anything not filled in is left out and the card rearranges: no words →
@@ -175,6 +178,7 @@ src/
     friendTrips.ts        Sample friends' trips from the Friends feed or the place details naming that friend (getTrip, getFriendTrip,
                           tripId, companionsLabel); who-with and nights are sample values and may be null (not filled in)
     postcards.ts          Sample Postcards, each linked to the friend's trip it's about (postcards, getPostcard)
+    friends.ts            Friends: searchPeople, fetchFriendships, addFriend, acceptFriend, removeFriendship, inviteFriends
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)
@@ -219,6 +223,7 @@ docs/plan.md              Step-by-step plan
   - The React Compiler memoises values inside components, so per-profile caches live outside them (`resultsByProfile` WeakMap in taste.tsx). Don't create caches with `new Map()` inside a component.
   - `npm test` runs the engine's tests (Node's built-in runner, `--experimental-strip-types`).
 - **What scores use** (owner, Nov 2026): Settings → Your scores has a switch each for trips, saved places, friends' scores and the places you look at. `taste.tsx` leaves switched-off signals out; with friends off, no friend ratings, friend reasons or friend-based item scores are used (items say "Judged on your taste"), and `tasteNote` drops "plus your friends' ratings".
+- **Friends** (`20261125120000_friends.sql`, plan Step C first half): `friendships` (requester_id, addressee_id, status `pending`/`accepted`, one row per pair either way round). People can read and delete their own rows directly (cancel, decline, unfriend); sending and accepting only via `send_friend_request(p_user)` (accepts theirs if they'd already asked; refuses yourself, unknown people and under-18s; at most 200 pending) and `accept_friend_request(p_friendship)` (addressee only). `search_people(p_query)` (2+ characters, name contains or handle starts with, leaves out you and under-18s who aren't already your friends, says friends/sent/received/none) and `my_friendships()` return names and handles (security definer; `profiles` itself stays owner-only). Helpers `is_adult()` and `are_friends()` aren't callable by users. Profile pictures aren't shown to others yet (storage is owner-only), so people show initials. Next: friends see each other's "Friends" trips and lists, and the Friends feed shows them.
 - **Place views** (`20261124120000_place_views.sql`): `place_views` (owner_id + place_slug, views, seconds, first/last viewed). Owner-only: select and delete directly; recording only via `record_place_view(slug, name, country, seconds)` (security definer, own row only, at most 600 s a visit). The place page records a visit when you leave it (3 s minimum, `lib/views.ts`). Settings → Your matches: "Use the places I look at" (stored on the phone; off = nothing recorded or used) and "Clear the places I've looked at". Mention viewing history in the privacy policy (plan Step J).
 - **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 

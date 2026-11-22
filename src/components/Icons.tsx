@@ -19,6 +19,10 @@ export const HeartIcon = ({ color, size = 22, strokeWidth = 1.8 }: P) => (
 export const PersonIcon = ({ color, size = 22, strokeWidth = 1.8 }: P) => (
   <Svg {...base(size)}><Circle cx={12} cy={8} r={4} {...line(color, strokeWidth)} /><Path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" {...line(color, strokeWidth)} /></Svg>
 );
+/** A person with a small plus: find and add friends. */
+export const AddPersonIcon = ({ color, size = 20, strokeWidth = 1.8 }: P) => (
+  <Svg {...base(size)}><Circle cx={10} cy={8} r={4} {...line(color, strokeWidth)} /><Path d="M2.5 21c1.4-3.8 4.2-6 7.5-6 1.6 0 3 .4 4.2 1.2M19 14v6M16 17h6" {...line(color, strokeWidth)} /></Svg>
+);
 export const SearchIcon = ({ color, size = 20, strokeWidth = 1.8 }: P) => (
   <Svg {...base(size)}><Circle cx={11} cy={11} r={7} {...line(color, strokeWidth)} /><Path d="m20 20-3.5-3.5" {...line(color, strokeWidth)} /></Svg>
 );

@@ -86,7 +86,7 @@ export default function You() {
       </View>
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 20, flexDirection: 'row', gap: 10 }}>
-        <Button title="Saved places" kind="outline" size="sm" style={{ flex: 1 }} onPress={() => router.push('/saved')} />
+        <Button title="Find friends" kind="outline" size="sm" style={{ flex: 1 }} onPress={() => router.push('/people')} />
         <Link href="/add" asChild>
           <Button title="Add a trip" kind="outline" size="sm" style={{ flex: 1 }} />
         </Link>

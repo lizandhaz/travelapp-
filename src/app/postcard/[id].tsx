@@ -9,6 +9,7 @@ import { PhotoTile } from '@/components/Photo';
 import { BackButton, Button, PageTitle, Screen, SectionHeader } from '@/components/ui';
 import { GUTTER } from '@/constants/theme';
 import { getPostcard } from '@/lib/postcards';
+import { tripPlace } from '@/lib/friendTrips';
 import NotFound from '../+not-found';
 
 /** One Postcard about a friend's trip: the trip as a postcard (tap to turn over), then their whole trip or the place. */
@@ -26,7 +27,7 @@ export default function PostcardScreen() {
         <BackButton />
       </View>
       <PageTitle label="Postcard">
-        <AccentTitle before="From" accent={trip.who} />
+        <AccentTitle before={`${trip.who}’s`} accent={tripPlace(trip)} after="trip" />
       </PageTitle>
       <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
         <PostcardCard trip={trip} width={width} flipped={flipped} onFlip={() => setFlipped((f) => !f)} />

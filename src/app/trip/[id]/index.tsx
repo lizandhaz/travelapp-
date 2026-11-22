@@ -85,13 +85,14 @@ export default function TripScreen() {
 
   return (
     <Screen noTopInset>
-      <View style={{ height: h }}>
+      {/* The back button and the title stack, so a long title grows the header instead of running into the button. */}
+      <View style={{ minHeight: h, paddingTop: insets.top + 10, paddingBottom: 46, justifyContent: 'space-between' }}>
         <PhotoFill uri={photoUrl} photo={cover ? null : photoForPlaceName(main.name)} label={main.name} />
         <Shade strength={0.55} />
-        <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER }}>
+        <View style={{ paddingHorizontal: GUTTER, alignItems: 'flex-start' }}>
           <BackButton onPhoto />
         </View>
-        <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: 46, flexDirection: 'row', alignItems: 'flex-end' }}>
+        <View style={{ paddingHorizontal: GUTTER, marginTop: 24, flexDirection: 'row', alignItems: 'flex-end' }}>
           <View style={{ flex: 1, gap: 8 }}>
             <MonthPill month={monthYear(trip.month).toUpperCase()} onPhoto />
             <Text style={{ fontFamily: fonts.displayBold, fontSize: 46, lineHeight: 48, color: colors.onDark }}>{main.name}</Text>

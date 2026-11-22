@@ -34,7 +34,7 @@ Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations*
 - **Sample photos** live in `assets/photos/` (from the prototype; all Unsplash, credited in `PHOTO_CREDITS` and shown at the bottom of Home). `src/lib/photos.ts` maps names (`'como-1'`) to the files; only photos the sample content uses are bundled.
 - Fonts come from `@expo-google-fonts/fraunces` and `@expo-google-fonts/dm-sans`. Import each style from its own subpath (e.g. `@expo-google-fonts/fraunces/600SemiBold`) so only the styles used get bundled.
 - **Supabase** (`@supabase/supabase-js`) handles accounts and profiles. The session is kept on the phone with `@react-native-async-storage/async-storage`.
-- **Real maps:** `react-native-maps` (in Expo Go: Apple Maps on iPhone, no key) for the "Area & world" view of a place (`components/AreaMap.tsx`; `AreaMap.web.tsx` is a world-outline stand-in, as the library doesn't run on the web). Never show or ask for the user's location (rule 2): `showsUserLocation={false}`.
+- **Real maps:** `react-native-maps` (in Expo Go: Apple Maps on iPhone, no key) for a place's big "Map" view (`components/AreaMap.tsx`: Apple's `mutedStandard` style, Apple's own points of interest hidden, our numbered pins with name labels; `AreaMap.web.tsx` is a world-outline stand-in, as the library doesn't run on the web). Apple Maps can't be recoloured in Expo Go (custom map styles need Google Maps and a development build). Never show or ask for the user's location (rule 2): `showsUserLocation={false}`.
 - Every native module used must be one **Expo Go** includes, so the owner can test with Expo Go. Adding anything else needs a development build. Ask first.
 
 ### Expo notes
@@ -150,9 +150,9 @@ src/
                           "Full screen" for the big map: a ZoomMap filling over half the screen (starts filled, zooms out until the
                           whole map shows, in to 6×) + "Where are you staying?" (typing only, no suggestion chips, owner Nov 2026;
                           picks the stay once one name matches) → "Near <stay>": the rest nearest first, Right nearby / A short way /
-                          Further out). Close-up / Area & world switch above the big map; zooming out past the drawn map (pinch, or −
-                          again) switches to Area & world: a real map centred on the place (placeCentres) to zoom out to the country
-                          and the world), BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
+                          Further out). Map / Drawing switch above the big map. Map (first on phones) is the real map dressed like the
+                          drawing (AreaMap: numbered pins in our colours with white name labels, roughly placed); Drawing is the
+                          ZoomMap, and zooming out past it (pinch, or − again) switches to Map), BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
     ZoomMap.tsx           A place map in a window (`height` can be taller than the map) you can zoom (pinch, or + / −) and drag;
                           smaller than the window it stays centred; tap targets on each pin; rings for the picked pin and
                           your stay ("You're here"); `focus` glides to a pin. Gesture maths in a MapGesture class (refs aren't allowed
@@ -176,7 +176,9 @@ src/
     photos.ts             Sample photo names → files
     placeMaps.ts          Each sample place's map picture and its numbered pins (stay / eat / do / hidden gem), each with `at`:
                           where its tip sits on the 400 × 250 picture (taken from the prototype's drawing); placeCentres: each
-                          place's real latitude/longitude and how much area the real map shows first
+                          place's real latitude/longitude and how much area the real map shows first; pinLatLng(): a pin's ROUGH
+                          real position from the drawing (owner chose rough over looking up ~340 places, Nov 2026; replace with
+                          real coordinates in Step E)
     placeDetails.ts       Sample place details from the prototype (stays, food, things to do, best time, tips)
     score.ts              formatScore, clampScore, scoreWord
     fit.ts                fitWordSize(): a font size that keeps a place name's longest word on one line (Fraunces is wide,

@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Dimensions, Modal, Pressable, ScrollView, View } from 'react-native';
+import { Dimensions, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
 
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import type { PlaceResult } from '@/lib/match';
@@ -457,7 +457,9 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
   const [typed, setTyped] = useState('');
   const [focus, setFocus] = useState<{ n: number | null; zoom: number; key: number }>({ n: null, zoom: fill, key: 0 });
   const [lastStay, setLastStay] = useState<number | null>(null);
-  const [mode, setMode] = useState<'close' | 'area'>('close');
+  // The real map (dressed like the drawing) first on phones; the drawing on the web, where real maps don't run.
+  const firstMode = Platform.OS === 'web' ? 'close' : 'area';
+  const [mode, setMode] = useState<'close' | 'area'>(firstMode);
   const map = placeMaps[slug];
   const centre = placeCentres[slug];
 
@@ -549,7 +551,7 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
       <Card style={{ marginHorizontal: GUTTER, overflow: 'hidden' }}>
         <Pressable
           onPress={() => {
-            setMode('close');
+            setMode(firstMode);
             setOpen(true);
           }}
           accessibilityRole="button"
@@ -575,8 +577,8 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
                 value={mode}
                 onChange={setMode}
                 options={[
-                  ['close', 'Close-up'],
-                  ['area', 'Area & world'],
+                  ['area', 'Map'],
+                  ['close', 'Drawing'],
                 ]}
               />
             </View>
@@ -595,7 +597,9 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
               onZoomOutPast={centre ? () => setMode('area') : undefined}
             />
           )}
-          {open && mode === 'area' && !!centre && <AreaMap at={centre.at} span={centre.span} name={name} width={width} height={bigHeight} />}
+          {open && mode === 'area' && !!centre && (
+            <AreaMap slug={slug} name={name} width={width} height={bigHeight} pins={map.pins} picked={picked} stay={stay} focus={focus} onPin={choosePin} />
+          )}
           <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: GUTTER, paddingTop: 14, paddingBottom: 40, gap: 12 }}>
             {stays.length > 0 && (
               <View style={{ gap: 8 }}>

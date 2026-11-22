@@ -23,7 +23,7 @@ Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations*
 2. **Post when home, never live location.** A trip records the month of the trip, not the current place. Add a trip rejects future months (so does the database), and asks for "I'm back home" when the month picked is this month. Never add live or "I'm here now" location features. Photos are picked with `exif: false`, and GPS data must be stripped before anything is stored.
 3. **Ages: 13+ to join, 18+ to go public.** (Owner's decision, Nov 2026.) Everyone gives a date of birth at sign-up, and anyone under 13 is refused. 13–17s get a private, friends-only profile: they can never switch it to public, and they don't appear in search or suggestions to people who aren't already their friends. This is enforced in the database (see below), not just in the app. Date of birth is private to its owner.
 4. **Notifications are called "Postcards"** everywhere in the UI, never "notifications" or "alerts". They open from the paper-plane button at the top of Home (with the unread count), not a tab.
-5. **Home has two sides:** "For you" (picks based on your taste) and "Friends" (what friends rated, newest first).
+5. **Home is top picks, collections, then friends** (owner, 22 Nov 2026; the For you / Friends switch is gone): "Top picks for you" (your best matches you haven't been to or saved), "Dip into collections", then "From your friends" (what friends rated, newest first). Everything else lives in Explore.
 6. **No trip planning.** The app is for rating trips you've been on, not planning future ones. Don't add itineraries, planning lists, bookings or future dates.
 
 ## Stack
@@ -85,13 +85,13 @@ src/
     welcome.tsx           Signed out: wordmark, Hydra photo stamp, "Where your friends loved staying", Join / Log in
     signup.tsx, login.tsx Join (name, email, date of birth) / Log in (email), then the 6-digit code
     (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
-    (tabs)/index.tsx      Home: wordmark + Postcards button, For you / Friends, then a pinned bar (search → Explore, and on For you
-                          chips that jump to Trending / Islands & beaches / Weekends / One night away / Made for your taste /
-                          Picked for you, highlighting as you scroll); a Find friends button beside Postcards; Friends side starts with
-                          a "Find your friends" card, and its feed cards open the friend's trip
+    (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score and
+                          why, sideways); "Dip into collections" (Explore's collection tiles); "From your friends" (FeedCard: big photo
+                          with who, month, place and score, then their quote and stay; opens the friend's trip)
     (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
                           jumps down to it), "Find your next trip" collection tiles (24, each opens its collection, no counts),
-                          Trending this month, and "Just for you": a long two-column photo feed (60 at a time, more as you scroll)
+                          Trending this month, "Made for your taste" (chips + things to eat/do/stay, on a sage band; moved from Home),
+                          and "Just for you": a long two-column photo feed (60 at a time, more as you scroll)
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
     (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list (tile shaped like a list)
     (tabs)/profile.tsx    You: profile picture (tap to change), Find friends / Add a trip buttons, stats, Your taste, travel map card (tap → map), your trips as photo
@@ -134,7 +134,7 @@ src/
     Photo.tsx             PhotoFill, Shade, PhotoTile (rounded photo), PhotoStamp (photo in a perforated frame)
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
-    cards.tsx             Row, TrendCard, PlaceCard, TasteCard, PickCard, FeedCard, BoardTile, PhotoBadge
+    cards.tsx             Row, TrendCard, PlaceCard, TasteCard, FeedCard, BoardTile, PhotoBadge
     explore.tsx           CollectionTile, ItemCard, sorting helpers (used by Explore and collection pages)
     lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, WantToGoButton, photoForItem, placeSlugForItem
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
@@ -219,7 +219,7 @@ docs/plan.md              Step-by-step plan
 - **Matching (your score out of 10)** — `src/lib/match.ts`, wired up in `taste.tsx`. **The app shows only scores out of 10, never a % match** (owner's decision, Nov 2026: one number is clearer). Fit and "match" still exist inside the engine for ordering.
   - **Two halves of taste, equal say:** *enjoyed* (your trips: 10 → +1, 6.5 → 0, 3.5 → −1; halves every 3 years; longer stays count a bit more) and *want next* (Want to go = 1.0 and other lists = 0.7, fading by half a year but never below 60%; list names like "Ski trips" via `tagsForListName`; place pages you look at, up to 0.5 each, halving every 45 days, 0.3× for places you've saved or been). So a long trip history can't drown out what someone's saving now.
   - **Fit (0–1)** from four parts, each blended 50/50 from the two halves where both know something: kind of holiday (holiday-type overlap, minus dislikes) 45%, near places (1,200 km falloff) 20%, warmth 20%, company 15% (who you've travelled with + who your saved places suit). Pulled towards neutral by confidence (`1 − e^(−evidence/1.5)`). Places you keep looking at get a direct lift (`interestLift`, up to +0.15 fit).
-  - **% match** = 70 + (fit − 0.5) × 70, within 40–99. **Score** = base (Bayesian blend of the place's rating, worth 2 friends, and friends' ratings; friends who agree with you count up to 2×) + 3 × (fit − 0.5), within 1–10. Places you've been show your own score. "For you" order: `rankValue` = 0.6 × score + 0.04 × match. Home's top pick is new to you (not been, not saved).
+  - **% match** = 70 + (fit − 0.5) × 70, within 40–99. **Score** = base (Bayesian blend of the place's rating, worth 2 friends, and friends' ratings; friends who agree with you count up to 2×) + 3 × (fit − 0.5), within 1–10. Places you've been show your own score. "For you" order: `rankValue` = 0.6 × score + 0.04 × match. Home's top picks are new to you (not been, not saved).
   - **"Made for your taste" items and place-page stays/restaurants** get a score out of 10 judged on the item itself (`itemScore` / `stayScore`, via `tasteItemInfo`): the friend's score (or 7.6 if a friend recommends it, 7.2 if none has been), nudged at most about ±0.6 by how much that kind of thing stands out among your interests (food for cafés, culture for museums…) or, for stays, the kind of stay you rate well and your usual price. Their line says why ("Maya gave it 9.3", "Priya stayed and gave it 9.1", "Recommended by Tom", "New to your friends"), never a place you saved. "Picked for you" is ordered by the score shown.
   - **Reasons:** "Like Venice, which you gave 9.0", "Like La Digue on your Want to go list", "You've looked at it 4 times", "Maya gave it 9.1", company.
   - Every card reads scores through `useTaste()`, so Home, Explore, place pages (score card + "How we worked this out", stays/eats % match), lists and "Your taste" update after a trip, a save, or leaving a place page.
@@ -259,7 +259,7 @@ From the owner's palette (Nov 2026): Oat Milk, Blush Petal, Terracotta Clay, Sag
 | `gold` | `#b9975b` | Hidden-gem pins on place maps |
 | `onDark` | `#faf7f0` | Text on photos and dark buttons |
 
-**Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, For you/Friends and the tab bar's + and active tab are terracotta; dark buttons are olive; Home's "Made for your taste" sits on a sage band; Picked for you cards are white with a blush/sage/sky edge and terracotta country; Friends feed cards are white with a soft blush/sage/sky header strip; Trending rank badges (`PhotoBadge accent`) and the line under trend cards are terracotta; You's stats are two coloured tiles (Trips, Countries; no average score, owner Nov 2026); avatars without a photo use olive/terracotta/sky; place score card blush, place facts sky/blush; Saved's Want to go card blush. The owner tried and didn't want fully tinted cards in Picked for you or the Friends feed, or a band behind Explore's Trending (too much), nor all-plain (too little): keep this middle ground. Collection tiles show no count.
+**Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, segmented switches and the tab bar's + and active tab are terracotta; dark buttons are olive; Explore's "Made for your taste" sits on a sage band; friends' feed cards are white with the stay on a sage strip; Trending rank badges (`PhotoBadge accent`) and the line under trend cards are terracotta; You's stats are two coloured tiles (Trips, Countries; no average score, owner Nov 2026); avatars without a photo use olive/terracotta/sky; place score card blush, place facts sky/blush; Saved's Want to go card blush. The owner tried and didn't want fully tinted feed cards or a band behind Explore's Trending (too much), nor all-plain (too little): keep this middle ground. Collection tiles show no count.
 
 `accent` is too light for small text on `bg`. Use `accentText` for small text and `accentDeep` behind white text. The place maps in `assets/maps/` have their pins drawn in `olive`/`accent`/`ink`/`gold` (rendered from the prototype's SVGs with those colours swapped in); if those change, redraw the maps so the key still matches.
 

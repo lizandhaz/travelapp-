@@ -1,10 +1,10 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, Modal, Pressable, View } from 'react-native';
+import { ActivityIndicator, Dimensions, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { LockIcon, PencilIcon, PlusIcon, ShareIcon } from '@/components/Icons';
+import { LockIcon, PencilIcon, SearchIcon, ShareIcon } from '@/components/Icons';
 import { photoForItem, placeSlugForItem, WishStar } from '@/components/lists';
 import { PhotoFill, Shade } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
@@ -31,6 +31,8 @@ export default function ListScreen() {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
+  // "Add a place" opens a sheet with the search box at the top, so the keyboard never covers the suggestions.
+  const [searching, setSearching] = useState(false);
   const [shared, setShared] = useState<Record<string, { id: string; name: string }[]>>({});
   const [inviting, setInviting] = useState<BoardItem | null>(null);
   const [opened, setOpened] = useState<BoardItem | null>(null);
@@ -69,6 +71,7 @@ export default function ListScreen() {
       setAdding(null);
       setPickerKey((k) => k + 1);
       setNote(null);
+      setSearching(false);
       await load();
     } catch (e) {
       setError({ message: e instanceof Error ? e.message : 'Something went wrong.' });
@@ -267,31 +270,18 @@ export default function ListScreen() {
         />
       )}
 
-      {/* Add a place */}
+      {/* Add a place: tapping the box opens the search sheet. */}
       <Card style={{ marginHorizontal: GUTTER, marginTop: 22, padding: 14, gap: 10 }}>
         <Text variant="label">Add a place</Text>
-        <View style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
-          <View style={{ flex: 1 }}>
-            <PlacePicker key={pickerKey} value={adding} onChange={setAdding} places={places} accessibilityLabel="Add a place" />
-          </View>
-          <Pressable
-            onPress={add}
-            disabled={busy || !adding?.name.trim()}
-            accessibilityRole="button"
-            accessibilityLabel="Add"
-            style={{
-              width: 52,
-              height: 52,
-              borderRadius: 26,
-              backgroundColor: adding?.name.trim() ? colors.ink : colors.line,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {busy ? <ActivityIndicator color={colors.onDark} /> : <PlusIcon color={adding?.name.trim() ? colors.stamp : colors.muted} size={22} />}
-          </Pressable>
-        </View>
-        {!!note && <Text variant="small">{note}</Text>}
+        <Pressable
+          onPress={() => setSearching(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Add a place"
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: radius.md, paddingHorizontal: 14, paddingVertical: 14 }}
+        >
+          <SearchIcon color={colors.muted} />
+          <Text variant="bodySoft">Search or type a place</Text>
+        </Pressable>
       </Card>
       <View style={{ paddingHorizontal: GUTTER, marginTop: 10 }}>
         <ErrorNotice error={error} />
@@ -317,6 +307,22 @@ export default function ListScreen() {
           )}
         </View>
       )}
+
+      <Modal visible={searching} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setSearching(false)}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, backgroundColor: colors.bg }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: GUTTER, paddingTop: 18, paddingBottom: 10 }}>
+            <Text variant="heading">Add a place</Text>
+            <Pressable onPress={() => setSearching(false)} accessibilityRole="button" accessibilityLabel="Close" hitSlop={10}>
+              <Text variant="link">Done</Text>
+            </Pressable>
+          </View>
+          <ScrollView contentContainerStyle={{ paddingHorizontal: GUTTER, gap: 12, paddingBottom: 24 }} keyboardShouldPersistTaps="handled">
+            <PlacePicker key={pickerKey} value={adding} onChange={setAdding} places={places} accessibilityLabel="Search for a place to add" autoFocus />
+            {!!note && <Text variant="small">{note}</Text>}
+            <Button title="Add to board" kind="dark" disabled={busy || !adding?.name.trim()} onPress={add} />
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </Modal>
     </Screen>
   );
 }

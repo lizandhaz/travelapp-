@@ -1,7 +1,6 @@
 import { router } from 'expo-router';
-import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Dimensions, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
+import { Dimensions, Modal, Pressable, ScrollView, View } from 'react-native';
 
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import type { PlaceResult } from '@/lib/match';
@@ -14,9 +13,8 @@ import { PhotoBadge, Row } from './cards';
 import { PhotoTile } from './Photo';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { Card, Input, SectionHeader, Segmented } from './ui';
+import { Card, Input, SectionHeader } from './ui';
 import { AreaMap } from './AreaMap';
-import { ZoomMap } from './ZoomMap';
 import { BookmarkIcon } from './Icons';
 
 const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
@@ -479,9 +477,9 @@ export function YourScore({ result, note }: { result: PlaceResult; note: string 
 const PIN_COLOURS: Record<string, string> = { Stay: colors.olive, Eat: colors.accent, Do: colors.ink, 'Hidden gem': colors.gold };
 
 /**
- * "On the map": the place's illustrated map with numbered pins (stay, eat, do, hidden gem)
- * and a key underneath with your score for each spot (from friends and your taste).
- * Tap the map to open it full screen and pinch to zoom; tap a spot for why it's there.
+ * "On the map": a still preview of the real (Apple) map with numbered pins (stay, eat, do, hidden gem)
+ * and a key underneath with your score for each spot (from friends and your taste). Tap the map for
+ * the big one: zoom from the street to the world, "Where are you staying?", and what's nearby.
  */
 export function PlaceMapSection({ slug, name }: { slug: string; name: string }) {
   const taste = useTaste();
@@ -496,9 +494,6 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
   const [typed, setTyped] = useState('');
   const [focus, setFocus] = useState<{ n: number | null; zoom: number; key: number }>({ n: null, zoom: fill, key: 0 });
   const [lastStay, setLastStay] = useState<number | null>(null);
-  // The real map (dressed like the drawing) first on phones; the drawing on the web, where real maps don't run.
-  const firstMode = Platform.OS === 'web' ? 'close' : 'area';
-  const [mode, setMode] = useState<'close' | 'area'>(firstMode);
   const map = placeMaps[slug];
   const centre = placeCentres[slug];
 
@@ -588,16 +583,19 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
         On the map
       </SectionHeader>
       <Card style={{ marginHorizontal: GUTTER, overflow: 'hidden' }}>
-        <Pressable
-          onPress={() => {
-            setMode(firstMode);
-            setOpen(true);
-          }}
-          accessibilityRole="button"
-          accessibilityLabel={`Map of ${name} with ${spots.length} spots. Opens the full map.`}
-        >
-          <Image source={map.image} style={{ width: '100%', aspectRatio: 400 / 250 }} contentFit="cover" />
-        </Pressable>
+        {/* A still preview of the real map; tap it to open the big one. */}
+        <AreaMap
+          slug={slug}
+          name={name}
+          width={width - GUTTER * 2 - 2}
+          height={Math.round(((width - GUTTER * 2) * 250) / 400)}
+          pins={map.pins}
+          picked={null}
+          stay={null}
+          onPin={() => setOpen(true)}
+          preview
+          onPress={() => setOpen(true)}
+        />
         <View style={{ paddingHorizontal: 14, paddingVertical: 6 }}>{key}</View>
       </Card>
 
@@ -609,34 +607,7 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
               <Text variant="link">Done</Text>
             </Pressable>
           </View>
-          {!!centre && (
-            <View style={{ paddingHorizontal: GUTTER, paddingBottom: 10 }}>
-              <Segmented
-                label="Map"
-                value={mode}
-                onChange={setMode}
-                options={[
-                  ['area', 'Map'],
-                  ['close', 'Drawing'],
-                ]}
-              />
-            </View>
-          )}
-          {open && mode === 'close' && (
-            <ZoomMap
-              image={map.image}
-              pins={map.pins}
-              width={width}
-              height={bigHeight}
-              label={`Map of ${name}`}
-              picked={picked}
-              stay={stay}
-              focus={focus}
-              onPin={choosePin}
-              onZoomOutPast={centre ? () => setMode('area') : undefined}
-            />
-          )}
-          {open && mode === 'area' && !!centre && (
+          {open && !!centre && (
             <AreaMap slug={slug} name={name} width={width} height={bigHeight} pins={map.pins} picked={picked} stay={stay} focus={focus} onPin={choosePin} />
           )}
           <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: GUTTER, paddingTop: 14, paddingBottom: 40, gap: 12 }}>

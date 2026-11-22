@@ -70,7 +70,6 @@ export default function Home() {
         <Row gap={14}>
           {picks.map((p) => {
             const score = p.r?.score ?? null;
-            const reason = p.r?.reasons[0] ?? null;
             // The name shrinks so its longest word fits beside the score stamp (no "Zanziba / r").
             const longest = Math.max(1, ...p.name.split(/\s+/).map((w) => w.length));
             const nameSize = Math.max(20, Math.min(30, Math.floor((cardW - 40 - 90) / (longest * 0.62))));
@@ -79,7 +78,7 @@ export default function Home() {
                 key={p.slug}
                 onPress={() => router.push(`/place/${p.slug}`)}
                 accessibilityRole="link"
-                accessibilityLabel={`${p.name}, ${p.sub}${score != null ? `, ${score.toFixed(1)} out of 10` : ''}${reason ? `. ${reason}` : ''}`}
+                accessibilityLabel={`${p.name}, ${p.sub}${score != null ? `, ${score.toFixed(1)} out of 10` : ''}`}
                 style={{ width: cardW }}
               >
                 <PhotoStamp photo={p.photo} width={cardW} height={cardH}>
@@ -93,11 +92,6 @@ export default function Home() {
                     {score != null && <ScoreStamp score={score} size="lg" />}
                   </View>
                 </PhotoStamp>
-                {!!reason && (
-                  <Text variant="small" numberOfLines={2} style={{ color: colors.ink, marginTop: 8, paddingHorizontal: 4 }}>
-                    ✦ {reason}
-                  </Text>
-                )}
               </Pressable>
             );
           })}

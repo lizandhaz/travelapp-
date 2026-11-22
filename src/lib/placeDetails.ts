@@ -1,7 +1,7 @@
 import type { PhotoName } from './photos';
 
 /**
- * Sample place details from the owner's design prototype ("XYZX without planning"):
+ * Sample place details from the owner's design prototype (the "… without planning" artifact):
  * where to stay, where to eat, things to do, best time to go, what friends said and top tips.
  * Real place pages come in plan Step E. Generated from the prototype; edit by hand if needed.
  */

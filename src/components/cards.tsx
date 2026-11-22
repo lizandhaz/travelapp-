@@ -142,16 +142,22 @@ export function FeedCard({ item }: { item: FeedItem }) {
             </View>
           </View>
         ) : (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 16 }}>
-            <Avatar face={item.face} name={item.who} size={36} />
-            <View style={{ flex: 1 }}>
-              <Text variant="strong">
-                {item.who}’s {item.place} trip
-              </Text>
-              <Text variant="tiny">{item.region}</Text>
+          // No photos: a soft blush top with who and when, then the place in big type beside the score.
+          <View style={{ backgroundColor: colors.blushSoft, padding: 16, gap: 14 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Avatar face={item.face} name={item.who} size={36} />
+              <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.ink }}>{item.who}</Text>
+              <MonthPill month={item.month} />
             </View>
-            <MonthPill month={item.month} />
-            <ScoreStamp score={item.score} size="sm" label="Destination" />
+            <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: fonts.displayBold, fontSize: feedSize, lineHeight: Math.round(feedSize * 1.12), color: colors.ink }}>{item.place}</Text>
+                <Text variant="label" style={{ marginTop: 2 }}>
+                  {item.region}
+                </Text>
+              </View>
+              <ScoreStamp score={item.score} size="md" label="Destination" />
+            </View>
           </View>
         )}
         <View style={{ padding: 16, gap: 14 }}>

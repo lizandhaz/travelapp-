@@ -75,7 +75,8 @@ export function getTrip(who: string, slug: string): FriendTrip | null {
     score: feed?.score ?? said!.score!,
     quote: stripQuotes(feed?.quote ?? said?.quote ?? null),
     ...extras,
-    photos: [...new Set([...(feed?.photo ? [feed.photo] : []), ...more])],
+    // A feed post without photos stays without photos on their trip and postcard too.
+    photos: feed && !feed.photo ? [] : [...new Set([...(feed?.photo ? [feed.photo] : []), ...more])],
     stay: feed
       ? { name: feed.stayName, type: feed.stayType, score: feed.stayScore, sub: stayed?.sub ?? null, photo: stayed?.photo ?? null }
       : stayed

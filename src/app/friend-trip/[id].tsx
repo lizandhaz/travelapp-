@@ -1,4 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Dimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -21,13 +22,21 @@ export default function FriendTripScreen() {
   const trip = getFriendTrip(id);
   if (!trip) return <NotFound />;
   const { stay, eats, dos, tips } = trip;
-  const h = Math.min(Dimensions.get('window').width, 480) * 0.95;
+  const hasPhoto = trip.photos.length > 0;
+  const h = Math.min(Dimensions.get('window').width, 480) * (hasPhoto ? 0.95 : 0.7);
 
   return (
     <Screen noTopInset>
       <View style={{ height: h }}>
-        <PhotoFill photo={trip.photos[0] ?? null} label={trip.place} />
-        <Shade strength={0.6} />
+        {hasPhoto ? (
+          <>
+            <PhotoFill photo={trip.photos[0]} label={trip.place} />
+            <Shade strength={0.6} />
+          </>
+        ) : (
+          // No photos: the same olive-to-terracotta as a postcard without photos.
+          <LinearGradient colors={[colors.olive, colors.accentDeep]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ position: 'absolute', inset: 0 }} />
+        )}
         <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER }}>
           <BackButton onPhoto />
         </View>

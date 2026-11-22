@@ -7,8 +7,8 @@ import { Text } from '@/components/Text';
 import { colors, fonts } from '@/constants/theme';
 import { monthYear } from '@/lib/months';
 import { photoForPlaceName } from '@/lib/sample';
-import { fitWordSize } from '@/lib/fit';
-import { formatScore } from '@/lib/score';
+import { fitLines, fitWordSize } from '@/lib/fit';
+import { formatScore, scoreWord } from '@/lib/score';
 import type { Trip } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
 
@@ -17,8 +17,8 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
   const main = trip.stops[0];
   const cover = trip.photoPaths[0] ?? null;
   const photoUrl = useTripPhoto(cover);
-  // Room: card minus frame, padding and the score stamp.
-  const nameSize = fitWordSize(main?.name ?? '', width - 2 * Math.max(6, Math.round(width * 0.025)) - 32 - 40, 19, 12);
+  // The name has the card's full width (minus frame and padding); the score sits underneath.
+  const nameSize = fitWordSize(main?.name ?? '', width - 2 * Math.max(6, Math.round(width * 0.025)) - 32, 22, 15);
   return (
     <Link href={`/trip/${trip.id}`} asChild>
       <Pressable accessibilityRole="link" accessibilityLabel={`${main?.name}, ${monthYear(trip.month)}, ${formatScore(trip.score)} out of 10`} style={{ width }}>
@@ -26,11 +26,14 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
           <View style={{ position: 'absolute', top: 18, left: 16 }}>
             <MonthPill month={monthYear(trip.month).toUpperCase()} onPhoto />
           </View>
-          <View style={{ position: 'absolute', left: 16, right: 16, bottom: 16, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
-            <Text numberOfLines={2} style={{ flex: 1, fontFamily: fonts.display, fontSize: nameSize, lineHeight: Math.round(nameSize * 1.18), color: colors.onDark }}>
+          <View style={{ position: 'absolute', left: 16, right: 16, bottom: 14 }}>
+            <Text {...fitLines(main?.name ?? '')} style={{ fontFamily: fonts.display, fontSize: nameSize, lineHeight: Math.round(nameSize * 1.18), color: colors.onDark }}>
               {main?.name}
             </Text>
-            <Text style={{ fontFamily: fonts.display, fontSize: 20, color: colors.onDark, fontVariant: ['tabular-nums'] }}>{formatScore(trip.score)}</Text>
+            <Text numberOfLines={1} style={{ marginTop: 2 }}>
+              <Text style={{ fontFamily: fonts.display, fontSize: 17, color: colors.onDark, fontVariant: ['tabular-nums'] }}>{formatScore(trip.score)}</Text>
+              <Text style={{ fontFamily: fonts.displayItalic, fontSize: 13, color: colors.onDark }}>{`  ${scoreWord(trip.score)}`}</Text>
+            </Text>
           </View>
         </PhotoStamp>
       </Pressable>

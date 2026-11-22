@@ -5,7 +5,7 @@ import { Dimensions, Pressable, ScrollView, View, type ViewStyle } from 'react-n
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import type { BoardItem, FeedItem, RowItem, TasteItem } from '@/lib/sample';
 import { useTaste } from '@/lib/taste';
-import { fitWordSize } from '@/lib/fit';
+import { fitLines, fitWordSize } from '@/lib/fit';
 import { Avatar } from './Avatar';
 import { MonthPill } from './MonthPill';
 import { PhotoFill, PhotoTile, Shade } from './Photo';
@@ -137,7 +137,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
             </View>
             <View style={{ position: 'absolute', left: 18, right: 18, bottom: 18, flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: fonts.displayBold, fontSize: feedSize, lineHeight: Math.round(feedSize * 1.12), color: colors.onDark }}>{item.place}</Text>
+                <Text {...fitLines(item.place)} style={{ fontFamily: fonts.displayBold, fontSize: feedSize, lineHeight: Math.round(feedSize * 1.12), color: colors.onDark }}>{item.place}</Text>
                 <Text variant="label" style={{ color: colors.onDark, marginTop: 2 }}>
                   {item.region}
                 </Text>
@@ -158,7 +158,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: fonts.displayBold, fontSize: feedSize, lineHeight: Math.round(feedSize * 1.12), color: colors.ink }}>{item.place}</Text>
+                <Text {...fitLines(item.place)} style={{ fontFamily: fonts.displayBold, fontSize: feedSize, lineHeight: Math.round(feedSize * 1.12), color: colors.ink }}>{item.place}</Text>
                 <Text variant="label" style={{ marginTop: 2 }}>
                   {item.region}
                 </Text>

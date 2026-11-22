@@ -27,7 +27,7 @@ export const companionsLabel = (c: Companions | null) => COMPANIONS.find(([id]) 
 
 export type Place = { name: string; country: string };
 export type TripStop = Place & { nights: number | null };
-export type TripStay = { name: string; type: StayKind; score: number };
+export type TripStay = { name: string; type: StayKind; /** Optional (owner, Nov 2026). */ score: number | null };
 
 export type Trip = {
   id: string;
@@ -88,7 +88,7 @@ function fromRow(r: Row): Trip {
     score: Number(r.score),
     visibility: r.visibility,
     stops,
-    stay: r.stays?.[0] ? { ...r.stays[0], score: Number(r.stays[0].score) } : null,
+    stay: r.stays?.[0] ? { ...r.stays[0], score: r.stays[0].score == null ? null : Number(r.stays[0].score) } : null,
     restaurants: [...(r.food_picks ?? [])].sort((a, b) => (a.position ?? 0) - (b.position ?? 0)).map((f) => f.name),
     tip: r.top_tips?.[0]?.tip ?? null,
     companions: r.companions,

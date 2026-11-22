@@ -2,9 +2,11 @@
 -- one "best meal". They're kept in food_picks (one row each) with a position.
 -- save_trip() now takes "restaurants": ["Taberna Real", "Café Saudade"] (up to 10). It still
 -- accepts the older "meal" (one name) when "restaurants" isn't sent, so older app versions keep working.
+-- Also: the score for where you stayed is now optional (it makes adding a stay quicker).
 -- Safe to run twice.
 
 alter table public.food_picks add column if not exists position smallint not null default 0;
+alter table public.stays alter column score drop not null;
 
 create or replace function public.save_trip(p_trip jsonb)
 returns uuid
@@ -91,7 +93,7 @@ begin
       v_id,
       trim(p_trip -> 'stay' ->> 'name'),
       p_trip -> 'stay' ->> 'type',
-      (p_trip -> 'stay' ->> 'score')::numeric(3,1)
+      nullif(p_trip -> 'stay' ->> 'score', '')::numeric(3,1)
     );
   end if;
 

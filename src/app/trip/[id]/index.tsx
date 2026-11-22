@@ -168,7 +168,7 @@ export default function TripScreen() {
                 </View>
                 <Text variant="subheading">{trip.stay.name}</Text>
               </View>
-              <ScoreStamp score={trip.stay.score} tone="olive" label="Stay" />
+              {trip.stay.score != null && <ScoreStamp score={trip.stay.score} tone="olive" label="Stay" />}
             </Card>
           </Section>
         )}

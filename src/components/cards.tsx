@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, ScrollView, View, type ViewStyle } from 'react-native';
 
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
@@ -6,10 +7,10 @@ import type { BoardItem, FeedItem, RowItem, TasteItem } from '@/lib/sample';
 import { useTaste } from '@/lib/taste';
 import { Avatar } from './Avatar';
 import { MonthPill } from './MonthPill';
-import { PhotoFill, PhotoTile } from './Photo';
+import { PhotoFill, PhotoTile, Shade } from './Photo';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { Card, toneFill, type Tone } from './ui';
+import { Card } from './ui';
 import { friendTripId } from '@/lib/friendTrips';
 
 const openPlace = (slug: string | null) => slug && router.push(`/place/${slug}`);
@@ -108,78 +109,63 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
   );
 }
 
-/** "Picked for you": a white card with a palette-coloured edge, photo, stamp and the country. */
-export function PickCard({ item, tone = 'white' }: { item: RowItem; tone?: Tone }) {
-  const edge = tone === 'blush' ? colors.stamp : tone === 'sage' ? colors.sage : tone === 'sky' ? colors.sky : colors.line;
-  const { score } = usePersonalScore(item.slug, item.score);
+/** One friend's trip in the Friends feed: a big photo with who, when, where and their score, then their words and stay. */
+export function FeedCard({ item }: { item: FeedItem }) {
+  const open = () => router.push(`/friend-trip/${friendTripId(item)}`);
+  const label = `${item.who}'s ${item.place} trip, ${item.month}. ${item.score.toFixed(1)} out of 10. Open their trip`;
   return (
-    <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" style={{ flex: 1 }}>
-      <Card style={{ borderColor: edge, borderWidth: tone === 'white' ? 1 : 2 }}>
-        <View style={{ height: 150 }}>
-          <PhotoFill photo={item.photo} />
-          {score != null && (
-            <View style={{ position: 'absolute', top: 8, right: 8 }}>
-              <ScoreStamp score={score} size="sm" />
-            </View>
-          )}
-        </View>
-        <View style={{ padding: 12 }}>
-          <Text variant="subheading">{item.name}</Text>
-          <Text variant="tiny" style={{ color: colors.accentText }}>{item.sub}</Text>
-        </View>
-      </Card>
-    </Pressable>
-  );
-}
-
-/** One friend's trip in the Friends feed. */
-export function FeedCard({ item, tone = 'white' }: { item: FeedItem; tone?: Tone }) {
-  return (
-    <Pressable
-      onPress={() => router.push(`/friend-trip/${friendTripId(item)}`)}
-      accessibilityRole="link"
-      accessibilityLabel={`${item.who}'s trip to ${item.place}, ${item.month}. ${item.score.toFixed(1)} out of 10. Open their trip`}
-      style={({ pressed }) => pressed && { opacity: 0.92 }}
-    >
+    <Pressable onPress={open} accessibilityRole="link" accessibilityLabel={label} style={({ pressed }) => pressed && { opacity: 0.92 }}>
       <Card>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, backgroundColor: toneFill(tone) }}>
-          <Avatar face={item.face} name={item.who} size={36} />
-          <View style={{ flex: 1 }}>
-            <Text variant="body" style={{ fontSize: 15 }}>
-              <Text variant="strong">{item.who}</Text> went to <Text variant="strong">{item.place}</Text>
-            </Text>
-            <Text variant="tiny">{item.region}</Text>
-          </View>
-          <MonthPill month={item.month} />
-        </View>
-        {item.photo && (
-          <View style={{ height: 300 }}>
+        {item.photo ? (
+          <View style={{ height: 380 }}>
             <PhotoFill photo={item.photo} />
+            <LinearGradient colors={['rgba(0,0,0,0.38)', 'transparent']} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 110 }} />
+            <Shade strength={0.6} />
+            <View style={{ position: 'absolute', top: 14, left: 14, right: 14, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <View style={{ borderWidth: 2, borderColor: colors.onDark, borderRadius: 22 }}>
+                <Avatar face={item.face} name={item.who} size={36} />
+              </View>
+              <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.onDark }}>{item.who}</Text>
+              <MonthPill month={item.month} onPhoto />
+            </View>
+            <View style={{ position: 'absolute', left: 18, right: 18, bottom: 18, flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: fonts.displayBold, fontSize: 34, lineHeight: 38, color: colors.onDark }}>{item.place}</Text>
+                <Text variant="label" style={{ color: colors.onDark, marginTop: 2 }}>
+                  {item.region}
+                </Text>
+              </View>
+              <ScoreStamp score={item.score} size="md" label="Destination" />
+            </View>
+          </View>
+        ) : (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 16 }}>
+            <Avatar face={item.face} name={item.who} size={36} />
+            <View style={{ flex: 1 }}>
+              <Text variant="strong">
+                {item.who}’s {item.place} trip
+              </Text>
+              <Text variant="tiny">{item.region}</Text>
+            </View>
+            <MonthPill month={item.month} />
+            <ScoreStamp score={item.score} size="sm" label="Destination" />
           </View>
         )}
         <View style={{ padding: 16, gap: 14 }}>
           {!!item.quote && <Text variant="quote">{item.quote}</Text>}
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <ScoreStamp score={item.score} size="sm" label="Destination" />
-            <View style={{ flex: 1 }}>
-              <Text variant="label" style={{ fontSize: 10 }}>
-                Destination
-              </Text>
-              <Text variant="body" style={{ fontSize: 14 }}>
-                {item.place}
-              </Text>
-            </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.sageSoft, borderRadius: radius.md, padding: 10 }}>
             <ScoreStamp score={item.stayScore} size="sm" tone="olive" label={item.stayType} />
             <View style={{ flex: 1 }}>
-              <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(167,182,154,0.35)', borderRadius: 999, paddingHorizontal: 7, paddingVertical: 1 }}>
-                <Text variant="label" style={{ fontSize: 9, color: colors.olive }}>
-                  {item.stayType}
-                </Text>
-              </View>
-              <Text variant="body" style={{ fontSize: 14 }}>
+              <Text variant="label" style={{ fontSize: 10 }}>
+                Stayed at · {item.stayType}
+              </Text>
+              <Text variant="strong" style={{ fontSize: 15 }}>
                 {item.stayName}
               </Text>
             </View>
+            <Text variant="small" style={{ color: colors.accentText }}>
+              Their trip →
+            </Text>
           </View>
         </View>
       </Card>

@@ -1,305 +1,140 @@
 import { router } from 'expo-router';
-import { useRef, useState, type ComponentRef } from 'react';
-import { Dimensions, Pressable, ScrollView, View, type LayoutChangeEvent } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useMemo } from 'react';
+import { Dimensions, Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
-import { FeedCard, PickCard, PlaceCard, Row, TasteCard, TrendCard } from '@/components/cards';
-import { AddPersonIcon, SearchIcon, SendIcon } from '@/components/Icons';
+import { FeedCard, Row } from '@/components/cards';
+import { CollectionTile } from '@/components/explore';
+import { AddPersonIcon, SendIcon } from '@/components/Icons';
 import { PhotoStamp } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
-import { Button, Card, Chip, IconCircle, Screen, SectionHeader, Segmented, TONES } from '@/components/ui';
+import { IconCircle, Screen, SectionHeader } from '@/components/ui';
 import { Wordmark } from '@/components/Wordmark';
 import { colors, fonts, GUTTER } from '@/constants/theme';
-import { friendsFeed, hero as sampleHero, PHOTO_CREDITS, places, rows, TASTES, unreadPostcardCount, type RowItem } from '@/lib/sample';
+import { itemCollections, placeCollections, placesIn } from '@/lib/explore';
 import { rankValue } from '@/lib/match';
+import { friendsFeed, PHOTO_CREDITS, places, rows, unreadPostcardCount } from '@/lib/sample';
 import { tasteNote, useTaste } from '@/lib/taste';
 
-/** Chips under the search bar: each jumps to its section of For you. */
-const JUMPS: [string, string][] = [
-  ['trending', 'Trending'],
-  ['islands', 'Islands & beaches'],
-  ['weekends', 'Weekends'],
-  ['overnight', 'One night away'],
-  ['taste', 'Made for your taste'],
-  ['picked', 'Picked for you'],
-];
-
+/**
+ * Home: top picks for you, collections to dip into, then what your friends rated
+ * (newest first). Everything else lives in Explore.
+ */
 export default function Home() {
-  const [side, setSide] = useState<'for-you' | 'friends'>('for-you');
-  const insets = useSafeAreaInsets();
-  const scroller = useRef<ComponentRef<typeof ScrollView>>(null);
-  // Where things are, for jumping: the pinned bar's height, where For you starts, and each section within it.
-  const spots = useRef<{ bar: number; content: number; sections: Record<string, number> }>({ bar: 0, content: 0, sections: {} });
-  const [active, setActive] = useState<string | null>(null);
-  const chipRow = useRef<ComponentRef<typeof ScrollView>>(null);
-  const chipX = useRef<Record<string, number>>({});
-  // Keep the highlighted chip in view as you scroll down the page.
-  const highlight = (key: string | null) => {
-    if (key === active) return;
-    setActive(key);
-    if (key) chipRow.current?.scrollTo({ x: Math.max(0, (chipX.current[key] ?? 0) - GUTTER), animated: true });
-  };
-  const top = (key: string) => spots.current.content + (spots.current.sections[key] ?? 0) - spots.current.bar - 8;
-  const jump = (key: string) => {
-    highlight(key);
-    scroller.current?.scrollTo({ y: Math.max(0, top(key)), animated: true });
-  };
-
-  return (
-    <View style={{ flex: 1, backgroundColor: colors.bg, paddingTop: insets.top }}>
-      <Screen
-        ref={scroller}
-        tabBar
-        noTopInset
-        stickyHeaderIndices={[2]}
-        scrollEventThrottle={100}
-        onScroll={(e) => {
-          if (side !== 'for-you') return;
-          const y = e.nativeEvent.contentOffset.y;
-          const here = [...JUMPS].reverse().find(([key]) => spots.current.sections[key] != null && top(key) <= y + 30);
-          highlight(here ? here[0] : null);
-        }}
-      >
-        <View style={{ paddingHorizontal: GUTTER, paddingTop: 16, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <Wordmark />
-          <View style={{ flexDirection: 'row', gap: 10, marginTop: 2 }}>
-            <IconCircle label="Find friends" onPress={() => router.push('/people')}>
-              <AddPersonIcon color={colors.ink} />
-            </IconCircle>
-            <IconCircle label="Postcards" badge={unreadPostcardCount} onPress={() => router.push('/postcards')}>
-              <SendIcon color={colors.ink} />
-            </IconCircle>
-          </View>
-        </View>
-
-        <View style={{ paddingHorizontal: GUTTER, marginTop: 18 }}>
-          <Segmented
-            label="Home"
-            value={side}
-            onChange={(v) => {
-              setSide(v);
-              setActive(null);
-            }}
-            options={[
-              ['for-you', 'For you'],
-              ['friends', 'Friends'],
-            ]}
-          />
-        </View>
-
-        {/* Pinned to the top while you scroll. */}
-        <View onLayout={(e) => (spots.current.bar = e.nativeEvent.layout.height)} style={{ backgroundColor: colors.bg, paddingTop: 14, paddingBottom: 12 }}>
-          <View style={{ paddingHorizontal: GUTTER }}>
-            <Pressable
-              onPress={() => router.navigate('/explore')}
-              accessibilityRole="search"
-              accessibilityLabel="Search: describe your perfect trip"
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 10, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, borderRadius: 999, paddingHorizontal: 16, paddingVertical: 13 }}
-            >
-              <SearchIcon color={colors.muted} />
-              <Text variant="body" style={{ color: colors.muted }}>
-                Describe your perfect trip
-              </Text>
-            </Pressable>
-          </View>
-          {side === 'for-you' && (
-            <ScrollView
-              ref={chipRow}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginTop: 12 }}
-              contentContainerStyle={{ paddingHorizontal: GUTTER, gap: 8 }}
-            >
-              {JUMPS.map(([key, label]) => (
-                <View key={key} onLayout={(e) => (chipX.current[key] = e.nativeEvent.layout.x)}>
-                  <Chip label={label} selected={active === key} onPress={() => jump(key)} accessibilityLabel={`Go to ${label}`} />
-                </View>
-              ))}
-            </ScrollView>
-          )}
-        </View>
-
-        <View onLayout={(e) => (spots.current.content = e.nativeEvent.layout.y)} style={{ paddingTop: 8 }}>
-          {side === 'for-you' ? <ForYou onSection={(key, y) => (spots.current.sections[key] = y + 8)} /> : <Friends />}
-        </View>
-      </Screen>
-    </View>
-  );
-}
-
-function ForYou({ onSection }: { onSection: (key: string, y: number) => void }) {
-  const width = Math.min(Dimensions.get('window').width, 480) - GUTTER * 2;
-  const [taste, setTaste] = useState(0);
+  const width = Math.min(Dimensions.get('window').width, 480);
   const t = useTaste();
   const personal = t.profile.evidence > 0;
-  const rankOf = (slug: string) => {
-    const r = t.forSlug(slug);
-    return r ? rankValue(r) : 0;
-  };
-  // Rows sorted for you (score and fit) once we know your taste (otherwise the prototype's order).
-  const byYou = (items: RowItem[]) => (personal ? [...items].sort((a, b) => rankOf(b.slug) - rankOf(a.slug)) : items);
-  // Best match first once we know your taste.
-  // "Picked for you" is ordered by the score you see on each card.
-  const byScore = (items: RowItem[]) => (personal ? [...items].sort((a, b) => (t.forSlug(b.slug)?.score ?? 0) - (t.forSlug(a.slug)?.score ?? 0) || rankOf(b.slug) - rankOf(a.slug)) : items);
-  const tasteItems = rows.taste.filter(TASTES[taste].match).sort((a, b) => (personal ? t.forItem(b).score - t.forItem(a).score : 0));
 
-  // The big picture at the top: your best match that's new to you (not been, not already saved).
-  const top = personal
+  // Top picks: your best matches that are new to you (not been, not saved). Before we
+  // know your taste, the prototype's picks.
+  const picks = personal
     ? places
         .filter((p) => p.score != null && !t.forSlug(p.slug)?.yours && !t.isSaved(p.slug))
-        .map((p) => ({ p, r: t.forSlug(p.slug)! }))
-        .sort((a, b) => rankValue(b.r) - rankValue(a.r))[0]
-    : null;
-  const hero = top
-    ? {
-        slug: top.p.slug,
-        name: top.p.name,
-        photo: top.p.photo,
-        kicker: 'Top pick for you',
-        sub: top.p.region,
-        score: top.r.score,
-        reason: top.r.reasons[0] ?? null,
-      }
-    : { ...sampleHero, score: t.forSlug(sampleHero.slug)?.score ?? sampleHero.score, reason: null as string | null };
+        .map((p) => ({ slug: p.slug, name: p.name, sub: p.region, photo: p.photo, r: t.forSlug(p.slug)! }))
+        .sort((a, b) => rankValue(b.r) - rankValue(a.r))
+        .slice(0, 8)
+    : rows.picked.map((p) => ({ slug: p.slug, name: p.name, sub: p.sub, photo: p.photo, r: t.forSlug(p.slug) }));
 
-  // The name shrinks so its longest word fits beside the score stamp (no "Palerm / o").
-  const longest = Math.max(1, ...hero.name.split(/\s+/).map((w) => w.length));
-  const heroSize = Math.max(30, Math.min(52, Math.floor((width - 44 - 118) / (longest * 0.6))));
-  const at = (key: string) => (e: LayoutChangeEvent) => onSection(key, e.nativeEvent.layout.y);
+  const collections = useMemo(
+    () =>
+      [
+        ...placeCollections().map((c) => ({ id: c.id, title: c.title, photos: placesIn(c).map((p) => p.photo) })),
+        ...itemCollections.map((c) => ({ id: c.id, title: c.title, photos: c.items().map((i) => i.photo) })),
+      ].filter((c) => c.photos.length >= 3),
+    [],
+  );
+
+  const cardW = Math.round((width - GUTTER * 2) * 0.78);
+  const cardH = Math.round(cardW * 1.22);
 
   return (
-    <View style={{ gap: 32 }}>
-      <View style={{ paddingHorizontal: GUTTER, gap: 10 }}>
-        <Pressable onPress={() => router.push(`/place/${hero.slug}`)} accessibilityRole="link" accessibilityLabel={`${hero.name}, ${hero.sub}, ${hero.score} out of 10`}>
-          <PhotoStamp photo={hero.photo} width={width} height={width * 1.3}>
-            <View style={{ position: 'absolute', left: 22, right: 22, bottom: 24, flexDirection: 'row', alignItems: 'flex-end' }}>
-              <View style={{ flex: 1 }}>
-                <Text variant="label" style={{ color: colors.onDark }}>
-                  {hero.kicker}
-                </Text>
-                <Text style={{ fontFamily: fonts.displayBold, fontSize: heroSize, lineHeight: Math.round(heroSize * 1.1), color: colors.onDark, marginTop: 6 }}>{hero.name}</Text>
-                <Text variant="label" style={{ color: colors.onDark, marginTop: 8 }}>
-                  {hero.sub} →
-                </Text>
-              </View>
-              <ScoreStamp score={hero.score} size="xl" />
-            </View>
-          </PhotoStamp>
-        </Pressable>
-        {!!hero.reason && (
-          <Text variant="small" style={{ color: colors.ink }}>
-            ✦ {hero.reason}
-          </Text>
-        )}
-        <Text variant="tiny">{tasteNote(t.profile, t.usingFriends)}</Text>
+    <Screen tabBar>
+      <View style={{ paddingHorizontal: GUTTER, paddingTop: 16, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <Wordmark />
+        <View style={{ flexDirection: 'row', gap: 10, marginTop: 2 }}>
+          <IconCircle label="Find friends" onPress={() => router.push('/people')}>
+            <AddPersonIcon color={colors.ink} />
+          </IconCircle>
+          <IconCircle label="Postcards" badge={unreadPostcardCount} onPress={() => router.push('/postcards')}>
+            <SendIcon color={colors.ink} />
+          </IconCircle>
+        </View>
       </View>
 
-      <View onLayout={at('trending')}>
-        <SectionHeader action="See all" onAction={() => router.push('/explore')}>
-          <AccentTitle before="Where's" accent="trending" variant="heading" />
+      {/* Top picks for you */}
+      <View style={{ marginTop: 26 }}>
+        <SectionHeader action="Explore" onAction={() => router.navigate('/explore')}>
+          <AccentTitle before="Top picks for" accent="you" variant="heading" />
+        </SectionHeader>
+        <Row gap={14}>
+          {picks.map((p) => {
+            const score = p.r?.score ?? null;
+            const reason = p.r?.reasons[0] ?? null;
+            // The name shrinks so its longest word fits beside the score stamp (no "Zanziba / r").
+            const longest = Math.max(1, ...p.name.split(/\s+/).map((w) => w.length));
+            const nameSize = Math.max(20, Math.min(30, Math.floor((cardW - 40 - 90) / (longest * 0.62))));
+            return (
+              <Pressable
+                key={p.slug}
+                onPress={() => router.push(`/place/${p.slug}`)}
+                accessibilityRole="link"
+                accessibilityLabel={`${p.name}, ${p.sub}${score != null ? `, ${score.toFixed(1)} out of 10` : ''}${reason ? `. ${reason}` : ''}`}
+                style={{ width: cardW }}
+              >
+                <PhotoStamp photo={p.photo} width={cardW} height={cardH}>
+                  <View style={{ position: 'absolute', left: 20, right: 20, bottom: 20, flexDirection: 'row', alignItems: 'flex-end', gap: 10 }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontFamily: fonts.displayBold, fontSize: nameSize, lineHeight: Math.round(nameSize * 1.12), color: colors.onDark }}>{p.name}</Text>
+                      <Text variant="label" style={{ color: colors.onDark, marginTop: 4 }} numberOfLines={1}>
+                        {p.sub}
+                      </Text>
+                    </View>
+                    {score != null && <ScoreStamp score={score} size="lg" />}
+                  </View>
+                </PhotoStamp>
+                {!!reason && (
+                  <Text variant="small" numberOfLines={2} style={{ color: colors.ink, marginTop: 8, paddingHorizontal: 4 }}>
+                    ✦ {reason}
+                  </Text>
+                )}
+              </Pressable>
+            );
+          })}
+        </Row>
+        <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 10 }}>
+          {tasteNote(t.profile, t.usingFriends)}
+        </Text>
+      </View>
+
+      {/* Collections */}
+      <View style={{ marginTop: 30 }}>
+        <SectionHeader action="See all" onAction={() => router.navigate('/explore')}>
+          <AccentTitle before="Dip into" accent="collections" variant="heading" />
         </SectionHeader>
         <Row>
-          {rows.trending.map((i) => (
-            <TrendCard key={i.slug} item={i} />
+          {collections.map((c) => (
+            <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.photos[0]} count={c.photos.length} />
           ))}
         </Row>
       </View>
 
-      <PlaceRow onLayout={at('islands')} before="Island" accent="escapes" items={byYou(rows.islands)} width={230} height={260} />
-      <PlaceRow onLayout={at('weekends')} before="Weekends" accent="away" items={byYou(rows.weekends)} />
-      <PlaceRow onLayout={at('overnight')} before="One night" accent="away" items={byYou(rows.overnight)} width={170} height={190} />
-
-      <View onLayout={at('taste')} style={{ backgroundColor: colors.sageSoft, paddingVertical: 24 }}>
-        <SectionHeader>
-          <AccentTitle before="Made for your" accent="taste" variant="heading" />
+      {/* What friends rated, newest first */}
+      <View style={{ marginTop: 34 }}>
+        <SectionHeader action="Find friends" onAction={() => router.push('/people')}>
+          <AccentTitle before="From your" accent="friends" variant="heading" />
         </SectionHeader>
-        <Row gap={8}>
-          {TASTES.map((t, i) => (
-            <Chip key={t.label} label={t.label} selected={taste === i} onPress={() => setTaste(i)} />
+        <View style={{ paddingHorizontal: GUTTER, gap: 22 }}>
+          {friendsFeed.map((f) => (
+            <FeedCard key={`${f.who}-${f.place}`} item={f} />
           ))}
-        </Row>
-        <View style={{ height: 14 }} />
-        <Row gap={14}>
-          {tasteItems.map((i) => (
-            <TasteCard key={`${i.slug}-${i.name}`} item={i} />
-          ))}
-        </Row>
-      </View>
-
-      <View onLayout={at('picked')}>
-        <SectionHeader action="Explore" onAction={() => router.push('/explore')}>
-          <AccentTitle before="Picked for" accent="you" variant="heading" />
-        </SectionHeader>
-        <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
-          {pairs(byScore(rows.picked)).map((pair, i) => (
-            <View key={i} style={{ flexDirection: 'row', gap: 12 }}>
-              {pair.map((p, j) => (
-                <PickCard key={p.slug} item={p} tone={TONES[(i * 2 + j) % TONES.length]} />
-              ))}
-              {pair.length === 1 && <View style={{ flex: 1 }} />}
-            </View>
-          ))}
+          <Text variant="tiny">Preview: these are sample trips. Your friends’ real trips arrive soon.</Text>
         </View>
       </View>
 
-      <Text variant="tiny" style={{ paddingHorizontal: GUTTER, fontSize: 10, lineHeight: 14 }}>
+      <Text variant="tiny" style={{ paddingHorizontal: GUTTER, fontSize: 10, lineHeight: 14, marginTop: 28 }}>
         {PHOTO_CREDITS}
       </Text>
-    </View>
+    </Screen>
   );
-}
-
-function PlaceRow({
-  before,
-  accent,
-  items,
-  width,
-  height,
-  onLayout,
-}: {
-  before: string;
-  accent: string;
-  items: typeof rows.islands;
-  width?: number;
-  height?: number;
-  onLayout?: (e: LayoutChangeEvent) => void;
-}) {
-  return (
-    <View onLayout={onLayout}>
-      <SectionHeader action="See all" onAction={() => router.push('/explore')}>
-        <AccentTitle before={before} accent={accent} variant="heading" />
-      </SectionHeader>
-      <Row>
-        {items.map((i) => (
-          <PlaceCard key={i.slug} item={i} width={width} height={height} />
-        ))}
-      </Row>
-    </View>
-  );
-}
-
-function Friends() {
-  return (
-    <View style={{ paddingHorizontal: GUTTER, gap: 18 }}>
-      <Card tone="sage" style={{ padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-        <View style={{ flex: 1 }}>
-          <Text variant="strong">Find your friends</Text>
-          <Text variant="small">Search by name or username, or invite them.</Text>
-        </View>
-        <Button title="Find" kind="dark" size="sm" onPress={() => router.push('/people')} />
-      </Card>
-      <Text variant="tiny">Preview: these are sample trips. Your friends’ real trips arrive soon.</Text>
-      {friendsFeed.map((f, i) => (
-        <FeedCard key={`${f.who}-${f.place}`} item={f} tone={TONES[i % TONES.length]} />
-      ))}
-    </View>
-  );
-}
-
-function pairs<T>(xs: T[]): T[][] {
-  const out: T[][] = [];
-  xs.forEach((x, i) => (i % 2 ? out[out.length - 1].push(x) : out.push([x])));
-  return out;
 }

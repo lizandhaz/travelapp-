@@ -6,19 +6,23 @@ import { AccentTitle } from '@/components/AccentTitle';
 import { PostcardCard } from '@/components/PostcardCard';
 import { Row } from '@/components/cards';
 import { PhotoTile } from '@/components/Photo';
+import { TripActions } from '@/components/TripActions';
 import { BackButton, Button, PageTitle, Screen, SectionHeader } from '@/components/ui';
 import { GUTTER } from '@/constants/theme';
 import { getPostcard } from '@/lib/postcards';
-import { tripPlace } from '@/lib/friendTrips';
+import { getFriendTrip, tripPlace } from '@/lib/friendTrips';
 import NotFound from '../+not-found';
 
-/** One Postcard about a friend's trip: the trip as a postcard (tap to turn over), then their whole trip or the place. */
+/**
+ * A friend's trip as a postcard (tap to turn over), then scroll down for their photos, Like / Comment / Save, their
+ * whole trip and the place. Opened from Postcards (id = the Postcard's id) and from Home's friends feed
+ * (id = the friend's trip id, e.g. "maya-hydra").
+ */
 export default function PostcardScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [flipped, setFlipped] = useState(false);
-  const card = getPostcard(id);
-  if (!card?.trip) return <NotFound />;
-  const trip = card.trip;
+  const trip = getPostcard(id)?.trip ?? getFriendTrip(id);
+  if (!trip) return <NotFound />;
   const width = Math.min(Dimensions.get('window').width, 480) - GUTTER * 2;
 
   return (
@@ -32,6 +36,9 @@ export default function PostcardScreen() {
       <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
         <PostcardCard trip={trip} width={width} flipped={flipped} onFlip={() => setFlipped((f) => !f)} />
         <Button title={flipped ? 'See the front' : 'Turn over'} kind="outline" onPress={() => setFlipped((f) => !f)} />
+        <View style={{ paddingTop: 6, paddingHorizontal: 4 }}>
+          <TripActions id={trip.id} who={trip.who} place={trip.place} slug={trip.slug} />
+        </View>
       </View>
 
       {trip.photos.length > 0 && (

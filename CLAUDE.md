@@ -89,7 +89,7 @@ src/
     (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score, sideways;
                           no text under them); "Dip into collections" (Explore's collection tiles); "From your friends" (FeedCard: big photo
                           with who, when they posted, month, place and score, or for a post without photos a blush top with the place in big
-                          type, then their quote, stay, and Like / Comment / Save; opens the friend's trip. The sample feed mixes both
+                          type, then their quote, stay, and Like / Comment / Save; opens as a postcard (postcard/[id] with the friend's trip id), owner Nov 2026. The sample feed mixes both
                           on purpose). A thin line sits above "From your friends"
     (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
                           jumps down to it), "Find your next trip" collection tiles (24, each opens its collection, no counts),
@@ -118,14 +118,14 @@ src/
     people.tsx            People (real; followers & following, owner Nov 2026): search by name or @username with Follow / Follow back /
                           Requested / Following; tabs Followers / Following / Requests (?tab=); remove a follower, unfollow, accept or
                           decline (each asks once); Invite friends (share sheet with your @username)
-    postcard/[id].tsx     A friend's trip as a postcard, titled "<who>'s <place> trip", the same template for everyone (components/
+    postcard/[id].tsx     Opened from Postcards (id = the Postcard's id) or the friends feed (id = the friend's trip id). A friend's trip as a postcard, titled "<who>'s <place> trip", the same template for everyone (components/
                           PostcardCard: photo front "Greetings from <place>"; tap/"Turn over" for the back: the place, region and
                           month and a photo stamp,
                           then like a real postcard a line down the middle: their quote and top tip on the left; score + word, who
                           with, nights, where they slept (+ score), where they ate on the right). No personal messages and no
                           To/From lines (owner, Nov 2026). Anything not filled in is left out and the card rearranges: no words →
                           a big photo on the left (or details full width), no photos → a coloured front with a star, and the back's
-                          content sets the card's height. Then big photos, "See <who>'s whole trip" and "More about <place>"
+                          content sets the card's height. Then Like / Comment / Save, big photos, "See <who>'s whole trip" and "More about <place>"
     friend-trip/[id].tsx  A friend's trip (id "maya-hydra"; sample, lib/friendTrips): their score, who with, nights, quote, photos,
                           where they stayed, where they ate, what they did, their tips, "More about <place>"
     settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places

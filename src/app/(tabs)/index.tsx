@@ -16,6 +16,7 @@ import { itemCollections, placeCollections, placesIn } from '@/lib/explore';
 import { rankValue } from '@/lib/match';
 import { friendsFeed, PHOTO_CREDITS, places, rows, unreadPostcardCount } from '@/lib/sample';
 import { useTaste } from '@/lib/taste';
+import { fitWordSize } from '@/lib/fit';
 
 /**
  * Home: top picks for you, collections to dip into, then what your friends rated
@@ -71,8 +72,8 @@ export default function Home() {
           {picks.map((p) => {
             const score = p.r?.score ?? null;
             // The name shrinks so its longest word fits beside the score stamp (no "Zanziba / r").
-            const longest = Math.max(1, ...p.name.split(/\s+/).map((w) => w.length));
-            const nameSize = Math.max(20, Math.min(30, Math.floor((cardW - 40 - 90) / (longest * 0.62))));
+            // Room beside the stamp: card minus frame and padding (about 44) minus the stamp and gap (68).
+            const nameSize = fitWordSize(p.name, cardW - 44 - 68, 30, 18);
             return (
               <Pressable
                 key={p.slug}
@@ -89,7 +90,7 @@ export default function Home() {
                         {p.sub}
                       </Text>
                     </View>
-                    {score != null && <ScoreStamp score={score} size="lg" />}
+                    {score != null && <ScoreStamp score={score} size="md" />}
                   </View>
                 </PhotoStamp>
               </Pressable>

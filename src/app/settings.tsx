@@ -64,7 +64,7 @@ export default function Settings() {
           <View style={{ padding: 16, gap: 16 }}>
             <Text variant="small">Choose what your scores and picks are based on.</Text>
             <SwitchRow title="My trips" sub="Where you’ve been and how you rated it." value={uses.trips} onChange={toggle('trips')} />
-            <SwitchRow title="My saved places" sub="Your Want to go list and your other lists." value={uses.saves} onChange={toggle('saves')} />
+            <SwitchRow title="My saved places" sub="Your Want to go board and your other boards." value={uses.saves} onChange={toggle('saves')} />
             <SwitchRow title="My friends’ scores" sub="What friends rated places, stays and restaurants." value={uses.friends} onChange={toggle('friends')} />
             <SwitchRow
               title="The places I look at"

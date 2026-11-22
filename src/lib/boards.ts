@@ -132,7 +132,7 @@ export function boardMeta(board: Board) {
  */
 export async function shareBoard(board: Board): Promise<boolean> {
   const lines = board.items.map((i) => `• ${placeLabel(i)}`);
-  const message = `${board.name}\n\n${lines.length ? lines.join('\n') : 'No places yet.'}\n\nFrom my ${APP_NAME} lists`;
+  const message = `${board.name}\n\n${lines.length ? lines.join('\n') : 'No places yet.'}\n\nFrom my ${APP_NAME} boards`;
   try {
     if (Platform.OS === 'web' && typeof navigator !== 'undefined' && !navigator.share) {
       if (!navigator.clipboard) return false;

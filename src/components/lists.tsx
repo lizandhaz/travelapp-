@@ -99,7 +99,7 @@ export function WantToGoButton({
       disabled={busy}
       accessibilityRole="button"
       accessibilityState={{ selected: saved, busy }}
-      accessibilityLabel={saved ? 'On your Want to go list. Tap to remove' : 'Add to your Want to go list'}
+      accessibilityLabel={saved ? 'On your Want to go board. Tap to remove' : 'Add to your Want to go board'}
       hitSlop={6}
       style={[
         {

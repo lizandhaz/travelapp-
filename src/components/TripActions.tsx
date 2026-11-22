@@ -52,7 +52,7 @@ export function TripActions({ id, who, place, slug }: { id: string; who: string;
             <Text variant="heading">Save</Text>
             <SaveOption
               title={`Save ${place}`}
-              sub="Add the place to Want to go or one of your lists"
+              sub="Add the place to Want to go or one of your boards"
               onPress={() => {
                 setSaving(false);
                 router.push({ pathname: '/save', params: { place, country: sampleCountry(slug), slug } });

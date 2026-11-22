@@ -165,7 +165,7 @@ export default function PlaceScreen() {
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 28, flexDirection: 'row', gap: 12 }}>
         <WantToGoButton variant="block" saved={wish.saved} busy={wish.busy || !wish.ready} onPress={wish.toggle} style={{ flex: 1 }} />
-        <Button title="Save to a list" kind="outline" style={{ flex: 1 }} onPress={() => router.push({ pathname: '/save', params: { place: place.name, country, slug } })} />
+        <Button title="Save to a board" kind="outline" style={{ flex: 1 }} onPress={() => router.push({ pathname: '/save', params: { place: place.name, country, slug } })} />
       </View>
 
       <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 18 }}>

@@ -16,11 +16,14 @@ export function ScorePicker({
   onChange,
   label,
   compact = false,
+  bare = false,
 }: {
   value: number | null;
   onChange: (n: number) => void;
   label: string;
   compact?: boolean;
+  /** No card of its own (it sits inside one). */
+  bare?: boolean;
 }) {
   const width = useRef(1);
 
@@ -32,7 +35,21 @@ export function ScorePicker({
   const pct = value == null ? 0 : ((value - 1) / 9) * 100;
 
   return (
-    <Card style={{ padding: compact ? 14 : 18, gap: 10 }}>
+    <Card style={bare ? { padding: 0, gap: 10, backgroundColor: 'transparent', borderWidth: 0 } : { padding: compact ? 14 : 18, gap: 10 }}>
+      {bare ? (
+        // Inside the "How was it?" card: the score big and centred, with its word.
+        <View style={{ alignItems: 'center' }} accessibilityLiveRegion="polite">
+          <Text>
+            <Text style={{ fontFamily: fonts.display, fontSize: 48, lineHeight: 58, color: value == null ? colors.muted : colors.ink, fontVariant: ['tabular-nums'] }}>
+              {value == null ? '–' : formatScore(value)}
+            </Text>
+            <Text style={{ fontFamily: fonts.displayRegular, fontSize: 20, color: colors.muted }}> / 10</Text>
+          </Text>
+          <Text style={{ fontFamily: fonts.displayItalic, fontSize: 18, lineHeight: 24, color: value == null ? colors.muted : colors.accentText }}>
+            {value == null ? 'Tap or slide along the bar' : scoreWord(value)}
+          </Text>
+        </View>
+      ) : (
       <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
         <Text variant="label" style={{ fontSize: 10 }}>
           {value == null ? 'Slide to rate out of 10' : compact ? label : 'Slide to rate out of 10'}
@@ -44,6 +61,8 @@ export function ScorePicker({
           <Text style={{ fontFamily: fonts.displayRegular, fontSize: compact ? 14 : 17, color: colors.muted }}> / 10</Text>
         </Text>
       </View>
+
+      )}
 
       <View
         accessible
@@ -91,9 +110,11 @@ export function ScorePicker({
         )}
       </View>
 
-      <Text variant="small" style={{ color: value == null ? colors.muted : colors.ink }}>
-        {value == null ? 'Tap or slide along the bar' : scoreWord(value)}
-      </Text>
+      {!bare && (
+        <Text variant="small" style={{ color: value == null ? colors.muted : colors.ink }}>
+          {value == null ? 'Tap or slide along the bar' : scoreWord(value)}
+        </Text>
+      )}
     </Card>
   );
 }

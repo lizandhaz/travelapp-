@@ -10,7 +10,7 @@ import { Text } from './Text';
 const PIN: Record<string, string> = { Stay: colors.olive, Eat: colors.accent, Do: colors.ink, 'Hidden gem': colors.gold };
 
 /**
- * The real map of a place (Apple Maps on iPhone, in its softer "muted" style; Google on Android; both
+ * The real map of a place (Apple Maps on iPhone, in its dark, muted style; Google on Android; both
  * come with Expo Go, no key needed), dressed like the drawn close-up: numbered pins in the app's colours
  * with white name labels. Zoom from the street out to the country and the world. Pins are placed roughly
  * (from the drawing) until real place data arrives. Never shows your own location (product rule 2).
@@ -69,6 +69,8 @@ export function AreaMap({
       style={{ width, height }}
       initialRegion={home}
       mapType={Platform.OS === 'ios' ? 'mutedStandard' : 'standard'}
+      // Apple's dark map style (owner, Nov 2026), on the page and full screen alike, whatever the phone's setting.
+      userInterfaceStyle="dark"
       showsUserLocation={false}
       showsMyLocationButton={false}
       showsPointsOfInterests={false}

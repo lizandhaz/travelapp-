@@ -38,7 +38,8 @@ export type Trip = {
   /** stops[0] is the main place; the rest are extra stops, in order. */
   stops: TripStop[];
   stay: TripStay | null;
-  meal: string | null;
+  /** Best restaurants, in order (up to 10). */
+  restaurants: string[];
   tip: string | null;
   companions: Companions | null;
   note: string | null;
@@ -55,7 +56,7 @@ const TRIP_SELECT = `
   id, trip_month, score, visibility, companions, note, photo_paths, created_at,
   trip_stops ( position, nights, destinations ( name, country ) ),
   stays ( name, type, score ),
-  food_picks ( name ),
+  food_picks ( name, position ),
   top_tips ( tip )
 `;
 
@@ -70,7 +71,7 @@ type Row = {
   created_at: string;
   trip_stops: { position: number; nights: number | null; destinations: Place | Place[] | null }[] | null;
   stays: TripStay[] | null;
-  food_picks: { name: string }[] | null;
+  food_picks: { name: string; position: number | null }[] | null;
   top_tips: { tip: string }[] | null;
 };
 
@@ -88,7 +89,7 @@ function fromRow(r: Row): Trip {
     visibility: r.visibility,
     stops,
     stay: r.stays?.[0] ? { ...r.stays[0], score: Number(r.stays[0].score) } : null,
-    meal: r.food_picks?.[0]?.name ?? null,
+    restaurants: [...(r.food_picks ?? [])].sort((a, b) => (a.position ?? 0) - (b.position ?? 0)).map((f) => f.name),
     tip: r.top_tips?.[0]?.tip ?? null,
     companions: r.companions,
     note: r.note,
@@ -125,7 +126,7 @@ export async function saveTrip(input: TripInput): Promise<string> {
       visibility: input.visibility,
       stops: input.stops.map((s) => ({ name: s.name.trim(), country: s.country.trim(), nights: s.nights })),
       stay: input.stay,
-      meal: input.meal?.trim() || null,
+      restaurants: input.restaurants.map((r) => r.trim()).filter(Boolean),
       tip: input.tip?.trim() || null,
       companions: input.companions,
       note: input.note?.trim() || null,

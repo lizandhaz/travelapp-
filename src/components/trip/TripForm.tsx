@@ -62,7 +62,6 @@ export function TripForm({
   // and newly picked ones, which are only uploaded when you save.
   const photoKey = useRef(1000);
   const [photos, setPhotos] = useState<PhotoItem[]>(() => (initial?.photoPaths ?? []).map((path, i) => ({ key: i + 1, path })));
-  const [home, setHome] = useState(false);
   // The photo being dragged (hold, then drag): its key, where the finger started, and how far it's moved.
   const [drag, setDrag] = useState<{ key: number; x0: number; dx: number } | null>(null);
   const movePhoto = (key: number, to: number) =>
@@ -97,7 +96,11 @@ export function TripForm({
   const [stayName, setStayName] = useState(initial?.stay?.name ?? '');
   const [stayType, setStayType] = useState<StayKind | null>(initial?.stay?.type ?? null);
   const [stayScore, setStayScore] = useState<number | null>(initial?.stay?.score ?? null);
-  const [meal, setMeal] = useState(initial?.meal ?? '');
+  // Best restaurants: one box each, in order (up to 10). Keys keep each box steady as you add or remove.
+  const restKey = useRef(1000);
+  const [restaurants, setRestaurants] = useState<{ key: number; name: string }[]>(() =>
+    (initial?.restaurants.length ? initial.restaurants : ['']).map((name, i) => ({ key: i + 1, name })),
+  );
   const [tip, setTip] = useState(initial?.tip ?? '');
   // Which optional extras are open (ones already filled in start open when editing).
   const [open, setOpen] = useState<Record<RowId, boolean>>(() => ({
@@ -105,7 +108,7 @@ export function TripForm({
     note: !!initial?.note,
     stay: !!initial?.stay,
     places: (initial?.stops.length ?? 0) > 1,
-    meal: !!initial?.meal,
+    food: !!initial?.restaurants.length,
     tip: !!initial?.tip,
   }));
 
@@ -124,8 +127,6 @@ export function TripForm({
     fetchPlaces().then(setPlaces);
   }, []);
 
-  const isThisMonth = month === currentMonth();
-
   function check(): { problems: string[]; input?: TripInput } {
     const p: string[] = [];
     if (!place?.name.trim()) p.push('Where did you go?');
@@ -135,7 +136,6 @@ export function TripForm({
     if (nights == null) p.push('How long did you stay? Pick the number of nights.');
     else if (nights < 1 || nights > 365) p.push('How long did you stay? 1 to 365 nights.');
     if (score == null) p.push('How was it? Slide to give it a score out of 10.');
-    if (isThisMonth && !home) p.push("Tick “I'm back home”. Trips are only shared once you're home.");
 
     const stops = extras.filter((e) => e.place?.name.trim());
     stops.forEach((e) => {
@@ -151,7 +151,7 @@ export function TripForm({
       if (stayScore == null) p.push('Give where you stayed a score out of 10.');
     }
     if (note.trim().length > 500) p.push('Note: 500 characters at most.');
-    if (meal.trim().length > 120) p.push('Best meal: 120 characters at most.');
+    if (restaurants.some((r) => r.name.trim().length > 120)) p.push('Restaurant names: 120 characters at most.');
     if (tip.trim().length > 280) p.push('Top tip: 280 characters at most.');
     if (p.length) return { problems: p };
 
@@ -167,7 +167,7 @@ export function TripForm({
           ...stops.map((e) => ({ ...e.place!, nights: e.nights ? Number(e.nights) : null })),
         ],
         stay: hasStay ? { name: stayName.trim(), type: stayType!, score: stayScore! } : null,
-        meal: meal.trim() || null,
+        restaurants: restaurants.map((r) => r.name.trim()).filter(Boolean),
         tip: tip.trim() || null,
         companions,
         note: note.trim() || null,
@@ -255,6 +255,8 @@ export function TripForm({
 
   const toggle = (row: RowId) => setOpen((o) => ({ ...o, [row]: !o[row] }));
   const stopsCount = extras.filter((e) => e.place?.name.trim()).length;
+  const named = restaurants.filter((r) => r.name.trim());
+  const restSummary = named.length === 1 ? named[0].name.trim() : named.length > 1 ? `${named.length} restaurants` : undefined;
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -435,8 +437,49 @@ export function TripForm({
               )}
             </ExtraRow>
             <Divider />
-            <ExtraRow icon={<ForkIcon color={colors.ink} />} title="Best meal" summary={meal.trim() || undefined} open={open.meal} onPress={() => toggle('meal')}>
-              <Input value={meal} onChangeText={setMeal} placeholder="Restaurant, café or dish" accessibilityLabel="Best meal" maxLength={120} />
+            <ExtraRow
+              icon={<ForkIcon color={colors.ink} />}
+              title="Best restaurants"
+              summary={restSummary}
+              open={open.food}
+              onPress={() => toggle('food')}
+            >
+              {restaurants.map((r, i) => (
+                <View key={r.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Input
+                      value={r.name}
+                      onChangeText={(t) => setRestaurants((rs) => rs.map((x) => (x.key === r.key ? { ...x, name: t } : x)))}
+                      placeholder={i === 0 ? 'Restaurant or café' : 'Another restaurant'}
+                      accessibilityLabel={`Restaurant ${i + 1}`}
+                      maxLength={120}
+                    />
+                  </View>
+                  {restaurants.length > 1 && (
+                    <Pressable
+                      onPress={() => setRestaurants((rs) => rs.filter((x) => x.key !== r.key))}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Remove restaurant ${i + 1}`}
+                      hitSlop={8}
+                      style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: colors.bg, alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      <Text style={{ fontFamily: fonts.sansBold, fontSize: 16, lineHeight: 18, color: colors.muted }}>×</Text>
+                    </Pressable>
+                  )}
+                </View>
+              ))}
+              {restaurants.length < 10 && (
+                <Pressable
+                  onPress={() => setRestaurants((rs) => [...rs, { key: restKey.current++, name: '' }])}
+                  accessibilityRole="button"
+                  accessibilityLabel="Add another restaurant"
+                  hitSlop={6}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', paddingVertical: 4 }}
+                >
+                  <PlusIcon color={colors.accentDeep} size={18} />
+                  <Text variant="link">Add another restaurant</Text>
+                </Pressable>
+              )}
             </ExtraRow>
             <Divider />
             <ExtraRow icon={<BulbIcon color={colors.ink} />} title="Top tip" summary={tip.trim() ? 'Added' : undefined} open={open.tip} onPress={() => toggle('tip')}>
@@ -471,31 +514,6 @@ export function TripForm({
             </View>
           </Group>
 
-          {isThisMonth && (
-            <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: home }} onPress={() => setHome(!home)}>
-              <Card style={{ padding: 16, flexDirection: 'row', gap: 12 }}>
-                <View
-                  style={{
-                    width: 22,
-                    height: 22,
-                    borderRadius: 6,
-                    borderWidth: 1.5,
-                    borderColor: home ? colors.accentDeep : colors.muted,
-                    backgroundColor: home ? colors.accentDeep : 'transparent',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: 1,
-                  }}
-                >
-                  {home && <Text style={{ color: colors.onDark, fontFamily: fonts.sansBold, fontSize: 14 }}>✓</Text>}
-                </View>
-                <Text variant="body" style={{ flex: 1, fontSize: 14 }}>
-                  <Text variant="strong">I&apos;m back home.</Text> We never share where you are right now, only where you&apos;ve been.
-                </Text>
-              </Card>
-            </Pressable>
-          )}
-
           {problemsNotice}
           <ErrorNotice error={saveError} />
 
@@ -506,7 +524,7 @@ export function TripForm({
   );
 }
 
-type RowId = 'photos' | 'note' | 'stay' | 'places' | 'meal' | 'tip';
+type RowId = 'photos' | 'note' | 'stay' | 'places' | 'food' | 'tip';
 /** Padding inside the form's cards. */
 const PAD = 18;
 

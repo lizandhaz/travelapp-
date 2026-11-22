@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import { ActivityIndicator, Dimensions, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { ForkIcon } from '@/components/Icons';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, Shade } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
@@ -78,7 +79,7 @@ export default function TripScreen() {
   const summary = [
     more.length ? `${trip.stops.length} places` : null,
     trip.stay ? '1 stay' : null,
-    trip.meal ? '1 food & drink' : null,
+    trip.restaurants.length ? `${trip.restaurants.length} ${trip.restaurants.length === 1 ? 'restaurant' : 'restaurants'}` : null,
     trip.tip ? '1 tip' : null,
   ].filter(Boolean);
 
@@ -172,10 +173,17 @@ export default function TripScreen() {
           </Section>
         )}
 
-        {!!trip.meal && (
-          <Section title="Best meal">
-            <Card style={{ padding: 16 }}>
-              <Text variant="body">{trip.meal}</Text>
+        {trip.restaurants.length > 0 && (
+          <Section title={trip.restaurants.length === 1 ? 'Best restaurant' : 'Best restaurants'}>
+            <Card style={{ paddingHorizontal: 16 }}>
+              {trip.restaurants.map((r, i) => (
+                <View key={`${i}-${r}`} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 14, borderTopWidth: i ? 1 : 0, borderTopColor: colors.line }}>
+                  <ForkIcon color={colors.accentDeep} size={18} />
+                  <Text variant="body" style={{ flex: 1 }}>
+                    {r}
+                  </Text>
+                </View>
+              ))}
             </Card>
           </Section>
         )}

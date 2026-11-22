@@ -14,6 +14,8 @@ export type BoardItem = { slug: string | null; kind: string; name: string; sub: 
 export type FeedItem = {
   who: string; face: PhotoName; place: string; region: string; month: string; photo: PhotoName | null;
   quote: string | null; score: number; stayType: string; stayName: string; stayScore: number; slug: string;
+  /** When they posted it ("2 hours ago"). */
+  posted?: string;
 };
 export type Board = { name: string; meta: string; photos: PhotoName[] };
 export type SamplePostcard = { who: string; text: string; when: string; photo: PhotoName | null; slug: string };
@@ -1460,7 +1462,8 @@ export const friendsFeed: FeedItem[] = [
     "stayType": "Hotel",
     "stayName": "Casa Ammos",
     "stayScore": 8.8,
-    "slug": "hydra"
+    "slug": "hydra",
+    "posted": "2 hours ago"
   },
   {
     "who": "Priya",
@@ -1474,7 +1477,8 @@ export const friendsFeed: FeedItem[] = [
     "stayType": "Villa",
     "stayName": "Villa Limone",
     "stayScore": 9.0,
-    "slug": "positano"
+    "slug": "positano",
+    "posted": "Yesterday"
   },
   {
     "who": "Tom",
@@ -1488,7 +1492,8 @@ export const friendsFeed: FeedItem[] = [
     "stayType": "Ryokan",
     "stayName": "Ryokan Hana",
     "stayScore": 9.3,
-    "slug": "kyoto"
+    "slug": "kyoto",
+    "posted": "3 days ago"
   },
   {
     "who": "Sophie",
@@ -1502,7 +1507,8 @@ export const friendsFeed: FeedItem[] = [
     "stayType": "Hotel",
     "stayName": "Babylonstoren",
     "stayScore": 9.4,
-    "slug": "southafrica"
+    "slug": "southafrica",
+    "posted": "Last week"
   },
   {
     "who": "Maya",
@@ -1516,7 +1522,8 @@ export const friendsFeed: FeedItem[] = [
     "stayType": "Riad",
     "stayName": "Riad Zitoun",
     "stayScore": 9.1,
-    "slug": "marrakech"
+    "slug": "marrakech",
+    "posted": "2 weeks ago"
   },
   {
     "who": "Jonah",
@@ -1530,7 +1537,8 @@ export const friendsFeed: FeedItem[] = [
     "stayType": "Hotel",
     "stayName": "Zuri Zanzibar",
     "stayScore": 9.0,
-    "slug": "zanzibar"
+    "slug": "zanzibar",
+    "posted": "Last month"
   }
 ] as FeedItem[];
 

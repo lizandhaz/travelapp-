@@ -1,6 +1,5 @@
-import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Modal, Pressable, ScrollView, View } from 'react-native';
+import { Dimensions, Modal, Pressable, ScrollView, View } from 'react-native';
 
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import type { PlaceResult } from '@/lib/match';
@@ -13,7 +12,8 @@ import { PhotoBadge, Row } from './cards';
 import { PhotoTile } from './Photo';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { Card, SectionHeader } from './ui';
+import { Card, Chip, Input, SectionHeader } from './ui';
+import { ZoomMap } from './ZoomMap';
 
 const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -45,12 +45,13 @@ export function PlaceFacts({ detail }: { detail: PlaceDetail }) {
       {facts.length > 0 && (
         <View style={{ flexDirection: 'row', gap: 8 }}>
           {facts.map(([label, value], i) => (
-            <Card key={label} tone={(['sky', 'blush', 'sage'] as const)[i % 3]} style={{ flex: 1, padding: 12, borderRadius: radius.md }}>
+            // Plain text, no boxes (owner, Nov 2026); a thin line between the two.
+            <View key={label} style={{ flex: 1, paddingVertical: 4, paddingLeft: i ? 12 : 0, borderLeftWidth: i ? 1 : 0, borderLeftColor: colors.line }}>
               <Text variant="label">{label}</Text>
               <Text variant="small" style={{ color: colors.ink, marginTop: 2 }}>
                 {value}
               </Text>
-            </Card>
+            </View>
           ))}
         </View>
       )}
@@ -445,6 +446,9 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
   const taste = useTaste();
   const [open, setOpen] = useState(false);
   const [picked, setPicked] = useState<number | null>(null);
+  const [stay, setStay] = useState<number | null>(null);
+  const [focus, setFocus] = useState<{ n: number | null; zoom: number; key: number }>({ n: null, zoom: 1, key: 0 });
+  const [typed, setTyped] = useState('');
   const map = placeMaps[slug];
   if (!map) return null;
   const d = placeDetails[slug];
@@ -456,61 +460,125 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
     return { ...p, score, note, what };
   });
   const top = [...spots].sort((a, b) => b.score - a.score)[0]?.n;
+  const stays = spots.filter((s) => s.kind === 'Stay');
+  const stayPin = spots.find((s) => s.n === stay) ?? null;
 
-  const key = (
-    <View style={{ gap: 2 }}>
-      {spots.map((s) => {
-        const on = picked === s.n;
-        return (
-          <Pressable
-            key={s.n}
-            onPress={() => setPicked(on ? null : s.n)}
-            accessibilityRole="button"
-            accessibilityState={{ expanded: on }}
-            accessibilityLabel={`${s.n}. ${s.name}, ${s.kind}, ${formatScore(s.score)} out of 10${s.n === top ? ', top pick for you' : ''}`}
-            style={{ paddingVertical: 8, gap: 6 }}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: PIN_COLOURS[s.kind] ?? colors.ink, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontFamily: fonts.sansBold, fontSize: 11, lineHeight: 13, color: colors.onDark }}>{s.n}</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text variant="strong" numberOfLines={1} style={{ fontSize: 14 }}>
-                  {s.name}
-                </Text>
-                <Text variant="tiny">
-                  {s.kind}
-                  {s.n === top ? ' · ✦ Top pick for you' : ''}
-                </Text>
-              </View>
-              <Text style={{ fontFamily: fonts.display, fontSize: 18, color: colors.ink, fontVariant: ['tabular-nums'] }}>{formatScore(s.score)}</Text>
-            </View>
-            {on && (
-              <View style={{ marginLeft: 32, gap: 2 }}>
-                {!!s.what && <Text variant="small">{s.what}</Text>}
-                {!!s.note && (
-                  <Text variant="small" style={{ color: colors.ink }}>
-                    ✦ {s.note}
-                  </Text>
-                )}
-              </View>
+  // Where you're staying → everything else on the map, nearest first.
+  const nearby = stayPin?.at
+    ? spots
+        .filter((s) => s.kind !== 'Stay' && s.at)
+        .map((s) => ({ ...s, dist: Math.hypot(s.at![0] - stayPin.at![0], s.at![1] - stayPin.at![1]) }))
+        .sort((a, b) => a.dist - b.dist)
+    : [];
+  const howFar = (dist: number) => (dist < 50 ? 'Right nearby' : dist < 110 ? 'A short way' : 'Further out');
+
+  const choosePin = (n: number) => {
+    const next = picked === n ? null : n;
+    setPicked(next);
+    if (next != null) setFocus((f) => ({ n: next, zoom: Math.max(2, f.zoom), key: f.key + 1 }));
+  };
+  const chooseStay = (n: number | null) => {
+    setStay(n);
+    setPicked(null);
+    setTyped('');
+    setFocus((f) => ({ n, zoom: n == null ? 1 : 2, key: f.key + 1 }));
+  };
+  const matches = typed.trim().length >= 2 ? stays.filter((s) => plainName(s.name).includes(plainName(typed))) : [];
+
+  const row = (s: (typeof spots)[number], extra?: string) => {
+    const on = picked === s.n;
+    return (
+      <Pressable
+        key={s.n}
+        onPress={() => choosePin(s.n)}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: on }}
+        accessibilityLabel={`${s.n}. ${s.name}, ${s.kind}${extra ? `, ${extra}` : ''}, ${formatScore(s.score)} out of 10${s.n === top ? ', top pick for you' : ''}`}
+        style={{ paddingVertical: 8, gap: 6 }}
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: PIN_COLOURS[s.kind] ?? colors.ink, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontFamily: fonts.sansBold, fontSize: 11, lineHeight: 13, color: colors.onDark }}>{s.n}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text variant="strong" numberOfLines={1} style={{ fontSize: 14 }}>
+              {s.name}
+            </Text>
+            <Text variant="tiny">
+              {extra ? `${extra} · ` : ''}
+              {s.kind}
+              {s.n === top ? ' · ✦ Top pick for you' : ''}
+            </Text>
+          </View>
+          <Text style={{ fontFamily: fonts.display, fontSize: 18, color: colors.ink, fontVariant: ['tabular-nums'] }}>{formatScore(s.score)}</Text>
+        </View>
+        {on && (
+          <View style={{ marginLeft: 32, gap: 2 }}>
+            {!!s.what && <Text variant="small">{s.what}</Text>}
+            {!!s.note && (
+              <Text variant="small" style={{ color: colors.ink }}>
+                ✦ {s.note}
+              </Text>
             )}
-          </Pressable>
-        );
-      })}
+          </View>
+        )}
+      </Pressable>
+    );
+  };
+
+  // "Where are you staying?" and then either what's near it or the whole key.
+  const below = (
+    <View style={{ gap: 12 }}>
+      {stays.length > 0 && (
+        <View style={{ gap: 8 }}>
+          <Text variant="label">Where are you staying?</Text>
+          <Input
+            value={typed}
+            onChangeText={setTyped}
+            placeholder="Type your hotel or pick one below"
+            accessibilityLabel="Where are you staying?"
+            autoCorrect={false}
+          />
+          {typed.trim().length >= 2 && matches.length === 0 && (
+            <Text variant="small">That one isn’t on this map yet. Pick the nearest of these:</Text>
+          )}
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {(matches.length ? matches : stays).map((s) => (
+              <Chip key={s.n} label={s.name} selected={stay === s.n} onPress={() => chooseStay(stay === s.n ? null : s.n)} />
+            ))}
+          </View>
+        </View>
+      )}
+      {stayPin ? (
+        <View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Text variant="strong">Near {stayPin.name}</Text>
+            <Pressable onPress={() => chooseStay(null)} accessibilityRole="button" hitSlop={8}>
+              <Text variant="link">Show everything</Text>
+            </Pressable>
+          </View>
+          {nearby.map((s) => row(s, howFar(s.dist)))}
+        </View>
+      ) : (
+        <View style={{ gap: 2 }}>{spots.map((s) => row(s))}</View>
+      )}
     </View>
   );
 
+  const width = Math.min(Dimensions.get('window').width, 480);
   return (
     <View style={{ marginTop: 28 }}>
       <SectionHeader action="Full screen" onAction={() => setOpen(true)}>
         On the map
       </SectionHeader>
       <Card style={{ marginHorizontal: GUTTER, overflow: 'hidden' }}>
-        <Pressable onPress={() => setOpen(true)} accessibilityRole="button" accessibilityLabel={`Map of ${name} with ${spots.length} spots. Opens full screen.`}>
-          <Image source={map.image} style={{ width: '100%', aspectRatio: 400 / 250 }} contentFit="cover" />
-        </Pressable>
-        <View style={{ paddingHorizontal: 14, paddingVertical: 6 }}>{key}</View>
+        {!open && (
+          <ZoomMap image={map.image} pins={map.pins} width={width - GUTTER * 2 - 2} label={`Map of ${name}`} picked={picked} stay={stay} focus={focus} onPin={choosePin} />
+        )}
+        <Text variant="tiny" style={{ paddingHorizontal: 14, paddingTop: 8 }}>
+          Pinch or tap + and − to zoom, drag to look around, and tap a pin.
+        </Text>
+        <View style={{ paddingHorizontal: 14, paddingVertical: 10 }}>{below}</View>
       </Card>
 
       <Modal visible={open} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setOpen(false)}>
@@ -521,18 +589,22 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
               <Text variant="link">Done</Text>
             </Pressable>
           </View>
-          <ScrollView>
-            {/* Pinch to zoom on iPhone. */}
-            <ScrollView maximumZoomScale={4} minimumZoomScale={1} bouncesZoom centerContent showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
-              <Image source={map.image} style={{ width: '100%', aspectRatio: 400 / 250 }} contentFit="cover" accessibilityLabel={`Map of ${name}`} />
-            </ScrollView>
-            <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 8 }}>
-              Pinch the map to zoom in. Tap a spot for why it’s here.
-            </Text>
-            <View style={{ paddingHorizontal: GUTTER, paddingVertical: 10 }}>{key}</View>
+          <ScrollView keyboardShouldPersistTaps="handled">
+            {open && <ZoomMap image={map.image} pins={map.pins} width={width} label={`Map of ${name}`} picked={picked} stay={stay} focus={focus} onPin={choosePin} />}
+            <View style={{ paddingHorizontal: GUTTER, paddingVertical: 12 }}>{below}</View>
           </ScrollView>
         </View>
       </Modal>
     </View>
   );
+}
+
+/** Lower case without accents or extra spaces, for matching typed names. */
+function plainName(s: string) {
+  return s
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
 }

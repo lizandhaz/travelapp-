@@ -12,6 +12,7 @@ import { PhotoFill, PhotoTile, Shade } from './Photo';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
 import { Card } from './ui';
+import { TripActions } from './TripActions';
 import { friendTripId } from '@/lib/friendTrips';
 
 const openPlace = (slug: string | null) => slug && router.push(`/place/${slug}`);
@@ -115,7 +116,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
   const open = () => router.push(`/friend-trip/${friendTripId(item)}`);
   // The place name shrinks so a long word fits beside the score stamp (card ~ screen minus margins, padding and stamp).
   const feedSize = fitWordSize(item.place, Math.min(Dimensions.get('window').width, 480) - 40 - 36 - 70, 34, 20);
-  const label = `${item.who}'s ${item.place} trip, ${item.month}. ${item.score.toFixed(1)} out of 10. Open their trip`;
+  const label = `${item.who}'s ${item.place} trip, ${item.month}${item.posted ? `, posted ${item.posted.toLowerCase()}` : ''}. ${item.score.toFixed(1)} out of 10. Open their trip`;
   return (
     <Pressable onPress={open} accessibilityRole="link" accessibilityLabel={label} style={({ pressed }) => pressed && { opacity: 0.92 }}>
       <Card>
@@ -128,7 +129,10 @@ export function FeedCard({ item }: { item: FeedItem }) {
               <View style={{ borderWidth: 2, borderColor: colors.onDark, borderRadius: 22 }}>
                 <Avatar face={item.face} name={item.who} size={36} />
               </View>
-              <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.onDark }}>{item.who}</Text>
+              <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.onDark }}>
+                {item.who}
+                {!!item.posted && <Text style={{ fontFamily: fonts.sans, fontSize: 13, color: colors.onDark }}> · {item.posted}</Text>}
+              </Text>
               <MonthPill month={item.month} onPhoto />
             </View>
             <View style={{ position: 'absolute', left: 18, right: 18, bottom: 18, flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
@@ -146,7 +150,10 @@ export function FeedCard({ item }: { item: FeedItem }) {
           <View style={{ backgroundColor: colors.blushSoft, padding: 16, gap: 14 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Avatar face={item.face} name={item.who} size={36} />
-              <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.ink }}>{item.who}</Text>
+              <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.ink }}>
+                {item.who}
+                {!!item.posted && <Text style={{ fontFamily: fonts.sans, fontSize: 13, color: colors.muted }}> · {item.posted}</Text>}
+              </Text>
               <MonthPill month={item.month} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
@@ -176,6 +183,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
               Their trip →
             </Text>
           </View>
+          <TripActions id={friendTripId(item)} who={item.who} place={item.place} slug={item.slug} />
         </View>
       </Card>
     </Pressable>

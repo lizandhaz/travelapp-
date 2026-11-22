@@ -9,6 +9,7 @@ import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
+import { TripActions } from '@/components/TripActions';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { companionsLabel, getFriendTrip, tripPlace } from '@/lib/friendTrips';
@@ -67,6 +68,7 @@ export default function FriendTripScreen() {
           </View>
         )}
         {!!trip.quote && <Text variant="quote">“{trip.quote}”</Text>}
+        <TripActions id={trip.id} who={trip.who} place={trip.place} slug={trip.slug} />
       </Card>
 
       {trip.photos.length > 1 && (

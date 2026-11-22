@@ -111,8 +111,9 @@ export default function Home() {
         </Row>
       </View>
 
-      {/* What friends rated, newest first */}
-      <View style={{ marginTop: 34 }}>
+      {/* A line across, then what friends rated, newest first */}
+      <View style={{ height: 1, backgroundColor: colors.line, marginHorizontal: GUTTER, marginTop: 34 }} />
+      <View style={{ marginTop: 28 }}>
         <SectionHeader action="Find friends" onAction={() => router.push('/people')}>
           <AccentTitle before="From your" accent="friends" variant="heading" />
         </SectionHeader>

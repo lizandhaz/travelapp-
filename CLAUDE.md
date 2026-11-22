@@ -87,8 +87,9 @@ src/
     (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
     (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score, sideways;
                           no text under them); "Dip into collections" (Explore's collection tiles); "From your friends" (FeedCard: big photo
-                          with who, month, place and score, or for a post without photos a blush top with the place in big type, then their quote
-                          and stay; opens the friend's trip. The sample feed mixes both on purpose)
+                          with who, when they posted, month, place and score, or for a post without photos a blush top with the place in big
+                          type, then their quote, stay, and Like / Comment / Save; opens the friend's trip. The sample feed mixes both
+                          on purpose). A thin line sits above "From your friends"
     (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
                           jumps down to it), "Find your next trip" collection tiles (24, each opens its collection, no counts),
                           Trending this month, "Made for your taste" (chips + things to eat/do/stay, on a sage band; moved from Home),
@@ -140,8 +141,15 @@ src/
     lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, WantToGoButton, photoForItem, placeSlugForItem
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
                           TravelMapFull (map screen: names placed so they don't overlap, filters, pinch zoom, place chips)
-    place.tsx             Place page pieces: YourScore, PlaceFacts, PlaceMapSection (map + numbered key with your score for
-                          each spot, tap for why, full screen with pinch zoom), BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
+    place.tsx             Place page pieces: YourScore, PlaceFacts (Best time / Stays as plain text, no boxes), PlaceMapSection
+                          (ZoomMap + "Where are you staying?" (type or pick a stay on the map) → "Near <stay>": everything else on
+                          the map nearest first, Right nearby / A short way / Further out; otherwise the numbered key with your score
+                          for each spot, tap for why; Full screen), BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
+    ZoomMap.tsx           A place map you can zoom (pinch, or + / −) and drag; tap targets on each pin; rings for the picked pin and
+                          your stay ("You're here"); `focus` glides to a pin. Gesture maths in a MapGesture class (refs aren't allowed
+                          in render). The picture has pointerEvents none, or the browser drags the image and cancels the gesture
+    TripActions.tsx       Like (heart + count), Comment (sheet with comments and a box to add yours) and Save (→ save.tsx with the
+                          place) for a friend's trip; on feed cards and the friend's trip page
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
@@ -156,7 +164,8 @@ src/
   lib/
     sample.ts             Sample content from the prototype: hero, rows, places, feed, board, boards, postcards
     photos.ts             Sample photo names → files
-    placeMaps.ts          Each sample place's map picture and its numbered pins (stay / eat / do / hidden gem)
+    placeMaps.ts          Each sample place's map picture and its numbered pins (stay / eat / do / hidden gem), each with `at`:
+                          where its tip sits on the 400 × 250 picture (taken from the prototype's drawing)
     placeDetails.ts       Sample place details from the prototype (stays, food, things to do, best time, tips)
     score.ts              formatScore, clampScore, scoreWord
     fit.ts                fitWordSize(): a font size that keeps a place name's longest word on one line (Fraunces is wide,
@@ -185,6 +194,8 @@ src/
                           tripId, companionsLabel); who-with and nights are sample values and may be null (not filled in)
     postcards.ts          Sample Postcards, each linked to the friend's trip it's about (postcards, getPostcard)
     friends.ts            Friends: searchPeople, fetchFriendships, addFriend, acceptFriend, removeFriendship, inviteFriends
+    reactions.ts          Likes and comments on friends' trips: sample counts + yours, kept on the phone (useReactions, toggleLike,
+                          addComment). Moves to the database when friends' real trips arrive
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)

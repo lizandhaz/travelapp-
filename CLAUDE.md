@@ -100,19 +100,24 @@ src/
                           say boards/lists): your Want to go board and your own boards ("Made by you", + New board), and
                           Friends' trips you've saved (SavedTripCard grid)
     (tabs)/profile.tsx    You: profile picture (tap to change), Find friends / Add a trip buttons, stats, Your taste (plain outline tags, no
-                          colours), travel map card (tap → map), "Your collections" (your lists + saved friends' trips, each opens; See all
+                          colours), Followers / Following / Requests counts (tap → people.tsx), travel map card (tap → map), "Your collections" (your lists + saved friends' trips, each opens; See all
                           → Saved), your trips as photo
                           stamps: Newest (default) / Oldest / Top rated, and a year filter
-    list/[id].tsx         One list: photo-collage cover with the name, Share/Edit circles, places as a 2-column grid of
-                          photo cards (score stamp, × to remove, tap → place page), Add a place card, Delete (confirm)
-    list/new.tsx          New list, or rename/who-can-see with ?id=; with ?place= it also adds that place
+    list/[id].tsx         One board: cover (chosen photo, or a collage of its places) with the name, Share/Edit circles, places as a
+                          2-column grid of photo cards (score stamp, "N saved spots", × to remove; tap → its saved hotels/restaurants
+                          in a sheet with "Open <place>", or the place page); "Hotels, restaurants & more" for spots whose place isn't
+                          on the board; on Want to go, "With Maya" and "+ Invite" under each place (InviteSheet); Add a place; Delete
+    list/new.tsx          New board, or rename/cover/who-can-see with ?id=; cover photo picker (Collage, the board's places, a dozen
+                          favourites); with ?place= (and kind/parent for a spot) it also adds that
     collection/[id].tsx   One Explore collection (places or things) as a 2-column grid, best for you first
     map.tsx               The full travel map: All/Been/Want to go, names on pins, pinch to zoom (iPhone), Whole world, place chips
-    save.tsx              "Save to a list" from a place page: tick lists (Want to go first), + New list
+    save.tsx              "Save to a board" from a place page (or a hotel/restaurant/thing to do's bookmark: ?kind=stay|eat|do|gem
+                          &parent=<place>&parentSlug=): tick boards (Want to go first), + New board
     postcards.tsx         Postcards (sample), opened from Home's paper-plane button; ones about a friend's trip open postcard/[id],
                           the rest (the app's news, a friend joining) open the place
-    people.tsx            Find people (real): search by name or @username, Add / Accept / Requested / Friends, friend requests,
-                          your friends, requests you've sent, and Invite friends (share sheet with your @username)
+    people.tsx            People (real; followers & following, owner Nov 2026): search by name or @username with Follow / Follow back /
+                          Requested / Following; tabs Followers / Following / Requests (?tab=); remove a follower, unfollow, accept or
+                          decline (each asks once); Invite friends (share sheet with your @username)
     postcard/[id].tsx     A friend's trip as a postcard, titled "<who>'s <place> trip", the same template for everyone (components/
                           PostcardCard: photo front "Greetings from <place>"; tap/"Turn over" for the back: the place, region and
                           month and a photo stamp,
@@ -146,7 +151,7 @@ src/
     lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, WantToGoButton, photoForItem, placeSlugForItem
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
                           TravelMapFull (map screen: names placed so they don't overlap, filters, pinch zoom, place chips)
-    place.tsx             Place page pieces: YourScore, PlaceFacts (Best time / Stays as plain text, no boxes), PlaceMapSection
+    place.tsx             Place page pieces (stay/eat/do cards have a bookmark to save that spot to a board under its place): YourScore, PlaceFacts (Best time / Stays as plain text, no boxes), PlaceMapSection
                           (on the page: the plain map picture + numbered key with your score for each spot, tap for why; tap the map or
                           "Full screen" for the big map: a ZoomMap filling over half the screen (starts filled, zooms out until the
                           whole map shows, in to 6×) + "Where are you staying?" (typing only, no suggestion chips, owner Nov 2026;
@@ -209,7 +214,9 @@ src/
     friendTrips.ts        Sample friends' trips from the Friends feed or the place details naming that friend (getTrip, getFriendTrip,
                           tripId, companionsLabel); who-with and nights are sample values and may be null (not filled in)
     postcards.ts          Sample Postcards, each linked to the friend's trip it's about (postcards, getPostcard)
-    friends.ts            Friends: searchPeople, fetchFriendships, addFriend, acceptFriend, removeFriendship, inviteFriends
+    friends.ts            Followers & following: searchPeople, fetchFollows (followers / following / requests / sent), mutuals,
+                          follow, unfollow, acceptFollower, removeFollower, inviteFriends
+    InviteSheet.tsx       (components) "Who do you want to go with?": pick mutual follows → share_wish_item
     reactions.ts          Likes, comments and saved friends' trips: sample counts + yours, kept on the phone (useReactions, toggleLike,
                           addComment, toggleSavedTrip, useSavedTrips). Moves to the database when friends' real trips arrive
     knownStays.ts         Every stay in the sample place details (~160), searchStays(query, tripPlace)
@@ -257,7 +264,11 @@ docs/plan.md              Step-by-step plan
   - The React Compiler memoises values inside components, so per-profile caches live outside them (`resultsByProfile` WeakMap in taste.tsx). Don't create caches with `new Map()` inside a component.
   - `npm test` runs the engine's tests (Node's built-in runner, `--experimental-strip-types`).
 - **What scores use** (owner, Nov 2026): Settings → Your scores has a switch each for trips, saved places, friends' scores and the places you look at. `taste.tsx` leaves switched-off signals out; with friends off, no friend ratings, friend reasons or friend-based item scores are used (items say "Judged on your taste"), and `tasteNote` drops "plus your friends' ratings".
-- **Friends** (`20261125120000_friends.sql`, plan Step C first half): `friendships` (requester_id, addressee_id, status `pending`/`accepted`, one row per pair either way round). People can read and delete their own rows directly (cancel, decline, unfriend); sending and accepting only via `send_friend_request(p_user)` (accepts theirs if they'd already asked; refuses yourself, unknown people and under-18s; at most 200 pending) and `accept_friend_request(p_friendship)` (addressee only). `search_people(p_query)` (2+ characters, name contains or handle starts with, leaves out you and under-18s who aren't already your friends, says friends/sent/received/none) and `my_friendships()` return names and handles (security definer; `profiles` itself stays owner-only). Helpers `is_adult()` and `are_friends()` aren't callable by users. Profile pictures aren't shown to others yet (storage is owner-only), so people show initials. Next: friends see each other's "Friends" trips and lists, and the Friends feed shows them.
+- **Friends** (`20261125120000_friends.sql`, now replaced by follows below): `friendships` (requester_id, addressee_id, status `pending`/`accepted`, one row per pair either way round). People can read and delete their own rows directly (cancel, decline, unfriend); sending and accepting only via `send_friend_request(p_user)` (accepts theirs if they'd already asked; refuses yourself, unknown people and under-18s; at most 200 pending) and `accept_friend_request(p_friendship)` (addressee only). `search_people(p_query)` (2+ characters, name contains or handle starts with, leaves out you and under-18s who aren't already your friends, says friends/sent/received/none) and `my_friendships()` return names and handles (security definer; `profiles` itself stays owner-only). Helpers `is_adult()` and `are_friends()` aren't callable by users. Profile pictures aren't shown to others yet (storage is owner-only), so people show initials. Next: friends see each other's "Friends" trips and lists, and the Friends feed shows them.
+- **Followers, spots on boards, shared Want to go** (`20261126120000_follows_boards_sharing.sql`, owner Nov 2026):
+  - `follows` (follower_id, followee_id, status pending/accepted; existing friendships were copied in: friends follow each other). Read/delete your own rows (unfollow, cancel, decline, remove follower); follow only via `follow_user(p_user)` (public account → accepted, otherwise pending; refuses yourself, unknown people, and under-18s who don't already follow you; at most 300 pending) and accept via `accept_follower(p_user)`. `search_people_follows(q)` (status following/requested/none + follows_you; under-18s only if a follow exists either way) and `my_follows()`. The old friendships table and functions are left in place, unused.
+  - `board_items.kind` (place default, or stay/eat/do/gem) with `parent_name`/`parent_slug` (the place a spot is in); `boards.cover` (an app photo name; updatable with name and visibility). Taste and the travel map only use `kind = 'place'` (`placesOn`).
+  - `board_items.share_id`: `share_wish_item(p_item, p_users[])` (your Want to go item; only people you follow who follow you back; up to 20) adds a copy to each person's Want to go with the same share_id; `my_shared_wishes()` gives the other names ("With Maya"). Removing yours leaves theirs.
 - **Place views** (`20261124120000_place_views.sql`): `place_views` (owner_id + place_slug, views, seconds, first/last viewed). Owner-only: select and delete directly; recording only via `record_place_view(slug, name, country, seconds)` (security definer, own row only, at most 600 s a visit). The place page records a visit when you leave it (3 s minimum, `lib/views.ts`). Settings → Your matches: "Use the places I look at" (stored on the phone; off = nothing recorded or used) and "Clear the places I've looked at". Mention viewing history in the privacy policy (plan Step J).
 - **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 

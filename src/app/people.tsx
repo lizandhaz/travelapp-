@@ -1,4 +1,4 @@
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 
@@ -6,25 +6,30 @@ import { AccentTitle } from '@/components/AccentTitle';
 import { Avatar } from '@/components/Avatar';
 import { SearchIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
-import { BackButton, Button, Card, Input, PageTitle, Screen } from '@/components/ui';
+import { BackButton, Button, Card, Input, PageTitle, Screen, Segmented } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
-import { acceptFriend, addFriend, fetchFriendships, inviteFriends, removeFriendship, searchPeople, type Friendship, type Person, type Standing } from '@/lib/friends';
+import { acceptFollower, fetchFollows, follow, inviteFriends, removeFollower, searchPeople, unfollow, type Follows, type Person } from '@/lib/friends';
 
-/** Find people by name or @username, answer friend requests, and see your friends. */
+type Tab = 'followers' | 'following' | 'requests';
+
+/** People: find people by name or @username and follow them; your followers, who you follow, and requests. */
 export default function People() {
-  const { profile } = useAuth();
+  const { profile, session } = useAuth();
+  const me = session?.user.id ?? '';
+  const params = useLocalSearchParams<{ tab?: Tab }>();
+  const [tab, setTab] = useState<Tab>(params.tab ?? 'followers');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Person[] | null>(null);
   const [searching, setSearching] = useState(false);
-  const [friendships, setFriendships] = useState<Friendship[] | null>(null);
+  const [follows, setFollows] = useState<Follows | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [invited, setInvited] = useState<string | null>(null);
 
   const load = useCallback(() => {
-    fetchFriendships()
-      .then(setFriendships)
+    fetchFollows()
+      .then(setFollows)
       .catch((e: Error) => setError(e.message));
   }, []);
   useFocusEffect(load);
@@ -48,18 +53,16 @@ export default function People() {
   }, [query]);
 
   const searchingFor = query.trim().replace(/^@/, '').length >= 2;
-  const byUser = new Map((friendships ?? []).map((f) => [f.userId, f]));
-  const received = (friendships ?? []).filter((f) => f.status === 'received');
-  const sent = (friendships ?? []).filter((f) => f.status === 'sent');
-  const friends = (friendships ?? []).filter((f) => f.status === 'friends');
+  const iFollow = (id: string) => (follows?.following.some((f) => f.userId === id) ? 'following' : follows?.sent.some((f) => f.userId === id) ? 'requested' : 'none');
+  const followsMe = (id: string) => !!follows?.followers.some((f) => f.userId === id);
 
   async function act(key: string, job: () => Promise<unknown>) {
     setBusy(key);
     setError(null);
     try {
       await job();
-      const [f, r] = await Promise.all([fetchFriendships(), searchingFor ? searchPeople(query.trim()) : Promise.resolve(null)]);
-      setFriendships(f);
+      const [f, r] = await Promise.all([fetchFollows(), searchingFor ? searchPeople(query.trim()) : Promise.resolve(null)]);
+      setFollows(f);
       if (r) setResults(r);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong. Please try again.');
@@ -68,12 +71,24 @@ export default function People() {
     }
   }
 
+  const followButton = (id: string, name: string, status: 'following' | 'requested' | 'none', followsYou: boolean) =>
+    status === 'none' ? (
+      <Pill label={followsYou ? 'Follow back' : 'Follow'} filled onPress={() => act(id, () => follow(id))} a11y={`Follow ${name}`} />
+    ) : (
+      <Confirm
+        label={status === 'following' ? 'Following' : 'Requested'}
+        confirm={status === 'following' ? 'Unfollow' : 'Cancel request'}
+        a11y={status === 'following' ? `You follow ${name}. Tap to unfollow` : `Request sent to ${name}. Tap to cancel`}
+        onConfirm={() => act(id, () => unfollow(id, me))}
+      />
+    );
+
   return (
     <Screen>
       <View style={{ paddingHorizontal: GUTTER, paddingTop: 12 }}>
         <BackButton />
       </View>
-      <PageTitle label="Friends">
+      <PageTitle label="People">
         <AccentTitle before="Find your" accent="people" />
       </PageTitle>
 
@@ -106,56 +121,75 @@ export default function People() {
                 Nobody by that name yet. Invite them below.
               </Text>
             )}
-            {results?.map((p) => {
-              const f = byUser.get(p.id);
-              return (
-                <PersonRow
-                  key={p.id}
-                  name={p.name}
-                  handle={p.handle}
-                  status={p.status}
-                  busy={busy === p.id}
-                  onAdd={() => act(p.id, () => addFriend(p.id))}
-                  onAccept={f ? () => act(p.id, () => acceptFriend(f.id)) : undefined}
-                  onRemove={f ? () => act(p.id, () => removeFriendship(f.id)) : undefined}
-                />
-              );
-            })}
+            {results?.map((p) => (
+              <PersonRow key={p.id} name={p.name} handle={p.handle} sub={p.followsYou ? 'Follows you' : undefined} busy={busy === p.id}>
+                {followButton(p.id, p.name, p.status, p.followsYou)}
+              </PersonRow>
+            ))}
           </View>
         ) : (
           <>
-            {received.length > 0 && (
-              <Group title="Friend requests">
-                {received.map((f) => (
-                  <PersonRow
-                    key={f.id}
-                    name={f.name}
-                    handle={f.handle}
-                    status="received"
-                    busy={busy === f.id}
-                    onAccept={() => act(f.id, () => acceptFriend(f.id))}
-                    onRemove={() => act(f.id, () => removeFriendship(f.id))}
-                  />
-                ))}
-              </Group>
-            )}
-            <Group title={friends.length ? `Your friends (${friends.length})` : 'Your friends'}>
-              {!friendships ? (
-                <ActivityIndicator color={colors.accent} />
-              ) : friends.length === 0 ? (
-                <Text variant="bodySoft">No friends yet. Search for them above, or invite them.</Text>
+            <Segmented
+              label="People"
+              value={tab}
+              onChange={setTab}
+              options={[
+                ['followers', `Followers ${follows?.followers.length ?? ''}`.trim()],
+                ['following', `Following ${follows?.following.length ?? ''}`.trim()],
+                ['requests', `Requests${follows?.requests.length ? ` ${follows.requests.length}` : ''}`],
+              ]}
+            />
+            {!follows ? (
+              <ActivityIndicator color={colors.accent} />
+            ) : tab === 'followers' ? (
+              follows.followers.length === 0 ? (
+                <Text variant="bodySoft">No followers yet. Invite friends below.</Text>
               ) : (
-                friends.map((f) => (
-                  <PersonRow key={f.id} name={f.name} handle={f.handle} status="friends" busy={busy === f.id} onRemove={() => act(f.id, () => removeFriendship(f.id))} />
+                follows.followers.map((f) => (
+                  <PersonRow key={f.userId} name={f.name} handle={f.handle} busy={busy === f.userId}>
+                    <View style={{ alignItems: 'flex-end', gap: 6 }}>
+                      {iFollow(f.userId) === 'none' ? followButton(f.userId, f.name, 'none', true) : null}
+                      <Confirm label="Remove" confirm="Remove follower" a11y={`Remove ${f.name} as a follower`} onConfirm={() => act(f.userId, () => removeFollower(f.userId, me))} quiet />
+                    </View>
+                  </PersonRow>
                 ))
-              )}
-            </Group>
-            {sent.length > 0 && (
-              <Group title="Waiting for them to accept">
-                {sent.map((f) => (
-                  <PersonRow key={f.id} name={f.name} handle={f.handle} status="sent" busy={busy === f.id} onRemove={() => act(f.id, () => removeFriendship(f.id))} />
+              )
+            ) : tab === 'following' ? (
+              follows.following.length === 0 ? (
+                <Text variant="bodySoft">You’re not following anyone yet. Search for people above.</Text>
+              ) : (
+                follows.following.map((f) => (
+                  <PersonRow key={f.userId} name={f.name} handle={f.handle} sub={followsMe(f.userId) ? 'Follows you' : undefined} busy={busy === f.userId}>
+                    {followButton(f.userId, f.name, 'following', followsMe(f.userId))}
+                  </PersonRow>
+                ))
+              )
+            ) : (
+              <View style={{ gap: 10 }}>
+                {follows.requests.length === 0 && follows.sent.length === 0 && <Text variant="bodySoft">No requests right now.</Text>}
+                {follows.requests.map((f) => (
+                  <PersonRow key={f.userId} name={f.name} handle={f.handle} sub="Wants to follow you" busy={busy === f.userId}>
+                    <View style={{ alignItems: 'flex-end', gap: 6 }}>
+                      <Pill label="Accept" filled onPress={() => act(f.userId, () => acceptFollower(f.userId))} a11y={`Let ${f.name} follow you`} />
+                      <Pressable onPress={() => act(f.userId, () => removeFollower(f.userId, me))} accessibilityRole="button" accessibilityLabel={`Decline ${f.name}`} hitSlop={6}>
+                        <Text variant="small" style={{ color: colors.muted }}>
+                          Decline
+                        </Text>
+                      </Pressable>
+                    </View>
+                  </PersonRow>
                 ))}
-              </Group>
+                {follows.sent.length > 0 && (
+                  <Text variant="label" style={{ marginTop: 6 }}>
+                    Waiting for them to accept
+                  </Text>
+                )}
+                {follows.sent.map((f) => (
+                  <PersonRow key={f.userId} name={f.name} handle={f.handle} busy={busy === f.userId}>
+                    {followButton(f.userId, f.name, 'requested', followsMe(f.userId))}
+                  </PersonRow>
+                ))}
+              </View>
             )}
           </>
         )}
@@ -179,90 +213,59 @@ export default function People() {
   );
 }
 
-function Group({ title, children }: { title: string; children: React.ReactNode }) {
+/** One person: picture, name, @handle, an optional line ("Follows you") and their buttons. */
+function PersonRow({ name, handle, sub, busy, children }: { name: string; handle: string; sub?: string; busy: boolean; children: React.ReactNode }) {
   return (
-    <View style={{ gap: 10, marginTop: 6 }}>
-      <Text variant="label">{title}</Text>
-      {children}
-    </View>
+    <Card style={{ padding: 12, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+      <Avatar name={name} size={44} />
+      <View style={{ flex: 1 }}>
+        <Text variant="strong" numberOfLines={1}>
+          {name}
+        </Text>
+        <Text variant="tiny" numberOfLines={1}>
+          @{handle}
+          {sub ? ` · ${sub}` : ''}
+        </Text>
+      </View>
+      {busy ? <ActivityIndicator color={colors.accent} /> : children}
+    </Card>
   );
 }
 
-/** One person: picture, name, @handle and what you can do (Add, Accept, Requested, Friends). */
-function PersonRow({
-  name,
-  handle,
-  status,
-  busy,
-  onAdd,
-  onAccept,
-  onRemove,
-}: {
-  name: string;
-  handle: string;
-  status: Standing;
-  busy: boolean;
-  onAdd?: () => void;
-  onAccept?: () => void;
-  onRemove?: () => void;
-}) {
-  // Removing a friend or cancelling a request asks once more before it happens.
-  const [confirming, setConfirming] = useState(false);
-  const removeLabel = status === 'friends' ? 'Remove' : status === 'sent' ? 'Cancel request' : 'Decline';
-  return (
-    <Card style={{ padding: 12, gap: 10 }}>
+/** A pill that asks once more before doing something you'd regret (unfollow, remove, cancel). */
+function Confirm({ label, confirm, a11y, onConfirm, quiet = false }: { label: string; confirm: string; a11y: string; onConfirm: () => void; quiet?: boolean }) {
+  const [asking, setAsking] = useState(false);
+  if (asking)
+    return (
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-        <Avatar name={name} size={44} />
-        <View style={{ flex: 1 }}>
-          <Text variant="strong" numberOfLines={1}>
-            {name}
-          </Text>
-          <Text variant="tiny" numberOfLines={1}>
-            @{handle}
-          </Text>
-        </View>
-        {busy ? (
-          <ActivityIndicator color={colors.accent} />
-        ) : status === 'none' ? (
-          <Pill label="Add" filled onPress={onAdd} a11y={`Add ${name} as a friend`} />
-        ) : status === 'received' ? (
-          <Pill label="Accept" filled onPress={onAccept} a11y={`Accept ${name}'s friend request`} />
-        ) : status === 'sent' ? (
-          <Pill label="Requested" onPress={onRemove ? () => setConfirming(true) : undefined} a11y={`Request sent to ${name}. Tap to cancel`} />
-        ) : (
-          <Pill label="Friends ✓" onPress={onRemove ? () => setConfirming(true) : undefined} a11y={`You and ${name} are friends`} />
-        )}
-      </View>
-      {status === 'received' && onRemove && !busy && (
-        <Pressable onPress={onRemove} accessibilityRole="button" accessibilityLabel={`Decline ${name}'s friend request`} hitSlop={6} style={{ alignSelf: 'flex-end' }}>
+        <Pressable onPress={() => setAsking(false)} accessibilityRole="button" hitSlop={6}>
           <Text variant="small" style={{ color: colors.muted }}>
-            Decline
+            Keep
           </Text>
         </Pressable>
-      )}
-      {confirming && !busy && (
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 16 }}>
-          <Pressable onPress={() => setConfirming(false)} accessibilityRole="button" hitSlop={6}>
-            <Text variant="small" style={{ color: colors.muted }}>
-              Keep
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setConfirming(false);
-              onRemove?.();
-            }}
-            accessibilityRole="button"
-            accessibilityLabel={`${removeLabel}: ${name}`}
-            hitSlop={6}
-          >
-            <Text variant="small" style={{ color: colors.accentText, fontFamily: fonts.sansSemiBold }}>
-              {removeLabel}
-            </Text>
-          </Pressable>
-        </View>
-      )}
-    </Card>
+        <Pressable
+          onPress={() => {
+            setAsking(false);
+            onConfirm();
+          }}
+          accessibilityRole="button"
+          accessibilityLabel={confirm}
+          hitSlop={6}
+        >
+          <Text variant="small" style={{ color: colors.accentText, fontFamily: fonts.sansSemiBold }}>
+            {confirm}
+          </Text>
+        </Pressable>
+      </View>
+    );
+  return quiet ? (
+    <Pressable onPress={() => setAsking(true)} accessibilityRole="button" accessibilityLabel={a11y} hitSlop={6}>
+      <Text variant="small" style={{ color: colors.muted }}>
+        {label}
+      </Text>
+    </Pressable>
+  ) : (
+    <Pill label={label} onPress={() => setAsking(true)} a11y={a11y} />
   );
 }
 

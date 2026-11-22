@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { Dimensions, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
@@ -16,6 +17,7 @@ import { Text } from './Text';
 import { Card, Input, SectionHeader, Segmented } from './ui';
 import { AreaMap } from './AreaMap';
 import { ZoomMap } from './ZoomMap';
+import { BookmarkIcon } from './Icons';
 
 const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -175,7 +177,7 @@ export function SaidList({ items }: { items: PlaceDetail['said'] }) {
 }
 
 /** Where to stay: photo cards with the type and your score out of 10. */
-export function StayRow({ stays }: { stays: PlaceDetail['stays'] }) {
+export function StayRow({ stays, at }: { stays: PlaceDetail['stays']; at?: SpotPlace }) {
   return (
     <View style={{ marginTop: 28 }}>
       <SectionHeader>Where to stay</SectionHeader>
@@ -183,8 +185,8 @@ export function StayRow({ stays }: { stays: PlaceDetail['stays'] }) {
         {stays.map((s) => {
           const w = s.featured ? 250 : 230;
           return (
+            <WithSave key={s.name} at={at} name={s.name} kind="stay">
             <View
-              key={s.name}
               accessible
               accessibilityLabel={[s.name, s.type, s.sub, s.because, s.score != null ? `${formatScore(s.score)} out of 10` : null].filter(Boolean).join(', ')}
               style={{ width: w, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.card, borderWidth: s.featured ? 2 : 1, borderColor: s.featured ? colors.olive : colors.line }}
@@ -212,6 +214,7 @@ export function StayRow({ stays }: { stays: PlaceDetail['stays'] }) {
                 {s.score != null && <Text style={{ fontFamily: fonts.display, fontSize: 20, color: colors.olive, fontVariant: ['tabular-nums'] }}>{formatScore(s.score)}</Text>}
               </View>
             </View>
+            </WithSave>
           );
         })}
       </Row>
@@ -219,18 +222,52 @@ export function StayRow({ stays }: { stays: PlaceDetail['stays'] }) {
   );
 }
 
+/** The place a hotel, restaurant or thing to do is in, so it can be saved to a board under that place. */
+export type SpotPlace = { name: string; country: string; slug: string };
+
+/** A card with a small bookmark in its corner: save this spot to a board (under its place). */
+function WithSave({ at, name, kind, onDark = false, children }: { at?: SpotPlace; name: string; kind: 'stay' | 'eat' | 'do' | 'gem'; onDark?: boolean; children: React.ReactNode }) {
+  return (
+    <View>
+      {children}
+      {!!at && (
+        <Pressable
+          onPress={() => router.push({ pathname: '/save', params: { place: name, country: at.country, slug: at.slug, kind, parent: at.name, parentSlug: at.slug } })}
+          accessibilityRole="button"
+          accessibilityLabel={`Save ${name} to a board`}
+          hitSlop={6}
+          style={({ pressed }) => ({
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            width: 32,
+            height: 32,
+            borderRadius: 16,
+            backgroundColor: onDark ? 'rgba(255,255,255,0.15)' : colors.card,
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: pressed ? 0.7 : 1,
+          })}
+        >
+          <BookmarkIcon color={onDark ? colors.onDark : colors.ink} size={17} />
+        </Pressable>
+      )}
+    </View>
+  );
+}
+
 /** Where to eat: a photo (or the first letter), price, what to order and your score out of 10. */
-export function EatRow({ eats }: { eats: PlaceDetail['eats'] }) {
+export function EatRow({ eats, at }: { eats: PlaceDetail['eats']; at?: SpotPlace }) {
   return (
     <View style={{ marginTop: 28 }}>
       <SectionHeader>Where to eat</SectionHeader>
       <Row gap={12}>
         {eats.map((e) => (
+          <WithSave key={e.name} at={at} name={e.name} kind="eat">
           <View
-            key={e.name}
             accessible
             accessibilityLabel={[e.name, e.price ? `price ${e.price}` : null, e.what, e.score != null ? `${formatScore(e.score)} out of 10` : null, e.from ? `from ${e.from}` : null].filter(Boolean).join(', ')}
-            style={{ width: 200, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line }}
+            style={{ width: 200, flex: 1, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line }}
           >
             {e.photo ? (
               <PhotoTile photo={e.photo} shade={false} style={{ width: '100%', height: 144, borderRadius: 0 }} />
@@ -257,6 +294,7 @@ export function EatRow({ eats }: { eats: PlaceDetail['eats'] }) {
               </View>
             </View>
           </View>
+          </WithSave>
         ))}
       </Row>
     </View>
@@ -264,17 +302,17 @@ export function EatRow({ eats }: { eats: PlaceDetail['eats'] }) {
 }
 
 /** Things to do. A hidden gem gets the navy card. */
-export function DoRow({ dos }: { dos: PlaceDetail['dos'] }) {
+export function DoRow({ dos, at }: { dos: PlaceDetail['dos']; at?: SpotPlace }) {
   return (
     <View style={{ marginTop: 28 }}>
       <SectionHeader>Things to do</SectionHeader>
       <Row gap={12}>
         {dos.map((d) => (
+          <WithSave key={d.name} at={at} name={d.name} kind={d.gem ? 'gem' : 'do'} onDark={d.gem}>
           <View
-            key={d.name}
             accessible
             accessibilityLabel={[d.tag, d.name, d.what, d.from ? `${d.gem ? 'found by' : 'from'} ${d.from}` : null].filter(Boolean).join(', ')}
-            style={{ width: 220, borderRadius: radius.lg, padding: 16, backgroundColor: d.gem ? colors.ink : colors.card, borderWidth: d.gem ? 0 : 1, borderColor: colors.line }}
+            style={{ width: 220, flex: 1, borderRadius: radius.lg, padding: 16, paddingRight: 44, backgroundColor: d.gem ? colors.ink : colors.card, borderWidth: d.gem ? 0 : 1, borderColor: colors.line }}
           >
             <Pill text={d.tag} bg={d.gem ? colors.stamp : tint(colors.stamp, 0.4)} />
             <Text variant="subheading" style={{ marginTop: 10, color: d.gem ? colors.onDark : colors.ink }}>
@@ -291,6 +329,7 @@ export function DoRow({ dos }: { dos: PlaceDetail['dos'] }) {
               </Text>
             )}
           </View>
+          </WithSave>
         ))}
       </Row>
     </View>

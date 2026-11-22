@@ -18,7 +18,8 @@ export type Postcard = SamplePostcard & {
   trip: FriendTrip | null;
 };
 
-const withApp = (s: string) => s.replace(/XYZX/g, APP_NAME);
+// Sample text says {app} wherever the app's name goes, so renaming the app never needs a content change.
+const withApp = (s: string) => s.replace(/\{app\}/g, APP_NAME);
 const ABOUT_A_TRIP = /rated|sent you a postcard|have been/;
 
 export const postcards: Postcard[] = samplePostcards.map((p, i) => ({
@@ -26,7 +27,7 @@ export const postcards: Postcard[] = samplePostcards.map((p, i) => ({
   id: String(i),
   from: withApp(p.who),
   line: withApp(p.text),
-  trip: p.who !== 'XYZX' && ABOUT_A_TRIP.test(p.text) ? getTrip(p.who, p.slug) : null,
+  trip: p.who !== '{app}' && ABOUT_A_TRIP.test(p.text) ? getTrip(p.who, p.slug) : null,
 }));
 
 export const getPostcard = (id: string) => postcards.find((p) => p.id === id) ?? null;

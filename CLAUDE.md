@@ -4,7 +4,7 @@ Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations*
 
 **Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **Lists are real too:** Saved holds your "Want to go" list and lists you make, and You has a travel map of where you've been and want to go. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips and lists (Home's picks and Friends feed, Explore, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts` (40 places, each with details; 39 have a map, South Africa doesn't yet). The roadmap is in `docs/plan.md`.
 
-**App name:** the name is a placeholder, currently **XYZX**. It lives in **one place**, `src/constants/brand.json` (`appName`). Code uses `APP_NAME` from `src/constants/brand.ts`, and `app.config.ts` reads the same JSON for the name under the icon. Never type the app's name anywhere else. (The project was originally called "Postcard"; that's still the Expo `slug` and the repo's history, and the notifications feature is still called "Postcards".)
+**App name:** **ATLO** (owner, 22 Nov 2026; it was the placeholder XYZX). It lives in **one place**, `src/constants/brand.json` (`appName`). Code uses `APP_NAME` from `src/constants/brand.ts`, and `app.config.ts` reads the same JSON for the name under the icon. Never type the app's name anywhere else. (The project was originally called "Postcard"; that's still the Expo `slug` and the repo's history, and the notifications feature is still called "Postcards".)
 
 ## Working with the owner
 
@@ -87,7 +87,8 @@ src/
     (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
     (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score, sideways;
                           no text under them); "Dip into collections" (Explore's collection tiles); "From your friends" (FeedCard: big photo
-                          with who, month, place and score, then their quote and stay; opens the friend's trip)
+                          with who, month, place and score, or for a post without photos a blush top with the place in big type, then their quote
+                          and stay; opens the friend's trip. The sample feed mixes both on purpose)
     (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
                           jumps down to it), "Find your next trip" collection tiles (24, each opens its collection, no counts),
                           Trending this month, "Made for your taste" (chips + things to eat/do/stay, on a sage band; moved from Home),
@@ -151,7 +152,7 @@ src/
     trip/ScorePicker.tsx  "Slide to rate out of 10": 1.0–10.0 in 0.1 steps; accessibilityRole "adjustable"
     trip/TripCard.tsx     One of your trips as a photo stamp
   constants/theme.ts      Colours, fonts, radius, GUTTER (the only place for raw hex values)
-  constants/brand.json    The app name (placeholder "XYZX"); brand.ts exports APP_NAME
+  constants/brand.json    The app name ("ATLO"); brand.ts exports APP_NAME. Sample text writes {app} for it (postcards.ts fills it in)
   lib/
     sample.ts             Sample content from the prototype: hero, rows, places, feed, board, boards, postcards
     photos.ts             Sample photo names → files
@@ -279,7 +280,7 @@ From the owner's palette (Nov 2026): Oat Milk, Blush Petal, Terracotta Clay, Sag
 - **ScoreStamp**: every score sits in a small perforated stamp, dark ink on blush (white on olive for stays).
 - **PhotoStamp**: hero photos and your trips in a white perforated frame with a dotted inner border.
 - **MonthPill**: a trip month in a slightly tilted outline pill ("JUN 2026"). Never a current date or location.
-- **App icon**: still the earlier red stamp with "P". Update it when the name is final.
+- **App icon**: still the earlier red stamp with "P". The name is now final (ATLO), so it needs redoing.
 
 ### Voice
 

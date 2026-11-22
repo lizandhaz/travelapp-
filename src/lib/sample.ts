@@ -1,7 +1,7 @@
 import type { PhotoName } from './photos';
 
 /**
- * Sample content, taken from the design prototype ("XYZX without planning").
+ * Sample content, taken from the design prototype (the "… without planning" artifact).
  * It fills Home, Explore, Saved, Postcards and place pages until those parts
  * become real (see docs/plan.md, Steps C–H). Your own trips are real (lib/trips.ts).
  * Scores are out of 10 with one decimal place.
@@ -247,7 +247,7 @@ export const rows = {
       "name": "Café Pátio Azul",
       "where": "Lisbon, Portugal",
       "because": "Because you loved the corner boulangerie in Paris",
-      "friends": "New to your friends. Found by XYZX",
+      "friends": "New to your friends. Found by {app}",
       "photo": "cafe-2"
     },
     {
@@ -307,7 +307,7 @@ export const rows = {
       "name": "Musée Rodin garden",
       "where": "Paris, France",
       "because": "Because you gave the Orangerie a 9.2",
-      "friends": "New to your friends. Found by XYZX",
+      "friends": "New to your friends. Found by {app}",
       "photo": "paris-1"
     },
     {
@@ -317,7 +317,7 @@ export const rows = {
       "name": "Kaffe Krogen",
       "where": "Copenhagen, Denmark",
       "because": "Because you loved Café des Épices in Marrakech",
-      "friends": "New to your friends. Found by XYZX",
+      "friends": "New to your friends. Found by {app}",
       "photo": "cafe-1"
     },
     {
@@ -387,7 +387,7 @@ export const rows = {
       "name": "Caffè Sicilia",
       "where": "Palermo, Sicily, Italy",
       "because": "Because you loved Café des Épices in Marrakech",
-      "friends": "New to your friends. Found by XYZX",
+      "friends": "New to your friends. Found by {app}",
       "photo": "cafe-1"
     },
     {
@@ -407,7 +407,7 @@ export const rows = {
       "name": "Tate St Ives",
       "where": "St Ives, Cornwall, England",
       "because": "Because you gave the Orangerie a 9.2",
-      "friends": "New to your friends. Found by XYZX",
+      "friends": "New to your friends. Found by {app}",
       "photo": "stives-1"
     },
     {
@@ -447,7 +447,7 @@ export const rows = {
       "name": "Knossos at opening",
       "where": "Crete, Greece",
       "because": "Because you gave the Orangerie a 9.2",
-      "friends": "New to your friends. Found by XYZX",
+      "friends": "New to your friends. Found by {app}",
       "photo": "crete-4"
     },
     {
@@ -1468,7 +1468,7 @@ export const friendsFeed: FeedItem[] = [
     "place": "Positano",
     "region": "Italy",
     "month": "May 2026",
-    "photo": "positano-1",
+    "photo": null,
     "quote": "“Expensive but I'd go back tomorrow.”",
     "score": 9.2,
     "stayType": "Villa",
@@ -1491,18 +1491,46 @@ export const friendsFeed: FeedItem[] = [
     "slug": "kyoto"
   },
   {
+    "who": "Sophie",
+    "face": "face-sophie",
+    "place": "South Africa",
+    "region": "Cape Town & Kruger",
+    "month": "Mar 2026",
+    "photo": "safari-1",
+    "quote": "“Table Mountain in the morning, a wine farm for lunch, penguins by teatime.”",
+    "score": 9.3,
+    "stayType": "Hotel",
+    "stayName": "Babylonstoren",
+    "stayScore": 9.4,
+    "slug": "southafrica"
+  },
+  {
     "who": "Maya",
     "face": "face-maya",
     "place": "Marrakech",
     "region": "Morocco",
     "month": "Mar 2026",
-    "photo": "marrakech-1",
+    "photo": null,
     "quote": null,
     "score": 9.0,
     "stayType": "Riad",
     "stayName": "Riad Zitoun",
     "stayScore": 9.1,
     "slug": "marrakech"
+  },
+  {
+    "who": "Jonah",
+    "face": "face-jonah",
+    "place": "Zanzibar",
+    "region": "Tanzania",
+    "month": "Aug 2025",
+    "photo": "zanzibar-2",
+    "quote": "“Stone Town at dusk, then a week on the beach. Perfect mix.”",
+    "score": 8.9,
+    "stayType": "Hotel",
+    "stayName": "Zuri Zanzibar",
+    "stayScore": 9.0,
+    "slug": "zanzibar"
   }
 ] as FeedItem[];
 
@@ -1575,7 +1603,7 @@ export const samplePostcards: SamplePostcard[] = [
     "slug": "maldives"
   },
   {
-    "who": "XYZX",
+    "who": "{app}",
     "text": "Polignano a Mare is trending. Two friends went this autumn",
     "when": "Tue",
     "photo": "puglia-1",
@@ -1590,7 +1618,7 @@ export const samplePostcards: SamplePostcard[] = [
   },
   {
     "who": "Jonah",
-    "text": "joined XYZX. You're both now sharing ratings",
+    "text": "joined {app}. You're both now sharing ratings",
     "when": "Last week",
     "photo": null,
     "slug": "deia"

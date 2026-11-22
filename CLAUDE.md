@@ -12,6 +12,9 @@ Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations*
 - **Stop and ask before anything that costs money or can't be undone**: paid plans, Apple/Google developer accounts, deleting data or projects, force-pushing, sending real emails.
 - Don't connect a service or add a paid one unless the current step in `docs/plan.md` calls for it and the owner has agreed.
 - Work in small steps (one step of the plan per pull request), and say what to check when it's done.
+- **Merging is autonomous** (owner's standing approval, 22 Nov 2026): once a pull request's checks all pass (tsc, lint, `npm test`, the phone export, and a click-through), Claude merges it itself (GitHub MCP `merge_pull_request`, merge method "merge") and publishes the EAS update, then tells the owner what changed and what to check. Don't wait for "merged".
+  - **Exception: database changes.** If a pull request adds or changes anything in `supabase/migrations/`, stop and ask the owner before merging. After they say yes, merge, check the "Update Supabase database" job went green, then publish.
+  - Everything in "Stop and ask" below still applies (money, deleting data, force-pushing, real emails).
 - The GitHub repo is **public**. Never commit secrets. The Supabase **publishable** key in `src/lib/config.ts` is public by design (every installed app contains it). The Supabase **secret / service_role** key must never be in this repo or the app.
 
 ## Product rules (don't break these)
@@ -65,7 +68,7 @@ The owner has **no computer**, only an iPhone (with Expo Go) and an iPad. Claude
 - The QR code in `docs/expo-go-qr.png` encodes `exp://u.expo.dev/9e899203-22d1-447f-babc-27279789d30a?runtime-version=1.0.0&channel-name=preview` and always opens the latest `preview` update.
 - The cloud environment "travelapp-" allows expo.dev, api.expo.dev, u.expo.dev and exp.host, and injects the owner's Expo token for api.expo.dev. Set `EXPO_TOKEN=proxy-injected` (a placeholder; the proxy supplies the real one).
 - **Testers:** the project is private ("hidden"). Invite people to the postcardapp organisation as **View only** (expo.dev → postcardapp → Settings → Members); they sign in to Expo Go with their own Expo account and scan the QR code. Log-in codes only reach the owner's email until a domain is verified in Resend, so a tester's app account uses a "+" alias of the owner's email and the owner passes the code on.
-- After merging a change, publish an update and tell the owner to fully close and reopen Postcard in Expo Go.
+- After merging a change (Claude merges app-only pull requests itself; see "Working with the owner"), publish an update and tell the owner to fully close and reopen Postcard in Expo Go.
 - Changing `version` in `app.json` changes the runtime version, which breaks the QR link. Update the QR code if you ever do.
 
 ## Folder map

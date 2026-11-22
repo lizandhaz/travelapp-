@@ -124,7 +124,8 @@ src/
                           then like a real postcard a line down the middle: their quote and top tip on the left; score + word, who
                           with, nights, where they slept (+ score), where they ate on the right). No personal messages and no
                           To/From lines (owner, Nov 2026). Anything not filled in is left out and the card rearranges: no words →
-                          a big photo on the left (or details full width), no photos → a coloured front with a star, and the back's
+                          a big photo on the left (or details full width), no photos → no front: the whole trip (the back) shows
+                          straight away, with no Turn over (owner disliked the olive-orange stand-in), and the back's
                           content sets the card's height. Then Like / Comment / Save, big photos, "See <who>'s whole trip" and "More about <place>"
     friend-trip/[id].tsx  A friend's trip (id "maya-hydra"; sample, lib/friendTrips): their score, who with, nights, quote, photos,
                           where they stayed, where they ate, what they did, their tips, "More about <place>"
@@ -306,7 +307,7 @@ From the owner's palette (Nov 2026): Oat Milk, Blush Petal, Terracotta Clay, Sag
 | `gold` | `#b9975b` | Hidden-gem pins on place maps |
 | `onDark` | `#faf7f0` | Text on photos and dark buttons |
 
-**Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, segmented switches and the tab bar's + and active tab are terracotta; dark buttons are olive; Explore's "Made for your taste" sits on a sage band; friends' feed cards are white with the stay on a sage strip; Trending rank badges (`PhotoBadge accent`) and the line under trend cards are terracotta; You's stats are three coloured tiles (Trips, Countries, % "Of the world" = countries / 195; no average score, owner Nov 2026); avatars without a photo use olive/terracotta/sky; place score card blush, place facts sky/blush; Saved's Want to go card blush. The owner tried and didn't want fully tinted feed cards or a band behind Explore's Trending (too much), nor all-plain (too little): keep this middle ground. Collection tiles show no count.
+Trips without photos use soft blush (`blushSoft`) with dark text (feed posts, saved-trip tiles, a friend's trip page); never the olive-to-terracotta gradient (owner disliked it). **Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, segmented switches and the tab bar's + and active tab are terracotta; dark buttons are olive; Explore's "Made for your taste" sits on a sage band; friends' feed cards are white with the stay on a sage strip; Trending rank badges (`PhotoBadge accent`) and the line under trend cards are terracotta; You's stats are three coloured tiles (Trips, Countries, % "Of the world" = countries / 195; no average score, owner Nov 2026); avatars without a photo use olive/terracotta/sky; place score card blush, place facts sky/blush; Saved's Want to go card blush. The owner tried and didn't want fully tinted feed cards or a band behind Explore's Trending (too much), nor all-plain (too little): keep this middle ground. Collection tiles show no count.
 
 `accent` is too light for small text on `bg`. Use `accentText` for small text and `accentDeep` behind white text. The place maps in `assets/maps/` have their pins drawn in `olive`/`accent`/`ink`/`gold` (rendered from the prototype's SVGs with those colours swapped in); if those change, redraw the maps so the key still matches.
 

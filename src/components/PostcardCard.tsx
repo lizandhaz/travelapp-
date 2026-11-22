@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Animated, Pressable, View } from 'react-native';
 
 import { colors, fonts, radius } from '@/constants/theme';
@@ -8,7 +7,6 @@ import { fitLines, fitWordSize } from '@/lib/fit';
 import { scoreWord } from '@/lib/score';
 import { MonthPill } from './MonthPill';
 import { PhotoFill, PhotoStamp, PhotoTile, Shade } from './Photo';
-import { Star } from './Wordmark';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
 
@@ -16,15 +14,18 @@ import { Text } from './Text';
  * A friend's trip as a postcard, the same template for everyone: a photo on the front, and on the
  * back their words on the left and the details on the right (score, who with, how long, where they
  * stayed and ate), split by the line down the middle like a real postcard. No To/From lines.
- * Tap it (or "Turn over") to flip it.
+ * Tap it (or "Turn over") to flip it. With no photos there's no front: the whole trip (the back) shows straight
+ * away and it doesn't turn over (owner, Nov 2026).
  */
 export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTrip; width: number; flipped: boolean; onFlip: () => void }) {
   // The back sets the card's height (so a half-filled postcard is shorter); the front fills the same space.
   const minHeight = Math.round(width * 0.82);
-  const [turn] = useState(() => new Animated.Value(0));
+  const backOnly = !trip.photos[0];
+  const showBack = backOnly || flipped;
+  const [turn] = useState(() => new Animated.Value(backOnly ? 1 : 0));
   useEffect(() => {
-    Animated.spring(turn, { toValue: flipped ? 1 : 0, useNativeDriver: true, friction: 8, tension: 40 }).start();
-  }, [flipped, turn]);
+    Animated.spring(turn, { toValue: showBack ? 1 : 0, useNativeDriver: true, friction: 8, tension: 40 }).start();
+  }, [showBack, turn]);
   const side = (from: string, to: string, visibleFirst: boolean) => ({
     backfaceVisibility: 'hidden' as const,
     opacity: turn.interpolate({ inputRange: [0, 0.5, 0.501, 1], outputRange: visibleFirst ? [1, 1, 0, 0] : [0, 0, 1, 1] }),
@@ -50,11 +51,12 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
 
   return (
     <Pressable
-      onPress={onFlip}
-      accessibilityRole="button"
-      accessibilityHint="Turns the postcard over"
+      onPress={backOnly ? undefined : onFlip}
+      disabled={backOnly}
+      accessibilityRole={backOnly ? 'summary' : 'button'}
+      accessibilityHint={backOnly ? undefined : 'Turns the postcard over'}
       accessibilityLabel={
-        flipped
+        showBack
           ? [
               `${trip.who}'s ${tripPlace(trip)} trip, ${trip.month}. Rated it ${trip.score.toFixed(1)} out of 10.`,
               trip.quote,
@@ -67,19 +69,11 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
       }
       style={{ width, minHeight }}
     >
-      {/* Front: the photo */}
+      {/* Front: the photo (none without photos) */}
+      {!backOnly && (
       <Animated.View style={[side('0deg', '180deg', true), { position: 'absolute', inset: 0, zIndex: 1, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.sand }]}>
-        {front ? (
-          <>
-            <PhotoFill photo={front} label={trip.place} />
-            <Shade strength={0.55} />
-          </>
-        ) : (
-          // No photos: a coloured card in the palette instead.
-          <LinearGradient colors={[colors.olive, colors.accentDeep]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center' }}>
-            <Star size={width * 0.28} color={colors.onDark} />
-          </LinearGradient>
-        )}
+        <PhotoFill photo={front!} label={trip.place} />
+        <Shade strength={0.55} />
         <View style={{ position: 'absolute', inset: 10, borderWidth: 1.5, borderColor: colors.onDark, borderRadius: radius.sm, opacity: 0.85 }} />
         {/* Their score as the postage stamp, top right (owner, Nov 2026). */}
         <View style={{ position: 'absolute', top: 22, right: 22, transform: [{ rotate: '4deg' }] }}>
@@ -94,6 +88,7 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
           </Text>
         </View>
       </Animated.View>
+      )}
 
       {/* Back: the trip, laid out like the back of a real postcard */}
       <Animated.View

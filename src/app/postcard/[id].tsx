@@ -35,7 +35,7 @@ export default function PostcardScreen() {
       </PageTitle>
       <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
         <PostcardCard trip={trip} width={width} flipped={flipped} onFlip={() => setFlipped((f) => !f)} />
-        <Button title={flipped ? 'See the front' : 'Turn over'} kind="outline" onPress={() => setFlipped((f) => !f)} />
+        {trip.photos.length > 0 && <Button title={flipped ? 'See the front' : 'Turn over'} kind="outline" onPress={() => setFlipped((f) => !f)} />}
         <View style={{ paddingTop: 6, paddingHorizontal: 4 }}>
           <TripActions id={trip.id} who={trip.who} place={trip.place} slug={trip.slug} />
         </View>

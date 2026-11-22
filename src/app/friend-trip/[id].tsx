@@ -1,5 +1,4 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Dimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -35,24 +34,24 @@ export default function FriendTripScreen() {
             <Shade strength={0.6} />
           </>
         ) : (
-          // No photos: the same olive-to-terracotta as a postcard without photos.
-          <LinearGradient colors={[colors.olive, colors.accentDeep]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ position: 'absolute', inset: 0 }} />
+          // No photos: soft blush with dark text, like a feed post without photos.
+          <View style={{ position: 'absolute', inset: 0, backgroundColor: colors.blushSoft }} />
         )}
         <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER }}>
-          <BackButton onPhoto />
+          <BackButton onPhoto={hasPhoto} />
         </View>
         <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: 40 }}>
-          <MonthPill month={trip.month} onPhoto />
-          <Text style={{ fontFamily: fonts.displayBold, fontSize: 40, lineHeight: 44, color: colors.onDark, marginTop: 10 }}>
+          <MonthPill month={trip.month} onPhoto={hasPhoto} />
+          <Text style={{ fontFamily: fonts.displayBold, fontSize: 40, lineHeight: 44, color: hasPhoto ? colors.onDark : colors.ink, marginTop: 10 }}>
             {trip.who}’s {tripPlace(trip)} trip
           </Text>
-          <Text variant="body" style={{ color: colors.onDark }}>
+          <Text variant="body" style={{ color: hasPhoto ? colors.onDark : colors.muted }}>
             {trip.region}
           </Text>
         </View>
       </View>
 
-      <Card tone="blush" style={{ marginHorizontal: GUTTER, marginTop: -24, padding: 16, gap: 12 }}>
+      <Card tone={hasPhoto ? "blush" : "white"} style={{ marginHorizontal: GUTTER, marginTop: -24, padding: 16, gap: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           <Avatar face={trip.face} name={trip.who} size={40} />
           <View style={{ flex: 1 }}>

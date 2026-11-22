@@ -96,8 +96,11 @@ src/
                           Trending this month, "Made for your taste" (chips + things to eat/do/stay, on a sage band; moved from Home),
                           and "Just for you": a long two-column photo feed (60 at a time, more as you scroll)
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
-    (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list (tile shaped like a list)
-    (tabs)/profile.tsx    You: profile picture (tap to change), Find friends / Add a trip buttons, stats, Your taste, travel map card (tap → map), your trips as photo
+    (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list (tile shaped like a list), and
+                          Friends' trips you've saved (SavedTripCard grid)
+    (tabs)/profile.tsx    You: profile picture (tap to change), Find friends / Add a trip buttons, stats, Your taste (plain outline tags, no
+                          colours), travel map card (tap → map), "Your collections" (your lists + saved friends' trips, each opens; See all
+                          → Saved), your trips as photo
                           stamps: Newest (default) / Oldest / Top rated, and a year filter
     list/[id].tsx         One list: photo-collage cover with the name, Share/Edit circles, places as a 2-column grid of
                           photo cards (score stamp, × to remove, tap → place page), Add a place card, Delete (confirm)
@@ -137,7 +140,7 @@ src/
     Photo.tsx             PhotoFill, Shade, PhotoTile (rounded photo), PhotoStamp (photo in a perforated frame)
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
-    cards.tsx             Row, TrendCard, PlaceCard, TasteCard, FeedCard, BoardTile, PhotoBadge
+    cards.tsx             Row, TrendCard, PlaceCard, TasteCard, FeedCard, BoardTile, PhotoBadge, SavedTripCard
     explore.tsx           CollectionTile, ItemCard, sorting helpers (used by Explore and collection pages)
     lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, WantToGoButton, photoForItem, placeSlugForItem
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
@@ -154,8 +157,9 @@ src/
                           smaller than the window it stays centred; tap targets on each pin; rings for the picked pin and
                           your stay ("You're here"); `focus` glides to a pin. Gesture maths in a MapGesture class (refs aren't allowed
                           in render). The picture has pointerEvents none, or the browser drags the image and cancels the gesture
-    TripActions.tsx       Like (heart + count), Comment (sheet with comments and a box to add yours) and Save (→ save.tsx with the
-                          place) for a friend's trip; on feed cards and the friend's trip page
+    TripActions.tsx       Like (heart + count), Comment (sheet with comments and a box to add yours) and Save (a sheet: "Save <place>"
+                          → save.tsx, or "Save <who>'s trip" → Saved → Friends' trips; the bookmark fills when the trip is saved) for a
+                          friend's trip; on feed cards and the friend's trip page
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
@@ -201,8 +205,8 @@ src/
                           tripId, companionsLabel); who-with and nights are sample values and may be null (not filled in)
     postcards.ts          Sample Postcards, each linked to the friend's trip it's about (postcards, getPostcard)
     friends.ts            Friends: searchPeople, fetchFriendships, addFriend, acceptFriend, removeFriendship, inviteFriends
-    reactions.ts          Likes and comments on friends' trips: sample counts + yours, kept on the phone (useReactions, toggleLike,
-                          addComment). Moves to the database when friends' real trips arrive
+    reactions.ts          Likes, comments and saved friends' trips: sample counts + yours, kept on the phone (useReactions, toggleLike,
+                          addComment, toggleSavedTrip, useSavedTrips). Moves to the database when friends' real trips arrive
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)

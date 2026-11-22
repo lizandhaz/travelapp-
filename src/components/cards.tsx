@@ -13,7 +13,7 @@ import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
 import { Card } from './ui';
 import { TripActions } from './TripActions';
-import { friendTripId } from '@/lib/friendTrips';
+import { friendTripId, getFriendTrip, tripPlace } from '@/lib/friendTrips';
 
 const openPlace = (slug: string | null) => slug && router.push(`/place/${slug}`);
 
@@ -214,6 +214,41 @@ export function BoardTile({ item, height }: { item: BoardItem & { href?: string 
         {item.name}
       </Text>
       <Text variant="tiny">{item.sub}</Text>
+    </Pressable>
+  );
+}
+
+/** A friend's trip you've saved: their photo (or the palette's colours), "Maya's Hydra trip", month and score. */
+export function SavedTripCard({ id, width = 160 }: { id: string; width?: number }) {
+  const trip = getFriendTrip(id);
+  if (!trip) return null;
+  const height = Math.round(width * 1.15);
+  return (
+    <Pressable
+      onPress={() => router.push(`/friend-trip/${id}`)}
+      accessibilityRole="link"
+      accessibilityLabel={`${trip.who}'s ${tripPlace(trip)} trip, ${trip.month}, ${trip.score.toFixed(1)} out of 10`}
+      style={{ width }}
+    >
+      <View style={{ width, height, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.sand }}>
+        {trip.photos[0] ? (
+          <PhotoFill photo={trip.photos[0]} />
+        ) : (
+          <LinearGradient colors={[colors.olive, colors.accentDeep]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ position: 'absolute', inset: 0 }} />
+        )}
+        <Shade strength={0.5} />
+        <View style={{ position: 'absolute', top: 8, right: 8 }}>
+          <ScoreStamp score={trip.score} size="sm" />
+        </View>
+        <View style={{ position: 'absolute', left: 10, bottom: 10, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <Avatar face={trip.face} name={trip.who} size={24} />
+          <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 12, color: colors.onDark }}>{trip.who}</Text>
+        </View>
+      </View>
+      <Text variant="strong" numberOfLines={1} style={{ marginTop: 8 }}>
+        {trip.who}’s {tripPlace(trip)} trip
+      </Text>
+      <Text variant="tiny">{trip.month}</Text>
     </Pressable>
   );
 }

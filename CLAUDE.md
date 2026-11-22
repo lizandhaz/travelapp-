@@ -79,7 +79,7 @@ app.json                  Icon, splash, plugins, Expo project link
 app.config.ts             Adds the app name (from src/constants/brand.json) on top of app.json
 assets/images/            App icon, splash, Android adaptive icons, favicon
 assets/photos/            Sample photos from the design prototype (Unsplash)
-assets/maps/              Illustrated place maps from the prototype ("On the map"), drawn to JPEG
+assets/maps/              Illustrated place maps from the prototype, drawn to JPEG (now only the web stand-in; pin positions come from them)
 src/
   app/                    Every file is a screen (Expo Router)
     _layout.tsx           Fonts, AuthProvider, Stack + Stack.Protected (signed in / signed out)
@@ -152,17 +152,13 @@ src/
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
                           TravelMapFull (map screen: names placed so they don't overlap, filters, pinch zoom, place chips)
     place.tsx             Place page pieces (stay/eat/do cards have a bookmark to save that spot to a board under its place): YourScore, PlaceFacts (Best time / Stays as plain text, no boxes), PlaceMapSection
-                          (on the page: the plain map picture + numbered key with your score for each spot, tap for why; tap the map or
-                          "Full screen" for the big map: a ZoomMap filling over half the screen (starts filled, zooms out until the
-                          whole map shows, in to 6×) + "Where are you staying?" (typing only, no suggestion chips, owner Nov 2026;
-                          picks the stay once one name matches) → "Near <stay>": the rest nearest first, Right nearby / A short way /
-                          Further out). Map / Drawing switch above the big map. Map (first on phones) is the real map dressed like the
-                          drawing (AreaMap: numbered pins in our colours with white name labels, roughly placed); Drawing is the
-                          ZoomMap, and zooming out past it (pinch, or − again) switches to Map), BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
-    ZoomMap.tsx           A place map in a window (`height` can be taller than the map) you can zoom (pinch, or + / −) and drag;
-                          smaller than the window it stays centred; tap targets on each pin; rings for the picked pin and
-                          your stay ("You're here"); `focus` glides to a pin. Gesture maths in a MapGesture class (refs aren't allowed
-                          in render). The picture has pointerEvents none, or the browser drags the image and cancels the gesture
+                          (on the page: a still preview of the real map (AreaMap preview) + the numbered key with your score for each
+                          spot, tap for why; tap the map or "Full screen" for the big real map (zoom from the street to the world) +
+                          "Where are you staying?" (typing only; picks the stay once one name matches) → "Near <stay>": the rest
+                          nearest first, Right nearby / A short way / Further out. The drawn maps are no longer shown on phones
+                          (owner, Nov 2026); they're only the web stand-in), BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
+    AreaMap.tsx           The real map of a place (Apple Maps, mutedStandard; numbered pins with name labels; `preview` = still, tap to
+                          open). AreaMap.web.tsx shows the drawn map instead, as react-native-maps doesn't run on the web
     TripActions.tsx       Like (heart + count), Comment (sheet with comments and a box to add yours) and Save (a sheet: "Save <place>"
                           → save.tsx, or "Save <who>'s trip" → Saved → Friends' trips; the bookmark fills when the trip is saved) for a
                           friend's trip; on feed cards and the friend's trip page

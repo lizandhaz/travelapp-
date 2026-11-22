@@ -25,6 +25,8 @@ export function AreaMap({
   stay,
   focus,
   onPin,
+  preview = false,
+  onPress,
 }: {
   slug: string;
   name: string;
@@ -36,6 +38,9 @@ export function AreaMap({
   /** A new key glides the map to pin n (or back to the whole place when n is null). */
   focus?: { n: number | null; key: number };
   onPin: (n: number) => void;
+  /** A still preview (no zooming or dragging); tapping anywhere calls onPress. */
+  preview?: boolean;
+  onPress?: () => void;
 }) {
   const centre = placeCentres[slug];
   const map = useRef<ComponentRef<typeof MapView>>(null);
@@ -69,6 +74,9 @@ export function AreaMap({
       showsPointsOfInterests={false}
       rotateEnabled={false}
       pitchEnabled={false}
+      scrollEnabled={!preview}
+      zoomEnabled={!preview}
+      onPress={preview ? onPress : undefined}
       accessibilityLabel={`Map of ${name}`}
     >
       {spots.map((s) =>
@@ -79,7 +87,7 @@ export function AreaMap({
             coordinate={{ latitude: s.pos[0], longitude: s.pos[1] }}
             anchor={{ x: 0.5, y: 0.2 }}
             tracksViewChanges={false}
-            onPress={() => onPin(s.n)}
+            onPress={() => (preview ? onPress?.() : onPin(s.n))}
             accessibilityLabel={`${s.n}. ${s.name}, ${s.kind}`}
           >
             <SpotPin n={s.n} name={s.name} colour={PIN[s.kind] ?? colors.ink} picked={picked === s.n} stay={stay === s.n} />

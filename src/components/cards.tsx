@@ -113,10 +113,11 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
 
 /** One friend's trip in the Friends feed: a big photo with who, when, where and their score, then their words and stay. */
 export function FeedCard({ item }: { item: FeedItem }) {
-  const open = () => router.push(`/friend-trip/${friendTripId(item)}`);
+  // Opens as a postcard first, like a Postcard (owner, Nov 2026); their whole trip is below it.
+  const open = () => router.push(`/postcard/${friendTripId(item)}`);
   // The place name shrinks so a long word fits beside the score stamp (card ~ screen minus margins, padding and stamp).
   const feedSize = fitWordSize(item.place, Math.min(Dimensions.get('window').width, 480) - 40 - 36 - 70, 34, 20);
-  const label = `${item.who}'s ${item.place} trip, ${item.month}${item.posted ? `, posted ${item.posted.toLowerCase()}` : ''}. ${item.score.toFixed(1)} out of 10. Open their trip`;
+  const label = `${item.who}'s ${item.place} trip, ${item.month}${item.posted ? `, posted ${item.posted.toLowerCase()}` : ''}. ${item.score.toFixed(1)} out of 10. Open their postcard`;
   return (
     <Pressable onPress={open} accessibilityRole="link" accessibilityLabel={label} style={({ pressed }) => pressed && { opacity: 0.92 }}>
       <Card>

@@ -1,8 +1,10 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Pressable, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
+import { SavedTripCard } from '@/components/cards';
+import { useSavedTrips } from '@/lib/reactions';
 import { PlusIcon } from '@/components/Icons';
 import { ListCover, WishStar } from '@/components/lists';
 import { Text } from '@/components/Text';
@@ -10,7 +12,7 @@ import { Button, Card, PageTitle, Screen } from '@/components/ui';
 import { colors, GUTTER, radius } from '@/constants/theme';
 import { boardMeta, ensureWishList, fetchBoards, WISH_LIST_NAME, type Board } from '@/lib/boards';
 
-/** Saved: your "Want to go" list and the lists you've made. */
+/** Saved: your "Want to go" list, the lists you've made, and friends' trips you've saved. */
 export default function Saved() {
   const [boards, setBoards] = useState<Board[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +39,8 @@ export default function Saved() {
     }, [load]),
   );
 
+  const savedTrips = useSavedTrips();
+  const half = Math.floor((Math.min(Dimensions.get('window').width, 480) - GUTTER * 2 - 14) / 2);
   const wish = boards?.find((b) => b.kind === 'wish') ?? null;
   const lists = boards?.filter((b) => b.kind !== 'wish') ?? [];
 
@@ -132,6 +136,19 @@ export default function Saved() {
               </Pressable>
             </View>
           </View>
+
+          {savedTrips.length > 0 && (
+            <View style={{ gap: 14 }}>
+              <Text variant="heading" accessibilityRole="header">
+                Friends’ trips
+              </Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 14 }}>
+                {savedTrips.map((id) => (
+                  <SavedTripCard key={id} id={id} width={half} />
+                ))}
+              </View>
+            </View>
+          )}
         </View>
       )}
     </Screen>

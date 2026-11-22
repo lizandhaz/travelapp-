@@ -4,7 +4,7 @@ import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } fr
 
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { sampleCountry } from '@/lib/placeFeatures';
-import { addComment, toggleLike, useReactions } from '@/lib/reactions';
+import { addComment, toggleLike, toggleSavedTrip, useReactions } from '@/lib/reactions';
 import { Avatar } from './Avatar';
 import { BookmarkIcon, CommentIcon, HeartIcon } from './Icons';
 import { Text } from './Text';
@@ -17,6 +17,7 @@ import { Button, Input } from './ui';
 export function TripActions({ id, who, place, slug }: { id: string; who: string; place: string; slug: string }) {
   const r = useReactions(id);
   const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [draft, setDraft] = useState('');
   const send = () => {
     addComment(id, draft);
@@ -36,12 +37,39 @@ export function TripActions({ id, who, place, slug }: { id: string; who: string;
         <Action onPress={() => setOpen(true)} a11y={`Comments on ${who}'s trip, ${r.comments.length}`} icon={<CommentIcon color={colors.ink} size={21} />} count={r.comments.length} />
         <View style={{ flex: 1 }} />
         <Action
-          onPress={() => router.push({ pathname: '/save', params: { place, country: sampleCountry(slug), slug } })}
-          a11y={`Save ${place} to a list`}
-          icon={<BookmarkIcon color={colors.ink} size={21} />}
-          text="Save"
+          onPress={() => setSaving(true)}
+          a11y={r.saved ? `Saved. Save options for ${who}'s trip` : `Save ${place} or ${who}'s trip`}
+          selected={r.saved}
+          icon={<BookmarkIcon color={r.saved ? colors.olive : colors.ink} filled={r.saved} size={21} />}
+          text={r.saved ? 'Saved' : 'Save'}
         />
       </View>
+
+      {/* Save: the place (to a list) or their whole trip. */}
+      <Modal visible={saving} transparent animationType="fade" onRequestClose={() => setSaving(false)}>
+        <Pressable onPress={() => setSaving(false)} accessibilityLabel="Close" style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'flex-end' }}>
+          <Pressable onPress={() => {}} style={{ backgroundColor: colors.bg, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: GUTTER, paddingBottom: 36, gap: 12 }}>
+            <Text variant="heading">Save</Text>
+            <SaveOption
+              title={`Save ${place}`}
+              sub="Add the place to Want to go or one of your lists"
+              onPress={() => {
+                setSaving(false);
+                router.push({ pathname: '/save', params: { place, country: sampleCountry(slug), slug } });
+              }}
+            />
+            <SaveOption
+              title={r.saved ? `Remove ${who}’s trip from Saved` : `Save ${who}’s trip`}
+              sub={r.saved ? 'It’s in Saved → Friends’ trips' : 'Keep where they stayed, ate and what they did, in Saved'}
+              selected={r.saved}
+              onPress={() => {
+                toggleSavedTrip(id);
+                setSaving(false);
+              }}
+            />
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       <Modal visible={open} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setOpen(false)}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, backgroundColor: colors.bg }}>
@@ -94,6 +122,23 @@ function Action({ onPress, a11y, icon, count, text, selected }: { onPress: () =>
     >
       {icon}
       {(count != null || text) && <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 14, color: colors.ink }}>{text ?? count}</Text>}
+    </Pressable>
+  );
+}
+
+function SaveOption({ title, sub, onPress, selected = false }: { title: string; sub: string; onPress: () => void; selected?: boolean }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${title}. ${sub}`}
+      style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14, borderRadius: 16, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, opacity: pressed ? 0.8 : 1 })}
+    >
+      <BookmarkIcon color={selected ? colors.olive : colors.ink} filled={selected} size={22} />
+      <View style={{ flex: 1 }}>
+        <Text variant="strong">{title}</Text>
+        <Text variant="small">{sub}</Text>
+      </View>
     </Pressable>
   );
 }

@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSyncExternalStore } from 'react';
 
 /**
- * Likes and comments on friends' trips. Friends' trips are sample content for now, so this keeps
+ * Likes, comments and saves on friends' trips. Friends' trips are sample content for now, so this keeps
  * your likes and comments on the phone and starts from sample counts. When friends' real trips
  * arrive (plan Step C), this moves to the database with the same shape.
  */
@@ -30,9 +30,10 @@ const SAMPLE: Record<string, { likes: number; comments: TripComment[] }> = {
   'jonah-zanzibar': { likes: 11, comments: [{ who: 'Priya', text: 'Stone Town at dusk 😍', when: '3w' }] },
 };
 
-type State = { liked: Record<string, boolean>; mine: Record<string, TripComment[]> };
+/** saved: friends' trips you've saved, with when you saved them (newest first on Saved and You). */
+type State = { liked: Record<string, boolean>; mine: Record<string, TripComment[]>; saved: Record<string, number> };
 const KEY = 'trip-reactions';
-let state: State = { liked: {}, mine: {} };
+let state: State = { liked: {}, mine: {}, saved: {} };
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 const save = () => AsyncStorage.setItem(KEY, JSON.stringify(state)).catch(() => {});
@@ -40,7 +41,7 @@ const save = () => AsyncStorage.setItem(KEY, JSON.stringify(state)).catch(() => 
 AsyncStorage.getItem(KEY)
   .then((raw) => {
     if (raw) {
-      state = { liked: {}, mine: {}, ...(JSON.parse(raw) as Partial<State>) };
+      state = { liked: {}, mine: {}, saved: {}, ...(JSON.parse(raw) as Partial<State>) };
       emit();
     }
   })
@@ -65,6 +66,24 @@ export function addComment(id: string, text: string) {
   emit();
 }
 
+/** Saves (or unsaves) a friend's whole trip: their stays, food, things to do and tips. */
+export function toggleSavedTrip(id: string) {
+  const saved = { ...state.saved };
+  if (saved[id]) delete saved[id];
+  else saved[id] = Date.now();
+  state = { ...state, saved };
+  save();
+  emit();
+}
+
+/** The friends' trips you've saved, newest first. */
+export function useSavedTrips(): string[] {
+  const s = useSyncExternalStore(subscribe, () => state);
+  return Object.entries(s.saved)
+    .sort((a, b) => b[1] - a[1])
+    .map(([id]) => id);
+}
+
 /** Likes and comments for one friend's trip, kept up to date everywhere it's shown. */
 export function useReactions(id: string) {
   const s = useSyncExternalStore(subscribe, () => state);
@@ -74,5 +93,6 @@ export function useReactions(id: string) {
     liked,
     likes: base.likes + (liked ? 1 : 0),
     comments: [...base.comments, ...(s.mine[id] ?? [])],
+    saved: !!s.saved[id],
   };
 }

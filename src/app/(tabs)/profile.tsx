@@ -9,12 +9,15 @@ import { PlusIcon, SlidersIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
 import { TravelMapCard } from '@/components/TravelMap';
 import { TripCard } from '@/components/trip/TripCard';
-import { Button, Card, Chip, IconCircle, Screen, TONES, toneFill, type Tone } from '@/components/ui';
+import { Button, Card, Chip, IconCircle, Screen, SectionHeader, toneFill, type Tone } from '@/components/ui';
+import { Row, SavedTripCard } from '@/components/cards';
+import { ListCover } from '@/components/lists';
+import { useSavedTrips } from '@/lib/reactions';
 import { colors, GUTTER, radius } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { TASTE_LABELS, useTaste } from '@/lib/taste';
 import { beenPlaces, wishPlaces } from '@/lib/travelPlaces';
-import { fetchBoards, type BoardItem } from '@/lib/boards';
+import { boardMeta, fetchBoards, type Board } from '@/lib/boards';
 import { countriesIn, fetchMyTrips, setProfilePicture, type Trip } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
 
@@ -23,12 +26,13 @@ export default function You() {
   const taste = useTaste();
   const [trips, setTrips] = useState<Trip[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [wishItems, setWishItems] = useState<BoardItem[]>([]);
+  const [boards, setBoards] = useState<Board[]>([]);
+  const savedTrips = useSavedTrips();
 
   const load = useCallback((isActive: () => boolean = () => true) => {
     // The map's "Want to go" places. If lists can't load, the map just shows where you've been.
     fetchBoards()
-      .then((b) => isActive() && setWishItems(b.find((x) => x.kind === 'wish')?.items ?? []))
+      .then((b) => isActive() && setBoards(b))
       .catch(() => {});
     fetchMyTrips()
       .then((t) => {
@@ -53,7 +57,7 @@ export default function You() {
   const name = profile?.name ?? session?.user.email?.split('@')[0] ?? 'You';
   const list = useMemo(() => trips ?? [], [trips]);
   const been = useMemo(() => beenPlaces(list), [list]);
-  const wish = useMemo(() => wishPlaces(wishItems), [wishItems]);
+  const wish = useMemo(() => wishPlaces(boards.find((x) => x.kind === 'wish')?.items ?? []), [boards]);
 
   // Your trips: newest first by default, or oldest first / top rated, and a year filter.
   const [order, setOrder] = useState<'newest' | 'oldest' | 'top'>('newest');
@@ -98,8 +102,8 @@ export default function You() {
       {taste.tastes.length > 0 && (
         <View style={{ paddingHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
           <Text variant="label">Your taste</Text>
-          {taste.tastes.map((t, i) => (
-            <View key={t} style={{ backgroundColor: toneFill(TONES[i % TONES.length]), borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
+          {taste.tastes.map((t) => (
+            <View key={t} style={{ borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
               <Text variant="small" style={{ color: colors.ink }}>
                 {TASTE_LABELS[t] ?? t}
               </Text>
@@ -109,6 +113,29 @@ export default function You() {
       )}
 
       {trips && <TravelMapCard been={been} wish={wish} countries={countriesIn(list)} />}
+
+      {/* Your collections: your lists and friends' trips you've saved; each opens. */}
+      {(boards.length > 0 || savedTrips.length > 0) && (
+        <View style={{ marginTop: 30 }}>
+          <SectionHeader action="See all" onAction={() => router.navigate('/saved')}>
+            <AccentTitle before="Your" accent="collections" variant="heading" />
+          </SectionHeader>
+          <Row gap={14}>
+            {[...boards.filter((b) => b.kind === 'wish'), ...boards.filter((b) => b.kind !== 'wish')].map((b) => (
+              <Pressable key={b.id} onPress={() => router.push(`/list/${b.id}`)} accessibilityRole="link" accessibilityLabel={`${b.name}, ${boardMeta(b)}`} style={{ width: 140 }}>
+                <ListCover board={b} style={{ width: 140, borderRadius: radius.lg }} />
+                <Text variant="strong" numberOfLines={1} style={{ marginTop: 8 }}>
+                  {b.name}
+                </Text>
+                <Text variant="tiny">{boardMeta(b)}</Text>
+              </Pressable>
+            ))}
+            {savedTrips.map((id) => (
+              <SavedTripCard key={id} id={id} width={140} />
+            ))}
+          </Row>
+        </View>
+      )}
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 30, gap: 16 }}>
         <AccentTitle before="Your" accent="trips" variant="heading" />

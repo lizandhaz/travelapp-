@@ -21,8 +21,8 @@ export const CommentIcon = ({ color, size = 22, strokeWidth = 1.8 }: P) => (
   <Svg {...base(size)}><Path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" {...line(color, strokeWidth)} /></Svg>
 );
 /** A bookmark: save to a list. */
-export const BookmarkIcon = ({ color, size = 22, strokeWidth = 1.8 }: P) => (
-  <Svg {...base(size)}><Path d="M6 3h12v18l-6-4.5L6 21z" {...line(color, strokeWidth)} /></Svg>
+export const BookmarkIcon = ({ color, size = 22, strokeWidth = 1.8, filled = false }: P & { filled?: boolean }) => (
+  <Svg {...base(size)}><Path d="M6 3h12v18l-6-4.5L6 21z" {...line(color, strokeWidth)} fill={filled ? color : 'none'} /></Svg>
 );
 export const PersonIcon = ({ color, size = 22, strokeWidth = 1.8 }: P) => (
   <Svg {...base(size)}><Circle cx={12} cy={8} r={4} {...line(color, strokeWidth)} /><Path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" {...line(color, strokeWidth)} /></Svg>

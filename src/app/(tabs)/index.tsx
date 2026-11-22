@@ -16,7 +16,7 @@ import { itemCollections, placeCollections, placesIn } from '@/lib/explore';
 import { rankValue } from '@/lib/match';
 import { friendsFeed, PHOTO_CREDITS, places, rows, unreadPostcardCount } from '@/lib/sample';
 import { useTaste } from '@/lib/taste';
-import { fitWordSize } from '@/lib/fit';
+import { fitLines, fitWordSize } from '@/lib/fit';
 
 /**
  * Home: top picks for you, collections to dip into, then what your friends rated
@@ -85,7 +85,7 @@ export default function Home() {
                 <PhotoStamp photo={p.photo} width={cardW} height={cardH}>
                   <View style={{ position: 'absolute', left: 20, right: 20, bottom: 20, flexDirection: 'row', alignItems: 'flex-end', gap: 10 }}>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontFamily: fonts.displayBold, fontSize: nameSize, lineHeight: Math.round(nameSize * 1.12), color: colors.onDark }}>{p.name}</Text>
+                      <Text {...fitLines(p.name)} style={{ fontFamily: fonts.displayBold, fontSize: nameSize, lineHeight: Math.round(nameSize * 1.12), color: colors.onDark }}>{p.name}</Text>
                       <Text variant="label" style={{ color: colors.onDark, marginTop: 4 }} numberOfLines={1}>
                         {p.sub}
                       </Text>

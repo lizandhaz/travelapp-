@@ -12,15 +12,30 @@ const label = (n: number) => (n === 7 ? 'A week' : n === 14 ? 'Two weeks' : `${n
  * "How long did you stay?": quick picks (1 night to two weeks) or "Longer…"
  * to type any number of nights up to 365.
  */
-export function NightsPicker({ value, onChange, bleed = GUTTER }: { value: number | null; onChange: (n: number | null) => void; /** How far the chip row reaches past its box. */ bleed?: number }) {
+export function NightsPicker({
+  value,
+  onChange,
+  onPicked,
+  bleed = GUTTER,
+  wrap = false,
+}: {
+  value: number | null;
+  onChange: (n: number | null) => void;
+  /** Called after a quick pick (not while typing "Longer…"). */
+  onPicked?: () => void;
+  /** How far the chip row reaches past its box. */
+  bleed?: number;
+  /** Chips wrap onto lines instead of a sideways row. */
+  wrap?: boolean;
+}) {
   const isQuick = value != null && (QUICK as readonly number[]).includes(value);
   const [typing, setTyping] = useState(value != null && !isQuick);
   const [text, setText] = useState(value != null && !isQuick ? String(value) : '');
 
   return (
     <View style={{ gap: 12 }}>
-      <View style={{ marginHorizontal: -bleed }}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: bleed }}>
+      <View style={wrap ? undefined : { marginHorizontal: -bleed }}>
+      <ScrollView horizontal={!wrap} scrollEnabled={!wrap} showsHorizontalScrollIndicator={false} contentContainerStyle={wrap ? { flexDirection: 'row', flexWrap: 'wrap', gap: 8 } : { gap: 8, paddingHorizontal: bleed }}>
         {QUICK.map((n) => (
           <Chip
             key={n}
@@ -29,7 +44,9 @@ export function NightsPicker({ value, onChange, bleed = GUTTER }: { value: numbe
             selected={!typing && value === n}
             onPress={() => {
               setTyping(false);
-              onChange(value === n && !typing ? null : n);
+              const next = value === n && !typing ? null : n;
+              onChange(next);
+              if (next != null) onPicked?.();
             }}
           />
         ))}

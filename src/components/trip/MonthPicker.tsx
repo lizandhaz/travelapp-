@@ -7,7 +7,7 @@ import { colors, GUTTER } from '@/constants/theme';
 import { addMonths, currentMonth, longMonth, makeMonth, MONTH_NAMES_SHORT, monthYear, yearOf } from '@/lib/months';
 
 /** This month and the 6 before it as chips, or "Earlier…" to pick any past month. */
-export function MonthPicker({ value, onChange, bleed = GUTTER }: { value: string | null; onChange: (ym: string) => void; /** How far the chip row reaches past its box (to the card or screen edge). */ bleed?: number }) {
+export function MonthPicker({ value, onChange, bleed = GUTTER, wrap = false }: { value: string | null; onChange: (ym: string) => void; /** How far the chip row reaches past its box (to the card or screen edge). */ bleed?: number; /** Chips wrap onto lines instead of a sideways row. */ wrap?: boolean }) {
   const now = currentMonth();
   const recent = Array.from({ length: 7 }, (_, i) => addMonths(now, -i));
   const [earlier, setEarlier] = useState(!!value && !recent.includes(value));
@@ -15,8 +15,8 @@ export function MonthPicker({ value, onChange, bleed = GUTTER }: { value: string
 
   return (
     <View style={{ gap: 10 }}>
-      <View style={{ marginHorizontal: -bleed }}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: bleed }}>
+      <View style={wrap ? undefined : { marginHorizontal: -bleed }}>
+        <ScrollView horizontal={!wrap} scrollEnabled={!wrap} showsHorizontalScrollIndicator={false} contentContainerStyle={wrap ? { flexDirection: 'row', flexWrap: 'wrap', gap: 8 } : { gap: 8, paddingHorizontal: bleed }}>
           {recent.map((ym) => (
             <Chip
               key={ym}

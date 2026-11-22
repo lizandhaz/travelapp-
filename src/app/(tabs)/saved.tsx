@@ -58,8 +58,8 @@ export default function Saved() {
 
   return (
     <Screen tabBar>
-      <PageTitle label="Saved" right={<Button title="+ New list" size="sm" onPress={() => router.push('/list/new')} />}>
-        <AccentTitle before="Your" accent="lists" />
+      <PageTitle label="Saved" right={<Button title="+ New board" size="sm" onPress={() => router.push('/list/new')} />}>
+        <AccentTitle before="Your" accent="boards" />
       </PageTitle>
 
       {error ? (
@@ -100,7 +100,7 @@ export default function Saved() {
 
           <View style={{ gap: 14 }}>
             <Text variant="heading" accessibilityRole="header">
-              Your boards
+              Made by you
             </Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 14 }}>
               {lists.map((b) => (
@@ -113,7 +113,7 @@ export default function Saved() {
                 </Pressable>
               ))}
               {/* Same shape as a list: a square, then a name and a line underneath. */}
-              <Pressable onPress={() => router.push('/list/new')} accessibilityRole="button" accessibilityLabel="New list" style={{ width: '47%' }}>
+              <Pressable onPress={() => router.push('/list/new')} accessibilityRole="button" accessibilityLabel="New board" style={{ width: '47%' }}>
                 <View
                   style={{
                     aspectRatio: 1,
@@ -130,9 +130,9 @@ export default function Saved() {
                   </View>
                 </View>
                 <Text variant="strong" style={{ marginTop: 8 }}>
-                  New list
+                  New board
                 </Text>
-                <Text variant="tiny">Start a list</Text>
+                <Text variant="tiny">Start a board</Text>
               </Pressable>
             </View>
           </View>

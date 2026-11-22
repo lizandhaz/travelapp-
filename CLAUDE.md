@@ -96,7 +96,8 @@ src/
                           Trending this month, "Made for your taste" (chips + things to eat/do/stay, on a sage band; moved from Home),
                           and "Just for you": a long two-column photo feed (60 at a time, more as you scroll)
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
-    (tabs)/saved.tsx      Saved: your Want to go list and your own lists (real), + New list (tile shaped like a list), and
+    (tabs)/saved.tsx      Saved ("Your boards"; lists are called **boards** in the UI, owner Nov 2026, though the code and database still
+                          say boards/lists): your Want to go board and your own boards ("Made by you", + New board), and
                           Friends' trips you've saved (SavedTripCard grid)
     (tabs)/profile.tsx    You: profile picture (tap to change), Find friends / Add a trip buttons, stats, Your taste (plain outline tags, no
                           colours), travel map card (tap → map), "Your collections" (your lists + saved friends' trips, each opens; See all
@@ -165,6 +166,8 @@ src/
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
     trip/TripForm.tsx     Add/edit a trip: place, month, how long (required), slider score, who with, up to 6 photos (hold one, then drag to reorder; screen readers get Move left/right/Make cover), note, who can see it, "Add more detail"
     trip/PlacePicker.tsx  Search or type a place ("Sintra, Portugal" → name + country)
+    trip/StayPicker.tsx   "Where you stayed": stays the app knows pop up as you type (lib/knownStays; ones in the trip's place first);
+                          tap one to fill the name and kind, or keep typing your own
     trip/NightsPicker.tsx "How long did you stay?": 1 night … two weeks, or "Longer…" (type up to 365)
     trip/MonthPicker.tsx  This month + last 6 months as chips ("Nov 2026"), or "Earlier…"
     trip/ScorePicker.tsx  "Slide to rate out of 10": 1.0–10.0 in 0.1 steps; accessibilityRole "adjustable"
@@ -209,6 +212,7 @@ src/
     friends.ts            Friends: searchPeople, fetchFriendships, addFriend, acceptFriend, removeFriendship, inviteFriends
     reactions.ts          Likes, comments and saved friends' trips: sample counts + yours, kept on the phone (useReactions, toggleLike,
                           addComment, toggleSavedTrip, useSavedTrips). Moves to the database when friends' real trips arrive
+    knownStays.ts         Every stay in the sample place details (~160), searchStays(query, tripPlace)
     months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)
@@ -286,7 +290,7 @@ From the owner's palette (Nov 2026): Oat Milk, Blush Petal, Terracotta Clay, Sag
 | `gold` | `#b9975b` | Hidden-gem pins on place maps |
 | `onDark` | `#faf7f0` | Text on photos and dark buttons |
 
-**Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, segmented switches and the tab bar's + and active tab are terracotta; dark buttons are olive; Explore's "Made for your taste" sits on a sage band; friends' feed cards are white with the stay on a sage strip; Trending rank badges (`PhotoBadge accent`) and the line under trend cards are terracotta; You's stats are two coloured tiles (Trips, Countries; no average score, owner Nov 2026); avatars without a photo use olive/terracotta/sky; place score card blush, place facts sky/blush; Saved's Want to go card blush. The owner tried and didn't want fully tinted feed cards or a band behind Explore's Trending (too much), nor all-plain (too little): keep this middle ground. Collection tiles show no count.
+**Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, segmented switches and the tab bar's + and active tab are terracotta; dark buttons are olive; Explore's "Made for your taste" sits on a sage band; friends' feed cards are white with the stay on a sage strip; Trending rank badges (`PhotoBadge accent`) and the line under trend cards are terracotta; You's stats are three coloured tiles (Trips, Countries, % "Of the world" = countries / 195; no average score, owner Nov 2026); avatars without a photo use olive/terracotta/sky; place score card blush, place facts sky/blush; Saved's Want to go card blush. The owner tried and didn't want fully tinted feed cards or a band behind Explore's Trending (too much), nor all-plain (too little): keep this middle ground. Collection tiles show no count.
 
 `accent` is too light for small text on `bg`. Use `accentText` for small text and `accentDeep` behind white text. The place maps in `assets/maps/` have their pins drawn in `olive`/`accent`/`ink`/`gold` (rendered from the prototype's SVGs with those colours swapped in); if those change, redraw the maps so the key still matches.
 

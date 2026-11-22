@@ -70,8 +70,8 @@ export default function ListForm() {
       <View style={{ paddingHorizontal: GUTTER, paddingTop: 14 }}>
         <BackButton />
       </View>
-      <PageTitle label={editing ? 'Edit list' : 'New list'}>
-        <Text variant="title">{editing ? (kind === 'wish' ? 'Want to go' : 'Rename your list') : place ? `Save ${place} to a new list` : 'Start a new list'}</Text>
+      <PageTitle label={editing ? 'Edit board' : 'New board'}>
+        <Text variant="title">{editing ? (kind === 'wish' ? 'Want to go' : 'Rename your board') : place ? `Save ${place} to a new board` : 'Start a new board'}</Text>
       </PageTitle>
       {loading ? (
         <ActivityIndicator color={colors.accent} />
@@ -83,7 +83,7 @@ export default function ListForm() {
                 value={name}
                 onChangeText={setName}
                 placeholder="Summer 2027, Long lunches…"
-                accessibilityLabel="List name"
+                accessibilityLabel="Board name"
                 autoFocus={!editing}
                 maxLength={80}
                 returnKeyType="done"
@@ -91,11 +91,11 @@ export default function ListForm() {
               />
             </Field>
           )}
-          <Field label="Who can see this" hint={visibility === 'friends' ? 'Friends will see this list once you add them. You can share it any time with the Share button.' : undefined}>
+          <Field label="Who can see this" hint={visibility === 'friends' ? 'Friends will see this board once you add them. You can share it any time with the Share button.' : undefined}>
             <Segmented options={WHO} value={visibility} onChange={setVisibility} label="Who can see this" />
           </Field>
           <ErrorNotice error={error} />
-          <Button title={saving ? 'Saving…' : editing ? 'Save' : 'Create list'} disabled={saving || !name.trim() || tooLong} onPress={save} />
+          <Button title={saving ? 'Saving…' : editing ? 'Save' : 'Create board'} disabled={saving || !name.trim() || tooLong} onPress={save} />
         </View>
       )}
     </Screen>

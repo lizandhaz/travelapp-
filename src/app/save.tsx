@@ -103,7 +103,7 @@ export default function SaveToList() {
       <View style={{ paddingHorizontal: GUTTER, paddingTop: 14 }}>
         <BackButton />
       </View>
-      <PageTitle label="Save to a list">
+      <PageTitle label="Save to a board">
         <Text variant="title">{place}</Text>
       </PageTitle>
       {!boards && !error ? (
@@ -115,7 +115,7 @@ export default function SaveToList() {
           <ErrorNotice error={error} />
           <View style={{ flexDirection: 'row', gap: 12, marginTop: 10 }}>
             <Button
-              title="+ New list"
+              title="+ New board"
               kind="outline"
               style={{ flex: 1 }}
               onPress={() => router.push({ pathname: '/list/new', params: { place: target.name, country: target.country, slug: target.slug ?? '' } })}

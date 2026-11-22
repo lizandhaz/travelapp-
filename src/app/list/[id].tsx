@@ -54,7 +54,7 @@ export default function ListScreen() {
     if (!board || !adding?.name.trim()) return;
     const place = { ...adding, country: countryOf(adding) };
     if (findOnBoard(board, place)) {
-      setNote(`${placeLabel(place)} is already on this list.`);
+      setNote(`${placeLabel(place)} is already on this board.`);
       return;
     }
     setBusy(true);
@@ -108,7 +108,7 @@ export default function ListScreen() {
           {error ? (
             <Text variant="body">{error.message}</Text>
           ) : board === null ? (
-            <Text variant="body">That list couldn’t be found. It may have been deleted.</Text>
+            <Text variant="body">That board couldn’t be found. It may have been deleted.</Text>
           ) : (
             <ActivityIndicator color={colors.accent} />
           )}
@@ -130,10 +130,10 @@ export default function ListScreen() {
         <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER, right: GUTTER, flexDirection: 'row', justifyContent: 'space-between' }}>
           <BackButton onPhoto />
           <View style={{ flexDirection: 'row', gap: 10 }}>
-            <IconCircle label="Share this list" onPress={share} style={{ borderWidth: 0 }}>
+            <IconCircle label="Share this board" onPress={share} style={{ borderWidth: 0 }}>
               <ShareIcon color={colors.ink} />
             </IconCircle>
-            <IconCircle label="Edit this list" onPress={() => router.push({ pathname: '/list/new', params: { id: board.id } })} style={{ borderWidth: 0 }}>
+            <IconCircle label="Edit this board" onPress={() => router.push({ pathname: '/list/new', params: { id: board.id } })} style={{ borderWidth: 0 }}>
               <PencilIcon color={colors.ink} />
             </IconCircle>
           </View>
@@ -142,7 +142,7 @@ export default function ListScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             {isWish && <WishStar size={12} color={colors.onDark} />}
             <Text variant="label" style={{ color: colors.onDark, opacity: 0.95 }}>
-              {isWish ? 'Your wish list' : 'Your list'}
+              {isWish ? 'Your wish board' : 'Your board'}
             </Text>
           </View>
           <Text accessibilityRole="header" style={{ fontFamily: fonts.displayBold, fontSize: 42, lineHeight: 46, color: colors.onDark, marginTop: 2 }}>
@@ -169,7 +169,7 @@ export default function ListScreen() {
             </View>
             <Text variant="subheading">Nothing here yet</Text>
             <Text variant="small" style={{ textAlign: 'center' }}>
-              Add a place below, or tap {isWish ? '“Want to go”' : '“Save to a list”'} on any place page.
+              Add a place below, or tap {isWish ? '“Want to go”' : '“Save to a board”'} on any place page.
             </Text>
           </Card>
         ) : (
@@ -215,7 +215,7 @@ export default function ListScreen() {
         <View style={{ paddingHorizontal: GUTTER, marginTop: 26, alignItems: 'center' }}>
           {!confirming ? (
             <Pressable onPress={() => setConfirming(true)} accessibilityRole="button" hitSlop={10}>
-              <Text variant="link">Delete this list</Text>
+              <Text variant="link">Delete this board</Text>
             </Pressable>
           ) : (
             <Notice>
@@ -317,7 +317,7 @@ function PlaceTile({ item, width, onRemove }: { item: BoardItem; width: number; 
         onPress={onRemove}
         hitSlop={8}
         accessibilityRole="button"
-        accessibilityLabel={`Remove ${item.name} from this list`}
+        accessibilityLabel={`Remove ${item.name} from this board`}
         style={{ position: 'absolute', top: 10, right: 10, width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(255,255,255,0.9)', alignItems: 'center', justifyContent: 'center' }}
       >
         <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 16, lineHeight: 18, color: colors.ink }}>×</Text>

@@ -29,6 +29,7 @@ import { MonthPicker } from './MonthPicker';
 import { NightsPicker } from './NightsPicker';
 import { PlacePicker } from './PlacePicker';
 import { ScorePicker } from './ScorePicker';
+import { StayPicker } from './StayPicker';
 
 type ExtraStop = { key: number; place: Place | null; nights: string };
 
@@ -451,7 +452,15 @@ export function TripForm({
               </Question>
 
               <Question title="Where you stayed">
-                <Input value={stayName} onChangeText={setStayName} placeholder="e.g. Casa Ammos" accessibilityLabel="Name of where you stayed" />
+                <StayPicker
+                  value={stayName}
+                  onChange={setStayName}
+                  onPick={(k) => {
+                    setStayName(k.name);
+                    setStayType(k.type);
+                  }}
+                  tripPlace={place?.name ?? null}
+                />
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {STAY_KINDS.map((k) => (
                     <Chip key={k} label={k} selected={stayType === k} onPress={() => setStayType(stayType === k ? null : k)} />

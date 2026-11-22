@@ -97,6 +97,7 @@ export default function You() {
       <View style={{ marginHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', gap: 8 }}>
         <Stat label="Trips" value={list.length} tone="blush" />
         <Stat label="Countries" value={countriesIn(list)} tone="sage" />
+        <Stat label="Of the world" value={worldShare(countriesIn(list))} tone="sky" />
       </View>
 
       {taste.tastes.length > 0 && (
@@ -276,4 +277,10 @@ function ProfilePicture({ name }: { name: string }) {
       </View>
     </Pressable>
   );
+}
+
+/** How much of the world you've been to, out of the 195 countries: "2.6%" (one decimal under 10%), "12%". */
+function worldShare(countries: number): string {
+  const pct = (countries / 195) * 100;
+  return `${pct < 10 ? pct.toFixed(1).replace(/\.0$/, '') : Math.round(pct)}%`;
 }

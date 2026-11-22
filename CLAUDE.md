@@ -85,8 +85,8 @@ src/
     welcome.tsx           Signed out: wordmark, Hydra photo stamp, "Where your friends loved staying", Join / Log in
     signup.tsx, login.tsx Join (name, email, date of birth) / Log in (email), then the 6-digit code
     (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
-    (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score and
-                          why, sideways); "Dip into collections" (Explore's collection tiles); "From your friends" (FeedCard: big photo
+    (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score, sideways;
+                          no text under them); "Dip into collections" (Explore's collection tiles); "From your friends" (FeedCard: big photo
                           with who, month, place and score, then their quote and stay; opens the friend's trip)
     (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
                           jumps down to it), "Find your next trip" collection tiles (24, each opens its collection, no counts),

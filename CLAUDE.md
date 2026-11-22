@@ -142,10 +142,13 @@ src/
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
                           TravelMapFull (map screen: names placed so they don't overlap, filters, pinch zoom, place chips)
     place.tsx             Place page pieces: YourScore, PlaceFacts (Best time / Stays as plain text, no boxes), PlaceMapSection
-                          (ZoomMap + "Where are you staying?" (type or pick a stay on the map) → "Near <stay>": everything else on
-                          the map nearest first, Right nearby / A short way / Further out; otherwise the numbered key with your score
-                          for each spot, tap for why; Full screen), BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
-    ZoomMap.tsx           A place map you can zoom (pinch, or + / −) and drag; tap targets on each pin; rings for the picked pin and
+                          (on the page: the plain map picture + numbered key with your score for each spot, tap for why; tap the map or
+                          "Full screen" for the big map: a ZoomMap filling over half the screen (starts filled, zooms out until the
+                          whole map shows, in to 6×) + "Where are you staying?" (typing only, no suggestion chips, owner Nov 2026;
+                          picks the stay once one name matches) → "Near <stay>": the rest nearest first, Right nearby / A short way /
+                          Further out), BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout
+    ZoomMap.tsx           A place map in a window (`height` can be taller than the map) you can zoom (pinch, or + / −) and drag;
+                          smaller than the window it stays centred; tap targets on each pin; rings for the picked pin and
                           your stay ("You're here"); `focus` glides to a pin. Gesture maths in a MapGesture class (refs aren't allowed
                           in render). The picture has pointerEvents none, or the browser drags the image and cancels the gesture
     TripActions.tsx       Like (heart + count), Comment (sheet with comments and a box to add yours) and Save (→ save.tsx with the

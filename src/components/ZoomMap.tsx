@@ -9,7 +9,7 @@ import { Text } from './Text';
 /** The map pictures are drawn on a 400 × 250 grid. */
 const MAP_W = 400;
 const MAP_H = 250;
-const MAX_ZOOM = 4;
+const MAX_ZOOM = 6;
 
 type View3 = { zoom: number; tx: number; ty: number };
 
@@ -22,6 +22,7 @@ export function ZoomMap({
   image,
   pins,
   width,
+  height: windowHeight,
   label,
   picked,
   stay,
@@ -31,6 +32,8 @@ export function ZoomMap({
   image: number;
   pins: MapPin[];
   width: number;
+  /** The window's height (the whole map fits the width when fully zoomed out). Defaults to the map's own shape. */
+  height?: number;
   label: string;
   picked: number | null;
   stay: number | null;
@@ -38,18 +41,19 @@ export function ZoomMap({
   focus?: { n: number | null; zoom: number; key: number };
   onPin: (n: number) => void;
 }) {
-  const height = Math.round((width * MAP_H) / MAP_W);
+  const mapHeight = (width * MAP_H) / MAP_W; // the map's height when fully zoomed out (fits the width)
+  const height = Math.round(windowHeight ?? mapHeight);
   const [view, setView] = useState<View3>({ zoom: 1, tx: 0, ty: 0 });
   // Pinch, drag and zoom maths live in one object made once, outside React's render.
   const [gesture] = useState(() => new MapGesture(setView));
-  gesture.resize(width, height);
+  gesture.resize(width, height, mapHeight);
 
   // Glide to a pin when asked (adjusting during render, not in an effect).
   const [lastFocus, setLastFocus] = useState<number | null>(null);
   if (focus && focus.key !== lastFocus) {
     setLastFocus(focus.key);
     const pin = pins.find((p) => p.n === focus.n);
-    gesture.show(pin?.at ? gesture.centreOn(pin.at, focus.zoom) : { zoom: 1, tx: 0, ty: 0 });
+    gesture.show(pin?.at ? gesture.centreOn(pin.at, focus.zoom) : gesture.middle(focus.zoom));
   }
 
   const { zoom, tx, ty } = view;
@@ -74,7 +78,7 @@ export function ZoomMap({
   return (
     <View style={{ width, height, overflow: 'hidden', backgroundColor: colors.sand }} {...gesture.handlers}>
       {/* pointerEvents none: otherwise the browser starts dragging the picture itself and cancels the gesture. */}
-      <View pointerEvents="none" style={{ position: 'absolute', left: tx, top: ty, width: width * zoom, height: height * zoom }}>
+      <View pointerEvents="none" style={{ position: 'absolute', left: tx, top: ty, width: width * zoom, height: mapHeight * zoom }}>
         <Image source={image} style={{ width: '100%', height: '100%' }} contentFit="cover" accessibilityLabel={label} />
       </View>
 
@@ -135,6 +139,7 @@ function ZoomButton({ label, a11y, disabled, onPress }: { label: string; a11y: s
 class MapGesture {
   private width = 0;
   private height = 0;
+  private mapHeight = 0;
   private view: View3 = { zoom: 1, tx: 0, ty: 0 };
   private start: { v: View3; dist: number | null; x: number; y: number } = { v: this.view, dist: null, x: 0, y: 0 };
   private onChange: (v: View3) => void;
@@ -148,10 +153,10 @@ class MapGesture {
     };
     this.handlers = PanResponder.create({
       // Once zoomed in, the map owns presses so you can drag it (a pin's tap still wins, as it's on top).
-      onStartShouldSetPanResponder: (e) => e.nativeEvent.touches.length === 2 || this.view.zoom > 1,
+      onStartShouldSetPanResponder: (e) => e.nativeEvent.touches.length === 2 || this.view.zoom > 1 || this.height > this.mapHeight + 1,
       // Take over from a pin's tap as soon as you start dragging (or pinching).
-      onMoveShouldSetPanResponderCapture: (e, g) => e.nativeEvent.touches.length === 2 || (this.view.zoom > 1 && Math.abs(g.dx) + Math.abs(g.dy) > 6),
-      onMoveShouldSetPanResponder: (e, g) => e.nativeEvent.touches.length === 2 || (this.view.zoom > 1 && Math.abs(g.dx) + Math.abs(g.dy) > 6),
+      onMoveShouldSetPanResponderCapture: (e, g) => e.nativeEvent.touches.length === 2 || ((this.view.zoom > 1 || this.height > this.mapHeight + 1) && Math.abs(g.dx) + Math.abs(g.dy) > 6),
+      onMoveShouldSetPanResponder: (e, g) => e.nativeEvent.touches.length === 2 || ((this.view.zoom > 1 || this.height > this.mapHeight + 1) && Math.abs(g.dx) + Math.abs(g.dy) > 6),
       onPanResponderGrant: (e) => {
         this.start = { v: this.view, dist: spread(e), x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
       },
@@ -161,7 +166,7 @@ class MapGesture {
           // Two fingers: pinch to zoom about the middle.
           if (this.start.dist == null) this.start = { ...this.start, v: this.view, dist: d };
           this.show(this.zoomAbout(this.start.v, (this.start.v.zoom * d) / (this.start.dist ?? d)));
-        } else if (this.view.zoom > 1) {
+        } else {
           // Measured from where the finger went down (steadier than the gesture's own totals on the web).
           const s = this.start.v;
           this.show({ zoom: this.view.zoom, tx: s.tx + (e.nativeEvent.pageX - this.start.x), ty: s.ty + (e.nativeEvent.pageY - this.start.y) });
@@ -174,18 +179,29 @@ class MapGesture {
     }).panHandlers;
   }
 
-  resize(width: number, height: number) {
+  resize(width: number, height: number, mapHeight: number) {
     this.width = width;
     this.height = height;
+    this.mapHeight = mapHeight;
   }
 
   private clamp(v: View3): View3 {
     const zoom = Math.min(MAX_ZOOM, Math.max(1, v.zoom));
     return {
       zoom,
-      tx: Math.min(0, Math.max(this.width - this.width * zoom, v.tx)),
-      ty: Math.min(0, Math.max(this.height - this.height * zoom, v.ty)),
+      // Smaller than the window? Keep it in the middle. Bigger? Don't let an edge come inside the window.
+      tx: this.fit(v.tx, this.width, this.width * zoom),
+      ty: this.fit(v.ty, this.height, this.mapHeight * zoom),
     };
+  }
+
+  private fit(t: number, windowSize: number, contentSize: number) {
+    return contentSize <= windowSize ? (windowSize - contentSize) / 2 : Math.min(0, Math.max(windowSize - contentSize, t));
+  }
+
+  /** The whole map centred at this zoom. */
+  middle(zoom: number): View3 {
+    return { zoom, tx: (this.width - this.width * zoom) / 2, ty: (this.height - this.mapHeight * zoom) / 2 };
   }
 
   show(v: View3) {
@@ -204,6 +220,6 @@ class MapGesture {
   }
 
   centreOn(at: [number, number], zoom: number): View3 {
-    return { zoom, tx: this.width / 2 - (at[0] / MAP_W) * this.width * zoom, ty: this.height / 2 - ((at[1] - 12) / MAP_H) * this.height * zoom };
+    return { zoom, tx: this.width / 2 - (at[0] / MAP_W) * this.width * zoom, ty: this.height / 2 - ((at[1] - 12) / MAP_H) * this.mapHeight * zoom };
   }
 }

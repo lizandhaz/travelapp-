@@ -99,3 +99,16 @@ export const placeCentres: Record<string, { at: [number, number]; span: number }
   valthorens: { at: [45.298, 6.58], span: 0.15 },
   southafrica: { at: [-33.92, 18.42], span: 0.8 },
 };
+
+/**
+ * A pin's rough real-world position, worked out from where it sits on the drawn map: the drawing is
+ * treated as an area centred on the place, about a third of the real map's first view across. Rough on
+ * purpose (owner, Nov 2026) until real place data arrives (plan Step E); some pins may be a little off.
+ */
+export function pinLatLng(slug: string, at: [number, number]): [number, number] | null {
+  const c = placeCentres[slug];
+  if (!c) return null;
+  const across = c.span * 0.3; // degrees of longitude the drawing covers (about a third of the first view)
+  const down = across * (250 / 400) * Math.cos((c.at[0] * Math.PI) / 180); // the same distance in latitude
+  return [c.at[0] - (at[1] / 250 - 0.5) * down, c.at[1] + (at[0] / 400 - 0.5) * across];
+}

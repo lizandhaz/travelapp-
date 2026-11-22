@@ -15,7 +15,7 @@ import { colors, fonts, GUTTER } from '@/constants/theme';
 import { itemCollections, placeCollections, placesIn } from '@/lib/explore';
 import { rankValue } from '@/lib/match';
 import { friendsFeed, PHOTO_CREDITS, places, rows, unreadPostcardCount } from '@/lib/sample';
-import { tasteNote, useTaste } from '@/lib/taste';
+import { useTaste } from '@/lib/taste';
 
 /**
  * Home: top picks for you, collections to dip into, then what your friends rated
@@ -102,9 +102,6 @@ export default function Home() {
             );
           })}
         </Row>
-        <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 10 }}>
-          {tasteNote(t.profile, t.usingFriends)}
-        </Text>
       </View>
 
       {/* Collections */}

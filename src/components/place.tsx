@@ -583,19 +583,20 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
         On the map
       </SectionHeader>
       <Card style={{ marginHorizontal: GUTTER, overflow: 'hidden' }}>
-        {/* A still preview of the real map; tap it to open the big one. */}
-        <AreaMap
-          slug={slug}
-          name={name}
-          width={width - GUTTER * 2 - 2}
-          height={Math.round(((width - GUTTER * 2) * 250) / 400)}
-          pins={map.pins}
-          picked={null}
-          stay={null}
-          onPin={() => setOpen(true)}
-          preview
-          onPress={() => setOpen(true)}
-        />
+        {/* The real map, right here: pinch to zoom, drag to look around, tap a pin to see it in the list. */}
+        {!open && (
+          <AreaMap
+            slug={slug}
+            name={name}
+            width={width - GUTTER * 2 - 2}
+            height={Math.round(((width - GUTTER * 2) * 300) / 400)}
+            pins={map.pins}
+            picked={picked}
+            stay={null}
+            focus={focus}
+            onPin={choosePin}
+          />
+        )}
         <View style={{ paddingHorizontal: 14, paddingVertical: 6 }}>{key}</View>
       </Card>
 

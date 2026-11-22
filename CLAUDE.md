@@ -152,8 +152,8 @@ src/
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
                           TravelMapFull (map screen: names placed so they don't overlap, filters, pinch zoom, place chips)
     place.tsx             Place page pieces (stay/eat/do cards have a bookmark to save that spot to a board under its place): YourScore, PlaceFacts (Best time / Stays as plain text, no boxes), PlaceMapSection
-                          (on the page: a still preview of the real map (AreaMap preview) + the numbered key with your score for each
-                          spot, tap for why; tap the map or "Full screen" for the big real map (zoom from the street to the world) +
+                          (on the page: the real map itself, interactive (pinch, drag, tap a pin to open it in the key) + the numbered
+                          key with your score for each spot, tap for why; tap the map or "Full screen" for the big real map (zoom from the street to the world) +
                           "Where are you staying?" (typing only; picks the stay once one name matches) → "Near <stay>": the rest
                           nearest first, Right nearby / A short way / Further out. The drawn maps are no longer shown on phones
                           (owner, Nov 2026); they're only the web stand-in), BestTimeChart, SaidList, StayRow, EatRow, DoRow, MoreAbout

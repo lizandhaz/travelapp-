@@ -142,9 +142,9 @@ export default function ListScreen() {
   return (
     <Screen noTopInset>
       {/* Cover: the list's places as a photo collage, with the name on it */}
-      <View style={{ height: screenW * 0.92, backgroundColor: colors.sand }}>
+      <View style={{ minHeight: screenW * 0.92, backgroundColor: colors.sand, paddingTop: insets.top + 10, paddingBottom: 22, justifyContent: 'space-between' }}>
         <Cover items={board.items} cover={board.cover} isWish={isWish} name={board.name} />
-        <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER, right: GUTTER, flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ paddingHorizontal: GUTTER, flexDirection: 'row', justifyContent: 'space-between' }}>
           <BackButton onPhoto />
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <IconCircle label="Share this board" onPress={share} style={{ borderWidth: 0 }}>
@@ -155,7 +155,7 @@ export default function ListScreen() {
             </IconCircle>
           </View>
         </View>
-        <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: 22 }}>
+        <View style={{ paddingHorizontal: GUTTER, marginTop: 24 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             {isWish && <WishStar size={12} color={colors.onDark} />}
             <Text variant="label" style={{ color: colors.onDark, opacity: 0.95 }}>

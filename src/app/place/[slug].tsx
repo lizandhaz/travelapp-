@@ -66,14 +66,15 @@ export default function PlaceScreen() {
 
   return (
     <Screen noTopInset>
-      <View style={{ height: h }}>
+      {/* The back button and the title stack, so a long title grows the header instead of running into the button. */}
+      <View style={{ minHeight: h, paddingTop: insets.top + 10, paddingBottom: detail ? 48 : 22, justifyContent: 'space-between' }}>
         <PhotoFill photo={place.photo} label={place.name} />
         <Shade strength={0.55} />
-        <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER, right: GUTTER, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <View style={{ paddingHorizontal: GUTTER, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <BackButton onPhoto />
           {wish.ready && <WantToGoButton variant="photo" saved={wish.saved} busy={wish.busy} onPress={wish.toggle} />}
         </View>
-        <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: detail ? 48 : 22 }}>
+        <View style={{ paddingHorizontal: GUTTER, marginTop: 24 }}>
           {!!detail?.kicker && (
             <Text variant="label" style={{ color: colors.onDark, opacity: 0.95 }}>
               {detail.kicker}

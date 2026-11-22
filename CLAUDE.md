@@ -333,7 +333,7 @@ Warm, short and British English ("holiday", "favourite"). No description lines u
 
 ### Layout
 
-Single column, 20px side padding (`GUTTER`). The tab bar is **Home, Explore, a raised terracotta + (Add a trip), Saved, You**. Postcards open from Home's paper-plane button, and settings from You. Rows scroll sideways (`Row`). Screens use `<Screen tabBar>` so content clears the tab bar. On web the app is centred at 480px max. Light theme only.
+Single column, 20px side padding (`GUTTER`). **Photo headers** (a trip, a friend's trip, a place, a board) stack the back button and the title in normal flow with a `minHeight`, never `position: 'absolute'` at the bottom of a fixed height: a long title then grows the header instead of running into the back button (owner, Nov 2026). The tab bar is **Home, Explore, a raised terracotta + (Add a trip), Saved, You**. Postcards open from Home's paper-plane button, and settings from You. Rows scroll sideways (`Row`). Screens use `<Screen tabBar>` so content clears the tab bar. On web the app is centred at 480px max. Light theme only.
 
 ## Conventions
 

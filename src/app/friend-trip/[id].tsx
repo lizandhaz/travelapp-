@@ -27,7 +27,8 @@ export default function FriendTripScreen() {
 
   return (
     <Screen noTopInset>
-      <View style={{ height: h }}>
+      {/* The back button and the title stack, so a long title grows the header instead of running into the button. */}
+      <View style={{ minHeight: h, paddingTop: insets.top + 10, paddingBottom: 40, justifyContent: 'space-between' }}>
         {hasPhoto ? (
           <>
             <PhotoFill photo={trip.photos[0]} label={trip.place} />
@@ -37,10 +38,10 @@ export default function FriendTripScreen() {
           // No photos: soft blush with dark text, like a feed post without photos.
           <View style={{ position: 'absolute', inset: 0, backgroundColor: colors.blushSoft }} />
         )}
-        <View style={{ position: 'absolute', top: insets.top + 10, left: GUTTER }}>
+        <View style={{ paddingHorizontal: GUTTER, alignItems: 'flex-start' }}>
           <BackButton onPhoto={hasPhoto} />
         </View>
-        <View style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom: 40 }}>
+        <View style={{ paddingHorizontal: GUTTER, marginTop: 24 }}>
           <MonthPill month={trip.month} onPhoto={hasPhoto} />
           <Text style={{ fontFamily: fonts.displayBold, fontSize: 40, lineHeight: 44, color: hasPhoto ? colors.onDark : colors.ink, marginTop: 10 }}>
             {trip.who}’s {tripPlace(trip)} trip

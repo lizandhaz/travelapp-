@@ -79,6 +79,7 @@ function Navigator() {
             <Stack.Screen name="collection/[id]" />
             <Stack.Screen name="friend-trip/[id]" />
             <Stack.Screen name="postcard/[id]" />
+            <Stack.Screen name="people" />
           </Stack.Protected>
           <Stack.Protected guard={!signedIn} redirectTo="/">
             <Stack.Screen name="welcome" />

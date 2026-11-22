@@ -6669,5 +6669,217 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": "Photos: The 414 Company, Robert Rey, Daniel Cox, Tristan Gevaux, Baptx, orva studio, Olivier Chatel on Unsplash"
+  },
+  "southafrica": {
+    "kicker": "City · Safari · Food",
+    "scoreNote": "From 3 friends and people with your taste.",
+    "bestTime": "October to April for Cape Town; May to September for safari",
+    "staysFrom": "from £90 a night",
+    "goodFor": [
+      "Couples",
+      "Friends",
+      "Families"
+    ],
+    "temps": [
+      27,
+      27,
+      26,
+      24,
+      21,
+      19,
+      18,
+      19,
+      20,
+      22,
+      24,
+      26
+    ],
+    "bestMonths": [
+      0,
+      1,
+      2,
+      3,
+      9,
+      10,
+      11
+    ],
+    "crowds": [
+      3,
+      2,
+      2,
+      2,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3
+    ],
+    "said": [
+      {
+        "who": "Sophie",
+        "month": "Mar 2026",
+        "quote": "Table Mountain in the morning, a wine farm for lunch, penguins by teatime.",
+        "score": 9.3,
+        "face": "face-sophie"
+      },
+      {
+        "who": "Sam",
+        "month": "Sep 2025",
+        "quote": "Three days in Kruger and we saw the big five. Unreal.",
+        "score": 9.2,
+        "face": "face-sam"
+      },
+      {
+        "who": "Priya",
+        "month": "Jan 2026",
+        "quote": "Cape Town has everything: beaches, mountains and brilliant food.",
+        "score": 8.9,
+        "face": "face-priya"
+      }
+    ],
+    "stays": [
+      {
+        "name": "The Silo Hotel",
+        "type": "Hotel",
+        "match": 92,
+        "featured": true,
+        "sub": "from £800 a night · An old grain silo on the waterfront with huge glass windows.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Babylonstoren",
+        "type": "Hotel",
+        "match": 90,
+        "featured": false,
+        "sub": "from £450 a night · Sophie stayed",
+        "because": null,
+        "score": 9.4,
+        "photo": null
+      },
+      {
+        "name": "Sabi Sabi Bush Lodge",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £700 a night · Sam stayed",
+        "because": null,
+        "score": 9.2,
+        "photo": "safari-1"
+      },
+      {
+        "name": "A flat in Bo-Kaap",
+        "type": "Airbnb",
+        "match": 84,
+        "featured": false,
+        "sub": "from £90 a night · Priya stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "La Colombe",
+        "price": "£££",
+        "what": "Tasting menu in the Constantia vineyards",
+        "score": 9.4,
+        "from": "Sophie",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Babel at Babylonstoren",
+        "price": "££",
+        "what": "Lunch picked from the farm's garden",
+        "score": 9.1,
+        "from": "Sophie",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Kloof Street House",
+        "price": "££",
+        "what": "Dinner in an old Victorian house",
+        "score": 8.8,
+        "from": "Priya",
+        "match": 83,
+        "photo": null
+      },
+      {
+        "name": "Mzoli's",
+        "price": "£",
+        "what": "A proper braai (barbecue) in Gugulethu",
+        "score": 8.9,
+        "from": "Sam",
+        "match": 82,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Views",
+        "name": "Table Mountain",
+        "what": "Take the cable car up first thing, before the cloud rolls in.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Animals",
+        "name": "Boulders Beach penguins",
+        "what": "Swim in a sheltered cove with hundreds of African penguins.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Animals",
+        "name": "Game drives in Kruger",
+        "what": "Dawn and dusk drives are best for lions and leopards.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Kalk Bay harbour",
+        "what": "Fish and chips on the harbour wall, with seals waiting for scraps.",
+        "from": "Priya",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Robben Island",
+        "what": "Ferry out to where Nelson Mandela was held, with tours led by former prisoners.",
+        "from": "Sophie"
+      },
+      {
+        "tag": "Music",
+        "when": "March",
+        "name": "Cape Town Jazz Festival",
+        "what": "Two nights of jazz and African music in the city centre.",
+        "from": "Priya"
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Hire a car. The drive to Cape Point and the winelands is half the fun.",
+        "from": "Priya"
+      },
+      {
+        "tip": "Fly to Kruger rather than drive, and give it at least three nights.",
+        "from": "Sam"
+      },
+      {
+        "tip": "Book Table Mountain tickets online and check the wind first; the cable car shuts when it's gusty.",
+        "from": "Sophie"
+      }
+    ],
+    "credits": null
   }
 };

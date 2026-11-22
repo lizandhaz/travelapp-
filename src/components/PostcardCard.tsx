@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Animated, Pressable, View } from 'react-native';
 
 import { colors, fonts, radius } from '@/constants/theme';
-import { companionsLabel, type FriendTrip } from '@/lib/friendTrips';
+import { companionsLabel, tripPlace, type FriendTrip } from '@/lib/friendTrips';
 import { scoreWord } from '@/lib/score';
 import { MonthPill } from './MonthPill';
 import { PhotoFill, PhotoStamp, PhotoTile, Shade } from './Photo';
@@ -54,7 +54,7 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
       accessibilityLabel={
         flipped
           ? [
-              `${trip.who} went to ${trip.place}, ${trip.month}. Rated it ${trip.score.toFixed(1)} out of 10.`,
+              `${trip.who}'s ${tripPlace(trip)} trip, ${trip.month}. Rated it ${trip.score.toFixed(1)} out of 10.`,
               trip.quote,
               ...details.map((d) => `${d.label} ${d.value}.`),
               tip && `Tip: ${tip}`,
@@ -99,10 +99,10 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
             <Text variant="label" style={{ letterSpacing: 4, color: colors.accentText }}>
               Postcard
             </Text>
-            <Text style={{ fontFamily: fonts.display, fontSize: 24, lineHeight: 29, color: colors.ink }}>
-              {trip.who} went to{' '}
-              <Text style={{ fontFamily: fonts.displayItalic, fontSize: 24, lineHeight: 29, color: colors.ink }}>{trip.place}</Text>
-            </Text>
+            <View>
+              <Text style={{ fontFamily: fonts.displayItalic, fontSize: 28, lineHeight: 33, color: colors.ink }}>{trip.place}</Text>
+              {trip.region !== trip.place && <Text variant="small">{trip.region}</Text>}
+            </View>
             <View style={{ flexDirection: 'row' }}>
               <MonthPill month={trip.month} />
             </View>

@@ -5,13 +5,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { FeedCard, PickCard, PlaceCard, Row, TasteCard, TrendCard } from '@/components/cards';
-import { SearchIcon, SendIcon } from '@/components/Icons';
+import { AddPersonIcon, SearchIcon, SendIcon } from '@/components/Icons';
 import { PhotoStamp } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
-import { Chip, IconCircle, Screen, SectionHeader, Segmented, TONES } from '@/components/ui';
+import { Button, Card, Chip, IconCircle, Screen, SectionHeader, Segmented, TONES } from '@/components/ui';
 import { Wordmark } from '@/components/Wordmark';
-import { APP_NAME } from '@/constants/brand';
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { friendsFeed, hero as sampleHero, PHOTO_CREDITS, places, rows, TASTES, unreadPostcardCount, type RowItem } from '@/lib/sample';
 import { rankValue } from '@/lib/match';
@@ -65,9 +64,14 @@ export default function Home() {
       >
         <View style={{ paddingHorizontal: GUTTER, paddingTop: 16, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <Wordmark />
-          <IconCircle label="Postcards" badge={unreadPostcardCount} onPress={() => router.push('/postcards')} style={{ marginTop: 2 }}>
-            <SendIcon color={colors.ink} />
-          </IconCircle>
+          <View style={{ flexDirection: 'row', gap: 10, marginTop: 2 }}>
+            <IconCircle label="Find friends" onPress={() => router.push('/people')}>
+              <AddPersonIcon color={colors.ink} />
+            </IconCircle>
+            <IconCircle label="Postcards" badge={unreadPostcardCount} onPress={() => router.push('/postcards')}>
+              <SendIcon color={colors.ink} />
+            </IconCircle>
+          </View>
         </View>
 
         <View style={{ paddingHorizontal: GUTTER, marginTop: 18 }}>
@@ -194,7 +198,7 @@ function ForYou({ onSection }: { onSection: (key: string, y: number) => void }) 
 
       <View onLayout={at('trending')}>
         <SectionHeader action="See all" onAction={() => router.push('/explore')}>
-          <AccentTitle before="Where's" accent="trending" after={`with ${APP_NAME} users`} variant="heading" />
+          <AccentTitle before="Where's" accent="trending" variant="heading" />
         </SectionHeader>
         <Row>
           {rows.trending.map((i) => (
@@ -279,7 +283,14 @@ function PlaceRow({
 function Friends() {
   return (
     <View style={{ paddingHorizontal: GUTTER, gap: 18 }}>
-      <Text variant="tiny">Preview: these are sample trips. Your friends’ real trips arrive with friends.</Text>
+      <Card tone="sage" style={{ padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+        <View style={{ flex: 1 }}>
+          <Text variant="strong">Find your friends</Text>
+          <Text variant="small">Search by name or username, or invite them.</Text>
+        </View>
+        <Button title="Find" kind="dark" size="sm" onPress={() => router.push('/people')} />
+      </Card>
+      <Text variant="tiny">Preview: these are sample trips. Your friends’ real trips arrive soon.</Text>
       {friendsFeed.map((f, i) => (
         <FeedCard key={`${f.who}-${f.place}`} item={f} tone={TONES[i % TONES.length]} />
       ))}

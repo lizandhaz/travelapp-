@@ -51,3 +51,51 @@ export const placeMaps: Record<string, PlaceMap> = {
   "zanzibar": { image: require('../../assets/maps/zanzibar.jpg'), pins: [{ n: 1, name: "Zuri Zanzibar", kind: "Stay", at: [33.7, 104.9] }, { n: 2, name: "Kholle House", kind: "Stay", at: [96.1, 153.6] }, { n: 3, name: "Emerson Spice", kind: "Stay", at: [130.5, 63.6] }, { n: 4, name: "Emerson Spice Rooftop", kind: "Eat", at: [141.9, 128.5] }, { n: 5, name: "Lukmaan", kind: "Eat", at: [214, 70.5] }, { n: 6, name: "The Rock", kind: "Eat", at: [251, 44.3] }, { n: 7, name: "Spice farm tour", kind: "Do", at: [289.7, 131.2] }, { n: 8, name: "Nakupenda sandbank", kind: "Do", at: [324.7, 85] }, { n: 9, name: "Mnemba snorkel", kind: "Hidden gem", at: [345.9, 133.7] }] },
   "zermatt": { image: require('../../assets/maps/zermatt.jpg'), pins: [{ n: 1, name: "Chalet Matterhorn View", kind: "Stay", at: [38.9, 55.7] }, { n: 2, name: "Cervo Mountain Resort", kind: "Stay", at: [112, 127.4] }, { n: 3, name: "Chez Vrony", kind: "Eat", at: [147.3, 67.3] }, { n: 4, name: "Findlerhof", kind: "Eat", at: [198.1, 152.2] }, { n: 5, name: "Café du Pont", kind: "Eat", at: [203, 48.4] }, { n: 6, name: "Ski to Italy", kind: "Do", at: [243.7, 139.5] }, { n: 7, name: "Gornergrat railway", kind: "Do", at: [299.7, 165.6] }, { n: 8, name: "Findeln hamlet", kind: "Hidden gem", at: [333.1, 76.1] }] },
 };
+
+/**
+ * Where each sample place is in the real world (latitude, longitude), and how much of the area
+ * to show first on the real map (degrees of latitude): zooming out past the drawn map switches to
+ * a real map of the area, which you can keep zooming out to the country and the world.
+ */
+export const placeCentres: Record<string, { at: [number, number]; span: number }> = {
+  bath: { at: [51.381, -2.359], span: 0.1 },
+  borabora: { at: [-16.5, -151.74], span: 0.3 },
+  brighton: { at: [50.822, -0.137], span: 0.1 },
+  cambridge: { at: [52.205, 0.119], span: 0.1 },
+  cheltenham: { at: [51.899, -2.078], span: 0.1 },
+  como: { at: [45.985, 9.257], span: 0.45 },
+  copenhagen: { at: [55.676, 12.568], span: 0.12 },
+  cotswolds: { at: [51.85, -1.8], span: 0.6 },
+  crete: { at: [35.3, 24.6], span: 1.4 },
+  deia: { at: [39.748, 2.649], span: 0.2 },
+  heidelberg: { at: [49.398, 8.672], span: 0.1 },
+  hydra: { at: [37.349, 23.466], span: 0.15 },
+  kyoto: { at: [35.012, 135.768], span: 0.15 },
+  lisbon: { at: [38.722, -9.139], span: 0.15 },
+  longleat: { at: [51.186, -2.276], span: 0.12 },
+  madeira: { at: [32.75, -16.95], span: 0.6 },
+  maldives: { at: [5.85, 73.3], span: 1.5 },
+  marrakech: { at: [31.629, -7.981], span: 0.12 },
+  mauritius: { at: [-20.25, 57.55], span: 0.9 },
+  orlando: { at: [28.42, -81.46], span: 0.4 },
+  oxford: { at: [51.752, -1.258], span: 0.1 },
+  paris: { at: [48.857, 2.352], span: 0.15 },
+  positano: { at: [40.628, 14.485], span: 0.12 },
+  puglia: { at: [40.995, 17.218], span: 0.15 },
+  seychelles: { at: [-4.36, 55.84], span: 0.15 },
+  sicily: { at: [38.116, 13.361], span: 0.15 },
+  stanton: { at: [47.129, 10.268], span: 0.15 },
+  stives: { at: [50.211, -5.48], span: 0.1 },
+  stratford: { at: [52.192, -1.707], span: 0.1 },
+  turks: { at: [21.78, -72.27], span: 0.8 },
+  verbier: { at: [46.096, 7.228], span: 0.15 },
+  warwick: { at: [52.279, -1.585], span: 0.08 },
+  york: { at: [53.96, -1.08], span: 0.1 },
+  zanzibar: { at: [-6.16, 39.19], span: 0.8 },
+  zermatt: { at: [46.02, 7.749], span: 0.15 },
+  comporta: { at: [38.381, -8.786], span: 0.3 },
+  chamonix: { at: [45.924, 6.869], span: 0.15 },
+  courchevel: { at: [45.415, 6.634], span: 0.15 },
+  valthorens: { at: [45.298, 6.58], span: 0.15 },
+  southafrica: { at: [-33.92, 18.42], span: 0.8 },
+};

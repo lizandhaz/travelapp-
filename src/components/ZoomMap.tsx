@@ -28,6 +28,7 @@ export function ZoomMap({
   stay,
   focus,
   onPin,
+  onZoomOutPast,
 }: {
   image: number;
   pins: MapPin[];
@@ -40,6 +41,8 @@ export function ZoomMap({
   /** { n, zoom, key }: centre on pin n at this zoom; a new key moves the map again. */
   focus?: { n: number | null; zoom: number; key: number };
   onPin: (n: number) => void;
+  /** Called when you try to zoom out past the whole map (pinch out further, or − again): e.g. to show a real map. */
+  onZoomOutPast?: () => void;
 }) {
   const mapHeight = (width * MAP_H) / MAP_W; // the map's height when fully zoomed out (fits the width)
   const height = Math.round(windowHeight ?? mapHeight);
@@ -47,6 +50,7 @@ export function ZoomMap({
   // Pinch, drag and zoom maths live in one object made once, outside React's render.
   const [gesture] = useState(() => new MapGesture(setView));
   gesture.resize(width, height, mapHeight);
+  gesture.whenZoomedOutPast(onZoomOutPast);
 
   // Glide to a pin when asked (adjusting during render, not in an effect).
   const [lastFocus, setLastFocus] = useState<number | null>(null);
@@ -101,7 +105,12 @@ export function ZoomMap({
       {/* Zoom buttons. */}
       <View style={{ position: 'absolute', right: 8, bottom: 8, gap: 6 }}>
         <ZoomButton label="+" a11y="Zoom in" disabled={zoom >= MAX_ZOOM} onPress={() => gesture.zoomBy(1.6)} />
-        <ZoomButton label="−" a11y="Zoom out" disabled={zoom <= 1} onPress={() => gesture.zoomBy(1 / 1.6)} />
+        <ZoomButton
+          label="−"
+          a11y={zoom <= 1 && onZoomOutPast ? 'Zoom out to the area and the world' : 'Zoom out'}
+          disabled={zoom <= 1 && !onZoomOutPast}
+          onPress={() => (zoom <= 1 && onZoomOutPast ? onZoomOutPast() : gesture.zoomBy(1 / 1.6))}
+        />
       </View>
     </View>
   );
@@ -143,6 +152,8 @@ class MapGesture {
   private view: View3 = { zoom: 1, tx: 0, ty: 0 };
   private start: { v: View3; dist: number | null; x: number; y: number } = { v: this.view, dist: null, x: 0, y: 0 };
   private onChange: (v: View3) => void;
+  private onPast: (() => void) | undefined;
+  private pastFired = false;
   readonly handlers: ReturnType<typeof PanResponder.create>['panHandlers'];
 
   constructor(onChange: (v: View3) => void) {
@@ -165,7 +176,14 @@ class MapGesture {
         if (d) {
           // Two fingers: pinch to zoom about the middle.
           if (this.start.dist == null) this.start = { ...this.start, v: this.view, dist: d };
-          this.show(this.zoomAbout(this.start.v, (this.start.v.zoom * d) / (this.start.dist ?? d)));
+          const want = (this.start.v.zoom * d) / (this.start.dist ?? d);
+          // Pinching out well past the whole map: hand over (once per pinch).
+          if (want < 0.8 && this.onPast && !this.pastFired) {
+            this.pastFired = true;
+            this.onPast();
+            return;
+          }
+          this.show(this.zoomAbout(this.start.v, want));
         } else {
           // Measured from where the finger went down (steadier than the gesture's own totals on the web).
           const s = this.start.v;
@@ -173,10 +191,15 @@ class MapGesture {
         }
       },
       onPanResponderRelease: () => {
+        this.pastFired = false;
         this.start = { ...this.start, v: this.view, dist: null };
       },
       onPanResponderTerminationRequest: () => false,
     }).panHandlers;
+  }
+
+  whenZoomedOutPast(fn: (() => void) | undefined) {
+    this.onPast = fn;
   }
 
   resize(width: number, height: number, mapHeight: number) {

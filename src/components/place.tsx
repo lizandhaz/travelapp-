@@ -5,7 +5,7 @@ import { Dimensions, Modal, Pressable, ScrollView, View } from 'react-native';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import type { PlaceResult } from '@/lib/match';
 import { placeDetails, type PlaceDetail } from '@/lib/placeDetails';
-import { placeMaps } from '@/lib/placeMaps';
+import { placeCentres, placeMaps } from '@/lib/placeMaps';
 import { useTaste } from '@/lib/taste';
 import { formatScore, scoreWord } from '@/lib/score';
 import { Avatar } from './Avatar';
@@ -13,7 +13,8 @@ import { PhotoBadge, Row } from './cards';
 import { PhotoTile } from './Photo';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { Card, Input, SectionHeader } from './ui';
+import { Card, Input, SectionHeader, Segmented } from './ui';
+import { AreaMap } from './AreaMap';
 import { ZoomMap } from './ZoomMap';
 
 const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
@@ -456,7 +457,9 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
   const [typed, setTyped] = useState('');
   const [focus, setFocus] = useState<{ n: number | null; zoom: number; key: number }>({ n: null, zoom: fill, key: 0 });
   const [lastStay, setLastStay] = useState<number | null>(null);
+  const [mode, setMode] = useState<'close' | 'area'>('close');
   const map = placeMaps[slug];
+  const centre = placeCentres[slug];
 
   // "Where are you staying?": typing picks the stay on the map once only one matches.
   const stays = map ? map.pins.filter((p) => p.kind === 'Stay') : [];
@@ -544,7 +547,14 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
         On the map
       </SectionHeader>
       <Card style={{ marginHorizontal: GUTTER, overflow: 'hidden' }}>
-        <Pressable onPress={() => setOpen(true)} accessibilityRole="button" accessibilityLabel={`Map of ${name} with ${spots.length} spots. Opens the full map.`}>
+        <Pressable
+          onPress={() => {
+            setMode('close');
+            setOpen(true);
+          }}
+          accessibilityRole="button"
+          accessibilityLabel={`Map of ${name} with ${spots.length} spots. Opens the full map.`}
+        >
           <Image source={map.image} style={{ width: '100%', aspectRatio: 400 / 250 }} contentFit="cover" />
         </Pressable>
         <View style={{ paddingHorizontal: 14, paddingVertical: 6 }}>{key}</View>
@@ -558,9 +568,34 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
               <Text variant="link">Done</Text>
             </Pressable>
           </View>
-          {open && (
-            <ZoomMap image={map.image} pins={map.pins} width={width} height={bigHeight} label={`Map of ${name}`} picked={picked} stay={stay} focus={focus} onPin={choosePin} />
+          {!!centre && (
+            <View style={{ paddingHorizontal: GUTTER, paddingBottom: 10 }}>
+              <Segmented
+                label="Map"
+                value={mode}
+                onChange={setMode}
+                options={[
+                  ['close', 'Close-up'],
+                  ['area', 'Area & world'],
+                ]}
+              />
+            </View>
           )}
+          {open && mode === 'close' && (
+            <ZoomMap
+              image={map.image}
+              pins={map.pins}
+              width={width}
+              height={bigHeight}
+              label={`Map of ${name}`}
+              picked={picked}
+              stay={stay}
+              focus={focus}
+              onPin={choosePin}
+              onZoomOutPast={centre ? () => setMode('area') : undefined}
+            />
+          )}
+          {open && mode === 'area' && !!centre && <AreaMap at={centre.at} span={centre.span} name={name} width={width} height={bigHeight} />}
           <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: GUTTER, paddingTop: 14, paddingBottom: 40, gap: 12 }}>
             {stays.length > 0 && (
               <View style={{ gap: 8 }}>

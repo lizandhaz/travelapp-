@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { Text } from '@/components/Text';
 import { Chip, Input } from '@/components/ui';
+import { GUTTER } from '@/constants/theme';
 
 const QUICK = [1, 2, 3, 4, 5, 7, 10, 14] as const;
 const label = (n: number) => (n === 7 ? 'A week' : n === 14 ? 'Two weeks' : `${n} ${n === 1 ? 'night' : 'nights'}`);
@@ -11,14 +12,15 @@ const label = (n: number) => (n === 7 ? 'A week' : n === 14 ? 'Two weeks' : `${n
  * "How long did you stay?": quick picks (1 night to two weeks) or "Longer…"
  * to type any number of nights up to 365.
  */
-export function NightsPicker({ value, onChange }: { value: number | null; onChange: (n: number | null) => void }) {
+export function NightsPicker({ value, onChange, bleed = GUTTER }: { value: number | null; onChange: (n: number | null) => void; /** How far the chip row reaches past its box. */ bleed?: number }) {
   const isQuick = value != null && (QUICK as readonly number[]).includes(value);
   const [typing, setTyping] = useState(value != null && !isQuick);
   const [text, setText] = useState(value != null && !isQuick ? String(value) : '');
 
   return (
     <View style={{ gap: 12 }}>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+      <View style={{ marginHorizontal: -bleed }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: bleed }}>
         {QUICK.map((n) => (
           <Chip
             key={n}
@@ -40,6 +42,7 @@ export function NightsPicker({ value, onChange }: { value: number | null; onChan
             onChange(text ? Number(text) : null);
           }}
         />
+      </ScrollView>
       </View>
       {typing && (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>

@@ -1,12 +1,12 @@
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Switch, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
-import { ImageIcon, LockIcon, PlusIcon } from '@/components/Icons';
+import { BedIcon, BulbIcon, CalendarIcon, ChevronIcon, ForkIcon, ImageIcon, LockIcon, MoonIcon, NoteIcon, PeopleIcon, PinIcon, PlusIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
-import { BackButton, Button, Card, Chip, ErrorNotice, Input, Notice, PageTitle, Screen, Segmented } from '@/components/ui';
+import { BackButton, Button, Card, Chip, ErrorNotice, Input, Notice, PageTitle, Screen } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { currentMonth } from '@/lib/months';
 import {
@@ -34,9 +34,9 @@ import { StayPicker } from './StayPicker';
 type ExtraStop = { key: number; place: Place | null; nights: string };
 
 /**
- * "Add a trip" (and editing a trip), styled like the prototype: one simple
- * screen, with the optional extras under "Add more detail". Saves through
- * save_trip() in Supabase.
+ * "Add a trip" (and editing a trip): the place, then the basics (when, how long, who with) in one card,
+ * the score on blush, optional extras as rows that open in place, and a "Just me" switch.
+ * Saves through save_trip() in Supabase.
  */
 export function TripForm({
   initial,
@@ -99,7 +99,15 @@ export function TripForm({
   const [stayScore, setStayScore] = useState<number | null>(initial?.stay?.score ?? null);
   const [meal, setMeal] = useState(initial?.meal ?? '');
   const [tip, setTip] = useState(initial?.tip ?? '');
-  const [more, setMore] = useState(!!initial && (initial.stops.length > 1 || !!initial.stay || !!initial.meal || !!initial.tip));
+  // Which optional extras are open (ones already filled in start open when editing).
+  const [open, setOpen] = useState<Record<RowId, boolean>>(() => ({
+    photos: !!initial?.photoPaths.length,
+    note: !!initial?.note,
+    stay: !!initial?.stay,
+    places: (initial?.stops.length ?? 0) > 1,
+    meal: !!initial?.meal,
+    tip: !!initial?.tip,
+  }));
 
   // After the first Save, the "Nearly there" list updates as you fix things.
   const [tried, setTried] = useState(false);
@@ -108,6 +116,7 @@ export function TripForm({
   const scroll = useRef<ComponentRef<typeof ScrollView>>(null);
   const nightsY = useRef(0);
   const formY = useRef(0);
+  const groupY = useRef(0);
   // An older trip saved before "How long did you stay?" was asked.
   const needsNights = !!initial && initial.stops[0]?.nights == null && nights == null;
 
@@ -175,7 +184,7 @@ export function TripForm({
     const { input } = check();
     if (!input) {
       // Missing nights is easy to miss on older trips: jump to that question.
-      if (nights == null) scroll.current?.scrollTo({ y: Math.max(0, formY.current + nightsY.current - 20), animated: true });
+      if (nights == null) scroll.current?.scrollTo({ y: Math.max(0, formY.current + groupY.current + nightsY.current - 20), animated: true });
       return;
     }
     const uploaded: string[] = [];
@@ -244,6 +253,9 @@ export function TripForm({
     ) : null;
   const saveButton = <Button title={saveTitle} kind="accent" size="lg" onPress={save} disabled={!!saving} />;
 
+  const toggle = (row: RowId) => setOpen((o) => ({ ...o, [row]: !o[row] }));
+  const stopsCount = extras.filter((e) => e.place?.name.trim()).length;
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <Screen tabBar={!back} ref={scroll}>
@@ -256,121 +268,208 @@ export function TripForm({
           <AccentTitle before="Where did" accent="you" after="go?" />
         </PageTitle>
 
-        <View style={{ paddingHorizontal: GUTTER, gap: 28 }} onLayout={(e) => (formY.current = e.nativeEvent.layout.y)}>
+        <View style={{ paddingHorizontal: GUTTER, gap: 16 }} onLayout={(e) => (formY.current = e.nativeEvent.layout.y)}>
           <PlacePicker value={place} onChange={setPlace} places={places} accessibilityLabel="Where did you go?" />
 
-          <Question title="When did you go?">
-            <MonthPicker value={month} onChange={setMonth} />
-          </Question>
-
-          <View onLayout={(e) => (nightsY.current = e.nativeEvent.layout.y)}>
-          <Question title="How long did you stay?">
-            {needsNights && (
-              <Text variant="small" style={{ color: colors.accentText }}>
-                Add this to save your changes. Trips added before it was asked don’t have it yet.
-              </Text>
-            )}
-            <NightsPicker value={nights} onChange={setNights} />
-          </Question>
-          </View>
-
-          <Question title="How was it?">
-            <ScorePicker value={score} onChange={setScore} label="How was it" />
-          </Question>
-
-          <Question title="Who did you go with?">
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-              {COMPANIONS.map(([id, text]) => (
-                <Chip key={id} label={text} selected={companions === id} onPress={() => setCompanions(companions === id ? null : id)} />
-              ))}
-            </View>
-          </Question>
-
-          <Question title="Add photos" note={`optional, up to ${MAX_PHOTOS}`}>
-            <View style={{ marginHorizontal: -GUTTER }}>
-              <ScrollView
-                horizontal
-                scrollEnabled={!drag}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ gap: PHOTO_GAP, paddingHorizontal: GUTTER, paddingVertical: 6 }}
-              >
-                {photos.map((p, i) => (
-                  <PhotoThumb
-                    key={p.key}
-                    item={p}
-                    cover={i === 0 && photos.length > 1}
-                    index={i}
-                    count={photos.length}
-                    dragX={drag?.key === p.key ? drag.dx : null}
-                    onDragStart={(x) => setDrag({ key: p.key, x0: x, dx: 0 })}
-                    onDragMove={dragTo}
-                    onDragEnd={() => setDrag(null)}
-                    onMove={(to) => movePhoto(p.key, to)}
-                    onRemove={() => setPhotos((ps) => ps.filter((x) => x.key !== p.key))}
-                  />
-                ))}
-                {roomFor > 0 && (
-                  <Pressable
-                    onPress={pickPhotos}
-                    accessibilityRole="button"
-                    accessibilityLabel={photos.length ? 'Add more photos' : 'Add photos'}
-                    style={{
-                      width: PHOTO_SIZE,
-                      height: PHOTO_SIZE,
-                      borderRadius: radius.md,
-                      borderWidth: 1.5,
-                      borderStyle: 'dashed',
-                      borderColor: colors.line,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 6,
-                    }}
-                  >
-                    <ImageIcon color={colors.ink} />
-                    <Text variant="small" style={{ color: colors.ink }}>
-                      {photos.length ? 'Add more' : 'Add'}
-                    </Text>
-                  </Pressable>
+          {/* The basics: when, how long, who with. */}
+          <Group onLayout={(y) => (groupY.current = y)}>
+            <Section icon={<CalendarIcon color={colors.ink} />} title="When did you go?">
+              <MonthPicker value={month} onChange={setMonth} bleed={PAD} />
+            </Section>
+            <Divider />
+            <View onLayout={(e) => (nightsY.current = e.nativeEvent.layout.y)}>
+              <Section icon={<MoonIcon color={colors.ink} />} title="How long did you stay?">
+                {needsNights && (
+                  <Text variant="small" style={{ color: colors.accentText }}>
+                    Add this to save your changes. Trips added before it was asked don’t have it yet.
+                  </Text>
                 )}
-              </ScrollView>
+                <NightsPicker value={nights} onChange={setNights} bleed={PAD} />
+              </Section>
             </View>
-            <Text variant="tiny">
-              {photos.length > 1 ? 'Hold a photo, then drag it to change the order. The first one is the cover. ' : ''}Only you can see your photos. Location data is removed before saving.
+            <Divider />
+            <Section icon={<PeopleIcon color={colors.ink} />} title="Who did you go with?">
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {COMPANIONS.map(([id, text]) => (
+                  <Chip key={id} label={text} selected={companions === id} onPress={() => setCompanions(companions === id ? null : id)} />
+                ))}
+              </View>
+            </Section>
+          </Group>
+
+          {/* The score. */}
+          <Card tone="blush" style={{ padding: PAD, gap: 6 }}>
+            <Text variant="heading" accessibilityRole="header" style={{ textAlign: 'center' }}>
+              How was it?
             </Text>
-          </Question>
+            <ScorePicker value={score} onChange={setScore} label="How was it" bare />
+          </Card>
 
-          <Question title="Add a note" note="optional">
-            <Input
-              value={note}
-              onChangeText={setNote}
-              placeholder="A line about it, e.g. “Long lunches by the sea”"
-              accessibilityLabel="Add a note"
-              multiline
-              maxLength={500}
-              style={{ minHeight: 70, textAlignVertical: 'top' }}
-            />
-          </Question>
+          {/* Optional extras: each row opens in place. */}
+          <Text variant="label" style={{ marginTop: 8, marginLeft: 4 }}>
+            Add more (optional)
+          </Text>
+          <Group>
+            <ExtraRow icon={<ImageIcon color={colors.ink} />} title="Add photos" summary={photos.length ? `${photos.length} ${photos.length === 1 ? 'photo' : 'photos'}` : undefined} open={open.photos} onPress={() => toggle('photos')}>
+              <View style={{ marginHorizontal: -PAD }}>
+                <ScrollView
+                  horizontal
+                  scrollEnabled={!drag}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: PHOTO_GAP, paddingHorizontal: PAD, paddingVertical: 6 }}
+                >
+                  {photos.map((p, i) => (
+                    <PhotoThumb
+                      key={p.key}
+                      item={p}
+                      cover={i === 0 && photos.length > 1}
+                      index={i}
+                      count={photos.length}
+                      dragX={drag?.key === p.key ? drag.dx : null}
+                      onDragStart={(x) => setDrag({ key: p.key, x0: x, dx: 0 })}
+                      onDragMove={dragTo}
+                      onDragEnd={() => setDrag(null)}
+                      onMove={(to) => movePhoto(p.key, to)}
+                      onRemove={() => setPhotos((ps) => ps.filter((x) => x.key !== p.key))}
+                    />
+                  ))}
+                  {roomFor > 0 && (
+                    <Pressable
+                      onPress={pickPhotos}
+                      accessibilityRole="button"
+                      accessibilityLabel={photos.length ? 'Add more photos' : 'Choose photos'}
+                      style={{
+                        width: PHOTO_SIZE,
+                        height: PHOTO_SIZE,
+                        borderRadius: radius.md,
+                        borderWidth: 1.5,
+                        borderStyle: 'dashed',
+                        borderColor: colors.line,
+                        backgroundColor: colors.bg,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 6,
+                      }}
+                    >
+                      <PlusIcon color={colors.accentDeep} size={20} />
+                      <Text variant="small" style={{ color: colors.ink }}>
+                        {photos.length ? 'Add more' : `Up to ${MAX_PHOTOS}`}
+                      </Text>
+                    </Pressable>
+                  )}
+                </ScrollView>
+              </View>
+              <Text variant="tiny">
+                {photos.length > 1 ? 'Hold a photo, then drag to reorder. The first is the cover. ' : ''}Location data is removed before saving.
+              </Text>
+            </ExtraRow>
+            <Divider />
+            <ExtraRow icon={<NoteIcon color={colors.ink} />} title="Add a note" summary={note.trim() ? 'Added' : undefined} open={open.note} onPress={() => toggle('note')}>
+              <Input
+                value={note}
+                onChangeText={setNote}
+                placeholder="A line about it, e.g. “Long lunches by the sea”"
+                accessibilityLabel="Add a note"
+                multiline
+                maxLength={500}
+                style={{ minHeight: 70, textAlignVertical: 'top' }}
+              />
+            </ExtraRow>
+            <Divider />
+            <ExtraRow icon={<BedIcon color={colors.ink} />} title="Where you stayed" summary={stayName.trim() || undefined} open={open.stay} onPress={() => toggle('stay')}>
+              <StayPicker
+                value={stayName}
+                onChange={setStayName}
+                onPick={(k) => {
+                  setStayName(k.name);
+                  setStayType(k.type);
+                }}
+                tripPlace={place?.name ?? null}
+              />
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {STAY_KINDS.map((k) => (
+                  <Chip key={k} label={k} selected={stayType === k} onPress={() => setStayType(stayType === k ? null : k)} />
+                ))}
+              </View>
+              <ScorePicker value={stayScore} onChange={setStayScore} label="Stay score" compact />
+            </ExtraRow>
+            <Divider />
+            <ExtraRow
+              icon={<PinIcon color={colors.ink} />}
+              title="Other places on this trip"
+              summary={stopsCount ? `${stopsCount} ${stopsCount === 1 ? 'place' : 'places'}` : undefined}
+              open={open.places}
+              onPress={() => toggle('places')}
+            >
+              {extras.map((e, i) => (
+                <View key={e.key} style={{ gap: 10, paddingBottom: 6 }}>
+                  <PlacePicker
+                    value={e.place}
+                    onChange={(p) => setExtras((xs) => xs.map((x) => (x.key === e.key ? { ...x, place: p } : x)))}
+                    places={places}
+                    placeholder="Another place"
+                    accessibilityLabel={`Extra stop ${i + 1}`}
+                  />
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                    <View style={{ width: 96 }}>
+                      <Input
+                        value={e.nights}
+                        onChangeText={(t) => setExtras((xs) => xs.map((x) => (x.key === e.key ? { ...x, nights: t.replace(/\D/g, '').slice(0, 3) } : x)))}
+                        keyboardType="number-pad"
+                        placeholder="0"
+                        accessibilityLabel={`Nights at extra stop ${i + 1}`}
+                        style={{ textAlign: 'center', paddingVertical: 11 }}
+                      />
+                    </View>
+                    <Text variant="small" style={{ flex: 1 }}>
+                      nights
+                    </Text>
+                    <Pressable accessibilityRole="button" accessibilityLabel={`Remove extra stop ${i + 1}`} onPress={() => setExtras((xs) => xs.filter((x) => x.key !== e.key))} hitSlop={8}>
+                      <Text variant="link">Remove</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              ))}
+              {extras.length < 9 && (
+                <Button title="+ Add a place" kind="outline" onPress={() => setExtras((xs) => [...xs, { key: nextKey.current++, place: null, nights: '' }])} />
+              )}
+            </ExtraRow>
+            <Divider />
+            <ExtraRow icon={<ForkIcon color={colors.ink} />} title="Best meal" summary={meal.trim() || undefined} open={open.meal} onPress={() => toggle('meal')}>
+              <Input value={meal} onChangeText={setMeal} placeholder="Restaurant, café or dish" accessibilityLabel="Best meal" maxLength={120} />
+            </ExtraRow>
+            <Divider />
+            <ExtraRow icon={<BulbIcon color={colors.ink} />} title="Top tip" summary={tip.trim() ? 'Added' : undefined} open={open.tip} onPress={() => toggle('tip')}>
+              <Input
+                value={tip}
+                onChangeText={setTip}
+                placeholder="Something you wish you'd known"
+                accessibilityLabel="Top tip"
+                multiline
+                maxLength={280}
+                style={{ minHeight: 90, textAlignVertical: 'top' }}
+              />
+            </ExtraRow>
+          </Group>
 
-          <View style={{ gap: 10 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <LockIcon color={colors.muted} />
-              <Text variant="label">Who can see this</Text>
+          {/* Who can see it. */}
+          <Group>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, padding: PAD }}>
+              <LockIcon color={colors.ink} size={22} strokeWidth={1.8} />
+              <View style={{ flex: 1 }}>
+                <Text variant="strong">Just me</Text>
+                <Text variant="tiny">{visibility === 'private' ? 'Only you will ever see this trip.' : 'Your followers can see it. Trips are only shared once you’re home.'}</Text>
+              </View>
+              <Switch
+                value={visibility === 'private'}
+                onValueChange={(v) => setVisibility(v ? 'private' : 'friends')}
+                trackColor={{ false: colors.line, true: colors.accentDeep }}
+                thumbColor={colors.card}
+                ios_backgroundColor={colors.line}
+                accessibilityLabel="Just me: only you can see this trip"
+              />
             </View>
-            <Segmented
-              label="Who can see this"
-              value={visibility}
-              onChange={setVisibility}
-              options={[
-                ['friends', 'Followers'],
-                ['private', 'Just me'],
-              ]}
-            />
-            <Text variant="tiny">
-              {visibility === 'friends'
-                ? 'Change it any time. Trips are only shared once you’re home, and friends arrive in the app soon.'
-                : 'Only you will ever see this trip.'}
-            </Text>
-          </View>
+          </Group>
 
           {isThisMonth && (
             <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: home }} onPress={() => setHome(!home)}>
@@ -381,8 +480,8 @@ export function TripForm({
                     height: 22,
                     borderRadius: 6,
                     borderWidth: 1.5,
-                    borderColor: home ? colors.ink : colors.muted,
-                    backgroundColor: home ? colors.ink : 'transparent',
+                    borderColor: home ? colors.accentDeep : colors.muted,
+                    backgroundColor: home ? colors.accentDeep : 'transparent',
                     alignItems: 'center',
                     justifyContent: 'center',
                     marginTop: 1,
@@ -400,100 +499,74 @@ export function TripForm({
           {problemsNotice}
           <ErrorNotice error={saveError} />
 
-          {saveButton}
-
-          <Pressable accessibilityRole="button" accessibilityState={{ expanded: more }} onPress={() => setMore((m) => !m)}>
-            <Card style={{ padding: 18, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-              <View style={{ flex: 1 }}>
-                <Text variant="strong">Add more detail</Text>
-                <Text variant="small">Other places and nights, where you stayed, best meal, a tip. You can do this later.</Text>
-              </View>
-              <View style={{ transform: [{ rotate: more ? '45deg' : '0deg' }] }}>
-                <PlusIcon color={colors.ink} size={20} strokeWidth={1.8} />
-              </View>
-            </Card>
-          </Pressable>
-
-          {more && (
-            <View style={{ gap: 28 }}>
-              <Question title="Other places on this trip" note="with nights in each">
-                {extras.map((e, i) => (
-                  <Card key={e.key} style={{ padding: 12, gap: 10 }}>
-                    <PlacePicker
-                      value={e.place}
-                      onChange={(p) => setExtras((xs) => xs.map((x) => (x.key === e.key ? { ...x, place: p } : x)))}
-                      places={places}
-                      placeholder="Another place"
-                      accessibilityLabel={`Extra stop ${i + 1}`}
-                    />
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                      <View style={{ width: 96 }}>
-                        <Input
-                          value={e.nights}
-                          onChangeText={(t) => setExtras((xs) => xs.map((x) => (x.key === e.key ? { ...x, nights: t.replace(/\D/g, '').slice(0, 3) } : x)))}
-                          keyboardType="number-pad"
-                          placeholder="0"
-                          accessibilityLabel={`Nights at extra stop ${i + 1}`}
-                          style={{ textAlign: 'center', paddingVertical: 11 }}
-                        />
-                      </View>
-                      <Text variant="small" style={{ flex: 1 }}>
-                        nights
-                      </Text>
-                      <Pressable accessibilityRole="button" accessibilityLabel={`Remove extra stop ${i + 1}`} onPress={() => setExtras((xs) => xs.filter((x) => x.key !== e.key))} hitSlop={8}>
-                        <Text variant="link">Remove</Text>
-                      </Pressable>
-                    </View>
-                  </Card>
-                ))}
-                {extras.length < 9 && (
-                  <Button title="+ Add a place" kind="outline" onPress={() => setExtras((xs) => [...xs, { key: nextKey.current++, place: null, nights: '' }])} />
-                )}
-              </Question>
-
-              <Question title="Where you stayed">
-                <StayPicker
-                  value={stayName}
-                  onChange={setStayName}
-                  onPick={(k) => {
-                    setStayName(k.name);
-                    setStayType(k.type);
-                  }}
-                  tripPlace={place?.name ?? null}
-                />
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                  {STAY_KINDS.map((k) => (
-                    <Chip key={k} label={k} selected={stayType === k} onPress={() => setStayType(stayType === k ? null : k)} />
-                  ))}
-                </View>
-                <ScorePicker value={stayScore} onChange={setStayScore} label="Stay score" compact />
-              </Question>
-
-              <Question title="Best meal">
-                <Input value={meal} onChangeText={setMeal} placeholder="Restaurant, café or dish" accessibilityLabel="Best meal" maxLength={120} />
-              </Question>
-
-              <Question title="Top tip">
-                <Input
-                  value={tip}
-                  onChangeText={setTip}
-                  placeholder="Something you wish you'd known"
-                  accessibilityLabel="Top tip"
-                  multiline
-                  maxLength={280}
-                  style={{ minHeight: 90, textAlignVertical: 'top' }}
-                />
-              </Question>
-
-              {problemsNotice}
-              {saveButton}
-            </View>
-          )}
-
-          <Text variant="tiny">Your location is never shared live.</Text>
+          <View style={{ marginTop: 6 }}>{saveButton}</View>
         </View>
       </Screen>
     </KeyboardAvoidingView>
+  );
+}
+
+type RowId = 'photos' | 'note' | 'stay' | 'places' | 'meal' | 'tip';
+/** Padding inside the form's cards. */
+const PAD = 18;
+
+/** A white card holding a few rows, with thin lines between them. */
+function Group({ children, onLayout }: { children: React.ReactNode; onLayout?: (y: number) => void }) {
+  return (
+    <View
+      onLayout={onLayout ? (e) => onLayout(e.nativeEvent.layout.y) : undefined}
+      style={{ backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.line, overflow: 'hidden' }}
+    >
+      {children}
+    </View>
+  );
+}
+
+function Divider() {
+  return <View style={{ height: 1, backgroundColor: colors.line, marginLeft: PAD + 36 }} />;
+}
+
+/** A question in a card: an icon and title, then its answers. */
+function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+  return (
+    <View style={{ padding: PAD, gap: 14 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+        <View style={{ width: 22, alignItems: 'center' }}>{icon}</View>
+        <Text variant="subheading" accessibilityRole="header">
+          {title}
+        </Text>
+      </View>
+      {children}
+    </View>
+  );
+}
+
+/** An optional extra: a row with an icon, a title, what's filled in, and a chevron; tap to open it in place. */
+function ExtraRow({ icon, title, summary, open, onPress, children }: { icon: React.ReactNode; title: string; summary?: string; open: boolean; onPress: () => void; children: React.ReactNode }) {
+  return (
+    <View>
+      <Pressable
+        onPress={onPress}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: open }}
+        accessibilityLabel={summary ? `${title}, ${summary}` : title}
+        style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: PAD, paddingVertical: 16, backgroundColor: pressed ? colors.bg : 'transparent' })}
+      >
+        <View style={{ width: 22, alignItems: 'center' }}>{icon}</View>
+        <Text variant="body" style={{ flex: 1, fontFamily: fonts.sansMedium }}>
+          {title}
+        </Text>
+        {!!summary && !open && (
+          <Text variant="small" numberOfLines={1} style={{ color: colors.accentText, maxWidth: 130 }}>
+            {summary}
+          </Text>
+        )}
+        <View style={{ transform: [{ rotate: open ? '90deg' : '0deg' }] }}>
+          <ChevronIcon color={colors.muted} />
+        </View>
+      </Pressable>
+      {open && <View style={{ paddingHorizontal: PAD, paddingBottom: PAD, gap: 12 }}>{children}</View>}
+    </View>
   );
 }
 
@@ -624,18 +697,6 @@ function PhotoThumb({
           <Text style={{ color: colors.onDark, fontFamily: fonts.sansBold, fontSize: 14, lineHeight: 16 }}>×</Text>
         </Pressable>
       )}
-    </View>
-  );
-}
-
-function Question({ title, note, children }: { title: string; note?: string; children: React.ReactNode }) {
-  return (
-    <View style={{ gap: 12 }}>
-      <Text variant="heading" accessibilityRole="header">
-        {title}
-        {note ? <Text variant="small"> ({note})</Text> : null}
-      </Text>
-      {children}
     </View>
   );
 }

@@ -165,7 +165,11 @@ src/
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
-    trip/TripForm.tsx     Add/edit a trip: place, month, how long (required), slider score, who with, up to 6 photos (hold one, then drag to reorder; screen readers get Move left/right/Make cover), note, who can see it, "Add more detail"
+    trip/TripForm.tsx     Add/edit a trip (grouped cards, owner Nov 2026): the place; one white card with icon rows for When (month chips),
+                          How long (nights chips, required) and Who with; "How was it?" on blush (big centred score + slider); "Add more
+                          (optional)": rows with an icon and chevron that open in place (photos: up to 6, hold one then drag to reorder,
+                          screen readers get Move left/right/Make cover; note; where you stayed; other places; best meal; top tip; a filled
+                          row shows what's in it); a "Just me" switch; Save
     trip/PlacePicker.tsx  Search or type a place ("Sintra, Portugal" → name + country)
     trip/StayPicker.tsx   "Where you stayed": stays the app knows pop up as you type (lib/knownStays; ones in the trip's place first);
                           tap one to fill the name and kind, or keep typing your own

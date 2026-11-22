@@ -15,7 +15,6 @@ import { useAuth } from '@/lib/auth';
 import { TASTE_LABELS, useTaste } from '@/lib/taste';
 import { beenPlaces, wishPlaces } from '@/lib/travelPlaces';
 import { fetchBoards, type BoardItem } from '@/lib/boards';
-import { formatScore } from '@/lib/score';
 import { countriesIn, fetchMyTrips, setProfilePicture, type Trip } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
 
@@ -53,7 +52,6 @@ export default function You() {
 
   const name = profile?.name ?? session?.user.email?.split('@')[0] ?? 'You';
   const list = useMemo(() => trips ?? [], [trips]);
-  const avg = list.length ? formatScore(list.reduce((s, t) => s + t.score, 0) / list.length) : '–';
   const been = useMemo(() => beenPlaces(list), [list]);
   const wish = useMemo(() => wishPlaces(wishItems), [wishItems]);
 
@@ -95,7 +93,6 @@ export default function You() {
       <View style={{ marginHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', gap: 8 }}>
         <Stat label="Trips" value={list.length} tone="blush" />
         <Stat label="Countries" value={countriesIn(list)} tone="sage" />
-        <Stat label="Avg score" value={avg} tone="sky" />
       </View>
 
       {taste.tastes.length > 0 && (

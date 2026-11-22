@@ -119,7 +119,7 @@ src/
                           Requested / Following; tabs Followers / Following / Requests (?tab=); remove a follower, unfollow, accept or
                           decline (each asks once); Invite friends (share sheet with your @username)
     postcard/[id].tsx     Opened from Postcards (id = the Postcard's id) or the friends feed (id = the friend's trip id). A friend's trip as a postcard, titled "<who>'s <place> trip", the same template for everyone (components/
-                          PostcardCard: photo front "Greetings from <place>"; tap/"Turn over" for the back: the place, region and
+                          PostcardCard: photo front "Greetings from <place>" with their score as the postage stamp, top right; tap/"Turn over" for the back: the place, region and
                           month and a photo stamp,
                           then like a real postcard a line down the middle: their quote and top tip on the left; score + word, who
                           with, nights, where they slept (+ score), where they ate on the right). No personal messages and no

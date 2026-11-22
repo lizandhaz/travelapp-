@@ -4,6 +4,7 @@ import { Animated, Pressable, View } from 'react-native';
 
 import { colors, fonts, radius } from '@/constants/theme';
 import { companionsLabel, tripPlace, type FriendTrip } from '@/lib/friendTrips';
+import { fitLines, fitWordSize } from '@/lib/fit';
 import { scoreWord } from '@/lib/score';
 import { MonthPill } from './MonthPill';
 import { PhotoFill, PhotoStamp, PhotoTile, Shade } from './Photo';
@@ -34,6 +35,7 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
   const ate = trip.eats[0]?.name ?? null;
   const tip = trip.tips[0]?.tip ?? null;
   const front = trip.photos[0] ?? null;
+  const nameSize = fitWordSize(trip.place, width - 52, 46, 28);
   const stamp = trip.photos[1] ?? trip.photos[0] ?? null;
   const hasWords = !!trip.quote || !!tip;
   // No words? Show a big photo on the left instead (if there is one).
@@ -61,7 +63,7 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
             ]
               .filter(Boolean)
               .join(' ')
-          : `Postcard from ${trip.who}: greetings from ${trip.place}. Tap to turn over`
+          : `Postcard from ${trip.who}: greetings from ${trip.place}, ${trip.score.toFixed(1)} out of 10. Tap to turn over`
       }
       style={{ width, minHeight }}
     >
@@ -79,11 +81,17 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
           </LinearGradient>
         )}
         <View style={{ position: 'absolute', inset: 10, borderWidth: 1.5, borderColor: colors.onDark, borderRadius: radius.sm, opacity: 0.85 }} />
+        {/* Their score as the postage stamp, top right (owner, Nov 2026). */}
+        <View style={{ position: 'absolute', top: 22, right: 22, transform: [{ rotate: '4deg' }] }}>
+          <ScoreStamp score={trip.score} size="lg" label={`${trip.who}'s score`} />
+        </View>
         <View style={{ position: 'absolute', left: 26, right: 26, bottom: 30 }}>
           <Text variant="label" style={{ color: colors.onDark, letterSpacing: 3 }}>
             Greetings from
           </Text>
-          <Text style={{ fontFamily: fonts.displayItalic, fontSize: 46, lineHeight: 52, color: colors.onDark }}>{trip.place}</Text>
+          <Text {...fitLines(trip.place)} style={{ fontFamily: fonts.displayItalic, fontSize: nameSize, lineHeight: Math.round(nameSize * 1.13), color: colors.onDark }}>
+            {trip.place}
+          </Text>
         </View>
       </Animated.View>
 

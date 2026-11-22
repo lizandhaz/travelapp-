@@ -312,8 +312,9 @@ export default function ListScreen() {
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, backgroundColor: colors.bg }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: GUTTER, paddingTop: 18, paddingBottom: 10 }}>
             <Text variant="heading">Add a place</Text>
-            <Pressable onPress={() => setSearching(false)} accessibilityRole="button" accessibilityLabel="Close" hitSlop={10}>
-              <Text variant="link">Done</Text>
+            {/* "Cancel", not "Done": closing never adds anything (owner, Nov 2026). */}
+            <Pressable onPress={() => setSearching(false)} accessibilityRole="button" accessibilityLabel="Cancel without adding" hitSlop={10}>
+              <Text variant="link">Cancel</Text>
             </Pressable>
           </View>
           <ScrollView contentContainerStyle={{ paddingHorizontal: GUTTER, gap: 12, paddingBottom: 24 }} keyboardShouldPersistTaps="handled">

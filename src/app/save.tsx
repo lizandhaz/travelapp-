@@ -6,15 +6,26 @@ import { ListCover, WishStar } from '@/components/lists';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, ErrorNotice, PageTitle, Screen } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
-import { addToBoard, boardMeta, ensureWishList, fetchBoards, findOnBoard, removeFromBoard, WISH_LIST_NAME, type Board } from '@/lib/boards';
+import { addToBoard, boardMeta, ensureWishList, fetchBoards, findOnBoard, removeFromBoard, WISH_LIST_NAME, type Board, type ItemKind, type SavePlace } from '@/lib/boards';
 
 /**
  * "Save to a list" from a place page (?place=…&country=…&slug=…):
  * tick the lists it should be on, or start a new one.
  */
+const KIND_WORD: Record<string, string> = { stay: 'A place to stay', eat: 'Somewhere to eat', do: 'Something to do', gem: 'A hidden gem' };
+
 export default function SaveToList() {
-  const { place, country = '', slug } = useLocalSearchParams<{ place: string; country?: string; slug?: string }>();
-  const target = { name: place ?? '', country, slug: slug || null };
+  const { place, country = '', slug, kind, parent, parentSlug } = useLocalSearchParams<{
+    place: string;
+    country?: string;
+    slug?: string;
+    /** A spot in a place (stay, eat, do, gem) rather than a place; parent is the place it's in. */
+    kind?: ItemKind;
+    parent?: string;
+    parentSlug?: string;
+  }>();
+  const spot = !!kind && kind !== 'place';
+  const target: SavePlace = { name: place ?? '', country, slug: slug || null, kind: spot ? kind : 'place', parentName: spot ? parent || null : null, parentSlug: spot ? parentSlug || null : null };
   const [boards, setBoards] = useState<Board[] | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<{ message: string } | null>(null);
@@ -105,6 +116,11 @@ export default function SaveToList() {
       </View>
       <PageTitle label="Save to a board">
         <Text variant="title">{place}</Text>
+        {spot && !!parent && (
+          <Text variant="small" style={{ marginTop: 4 }}>
+            {KIND_WORD[kind!] ?? 'Spot'} in {parent}. It goes under {parent} on a board that has it.
+          </Text>
+        )}
       </PageTitle>
       {!boards && !error ? (
         <ActivityIndicator color={colors.accent} />
@@ -118,7 +134,12 @@ export default function SaveToList() {
               title="+ New board"
               kind="outline"
               style={{ flex: 1 }}
-              onPress={() => router.push({ pathname: '/list/new', params: { place: target.name, country: target.country, slug: target.slug ?? '' } })}
+              onPress={() =>
+                router.push({
+                  pathname: '/list/new',
+                  params: { place: target.name, country: target.country, slug: target.slug ?? '', kind: target.kind ?? 'place', parent: target.parentName ?? '', parentSlug: target.parentSlug ?? '' },
+                })
+              }
             />
             <Button title="Done" style={{ flex: 1 }} onPress={() => router.back()} />
           </View>

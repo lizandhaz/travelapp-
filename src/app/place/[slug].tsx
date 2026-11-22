@@ -1,10 +1,11 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useCallback } from 'react';
-import { Dimensions, View } from 'react-native';
+import { useCallback, useState } from 'react';
+import { Dimensions, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/Avatar';
 import { WantToGoButton } from '@/components/lists';
+import { InviteSheet } from '@/components/InviteSheet';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
 import { BestTimeChart, DoRow, EatRow, MoreAbout, PlaceFacts, PlaceMapSection, SaidList, StayRow, YourScore } from '@/components/place';
@@ -30,6 +31,7 @@ export default function PlaceScreen() {
   const country = place ? countryOf({ name: place.name, country: place.region.split(', ').pop() ?? '' }) : '';
   const wish = useWantToGo({ name: place?.name ?? '', country, slug });
   const taste = useTaste();
+  const [inviting, setInviting] = useState(false);
   // Count this visit (and how long you stay) towards your matches when you leave the page.
   const placeName = place?.name ?? '';
   useFocusEffect(
@@ -90,6 +92,15 @@ export default function PlaceScreen() {
         <WantToGoButton variant="block" saved={wish.saved} busy={wish.busy || !wish.ready} onPress={wish.toggle} style={{ flex: 1 }} />
         <Button title="I’ve been" kind="accent" style={{ flex: 1 }} onPress={() => router.navigate({ pathname: '/add', params: { place: place.name, country } })} />
       </View>
+      {/* Once it's on Want to go: invite people you'd go with. */}
+      {wish.saved && !!wish.itemId && (
+        <Pressable onPress={() => setInviting(true)} accessibilityRole="button" accessibilityLabel={`Invite people to go to ${place.name} with you`} style={{ paddingHorizontal: GUTTER, marginTop: 8 }}>
+          <Text variant="small" style={{ color: colors.accentText }}>
+            On your Want to go. Going with someone? <Text variant="small" style={{ color: colors.accentText, fontFamily: fonts.sansSemiBold }}>Invite them →</Text>
+          </Text>
+        </Pressable>
+      )}
+      {inviting && !!wish.itemId && <InviteSheet itemId={wish.itemId} place={place.name} visible onClose={() => setInviting(false)} onDone={() => setInviting(false)} />}
       {!!wish.error && (
         <Text variant="small" style={{ paddingHorizontal: GUTTER, marginTop: 6, color: colors.accentText }}>
           {wish.error}
@@ -138,9 +149,9 @@ export default function PlaceScreen() {
         </View>
       )}
 
-      {stays.length > 0 && <StayRow stays={stays} />}
-      {eats.length > 0 && <EatRow eats={eats} />}
-      {!!detail?.dos.length && <DoRow dos={detail.dos} />}
+      {stays.length > 0 && <StayRow stays={stays} at={{ name: place.name, country, slug }} />}
+      {eats.length > 0 && <EatRow eats={eats} at={{ name: place.name, country, slug }} />}
+      {!!detail?.dos.length && <DoRow dos={detail.dos} at={{ name: place.name, country, slug }} />}
 
       {!detail && ideas.length > 0 && (
         <View style={{ marginTop: 28 }}>

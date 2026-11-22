@@ -23,7 +23,7 @@ export function beenPlaces(trips: Trip[]): MapPlace[] {
 
 /** Places on your Want to go list, opening their place page when there is one. */
 export function wishPlaces(items: BoardItem[]): MapPlace[] {
-  return items.map((i) => {
+  return items.filter((i) => i.kind === 'place').map((i) => {
     const n = i.name.trim().toLowerCase().replace(/^the /, '');
     const slug = i.slug && getPlace(i.slug) ? i.slug : samplePlaces.find((p) => p.name.toLowerCase().replace(/^the /, '') === n)?.slug;
     return { name: i.name, country: countryOf(i), href: slug ? `/place/${slug}` : null };

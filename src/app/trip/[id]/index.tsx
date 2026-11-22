@@ -132,7 +132,7 @@ export default function TripScreen() {
             </Text>
           )}
           <Text variant="small">
-            {[trip.note ? scoreWord(trip.score) : null, ...summary, trip.visibility === 'private' ? 'Just me' : 'Friends'].filter(Boolean).join(' · ')}
+            {[trip.note ? scoreWord(trip.score) : null, ...summary, trip.visibility === 'private' ? 'Just me' : 'Followers'].filter(Boolean).join(' · ')}
           </Text>
           <Text variant="tiny">Added {addedOn(trip.createdAt)}</Text>
         </View>

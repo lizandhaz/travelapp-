@@ -13,7 +13,8 @@ import { Button, Card, Chip, IconCircle, Screen, SectionHeader, toneFill, type T
 import { Row, SavedTripCard } from '@/components/cards';
 import { ListCover } from '@/components/lists';
 import { useSavedTrips } from '@/lib/reactions';
-import { colors, GUTTER, radius } from '@/constants/theme';
+import { fetchFollows, type Follows } from '@/lib/friends';
+import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { TASTE_LABELS, useTaste } from '@/lib/taste';
 import { beenPlaces, wishPlaces } from '@/lib/travelPlaces';
@@ -27,12 +28,16 @@ export default function You() {
   const [trips, setTrips] = useState<Trip[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [boards, setBoards] = useState<Board[]>([]);
+  const [follows, setFollows] = useState<Follows | null>(null);
   const savedTrips = useSavedTrips();
 
   const load = useCallback((isActive: () => boolean = () => true) => {
     // The map's "Want to go" places. If lists can't load, the map just shows where you've been.
     fetchBoards()
       .then((b) => isActive() && setBoards(b))
+      .catch(() => {});
+    fetchFollows()
+      .then((f) => isActive() && setFollows(f))
       .catch(() => {});
     fetchMyTrips()
       .then((t) => {
@@ -99,6 +104,19 @@ export default function You() {
         <Stat label="Countries" value={countriesIn(list)} tone="sage" />
         <Stat label="Of the world" value={worldShare(countriesIn(list))} tone="sky" />
       </View>
+
+      {/* Followers and following: tap either to see who. */}
+      <Card style={{ marginHorizontal: GUTTER, marginTop: 10, flexDirection: 'row' }}>
+        <FollowCount label="Followers" n={follows?.followers.length} onPress={() => router.push({ pathname: '/people', params: { tab: 'followers' } })} />
+        <View style={{ width: 1, backgroundColor: colors.line }} />
+        <FollowCount label="Following" n={follows?.following.length} onPress={() => router.push({ pathname: '/people', params: { tab: 'following' } })} />
+        {!!follows?.requests.length && (
+          <>
+            <View style={{ width: 1, backgroundColor: colors.line }} />
+            <FollowCount label="Requests" n={follows.requests.length} onPress={() => router.push({ pathname: '/people', params: { tab: 'requests' } })} />
+          </>
+        )}
+      </Card>
 
       {taste.tastes.length > 0 && (
         <View style={{ paddingHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
@@ -283,4 +301,15 @@ function ProfilePicture({ name }: { name: string }) {
 function worldShare(countries: number): string {
   const pct = (countries / 195) * 100;
   return `${pct < 10 ? pct.toFixed(1).replace(/\.0$/, '') : Math.round(pct)}%`;
+}
+
+function FollowCount({ label, n, onPress }: { label: string; n: number | undefined; onPress: () => void }) {
+  return (
+    <Pressable onPress={onPress} accessibilityRole="link" accessibilityLabel={`${n ?? 0} ${label.toLowerCase()}`} style={({ pressed }) => ({ flex: 1, alignItems: 'center', paddingVertical: 12, opacity: pressed ? 0.7 : 1 })}>
+      <Text style={{ fontFamily: fonts.display, fontSize: 20, lineHeight: 26, color: colors.ink }}>{n ?? '–'}</Text>
+      <Text variant="label" style={{ fontSize: 10 }}>
+        {label}
+      </Text>
+    </Pressable>
+  );
 }

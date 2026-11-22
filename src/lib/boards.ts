@@ -13,20 +13,37 @@ import { friendlyError, placeLabel, type Place, type Visibility } from './trips'
 
 export const WISH_LIST_NAME = 'Want to go';
 
-export type BoardItem = { id: string; slug: string | null; name: string; country: string; createdAt: string };
+/** What a saved thing is: a place (the default), or a spot in a place (stay, eat, do, gem). */
+export type ItemKind = 'place' | 'stay' | 'eat' | 'do' | 'gem';
+export type BoardItem = {
+  id: string;
+  slug: string | null;
+  name: string;
+  country: string;
+  createdAt: string;
+  kind: ItemKind;
+  /** The place a spot is in ("Copenhagen"), so it can sit under that place on a board. */
+  parentName: string | null;
+  parentSlug: string | null;
+  /** Set when a Want to go place is shared with other people. */
+  shareId: string | null;
+};
 export type Board = {
   id: string;
   name: string;
   kind: 'list' | 'wish';
   visibility: Visibility;
   updatedAt: string;
+  /** A chosen cover photo (one of the app's photos), or null for the photo collage. */
+  cover: string | null;
   /** Newest first. */
   items: BoardItem[];
 };
 /** A place you're saving: a sample place page ("madeira") or any place by name. */
-export type SavePlace = Place & { slug?: string | null };
+export type SavePlace = Place & { slug?: string | null; kind?: ItemKind; parentName?: string | null; parentSlug?: string | null };
 
-const SELECT = 'id, name, kind, visibility, updated_at, board_items ( id, place_slug, name, country, created_at )';
+const SELECT =
+  'id, name, kind, visibility, updated_at, cover, board_items ( id, place_slug, name, country, created_at, kind, parent_name, parent_slug, share_id )';
 
 type Row = {
   id: string;
@@ -34,7 +51,20 @@ type Row = {
   kind: 'list' | 'wish';
   visibility: Visibility;
   updated_at: string;
-  board_items: { id: string; place_slug: string | null; name: string; country: string; created_at: string }[] | null;
+  cover: string | null;
+  board_items:
+    | {
+        id: string;
+        place_slug: string | null;
+        name: string;
+        country: string;
+        created_at: string;
+        kind: ItemKind | null;
+        parent_name: string | null;
+        parent_slug: string | null;
+        share_id: string | null;
+      }[]
+    | null;
 };
 
 function fromRow(r: Row): Board {
@@ -44,9 +74,20 @@ function fromRow(r: Row): Board {
     kind: r.kind,
     visibility: r.visibility,
     updatedAt: r.updated_at,
+    cover: r.cover ?? null,
     items: [...(r.board_items ?? [])]
       .sort((a, b) => b.created_at.localeCompare(a.created_at))
-      .map((i) => ({ id: i.id, slug: i.place_slug, name: i.name, country: i.country, createdAt: i.created_at })),
+      .map((i) => ({
+        id: i.id,
+        slug: i.place_slug,
+        name: i.name,
+        country: i.country,
+        createdAt: i.created_at,
+        kind: i.kind ?? 'place',
+        parentName: i.parent_name ?? null,
+        parentSlug: i.parent_slug ?? null,
+        shareId: i.share_id ?? null,
+      })),
   };
 }
 
@@ -85,7 +126,7 @@ export async function ensureWishList(): Promise<string> {
   return (data as { id: string }).id;
 }
 
-export async function updateBoard(id: string, changes: { name?: string; visibility?: Visibility }): Promise<void> {
+export async function updateBoard(id: string, changes: { name?: string; visibility?: Visibility; cover?: string | null }): Promise<void> {
   const { error } = await supabase
     .from('boards')
     .update({ ...changes, ...(changes.name != null ? { name: changes.name.trim() } : {}) })
@@ -104,7 +145,13 @@ export async function deleteBoard(id: string): Promise<void> {
 export async function addToBoard(boardId: string, place: SavePlace): Promise<void> {
   const { error } = await supabase
     .from('board_items')
-    .insert({ board_id: boardId, place_slug: place.slug ?? null, name: place.name.trim(), country: place.country.trim() });
+    .insert({
+      board_id: boardId,
+      place_slug: place.slug ?? null,
+      name: place.name.trim(),
+      country: place.country.trim(),
+      ...(place.kind && place.kind !== 'place' ? { kind: place.kind, parent_name: place.parentName ?? null, parent_slug: place.parentSlug ?? null } : {}),
+    });
   if (error && error.code !== '23505') throw new Error(friendlyError(error));
   tasteChanged();
 }
@@ -122,8 +169,10 @@ export function findOnBoard(board: Board, place: Place): BoardItem | undefined {
 }
 
 export function boardMeta(board: Board) {
-  const n = board.items.length;
-  return `${n} ${n === 1 ? 'place' : 'places'} · ${board.visibility === 'friends' ? 'Friends' : 'Just me'}`;
+  const n = placesOn(board.items).length;
+  const spots = board.items.length - n;
+  const who = board.visibility === 'friends' ? 'Followers' : 'Just me';
+  return `${n} ${n === 1 ? 'place' : 'places'}${spots ? ` · ${spots} ${spots === 1 ? 'spot' : 'spots'}` : ''} · ${who}`;
 }
 
 /**
@@ -144,4 +193,23 @@ export async function shareBoard(board: Board): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/** Only the places on a board (not the hotels, restaurants and so on saved under them). */
+export const placesOn = (items: BoardItem[]) => items.filter((i) => i.kind === 'place');
+
+/** For each of your shared Want to go places, the other people who have it ("with Maya"). */
+export async function fetchSharedWishes(): Promise<Record<string, { id: string; name: string }[]>> {
+  const { data, error } = await supabase.rpc('my_shared_wishes');
+  if (error) return {};
+  const out: Record<string, { id: string; name: string }[]> = {};
+  for (const r of (data ?? []) as { item_id: string; user_id: string; name: string }[]) (out[r.item_id] ??= []).push({ id: r.user_id, name: r.name });
+  return out;
+}
+
+/** Invites people (who you follow and who follow you back) to a place on your Want to go. */
+export async function shareWishItem(itemId: string, userIds: string[]): Promise<number> {
+  const { data, error } = await supabase.rpc('share_wish_item', { p_item: itemId, p_users: userIds });
+  if (error) throw new Error(/follow you back|isn.t on your Want to go|up to 20/i.test(error.message) ? error.message : friendlyError(error));
+  return (data as number) ?? 0;
 }

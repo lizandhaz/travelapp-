@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { useAuth } from './auth';
-import { fetchBoards } from './boards';
+import { fetchBoards, placesOn } from './boards';
 import { countryOf } from './knownPlaces';
 import { buildProfile, itemScore, scorePlace, stayScore, topTastes, type FriendRating, type PlaceResult, type Profile, type Signal } from './match';
 import { featuresForPlace, featuresForSlug, parseStaySub, sampleFriendRatings, stayKind, tagsForListName, tasteItemInfo } from './placeFeatures';
@@ -76,7 +76,8 @@ async function loadSignals(): Promise<{ signals: Signal[]; settings: MatchSettin
     );
   }
   for (const b of boards) {
-    for (const item of b.items) {
+    // Places only: hotels, restaurants and so on saved under a place don't count as places to go.
+    for (const item of placesOn(b.items)) {
       const place = item.slug ? (featuresForSlug(item.slug) ?? featuresForPlace(item)) : featuresForPlace({ name: item.name, country: countryOf(item) });
       next.push({ kind: 'save', place, wish: b.kind === 'wish', savedAt: item.createdAt });
     }

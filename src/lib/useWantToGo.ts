@@ -44,5 +44,5 @@ export function useWantToGo(place: SavePlace) {
     }
   }
 
-  return { saved: !!itemId, ready, busy, error, toggle };
+  return { saved: !!itemId, itemId: itemId && itemId !== 'saving' ? itemId : null, ready, busy, error, toggle };
 }

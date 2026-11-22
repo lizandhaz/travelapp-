@@ -6,6 +6,7 @@ import { colors, fonts, radius } from '@/constants/theme';
 import type { Board, BoardItem } from '@/lib/boards';
 import { photos, type PhotoName } from '@/lib/photos';
 import { getPlace, photoForPlaceName, places } from '@/lib/sample';
+import { PhotoFill } from './Photo';
 import { Text } from './Text';
 
 /** The sample photo for a saved place, if we have one. */
@@ -47,7 +48,15 @@ export function PlaceThumb({ item, size = 56, style }: { item: Pick<BoardItem, '
 
 /** A list's cover: up to three of its places' photos (one big, two small), or an empty tile. */
 export function ListCover({ board, style }: { board: Board; style?: ViewStyle }) {
-  const shown = board.items.slice(0, 3);
+  // Places only (not saved hotels and restaurants); a chosen cover photo wins.
+  const shown = board.items.filter((i) => i.kind === 'place').slice(0, 3);
+  if (board.cover && board.cover in photos) {
+    return (
+      <View style={[{ aspectRatio: 1, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.sand }, style]}>
+        <PhotoFill photo={board.cover as PhotoName} />
+      </View>
+    );
+  }
   const tile = (item: BoardItem | undefined, flex: number) =>
     item ? (
       <View style={{ flex }}>

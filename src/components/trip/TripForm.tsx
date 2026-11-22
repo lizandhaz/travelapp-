@@ -361,7 +361,7 @@ export function TripForm({
               value={visibility}
               onChange={setVisibility}
               options={[
-                ['friends', 'Friends'],
+                ['friends', 'Followers'],
                 ['private', 'Just me'],
               ]}
             />

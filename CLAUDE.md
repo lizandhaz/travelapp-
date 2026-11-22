@@ -106,7 +106,7 @@ src/
     list/[id].tsx         One board: cover (chosen photo, or a collage of its places) with the name, Share/Edit circles, places as a
                           2-column grid of photo cards (score stamp, "N saved spots", × to remove; tap → its saved hotels/restaurants
                           in a sheet with "Open <place>", or the place page); "Hotels, restaurants & more" for spots whose place isn't
-                          on the board; on Want to go, "With Maya" and "+ Invite" under each place (InviteSheet); Add a place; Delete
+                          on the board; on Want to go, "With Maya" and "+ Invite" under each place (InviteSheet); Add a place (opens a search sheet so the keyboard never hides the suggestions); Delete
     list/new.tsx          New board, or rename/cover/who-can-see with ?id=; cover photo picker (Collage, the board's places, a dozen
                           favourites); with ?place= (and kind/parent for a spot) it also adds that
     collection/[id].tsx   One Explore collection (places or things) as a 2-column grid, best for you first

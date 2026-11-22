@@ -18,12 +18,15 @@ export function PlacePicker({
   places,
   placeholder = 'Search or type a place',
   accessibilityLabel,
+  autoFocus = false,
 }: {
   value: Place | null;
   onChange: (p: Place | null) => void;
   places: Place[];
   placeholder?: string;
   accessibilityLabel: string;
+  /** Open the keyboard straight away (in the board's search sheet). */
+  autoFocus?: boolean;
 }) {
   const [text, setText] = useState(value ? placeLabel(value) : '');
   const [focused, setFocused] = useState(false);
@@ -79,6 +82,7 @@ export function PlacePicker({
         placeholder={placeholder}
         accessibilityLabel={accessibilityLabel}
         autoCorrect={false}
+        autoFocus={autoFocus}
         returnKeyType="done"
         icon={<SearchIcon color={colors.muted} />}
       />

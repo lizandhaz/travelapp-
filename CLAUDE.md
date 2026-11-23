@@ -234,7 +234,8 @@ supabase/config.toml      Settings for the Supabase command-line tool (used by t
 .github/workflows/supabase-database.yml   On merge to main: applies new database files to Supabase
 .github/workflows/website.yml             On merge to main (website/** or brand.json): builds and publishes the landing page to GitHub Pages
 website/                  The landing page (owner, Nov 2026): index.html (writes {{app}} for the name, filled from brand.json by build.mjs,
-                          plus the public Supabase URL/key from src/lib/config.ts), img/ (people-free Unsplash photos), favicon.png.
+                          plus the public Supabase URL/key from src/lib/config.ts), img/ (mostly the owner's own holiday photos, own-*.jpg, resized and re-saved so EXIF/GPS is stripped; a few people-free
+                          Unsplash photos remain on the Beach resorts / Winter sun / Ski boards), favicon.png.
                           Light only, the app's oat milk + the owner's coastal palette (sage, dusty blue, champagne) + blush score badges.
                           The waitlist form calls join_waitlist(). The Boards section's chips (Want to go, Beach resorts, Winter sun, City breaks,
                           Ski trips) switch the moodboard's photos (img/board-*.jpg). Examples on the page use made-up hotels/restaurants (never invented

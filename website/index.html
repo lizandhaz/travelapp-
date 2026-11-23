@@ -24,6 +24,8 @@
 @media (prefers-reduced-motion: reduce) { .mood { transition: none; } }
 
 .joined-star { width: 30px; height: 30px; color: var(--accent); flex: none; }
+
+.mood figcaption { right: 8px; max-width: max-content; line-height: 1.3; }
 </style>
 <style>
 /* Layout: a rack of postcards. A split hero (words left, a stamped postcard right), then bands of the coastal palette, each holding one idea.
@@ -340,22 +342,22 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
           <p class="msg" aria-live="polite"></p>
         </form>
       </div>
-      <div class="stage" aria-label="An example postcard: Maya's trip to Venice, rated 9.4">
+      <div class="stage" aria-label="An example postcard: Maya's trip to Lake Como, rated 9.4">
         <div class="card-front stamp-frame">
           <div class="inner">
-            <img src="img/own-venice-canal.jpg" alt="The Grand Canal in Venice">
+            <img src="img/own-como-varenna.jpg" alt="Varenna on Lake Como">
             <div class="shade"></div>
             <div class="score-stamp" aria-label="9.4 out of 10"><span>9.4</span></div>
-            <div class="greet"><p class="label">Greetings from</p><h3>Venice</h3></div>
+            <div class="greet"><p class="label">Greetings from</p><h3>Lake Como</h3></div>
           </div>
         </div>
         <div class="card-back">
-          <div class="who"><span class="avatar" aria-hidden="true">M</span><div><strong>Maya</strong><div class="small">May 2026 · 4 nights</div></div></div>
-          <blockquote>“Lunch on the Grand Canal, then get lost on purpose.”</blockquote>
+          <div class="who"><span class="avatar" aria-hidden="true">M</span><div><strong>Maya</strong><div class="small">June 2026 · 5 nights</div></div></div>
+          <blockquote>“Catch the first ferry to Bellagio, before the crowds.”</blockquote>
           <dl>
             <div><dt>Went</dt><dd>With her partner</dd></div>
-            <div><dt>Slept at</dt><dd>A palazzo by the Rialto</dd></div>
-            <div><dt>Ate at</dt><dd>A canal-side trattoria</dd></div>
+            <div><dt>Slept at</dt><dd>A villa above Varenna</dd></div>
+            <div><dt>Ate at</dt><dd>A lakeside trattoria</dd></div>
           </dl>
         </div>
         <span class="example">Example trip</span>
@@ -503,7 +505,7 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
         <figure><img src="img/own-como-varenna.jpg" alt="Varenna on Lake Como" loading="lazy"><figcaption>Varenna, Lake Como</figcaption></figure>
         <figure><img src="img/own-dubai.jpg" alt="Dubai at dawn, with the Burj Al Arab" loading="lazy"><figcaption>Dubai</figcaption></figure>
         <figure><img src="img/own-paris-eiffel.jpg" alt="The Eiffel Tower lit up at dusk" loading="lazy"><figcaption>Paris</figcaption></figure>
-        <figure><img src="img/own-olive-garden.jpg" alt="A long table under olive trees" loading="lazy"><figcaption>Long lunches under the olives</figcaption></figure>
+        <figure><img src="img/own-olive-garden.jpg" alt="A long table under olive trees" loading="lazy"><figcaption>Lunch under the olives</figcaption></figure>
         <figure><img src="img/own-tenerife.jpg" alt="The coast of Tenerife" loading="lazy"><figcaption>Tenerife</figcaption></figure>
         <figure><img src="img/own-heidelberg.jpg" alt="Heidelberg and its old bridge" loading="lazy"><figcaption>Heidelberg</figcaption></figure>
         <figure><img src="img/own-costa-brava.jpg" alt="A pine-framed bay on the Costa Brava" loading="lazy"><figcaption>Costa Brava</figcaption></figure>

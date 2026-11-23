@@ -233,7 +233,7 @@ supabase/migrations/      Database setup, as SQL files run in order (applied aut
 supabase/config.toml      Settings for the Supabase command-line tool (used by the GitHub job)
 .github/workflows/supabase-database.yml   On merge to main: applies new database files to Supabase
 .github/workflows/website.yml             On merge to main (website/** or brand.json): builds and publishes the landing page to GitHub Pages
-website/                  The landing page (owner, Nov 2026): index.html (writes {{app}} for the name, filled from brand.json by build.mjs,
+website/                  The landing page (owner, Nov 2026): index.html (writes {{app}} for the capitals wordmark and {{appWord}} ("Cova") for the name in sentences, both filled from brand.json by build.mjs,
                           plus the public Supabase URL/key from src/lib/config.ts), img/ (mostly the owner's own holiday photos, own-*.jpg, resized and re-saved so EXIF/GPS is stripped; only the Ski trips
                           board still has a few people-free Unsplash photos), favicon.png.
                           Light only, the app's oat milk + the owner's coastal palette (sage, dusty blue, champagne) + blush score badges.

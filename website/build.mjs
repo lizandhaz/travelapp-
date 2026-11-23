@@ -9,7 +9,10 @@ const url = config.match(/'(https:\/\/[a-z0-9]+\.supabase\.co)'/)?.[1];
 const key = config.match(/'(sb_publishable_[A-Za-z0-9_-]+)'/)?.[1];
 if (!brand.appName || !url || !key) throw new Error('Missing the app name, Supabase address or publishable key');
 
+// {{app}} is the wordmark (capitals, as in the logo); {{appWord}} is the name in sentences ("Cova").
+const appWord = brand.appName.charAt(0) + brand.appName.slice(1).toLowerCase();
 const html = readFileSync('website/index.html', 'utf8')
+  .replaceAll('{{appWord}}', appWord)
   .replaceAll('{{app}}', brand.appName)
   .replaceAll('{{supabaseUrl}}', url)
   .replaceAll('{{supabaseKey}}', key);

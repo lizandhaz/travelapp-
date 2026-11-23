@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Dimensions, View } from 'react-native';
+import { ActivityIndicator, Dimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/Avatar';
@@ -11,7 +11,8 @@ import { Text } from '@/components/Text';
 import { TripActions } from '@/components/TripActions';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
-import { companionsLabel, getFriendTrip, tripPlace } from '@/lib/friendTrips';
+import { companionsLabel, photoCount, tripPic, tripPlace } from '@/lib/friendTrips';
+import { useFriendTrip } from '@/lib/friendsFeed';
 import { scoreWord } from '@/lib/score';
 import NotFound from '../+not-found';
 
@@ -19,10 +20,12 @@ import NotFound from '../+not-found';
 export default function FriendTripScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
-  const trip = getFriendTrip(id);
-  if (!trip) return <NotFound />;
+  const { trip, loading } = useFriendTrip(id);
+  if (!trip) return loading ? <Screen><ActivityIndicator color={colors.accent} style={{ marginTop: 120 }} /></Screen> : <NotFound />;
+  const pics = Array.from({ length: photoCount(trip) }, (_, i) => tripPic(trip, i)!);
+  const isReal = !!trip.photoUrls;
   const { stay, eats, dos, tips } = trip;
-  const hasPhoto = trip.photos.length > 0;
+  const hasPhoto = pics.length > 0;
   const h = Math.min(Dimensions.get('window').width, 480) * (hasPhoto ? 0.95 : 0.7);
 
   return (
@@ -31,7 +34,7 @@ export default function FriendTripScreen() {
       <View style={{ minHeight: h, paddingTop: insets.top + 10, paddingBottom: 40, justifyContent: 'space-between' }}>
         {hasPhoto ? (
           <>
-            <PhotoFill photo={trip.photos[0]} label={trip.place} />
+            <PhotoFill {...pics[0]} label={trip.place} />
             <Shade strength={0.6} />
           </>
         ) : (
@@ -54,7 +57,7 @@ export default function FriendTripScreen() {
 
       <Card tone={hasPhoto ? "blush" : "white"} style={{ marginHorizontal: GUTTER, marginTop: -24, padding: 16, gap: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <Avatar face={trip.face} name={trip.who} size={40} />
+          <Avatar face={trip.face} uri={trip.faceUrl} name={trip.who} size={40} />
           <View style={{ flex: 1 }}>
             <Text variant="strong">{trip.who} rated it</Text>
             <Text style={{ fontFamily: fonts.displayItalic, fontSize: 17, color: colors.accentText }}>{scoreWord(trip.score)}</Text>
@@ -68,15 +71,15 @@ export default function FriendTripScreen() {
           </View>
         )}
         {!!trip.quote && <Text variant="quote">“{trip.quote}”</Text>}
-        <TripActions id={trip.id} who={trip.who} place={trip.place} slug={trip.slug} />
+        <TripActions id={trip.id} who={trip.who} place={trip.place} slug={trip.slug} country={trip.country} />
       </Card>
 
-      {trip.photos.length > 1 && (
+      {pics.length > 1 && (
         <View style={{ marginTop: 26 }}>
           <SectionHeader>Their photos</SectionHeader>
           <Row gap={10}>
-            {trip.photos.map((p) => (
-              <PhotoTile key={p} photo={p} style={{ width: 260, height: 325 }} shade={false} />
+            {pics.map((p, i) => (
+              <PhotoTile key={i} {...p} style={{ width: 260, height: 325 }} shade={false} />
             ))}
           </Row>
         </View>
@@ -163,11 +166,13 @@ export default function FriendTripScreen() {
       )}
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 30 }}>
-        <Button title={`More about ${trip.place}`} kind="outline" onPress={() => router.push(`/place/${trip.slug}`)} />
+        {!!trip.slug && <Button title={`More about ${trip.place}`} kind="outline" onPress={() => router.push(`/place/${trip.slug}`)} />}
       </View>
-      <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 14 }}>
-        Sample trip for now. Your friends’ real trips arrive with friends.
-      </Text>
+      {!isReal && (
+        <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 14 }}>
+          Sample trip for now. Your friends’ real trips arrive with friends.
+        </Text>
+      )}
     </Screen>
   );
 }

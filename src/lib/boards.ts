@@ -1,7 +1,7 @@
 import { Platform, Share } from 'react-native';
 
 import { APP_NAME } from '@/constants/brand';
-import { supabase } from './supabase';
+import { myUserId, supabase } from './supabase';
 import { tasteChanged } from './tasteEvents';
 import { friendlyError, placeLabel, type Place, type Visibility } from './trips';
 
@@ -93,7 +93,10 @@ function fromRow(r: Row): Board {
 
 /** Your lists: "Want to go" first, then the most recently changed. */
 export async function fetchBoards(): Promise<Board[]> {
-  const { data, error } = await supabase.from('boards').select(SELECT).order('updated_at', { ascending: false });
+  const me = await myUserId();
+  if (!me) return [];
+  // Only yours: followers' boards are readable too now (Step C).
+  const { data, error } = await supabase.from('boards').select(SELECT).eq('owner_id', me).order('updated_at', { ascending: false });
   if (error) throw new Error(friendlyError(error));
   const boards = (data as unknown as Row[]).map(fromRow);
   return [...boards.filter((b) => b.kind === 'wish'), ...boards.filter((b) => b.kind !== 'wish')];
@@ -114,7 +117,8 @@ export async function createBoard(name: string, visibility: Visibility): Promise
 /** Your "Want to go" list, made now if you don't have one yet. Returns its id. */
 export async function ensureWishList(): Promise<string> {
   const find = async () => {
-    const { data, error } = await supabase.from('boards').select('id').eq('kind', 'wish').maybeSingle();
+    const me = await myUserId();
+    const { data, error } = await supabase.from('boards').select('id').eq('kind', 'wish').eq('owner_id', me ?? '').maybeSingle();
     if (error) throw new Error(friendlyError(error));
     return (data as { id: string } | null)?.id ?? null;
   };

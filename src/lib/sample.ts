@@ -12,8 +12,10 @@ export type RowItem = { slug: string; name: string; sub: string; photo: PhotoNam
 export type TasteItem = { slug: string; kind: string; match: string; name: string; where: string; because: string; friends: string; photo: PhotoName };
 export type BoardItem = { slug: string | null; kind: string; name: string; sub: string; photo: PhotoName; score?: number };
 export type FeedItem = {
-  who: string; face: PhotoName; place: string; region: string; month: string; photo: PhotoName | null;
-  quote: string | null; score: number; stayType: string; stayName: string; stayScore: number; slug: string;
+  who: string; face: PhotoName | null; place: string; region: string; month: string; photo: PhotoName | null;
+  quote: string | null; score: number; stayType: string; stayName: string; stayScore: number | null; slug: string;
+  /** Real trips (people you follow): the trip's id, private photo links and the country. */
+  id?: string; photoUri?: string | null; faceUri?: string | null; country?: string;
   /** When they posted it ("2 hours ago"). */
   posted?: string;
 };

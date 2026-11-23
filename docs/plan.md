@@ -196,7 +196,7 @@ Each step's ready-made prompt is in your build plan doc ("XYZX: build plan from 
 
 | Step | What you'll be able to do | Aim to finish |
 |---|---|---|
-| C (half done) | Add friends ✅ (Find people, requests, Nov 2026); next: see their trips on Home → Friends | Wed 2 Dec |
+| C ✅ | Followers ✅ (Find people, requests); people you follow see your "Followers" trips and boards, and Home's friends feed shows their real trips (Nov 2026). Likes and comments are still kept on each phone | Wed 2 Dec |
 | D ✅ | Save places to lists on Saved, plus a "Want to go" list (done early; friends see "Friends" lists once Step C is in) | Fri 4 Dec |
 | E | Real place, stay and restaurant pages, and Explore from the database | Sun 6 Dec |
 | F | For you and trending from real ratings | Tue 8 Dec |

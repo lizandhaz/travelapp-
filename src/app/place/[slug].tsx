@@ -137,7 +137,7 @@ export default function PlaceScreen() {
                   <Text variant="small" style={{ flex: 1 }}>
                     Stayed at <Text variant="strong">{s.stayName}</Text> ({s.stayType})
                   </Text>
-                  <ScoreStamp score={s.stayScore} size="sm" tone="olive" label={s.stayType} />
+                  {s.stayScore != null && <ScoreStamp score={s.stayScore} size="sm" tone="olive" label={s.stayType} />}
                 </View>
               </Card>
             ))}

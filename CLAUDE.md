@@ -2,7 +2,7 @@
 
 Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations** and **where they stayed** (hotel, Airbnb, villa and so on) out of 10, and add photos, food picks and top tips.
 
-**Status:** an **Expo (React Native)** app. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **Lists are real too:** Saved holds your "Want to go" list and lists you make, and You has a travel map of where you've been and want to go. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips and lists (Home's picks and Friends feed, Explore, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts` (40 places, each with details; 39 have a map, South Africa doesn't yet). The roadmap is in `docs/plan.md`.
+**Status:** an **Expo (React Native)** app. **Followers see each other's "Followers" trips** (Step C, Nov 2026), and Home's friends feed shows them. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **Lists are real too:** Saved holds your "Want to go" list and lists you make, and You has a travel map of where you've been and want to go. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips and lists (Home's picks and Friends feed, Explore, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts` (40 places, each with details; 39 have a map, South Africa doesn't yet). The roadmap is in `docs/plan.md`.
 
 **App name:** **ATLO** (owner, 22 Nov 2026; it was the placeholder XYZX). It lives in **one place**, `src/constants/brand.json` (`appName`). Code uses `APP_NAME` from `src/constants/brand.ts`, and `app.config.ts` reads the same JSON for the name under the icon. Never type the app's name anywhere else. (The project was originally called "Postcard"; that's still the Expo `slug` and the repo's history, and the notifications feature is still called "Postcards".)
 
@@ -89,8 +89,8 @@ src/
     (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score, sideways;
                           no text under them); "Dip into collections" (Explore's collection tiles); "From your friends" (FeedCard: big photo
                           with who, when they posted, month, place and score, or for a post without photos a blush top with the place in big
-                          type, then their quote, stay, and Like / Comment / Save; opens as a postcard (postcard/[id] with the friend's trip id), owner Nov 2026. The sample feed mixes both
-                          on purpose). A thin line sits above "From your friends"
+                          type, then their quote, stay, and Like / Comment / Save; opens as a postcard (postcard/[id] with the friend's trip id), owner Nov 2026. Real trips from people
+                          you follow (lib/friendsFeed) replace the sample feed once there are any; the sample feed mixes photos/no photos on purpose). A thin line sits above "From your friends"
     (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
                           jumps down to it), "Find your next trip" collection tiles (24, each opens its collection, no counts),
                           Trending this month, "Made for your taste" (chips + things to eat/do/stay, on a sage band; moved from Home),
@@ -127,7 +127,7 @@ src/
                           a big photo on the left (or details full width), no photos → no front: the whole trip (the back) shows
                           straight away, with no Turn over (owner disliked the olive-orange stand-in), and the back's
                           content sets the card's height. Then Like / Comment / Save, big photos, "See <who>'s whole trip" and "More about <place>"
-    friend-trip/[id].tsx  A friend's trip (id "maya-hydra"; sample, lib/friendTrips): their score, who with, nights, quote, photos,
+    friend-trip/[id].tsx  A friend's trip (sample id "maya-hydra", or a real trip's id via useFriendTrip): their score, who with, nights, quote, photos,
                           where they stayed, where they ate, what they did, their tips, "More about <place>"
     settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places
                           I look at, clear viewed places, sign out), opened from You
@@ -220,6 +220,8 @@ src/
     friends.ts            Followers & following: searchPeople, fetchFollows (followers / following / requests / sent), mutuals,
                           follow, unfollow, acceptFollower, removeFollower, inviteFriends
     InviteSheet.tsx       (components) "Who do you want to go with?": pick mutual follows → share_wish_item
+    friendsFeed.ts        Real trips from people you follow (Step C): fetchMyPeople (my_people()), fetchFriendsTrips, feedItemFor,
+                          useFriendTrip(id) (sample or real), postedAgo
     reactions.ts          Likes, comments and saved friends' trips: sample counts + yours, kept on the phone (useReactions, toggleLike,
                           addComment, toggleSavedTrip, useSavedTrips). Moves to the database when friends' real trips arrive
     knownStays.ts         Stays for suggestions: the stay guide + the sample place details; searchStays(query, tripPlace, limit, tripCountry)
@@ -241,7 +243,7 @@ docs/plan.md              Step-by-step plan
   - The `handle_new_user` trigger creates the profile and **refuses anyone under 13**.
   - Another trigger refuses `is_public = true` under 18.
 - **Trips** (`20261118120000_trips.sql`): `trips` (owner, trip_month = 1st of a month, score 1–10, visibility `friends`/`private`), `trip_stops` (position 0 = main place, then extra stops, optional nights 1–365), `stays` (name, type Hotel/Airbnb/Villa/B&B/Other, score 1–10), `food_picks`, `top_tips`, and `destinations` (shared place names).
-  - **Owner-only** for everything on trips, for now. Friends get read access in Step 3, for "Friends" trips only.
+  - **Followers can read** (Step C, `20261128120000_followers_see_trips.sql`): accepted followers see trips set to Followers (`visibility = 'friends'`) with their stops, stay, restaurants, tip, place names and photos; changes stay owner-only. See "Followers see trips and boards" below.
   - Save new and edited trips **only through `save_trip(p_trip jsonb)`**: one transaction, runs with the caller's permissions, and replaces the details on edit. The app calls it with `supabase.rpc('save_trip', { p_trip })`.
   - Places are added via the `destination_id_for()` helper (it tidies spaces and treats case as the same place). People only see the starting list plus places they've used, so private names like "Grandma's house" never leak.
   - A trigger refuses future months.
@@ -275,6 +277,7 @@ docs/plan.md              Step-by-step plan
   - `follows` (follower_id, followee_id, status pending/accepted; existing friendships were copied in: friends follow each other). Read/delete your own rows (unfollow, cancel, decline, remove follower); follow only via `follow_user(p_user)` (public account → accepted, otherwise pending; refuses yourself, unknown people, and under-18s who don't already follow you; at most 300 pending) and accept via `accept_follower(p_user)`. `search_people_follows(q)` (status following/requested/none + follows_you; under-18s only if a follow exists either way) and `my_follows()`. The old friendships table and functions are left in place, unused.
   - `board_items.kind` (place default, or stay/eat/do/gem) with `parent_name`/`parent_slug` (the place a spot is in); `boards.cover` (an app photo name; updatable with name and visibility). Taste and the travel map only use `kind = 'place'` (`placesOn`).
   - `board_items.share_id`: `share_wish_item(p_item, p_users[])` (your Want to go item; only people you follow who follow you back; up to 20) adds a copy to each person's Want to go with the same share_id; `my_shared_wishes()` gives the other names ("With Maya"). Removing yours leaves theirs.
+- **Followers see trips and boards** (Step C, `20261128120000_followers_see_trips.sql`, owner Nov 2026): read-only SELECT policies so accepted followers see your Followers trips (+ trip_stops, stays, food_picks, top_tips, the destinations on them) and Followers boards (+ items), via security-definer helpers `i_follow()`, `can_see_trip()`, `can_see_board()`. Storage: `can_see_photo()` lets them open photos on those trips and the profile picture of anyone they follow or who follows them (accepted). `my_people()` gives names, handles and avatar paths of accepted follows either way. **Because of this, "my" queries must filter by owner**: `fetchMyTrips`, `fetchBoards` and `ensureWishList` use `.eq('owner_id', myUserId())` (lib/supabase.ts). `lib/friendsFeed.ts` loads followed people's trips for Home (newest first; the sample feed shows until there are any) and `useFriendTrip(id)` loads one (sample id or a real trip's uuid) for postcard/[id], friend-trip/[id] and Saved. Likes and comments are still kept on the phone.
 - **Place views** (`20261124120000_place_views.sql`): `place_views` (owner_id + place_slug, views, seconds, first/last viewed). Owner-only: select and delete directly; recording only via `record_place_view(slug, name, country, seconds)` (security definer, own row only, at most 600 s a visit). The place page records a visit when you leave it (3 s minimum, `lib/views.ts`). Settings → Your matches: "Use the places I look at" (stored on the phone; off = nothing recorded or used) and "Clear the places I've looked at". Mention viewing history in the privacy policy (plan Step J).
 - **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 

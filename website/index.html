@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{{app}} · Find your holiday, made for you</title>
+<meta name="description" content="Find your holiday, made for you and rated by people you trust: places, stays, food, things to do and top tips, picked for your taste.">
+<meta property="og:title" content="{{app}} · Find your holiday, made for you">
+<meta property="og:description" content="Top picks made for your taste, rated by people you trust. Join the waitlist.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f2ede2">
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&display=swap">
+<style>html,body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<style>
+/* Layout: a rack of postcards. A split hero (words left, a stamped postcard right), then bands of the coastal palette, each holding one idea.
+   Palette: the owner's coastal moodboard (ivory, champagne, stone, sage, olive, dusty blue, deep ocean) with the app's blush pink for scores. */
+:root {
+  /* Light only (owner, Nov 2026): the page keeps these colours even when the phone is in dark mode. */
+  color-scheme: light;
+  --bg: #f2ede2;          /* the app's oat milk */
+  --card: #ffffff;
+  --line: #e6dfd2;
+  --ink: #353b2c;         /* the app's text colour */
+  --muted: #646858;
+  --stamp: #e7b9b2;       /* the app's blush pink */
+  --blush: #f8e9e5;
+  --sage: #edf1e8;        /* sage, very soft */
+  --sky: #edf2f7;         /* dusty blue, very soft */
+  --champagne: #f6efe3;
+  --accent: #d39b93;      /* blush, a touch deeper: swash, numbers, highlights */
+  --accent-deep: #5b8496; /* soft ocean blue: buttons */
+  --accent-text: #456f80; /* ocean blue for kickers and small links */
+  --olive: #8a9a7e;       /* lighter olive */
+  --sea: #7fa9ba;
+  --on-dark: #ffffff;
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; margin: 0; }
+em { font-style: italic; font-weight: 500; }
+p { margin: 0; }
+.label { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; color: var(--muted); }
+.kicker { color: var(--accent-text); }
+
+/* The terracotta swash under the accent word */
+.swash { position: relative; white-space: nowrap; }
+.swash::after { content: ""; position: absolute; left: 2%; right: 2%; bottom: -0.17em; height: 0.16em; background: var(--accent); border-radius: 50%; transform: rotate(-1.5deg); opacity: 0.9; }
+
+/* Header */
+header { padding-block: 22px; }
+header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.wordmark { font-family: var(--display); font-weight: 600; font-size: 52px; letter-spacing: 0.34em; display: inline-flex; align-items: center; gap: 10px; }
+.star { width: 0.7em; height: 0.7em; color: var(--accent); flex: none; }
+.pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 500; white-space: nowrap; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--olive); }
+
+/* Hero */
+.hero { padding-block: 32px 72px; }
+.hero .wrap { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
+.hero h1 { font-size: clamp(56px, 8.4vw, 112px); line-height: 0.98; margin-top: 14px; letter-spacing: -0.02em; }
+.hero .lede { font-size: 19px; color: var(--muted); max-width: 32em; margin-top: 34px; }
+.hero .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 30px; }
+.btn { display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; padding: 15px 24px; font-weight: 600; font-size: 16px; background: var(--accent-deep); color: var(--on-dark); }
+.small { font-size: 14px; color: var(--muted); }
+
+/* Postage-stamp frame: a white card whose edge circles show the page colour, like perforations */
+.stamp-frame { background: var(--card); padding: 10px; border-radius: 4px; box-shadow: 0 18px 40px -18px rgba(40, 36, 25, 0.35); }
+.stamp-frame .inner { position: relative; overflow: hidden; }
+/* Score badge: a clean blush tile with a thin white keyline (no perforated dots, owner Nov 2026). */
+.score-stamp { display: inline-grid; place-items: center; background: var(--stamp); padding: 4px; border-radius: 10px; box-shadow: 0 6px 16px -8px rgba(53,59,44,0.35); }
+.score-stamp span { display: grid; place-items: center; min-width: 62px; height: 62px; padding: 0 8px; background: var(--stamp); border: 1.5px solid rgba(255,255,255,0.85); border-radius: 7px; font-family: var(--display); font-weight: 600; font-size: 26px; color: #353b2c; font-variant-numeric: tabular-nums; }
+.score-stamp.olive { background: var(--olive); }
+.score-stamp.olive span { background: var(--olive); color: #ffffff; }
+.score-stamp.sm span { min-width: 46px; height: 46px; font-size: 19px; }
+
+.stage { position: relative; container-type: inline-size; padding-bottom: 28px; }
+.card-front { position: absolute; left: 2%; top: 0; width: min(330px, 64%); transform: rotate(-3deg); z-index: 1; }
+.card-front .inner { aspect-ratio: 2 / 3; }
+.card-front img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-front .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55)); }
+.card-front .greet { position: absolute; left: 26px; right: 26px; bottom: 26px; color: #faf7f0; }
+.card-front .greet .label { color: #faf7f0; letter-spacing: 0.28em; }
+.card-front .greet h3 { font-style: italic; font-weight: 500; font-size: 48px; line-height: 1.05; }
+.card-front .score-stamp { position: absolute; top: 24px; right: 24px; transform: rotate(4deg); }
+/* The back sits in the flow just below the front, tucking under its bottom edge only, so it never covers the writing. */
+.card-back { position: relative; margin-left: auto; margin-top: calc(min(330px, 64cqw) * 1.5 - 8px); width: min(330px, 72%); transform: rotate(3deg); background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; z-index: 2; box-shadow: 0 18px 40px -16px rgba(40,36,25,0.4); display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; font-size: 14px; }
+.card-back .who { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--olive); color: #faf7f0; display: grid; place-items: center; font-weight: 600; font-size: 13px; flex: none; }
+.card-back blockquote { margin: 0; font-family: var(--display); font-style: italic; font-size: 17px; line-height: 1.35; padding-right: 14px; border-right: 1px solid var(--line); }
+.card-back dl { margin: 0; display: grid; gap: 8px; }
+.card-back dt { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.card-back dd { margin: 0; font-weight: 600; }
+.example { position: absolute; left: 2%; bottom: 0; font-size: 12px; color: var(--muted); }
+
+/* Score scale */
+.band { padding-block: 72px; }
+.band.blush { background: var(--blush); }
+.band.sage { background: var(--sage); }
+.band.sky { background: var(--sky); }
+.band.champagne { background: var(--champagne); }
+.section-head { display: grid; gap: 12px; max-width: 40em; }
+.section-head h2 { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.08; }
+.section-head p { color: var(--muted); font-size: 18px; }
+.scale { margin-top: 38px; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 8px; }
+.tick { display: grid; gap: 8px; align-content: start; }
+.tick .bar { height: 10px; border-radius: 5px; background: var(--line); }
+.tick .n { font-family: var(--display); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; }
+.tick .w { font-size: 13px; color: var(--muted); line-height: 1.3; }
+.tick.hi .bar { background: var(--accent); }
+.tick.hi .w { color: var(--accent-text); font-weight: 600; }
+.scale-note { margin-top: 26px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.scale-note .big { font-family: var(--display); font-size: 40px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.scale-note .big em { font-size: 30px; color: var(--accent-text); }
+
+/* How it works */
+.steps { margin-top: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.step { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 26px; display: grid; gap: 12px; align-content: start; }
+.step .num { font-family: var(--display); font-style: italic; font-size: 40px; line-height: 1; color: var(--accent); }
+.step h3 { font-size: 23px; }
+.step p { color: var(--muted); font-size: 16px; }
+
+/* Features */
+.feature { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; padding-block: 56px; }
+.feature + .feature { border-top: 1px solid var(--line); }
+.feature h3 { font-size: clamp(28px, 3.4vw, 38px); line-height: 1.1; }
+.feature p { color: var(--muted); margin-top: 14px; max-width: 30em; }
+.feature .demo { display: grid; justify-items: center; }
+.stay-card { width: min(380px, 100%); background: var(--card); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+.stay-card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; }
+.stay-card .row { display: flex; align-items: center; gap: 14px; padding: 16px 18px; }
+.stay-card .row div { flex: 1; min-width: 0; }
+.stay-card h4 { margin: 0; font-family: var(--display); font-size: 21px; font-weight: 600; }
+.tag { display: inline-block; background: var(--sage); border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+.why { width: min(380px, 100%); display: grid; gap: 10px; }
+.why .line { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: flex; gap: 12px; align-items: center; }
+.why .line img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; flex: none; }
+.why .line div { flex: 1; min-width: 0; }
+.why .line strong { font-family: var(--display); font-size: 19px; font-weight: 600; display: block; }
+.why .line span { font-size: 14px; color: var(--accent-text); }
+.board { width: min(380px, 100%); background: var(--blush); border-radius: 22px; padding: 18px; display: flex; gap: 16px; align-items: center; }
+.board .collage { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 3px; width: 112px; height: 112px; border-radius: 16px; overflow: hidden; flex: none; }
+.board .collage img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.board .collage img:first-child { grid-row: 1 / 3; }
+.board h4 { margin: 0; font-family: var(--display); font-size: 22px; font-weight: 600; }
+
+/* Promises */
+.promises { margin-top: 36px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 40px; }
+.promise { display: flex; gap: 14px; align-items: flex-start; padding-block: 14px; border-top: 1px solid var(--line); }
+.promise svg { width: 18px; height: 18px; color: var(--accent); flex: none; margin-top: 5px; }
+.promise strong { display: block; font-weight: 600; }
+.promise span { color: var(--muted); font-size: 16px; }
+
+/* Closing */
+.closing { padding-block: 84px 56px; text-align: left; }
+.closing .wrap { display: grid; gap: 18px; justify-items: start; }
+.closing h2 { font-size: clamp(36px, 5vw, 60px); line-height: 1.05; max-width: 14em; }
+footer { padding-block: 26px 40px; border-top: 1px solid var(--line); }
+footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
+
+:focus-visible { outline: 2px solid var(--accent-deep); outline-offset: 3px; }
+@media (max-width: 860px) {
+  .hero .wrap, .feature { grid-template-columns: 1fr; gap: 36px; }
+  .stage { max-width: 460px; width: 100%; justify-self: center; }
+  .steps { grid-template-columns: 1fr; }
+  .promises { grid-template-columns: 1fr; }
+  .feature .demo { order: 2; }
+  .scale { grid-template-columns: repeat(5, minmax(0, 1fr)); row-gap: 22px; }
+}
+@media (max-width: 420px) {
+  .wordmark { font-size: 36px; letter-spacing: 0.22em; gap: 6px; }
+  .pill { padding: 7px 11px; font-size: 13px; }
+  .card-front .greet h3 { font-size: 36px; }
+  .card-front .greet { left: 20px; bottom: 20px; }
+  .card-back { padding: 16px; font-size: 13px; }
+  .card-back blockquote { font-size: 15px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card-front { animation: settle 0.9s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes settle { from { transform: rotate(-9deg) translateY(10px); } to { transform: rotate(-3deg); } }
+}
+
+/* Header button */
+.head-cta { display: inline-flex; align-items: center; border-radius: 999px; padding: 10px 18px; font-weight: 600; font-size: 15px; background: var(--accent-deep); color: var(--on-dark); text-decoration: none; white-space: nowrap; }
+
+/* Waitlist form (hero and closing) */
+.wl { margin-top: 30px; display: grid; gap: 10px; max-width: 30em; }
+.wl-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.wl input[type="email"], .wl input[type="text"] { flex: 1 1 220px; min-width: 0; font: inherit; font-size: 16px; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 14px 20px; }
+.wl input::placeholder { color: var(--muted); }
+.wl button { font: inherit; font-weight: 600; font-size: 16px; border: 0; border-radius: 999px; padding: 14px 24px; background: var(--accent-deep); color: var(--on-dark); cursor: pointer; }
+.wl button:disabled { opacity: 0.6; cursor: default; }
+.wl .note { font-size: 14px; color: var(--muted); }
+.wl .msg { font-size: 15px; font-weight: 600; }
+.wl .msg.ok { color: var(--olive); }
+.wl .msg.err { color: var(--accent-text); }
+.wl.joined .wl-row, .wl.joined .note { display: none; }
+.joined-card { display: none; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 14px 18px; }
+.wl.joined .joined-card { display: flex; }
+.joined-card strong { display: block; }
+
+/* Made for you: stay / eat / do / tip */
+.picks { margin-top: 40px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.pick { background: var(--card); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
+.pick img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+.pick .body { padding: 16px; display: grid; gap: 6px; flex: 1; align-content: start; }
+.pick .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.pick h4 { margin: 0; font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1.2; }
+.pick .where { font-size: 14px; color: var(--muted); }
+.pick .reason { font-size: 14px; color: var(--accent-text); font-weight: 500; margin-top: 4px; }
+.pick .kind { position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.94); color: #353b2c; border-radius: 999px; padding: 4px 11px; font-size: 12px; font-weight: 600; }
+.pick .ph { position: relative; }
+.pick.tip { background: var(--sage); border-color: var(--line); color: var(--ink); }
+.pick.tip .body { padding: 22px; gap: 14px; }
+.pick.tip blockquote { margin: 0; font-family: var(--display); font-style: italic; font-size: 21px; line-height: 1.35; }
+.pick.tip .where, .pick.tip .reason { color: var(--accent-text); }
+.score-stamp.xs span { min-width: 40px; height: 40px; font-size: 17px; padding: 0 5px; }
+.examples-note { margin-top: 18px; font-size: 13px; color: var(--muted); }
+
+/* Boards: a masonry moodboard */
+.boards-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center; }
+.mood { columns: 3; column-gap: 10px; }
+.mood figure { margin: 0 0 10px; break-inside: avoid; position: relative; border-radius: 14px; overflow: hidden; }
+.mood img { width: 100%; display: block; }
+.mood figcaption { position: absolute; left: 8px; bottom: 8px; background: rgba(255,255,255,0.94); color: #353b2c; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 600; }
+.board-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.board-chips span { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 7px 14px; font-size: 14px; font-weight: 500; }
+.board-chips span.on { background: var(--accent-deep); border-color: var(--accent-deep); color: var(--on-dark); }
+.boards-copy p { color: var(--muted); margin-top: 16px; max-width: 30em; }
+
+/* Closing waitlist band */
+.closing .wl { margin-top: 6px; }
+
+@media (max-width: 1000px) { .picks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 860px) {
+  .boards-grid { grid-template-columns: 1fr; gap: 32px; }
+  .mood { columns: 2; }
+}
+@media (max-width: 560px) {
+  .picks { grid-template-columns: 1fr; }
+  .head-cta { padding: 9px 14px; font-size: 14px; }
+}
+
+/* A full postcard, front and back, landscape like a real one */
+.pc-pair { margin-top: 40px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; align-items: stretch; }
+.pc-side { display: grid; grid-template-rows: auto 1fr; gap: 10px; min-width: 0; }
+.pc-side .label { color: var(--muted); }
+.pc { border-radius: 10px; overflow: hidden; position: relative; box-shadow: 0 24px 50px -26px rgba(30, 40, 35, 0.45); }
+.pc-front img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.pc-front .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55)); }
+.pc-front .frame { position: absolute; inset: 10px; border: 1.5px solid rgba(250,247,242,0.85); border-radius: 6px; }
+.pc-front .greet { position: absolute; left: 7%; bottom: 9%; color: #faf7f2; }
+.pc-front .greet .label { color: #faf7f2; letter-spacing: 0.3em; font-size: 11px; }
+.pc-front .greet p.place { font-family: var(--display); font-style: italic; font-weight: 500; font-size: clamp(30px, 4.2vw, 48px); line-height: 1.05; margin: 0; }
+.pc-front .score-stamp { position: absolute; top: 7%; right: 5%; transform: rotate(4deg); }
+/* The back sets the height (it never cuts anything off); the front fills the same height, at least 3:2 like a real postcard. */
+.pc-back { background: var(--card); border: 1px solid var(--line); padding: 5% 5.5%; display: grid; grid-template-rows: auto 1fr; gap: 3cqw; container-type: inline-size; }
+.pc-front { width: 100%; height: 100%; min-height: 300px; }
+.pc-back .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.pc-back .top .label { color: var(--accent-text); letter-spacing: 0.3em; font-size: max(9px, 2.3cqw); }
+.pc-back .top .place { font-family: var(--display); font-style: italic; font-weight: 500; font-size: max(18px, 6cqw); line-height: 1.05; margin: 2px 0 0; }
+.pc-back .top .region { font-size: max(11px, 2.8cqw); color: var(--muted); }
+.month { display: inline-block; margin-top: 6px; border: 1.5px solid var(--accent-text); color: var(--accent-text); border-radius: 999px; padding: 2px 10px; font-size: max(9px, 2.2cqw); letter-spacing: 0.16em; font-weight: 600; transform: rotate(-3deg); }
+.pc-back .photo-stamp { width: 21cqw; flex: none; background: #ffffff; padding: 5px; border-radius: 3px; box-shadow: 0 6px 14px -8px rgba(53,59,44,0.4); transform: rotate(4deg); }
+.pc-back .photo-stamp img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.pc-back .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 0; }
+.pc-back .words { padding-right: 5cqw; border-right: 1px solid var(--line); display: grid; gap: 3cqw; align-content: start; }
+.pc-back .words blockquote { margin: 0; font-family: var(--display); font-style: italic; font-size: max(12px, 3.3cqw); line-height: 1.3; }
+.pc-back .words .tip-label { font-size: max(8px, 1.9cqw); letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; color: var(--accent-text); }
+.pc-back .words .tip { font-family: var(--display); font-style: italic; font-size: max(11px, 2.7cqw); line-height: 1.35; color: var(--muted); margin-top: 3px; }
+.pc-back .facts { padding-left: 5cqw; display: grid; gap: 2cqw; align-content: start; font-size: max(10px, 2.6cqw); }
+.pc-back .facts .scoreline { display: flex; align-items: center; gap: 2.5cqw; }
+.pc-back .facts .scoreline em { font-family: var(--display); color: var(--accent-text); font-size: max(13px, 3.4cqw); }
+.pc-back .facts dt { font-size: max(8px, 1.8cqw); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.pc-back .facts dd { margin: 0; font-weight: 600; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.pc-back .facts .row { border-bottom: 1px solid var(--line); padding-bottom: 1.6cqw; }
+.mini { display: inline-block; background: var(--olive); color: #faf7f2; border-radius: 6px; padding: 0 6px; font-family: var(--display); font-size: 0.95em; }
+.score-stamp.pcs span { min-width: 0; width: max(34px, 9cqw); height: max(34px, 9cqw); font-size: max(14px, 3.8cqw); padding: 0; }
+.pc-caption { margin-top: 18px; font-size: 15px; color: var(--muted); max-width: 42em; }
+@media (max-width: 860px) { .pc-pair { grid-template-columns: 1fr; } .pc-front { height: auto; min-height: 0; aspect-ratio: 3 / 2; } }
+
+/* Top picks strip: a sideways row of tall photos, each with its score for you */
+.strip-band { padding-block: 8px 72px; }
+.strip-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; }
+.strip-head h2 { font-size: clamp(30px, 4vw, 46px); line-height: 1.08; }
+.strip { margin-top: 26px; display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; scrollbar-width: thin; }
+.strip figure { margin: 0; flex: 0 0 clamp(200px, 24vw, 260px); scroll-snap-align: start; position: relative; border-radius: 18px; overflow: hidden; aspect-ratio: 3 / 4; }
+.strip img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.strip .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.55)); }
+.strip figcaption { position: absolute; left: 14px; right: 14px; bottom: 14px; color: #fff; }
+.strip figcaption strong { display: block; font-family: var(--display); font-size: 24px; font-weight: 600; line-height: 1.1; }
+.strip figcaption span { font-size: 13px; opacity: 0.95; }
+.strip .score-stamp { position: absolute; top: 12px; right: 12px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="star" viewBox="0 0 24 24"><path d="M12 0c.6 6.7 5.3 11.4 12 12-6.7.6-11.4 5.3-12 12-.6-6.7-5.3-11.4-12-12C6.7 11.4 11.4 6.7 12 0z" fill="currentColor"/></symbol>
+</svg>
+
+<header>
+  <div class="wrap">
+    <span class="wordmark">{{app}} <svg class="star" aria-hidden="true"><use href="#star"/></svg></span>
+    <a class="head-cta" href="#waitlist">Join the waitlist</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="label kicker">Picked by you and those you trust</p>
+        <h1>Find your holiday, <span class="swash"><em>made for you</em></span></h1>
+        <p class="lede">{{app}} learns your taste from the trips you post, the places you save and the things you love, then shows you top picks made just for you: holidays, places to stay, restaurants, things to do and the tips that matter. Every pick is scored out of 10, with ratings from the people you trust.</p>
+        <form class="wl" data-place="hero" novalidate aria-label="Join the waitlist">
+          <div class="wl-row">
+            <label for="wl-email-hero" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Your email</label>
+            <input id="wl-email-hero" type="email" name="email" placeholder="Your email" autocomplete="email" inputmode="email" required>
+            <button type="submit">Join the waitlist</button>
+          </div>
+          <p class="note">Free to join · We'll only use your email to tell you when {{app}} opens. To be removed, just reply to that email.</p>
+          <div class="joined-card" role="status"><div class="score-stamp xs" aria-hidden="true"><span>10</span></div><div><strong>You're on the list</strong><span class="small">We'll email <span class="joined-email"></span> as soon as {{app}} opens.</span></div></div>
+          <p class="msg" aria-live="polite"></p>
+        </form>
+      </div>
+      <div class="stage" aria-label="An example postcard: Maya's trip to Hydra, rated 9.4">
+        <div class="card-front stamp-frame">
+          <div class="inner">
+            <img src="img/hydra-s-harbour-and-stone-houses-above-t-8f7165.jpg" alt="Hydra's harbour and stone houses above the sea">
+            <div class="shade"></div>
+            <div class="score-stamp" aria-label="9.4 out of 10"><span>9.4</span></div>
+            <div class="greet"><p class="label">Greetings from</p><h3>Hydra</h3></div>
+          </div>
+        </div>
+        <div class="card-back">
+          <div class="who"><span class="avatar" aria-hidden="true">M</span><div><strong>Maya</strong><div class="small">June 2026 · 6 nights</div></div></div>
+          <blockquote>“Swim off the rocks before breakfast. Nobody else does.”</blockquote>
+          <dl>
+            <div><dt>Went</dt><dd>With her partner</dd></div>
+            <div><dt>Slept at</dt><dd>The Harbour House</dd></div>
+            <div><dt>Ate at</dt><dd>A fish taverna in Kamini</dd></div>
+          </dl>
+        </div>
+        <span class="example">Example trip</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="strip-band" aria-labelledby="strip-h">
+    <div class="wrap">
+      <div class="strip-head">
+        <div><p class="label kicker">Your top picks</p><h2 id="strip-h">Trips picked for <em>your</em> taste</h2></div>
+        <span class="small">Swipe for more · Examples</span>
+      </div>
+      <div class="strip" tabindex="0" aria-label="Example top picks">
+        <figure><img src="img/bora-bora-967f5a.jpg" alt="Bora Bora" loading="lazy"><div class="shade"></div><div class="score-stamp xs" aria-label="9.3 for you"><span>9.3</span></div><figcaption><strong>Bora Bora</strong><span>Like the Maldives, on your Want to go</span></figcaption></figure>
+        <figure><img src="img/puglia-8ed1b6.jpg" alt="Puglia" loading="lazy"><div class="shade"></div><div class="score-stamp xs" aria-label="9.1 for you"><span>9.1</span></div><figcaption><strong>Puglia</strong><span>You loved Sicily, 9.1</span></figcaption></figure>
+        <figure><img src="img/mauritius-f62c5e.jpg" alt="Mauritius" loading="lazy"><div class="shade"></div><div class="score-stamp xs" aria-label="9.2 for you"><span>9.2</span></div><figcaption><strong>Mauritius</strong><span>Two people you follow went</span></figcaption></figure>
+        <figure><img src="img/the-cotswolds-f0516b.jpg" alt="The Cotswolds" loading="lazy"><div class="shade"></div><div class="score-stamp xs" aria-label="8.7 for you"><span>8.7</span></div><figcaption><strong>The Cotswolds</strong><span>Cosy weekends you rate highly</span></figcaption></figure>
+        <figure><img src="img/crete-d8e312.jpg" alt="Crete" loading="lazy"><div class="shade"></div><div class="score-stamp xs" aria-label="9.0 for you"><span>9.0</span></div><figcaption><strong>Crete</strong><span>Matches your beach trips</span></figcaption></figure>
+        <figure><img src="img/copenhagen-8da480.jpg" alt="Copenhagen" loading="lazy"><div class="shade"></div><div class="score-stamp xs" aria-label="8.6 for you"><span>8.6</span></div><figcaption><strong>Copenhagen</strong><span>City breaks you save</span></figcaption></figure>
+        <figure><img src="img/verbier-737b4c.jpg" alt="Verbier" loading="lazy"><div class="shade"></div><div class="score-stamp xs" aria-label="8.8 for you"><span>8.8</span></div><figcaption><strong>Verbier</strong><span>For your ski board</span></figcaption></figure>
+        <figure><img src="img/zanzibar-a2709b.jpg" alt="Zanzibar" loading="lazy"><div class="shade"></div><div class="score-stamp xs" aria-label="8.9 for you"><span>8.9</span></div><figcaption><strong>Zanzibar</strong><span>Saved by Priya</span></figcaption></figure>
+        <figure><img src="img/st-ives-a58dfd.jpg" alt="St Ives" loading="lazy"><div class="shade"></div><div class="score-stamp xs" aria-label="8.5 for you"><span>8.5</span></div><figcaption><strong>St Ives</strong><span>No flying needed</span></figcaption></figure>
+        <figure><img src="img/dei-mallorca-2a3950.jpg" alt="Deià, Mallorca" loading="lazy"><div class="shade"></div><div class="score-stamp xs" aria-label="9.0 for you"><span>9.0</span></div><figcaption><strong>Deià, Mallorca</strong><span>Like the villages you love</span></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="band blush" aria-labelledby="picks-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label kicker">Made for you</p>
+        <h2 id="picks-h">Everything for your trip, <em>picked for your taste</em></h2>
+        <p>Not just where to go. {{app}} finds the hotel, the long lunch, the walk and the one tip that makes the trip, then tells you why it thinks you'll love each one.</p>
+      </div>
+      <div class="picks">
+        <article class="pick">
+          <div class="ph"><img src="img/a-loggia-with-arches-over-lake-como-5f331b.jpg" alt="A loggia with arches over Lake Como" loading="lazy"><span class="kind">Where to stay</span></div>
+          <div class="body">
+            <div class="top"><h4>Villa Cardamone</h4><div class="score-stamp olive xs" aria-label="9.4 for you"><span>9.4</span></div></div>
+            <span class="where">Hotel · Lake Como</span>
+            <span class="reason">Tom stayed and gave it 9.6</span>
+          </div>
+        </article>
+        <article class="pick">
+          <div class="ph"><img src="img/a-plate-of-pasta-by-the-sea-e7eb5c.jpg" alt="A plate of pasta by the sea" loading="lazy"><span class="kind">Where to eat</span></div>
+          <div class="body">
+            <div class="top"><h4>Trattoria al Molo</h4><div class="score-stamp xs" aria-label="9.1 for you"><span>9.1</span></div></div>
+            <span class="where">Long lunch · Positano</span>
+            <span class="reason">Like the beach lunches you rate highest</span>
+          </div>
+        </article>
+        <article class="pick">
+          <div class="ph"><img src="img/a-pagoda-above-kyoto-e94075.jpg" alt="A pagoda above Kyoto" loading="lazy"><span class="kind">Things to do</span></div>
+          <div class="body">
+            <div class="top"><h4>Kurama to Kibune hike</h4><div class="score-stamp xs" aria-label="8.9 for you"><span>8.9</span></div></div>
+            <span class="where">Half a day · Kyoto</span>
+            <span class="reason">Recommended by Priya</span>
+          </div>
+        </article>
+        <article class="pick tip">
+          <div class="body">
+            <p class="label kicker">Top tip · Marrakech</p>
+            <blockquote>“Ask your riad to meet you at the edge of the medina. Taxis can't get in.”</blockquote>
+            <span class="reason">From Sophie, who's been twice</span>
+          </div>
+        </article>
+      </div>
+      <p class="examples-note">Examples. In the app, every pick comes from the people you follow and is scored for you.</p>
+    </div>
+  </section>
+
+  <section class="band sky" aria-labelledby="pc-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label kicker">Postcards from friends</p>
+        <h2 id="pc-h">Every trip arrives as a <em>postcard</em></h2>
+        <p>When someone you follow rates a trip, it lands as a postcard. The front is their best photo and their score. Turn it over for the whole trip.</p>
+      </div>
+      <div class="pc-pair">
+        <figure class="pc-side" style="margin:0">
+          <figcaption class="label">The front</figcaption>
+          <div class="pc pc-front">
+            <img src="img/lake-como-s-coloured-houses-at-dusk-d27e84.jpg" alt="Lake Como's coloured houses at dusk" loading="lazy">
+            <div class="shade"></div>
+            <div class="frame"></div>
+            <div class="score-stamp" aria-label="Rated 9.2 out of 10"><span>9.2</span></div>
+            <div class="greet"><p class="label">Greetings from</p><p class="place">Lake Como</p></div>
+          </div>
+        </figure>
+        <figure class="pc-side" style="margin:0">
+          <figcaption class="label">The back</figcaption>
+          <div class="pc pc-back">
+            <div class="top">
+              <div>
+                <p class="label">Tom's postcard</p>
+                <p class="place">Lake Como</p>
+                <span class="region">Italy</span><br>
+                <span class="month">SEP 2026</span>
+              </div>
+              <div class="photo-stamp"><img src="img/a-loggia-with-arches-over-lake-como-5f331b.jpg" alt="" loading="lazy"></div>
+            </div>
+            <div class="split">
+              <div class="words">
+                <blockquote>“Take the slow ferry everywhere. The lake is the point.”</blockquote>
+                <div><span class="tip-label">✦ Top tip</span><p class="tip">Stay in Varenna, not Como town, and hop between villages by boat.</p></div>
+              </div>
+              <dl class="facts" style="margin:0">
+                <div class="scoreline"><div class="score-stamp pcs" aria-label="9.2 out of 10"><span>9.2</span></div><em>Wonderful</em></div>
+                <div class="row"><dt>Went</dt><dd>With friends</dd></div>
+                <div class="row"><dt>Stayed</dt><dd>5 nights</dd></div>
+                <div class="row"><dt>Slept at</dt><dd>Villa Cardamone <span class="mini">9.0</span></dd></div>
+                <div class="row"><dt>Ate at</dt><dd>Trattoria al Molo</dd></div>
+              </dl>
+            </div>
+          </div>
+        </figure>
+      </div>
+      <p class="pc-caption">An example postcard. Anything a friend doesn't fill in is simply left off, and Like, Comment and Save sit underneath.</p>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="boards-h">
+    <div class="wrap boards-grid">
+      <div class="boards-copy">
+        <p class="label kicker">Boards</p>
+        <h2 id="boards-h" style="font-size:clamp(32px,4.4vw,50px);line-height:1.08">Save the places you <em>dream about</em></h2>
+        <p>Build boards like a moodboard for your next trip: places, hotels, restaurants and things to do, all in one place. Keep a Want to go board, share a board with a friend, or invite someone to a place you both want to visit.</p>
+        <p>The more you save, the better {{app}} knows what you'll love next.</p>
+        <div class="board-chips" aria-hidden="true"><span class="on">Want to go</span><span>Beach resorts</span><span>Food trips</span><span>Winter sun</span><span>City breaks</span></div>
+      </div>
+      <div class="mood" aria-label="An example board of saved places">
+        <figure><img src="img/a-white-beach-in-turks-and-caicos-23f579.jpg" alt="A white beach in Turks and Caicos" loading="lazy"><figcaption>Turks and Caicos</figcaption></figure>
+        <figure><img src="img/water-villas-in-the-maldives-776405.jpg" alt="Water villas in the Maldives" loading="lazy"><figcaption>The Maldives</figcaption></figure>
+        <figure><img src="img/a-whitewashed-lane-in-mykonos-with-a-blu-fd8f7b.jpg" alt="A whitewashed lane in Mykonos with a blue gate" loading="lazy"><figcaption>Mykonos</figcaption></figure>
+        <figure><img src="img/lemons-on-the-amalfi-coast-b88289.jpg" alt="Lemons on the Amalfi coast" loading="lazy"><figcaption>Amalfi</figcaption></figure>
+        <figure><img src="img/cliffs-on-the-coast-of-madeira-f009b0.jpg" alt="Cliffs on the coast of Madeira" loading="lazy"><figcaption>Madeira</figcaption></figure>
+        <figure><img src="img/lake-como-s-coloured-houses-at-dusk-d27e84.jpg" alt="Lake Como at dusk" loading="lazy"><figcaption>Lake Como</figcaption></figure>
+        <figure><img src="img/a-kaiseki-dinner-in-kyoto-dd9bb8.jpg" alt="A kaiseki dinner in Kyoto" loading="lazy"><figcaption>Kaiseki in Kyoto</figcaption></figure>
+        <figure><img src="img/a-riad-courtyard-in-marrakech-bc5d6d.jpg" alt="A riad courtyard in Marrakech" loading="lazy"><figcaption>A riad in Marrakech</figcaption></figure>
+        <figure><img src="img/a-beach-in-the-seychelles-58aa61.jpg" alt="A beach in the Seychelles" loading="lazy"><figcaption>La Digue</figcaption></figure>
+        <figure><img src="img/beach-umbrellas-ceba59.jpg" alt="Beach umbrellas" loading="lazy"><figcaption>Beach days</figcaption></figure>
+        <figure><img src="img/a-snowy-chalet-50c04a.jpg" alt="A snowy chalet" loading="lazy"><figcaption>Ski trips</figcaption></figure>
+        <figure><img src="img/an-infinity-pool-above-the-sea-eac78a.jpg" alt="An infinity pool above the sea" loading="lazy"><figcaption>Villa pools</figcaption></figure>
+        <figure><img src="img/waves-on-a-quiet-beach-01f9e2.jpg" alt="Waves on a quiet beach" loading="lazy"><figcaption>Comporta</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="band sage" aria-labelledby="scale-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label kicker">Rated by people you trust</p>
+        <h2 id="scale-h">Every trip, <em>out of 10</em></h2>
+        <p>No anonymous reviews and no paid placements. Just the people you follow, scoring the places they've been with one decimal place and one honest word.</p>
+      </div>
+      <div class="scale" role="list">
+        <div class="tick" role="listitem"><div class="bar"></div><span class="n">1</span><span class="w">Never again</span></div>
+        <div class="tick" role="listitem"><div class="bar"></div><span class="n">2</span><span class="w">Poor</span></div>
+        <div class="tick" role="listitem"><div class="bar"></div><span class="n">3</span><span class="w">Meh</span></div>
+        <div class="tick" role="listitem"><div class="bar"></div><span class="n">4</span><span class="w">Not for me</span></div>
+        <div class="tick" role="listitem"><div class="bar"></div><span class="n">5</span><span class="w">Fine</span></div>
+        <div class="tick" role="listitem"><div class="bar"></div><span class="n">6</span><span class="w">Good</span></div>
+        <div class="tick" role="listitem"><div class="bar"></div><span class="n">7</span><span class="w">Lovely</span></div>
+        <div class="tick hi" role="listitem"><div class="bar"></div><span class="n">8</span><span class="w">Loved it</span></div>
+        <div class="tick" role="listitem"><div class="bar"></div><span class="n">9</span><span class="w">Wonderful</span></div>
+        <div class="tick" role="listitem"><div class="bar"></div><span class="n">10</span><span class="w">Perfect</span></div>
+      </div>
+      <div class="scale-note">
+        <div class="score-stamp" aria-hidden="true"><span>8.8</span></div>
+        <p class="big"><em>Loved it</em></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band champagne" aria-labelledby="how-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="label kicker">How it works</p>
+        <h2 id="how-h">Rate it, save it, <em>find the next one</em></h2>
+      </div>
+      <div class="steps">
+        <article class="step">
+          <span class="num" aria-hidden="true">1</span>
+          <h3>Rate your trips</h3>
+          <p>Once you're home: where you went, how long, who with, and a score out of 10. Add photos, the hotel, your best restaurants and a top tip.</p>
+        </article>
+        <article class="step">
+          <span class="num" aria-hidden="true">2</span>
+          <h3>Follow people you trust</h3>
+          <p>Friends, family, the colleague who always finds the good places. Their trips arrive as postcards you can turn over.</p>
+        </article>
+        <article class="step">
+          <span class="num" aria-hidden="true">3</span>
+          <h3>Find your holiday, made for you</h3>
+          <p>Places, stays, food, things to do and tips, each scored for your taste, with the reason why. Save the ones you love to a board.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing band" id="waitlist" aria-labelledby="close-h">
+    <div class="wrap">
+      <span class="wordmark">{{app}} <svg class="star" aria-hidden="true"><use href="#star"/></svg></span>
+      <h2 id="close-h">Your next favourite place is already in a friend's <em>camera roll</em></h2>
+      <p style="color:var(--muted);max-width:32em">{{app}} is coming to iPhone. Join the waitlist and we'll let you know as soon as you can get in.</p>
+      <form class="wl" data-place="closing" novalidate aria-label="Join the waitlist">
+          <div class="wl-row">
+            <label for="wl-email-closing" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Your email</label>
+            <input id="wl-email-closing" type="email" name="email" placeholder="Your email" autocomplete="email" inputmode="email" required>
+            <button type="submit">Join the waitlist</button>
+          </div>
+          <p class="note">Free to join · We'll only use your email to tell you when {{app}} opens. To be removed, just reply to that email.</p>
+          <div class="joined-card" role="status"><div class="score-stamp xs" aria-hidden="true"><span>10</span></div><div><strong>You're on the list</strong><span class="small">We'll email <span class="joined-email"></span> as soon as {{app}} opens.</span></div></div>
+          <p class="msg" aria-live="polite"></p>
+        </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 {{app}}</p>
+    <p>Photos from Unsplash. The people, trips, places to stay and restaurants shown are examples.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Waitlist: saved in the app's database through join_waitlist() (anyone can add, nobody can read the list).
+  const URL = '{{supabaseUrl}}/rest/v1/rpc/join_waitlist';
+  const KEY = '{{supabaseKey}}';
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const forms = Array.from(document.querySelectorAll('form.wl'));
+  function message(form, text, kind) {
+    const m = form.querySelector('.msg');
+    m.textContent = text || '';
+    m.className = 'msg' + (kind ? ' ' + kind : '');
+  }
+  function showJoined(email) {
+    forms.forEach(function (f) {
+      f.classList.add('joined');
+      f.querySelector('.joined-email').textContent = email;
+      message(f, '');
+    });
+  }
+  try { const saved = localStorage.getItem('waitlist-email'); if (saved) showJoined(saved); } catch (e) {}
+  forms.forEach(function (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const input = form.querySelector('input[type="email"]');
+      const email = input.value.trim().toLowerCase();
+      if (!EMAIL.test(email)) { message(form, 'Please enter a full email address, like you@example.com.', 'err'); input.focus(); return; }
+      const button = form.querySelector('button');
+      button.disabled = true; message(form, 'Adding you…');
+      try {
+        const res = await fetch(URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: 'Bearer ' + KEY },
+          body: JSON.stringify({ p_email: email, p_source: form.dataset.place || 'website' }),
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(function () { return {}; });
+          throw new Error(body.message || 'failed');
+        }
+        try { localStorage.setItem('waitlist-email', email); } catch (e2) {}
+        showJoined(email);
+      } catch (err) {
+        const text = err && err.message && err.message !== 'failed' && err.message.length < 120 ? err.message : "That didn't go through. Please check your connection and try again.";
+        message(form, text, 'err');
+      } finally { button.disabled = false; }
+    });
+  });
+})();
+</script>
+</body>
+</html>

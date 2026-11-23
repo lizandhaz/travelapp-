@@ -232,6 +232,12 @@ src/
 supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)
 supabase/config.toml      Settings for the Supabase command-line tool (used by the GitHub job)
 .github/workflows/supabase-database.yml   On merge to main: applies new database files to Supabase
+.github/workflows/website.yml             On merge to main (website/** or brand.json): builds and publishes the landing page to GitHub Pages
+website/                  The landing page (owner, Nov 2026): index.html (writes {{app}} for the name, filled from brand.json by build.mjs,
+                          plus the public Supabase URL/key from src/lib/config.ts), img/ (people-free Unsplash photos), favicon.png.
+                          Light only, the app's oat milk + the owner's coastal palette (sage, dusty blue, champagne) + blush score badges.
+                          The waitlist form calls join_waitlist(). Examples on the page use made-up hotels/restaurants (never invented
+                          scores for real businesses) and no photos of recognisable people. `node website/build.mjs` builds _site/
 docs/plan.md              Step-by-step plan
 ```
 
@@ -278,6 +284,7 @@ docs/plan.md              Step-by-step plan
   - `board_items.kind` (place default, or stay/eat/do/gem) with `parent_name`/`parent_slug` (the place a spot is in); `boards.cover` (an app photo name; updatable with name and visibility). Taste and the travel map only use `kind = 'place'` (`placesOn`).
   - `board_items.share_id`: `share_wish_item(p_item, p_users[])` (your Want to go item; only people you follow who follow you back; up to 20) adds a copy to each person's Want to go with the same share_id; `my_shared_wishes()` gives the other names ("With Maya"). Removing yours leaves theirs.
 - **Followers see trips and boards** (Step C, `20261128120000_followers_see_trips.sql`, owner Nov 2026): read-only SELECT policies so accepted followers see your Followers trips (+ trip_stops, stays, food_picks, top_tips, the destinations on them) and Followers boards (+ items), via security-definer helpers `i_follow()`, `can_see_trip()`, `can_see_board()`. Storage: `can_see_photo()` lets them open photos on those trips and the profile picture of anyone they follow or who follows them (accepted). `my_people()` gives names, handles and avatar paths of accepted follows either way. **Because of this, "my" queries must filter by owner**: `fetchMyTrips`, `fetchBoards` and `ensureWishList` use `.eq('owner_id', myUserId())` (lib/supabase.ts). `lib/friendsFeed.ts` loads followed people's trips for Home (newest first; the sample feed shows until there are any) and `useFriendTrip(id)` loads one (sample id or a real trip's uuid) for postcard/[id], friend-trip/[id] and Saved. Likes and comments are still kept on the phone.
+- **Waitlist** (`20261129120000_waitlist.sql`): `waitlist` (email, unique ignoring case/spaces; source; created_at). RLS on with no grants or policies, so nobody can read or write it directly; signed-out visitors and users add an email only via `join_waitlist(p_email, p_source)` (security definer, checks the email, ignores repeats, at most 30 new sign-ups a minute). The owner reads it in the Supabase dashboard → Table Editor → waitlist.
 - **Place views** (`20261124120000_place_views.sql`): `place_views` (owner_id + place_slug, views, seconds, first/last viewed). Owner-only: select and delete directly; recording only via `record_place_view(slug, name, country, seconds)` (security definer, own row only, at most 600 s a visit). The place page records a visit when you leave it (3 s minimum, `lib/views.ts`). Settings → Your matches: "Use the places I look at" (stored on the phone; off = nothing recorded or used) and "Clear the places I've looked at". Mention viewing history in the privacy policy (plan Step J).
 - **Testing without Supabase access:** run `npx expo start --web`, and in Playwright use `page.route('https://<project>.supabase.co/**', …)` to stand in for `/auth/v1/otp`, `/auth/v1/verify` and `/rest/v1/...`. This exercises the real supabase-js code.
 

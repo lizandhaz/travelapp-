@@ -236,7 +236,8 @@ supabase/config.toml      Settings for the Supabase command-line tool (used by t
 website/                  The landing page (owner, Nov 2026): index.html (writes {{app}} for the name, filled from brand.json by build.mjs,
                           plus the public Supabase URL/key from src/lib/config.ts), img/ (people-free Unsplash photos), favicon.png.
                           Light only, the app's oat milk + the owner's coastal palette (sage, dusty blue, champagne) + blush score badges.
-                          The waitlist form calls join_waitlist(). Examples on the page use made-up hotels/restaurants (never invented
+                          The waitlist form calls join_waitlist(). The Boards section's chips (Want to go, Beach resorts, Food trips, Winter sun,
+                          City breaks, Ski trips) switch the moodboard's photos (img/board-*.jpg). Examples on the page use made-up hotels/restaurants (never invented
                           scores for real businesses) and no photos of recognisable people. `node website/build.mjs` builds _site/
 docs/plan.md              Step-by-step plan
 ```

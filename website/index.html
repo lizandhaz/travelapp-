@@ -345,7 +345,7 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
       <div class="stage" aria-label="An example postcard: Maya's trip to Lake Como, rated 9.4">
         <div class="card-front stamp-frame">
           <div class="inner">
-            <img src="img/own-como-varenna.jpg" alt="Varenna on Lake Como">
+            <img src="img/own-como-sunset.jpg" alt="Lake Como at sunset">
             <div class="shade"></div>
             <div class="score-stamp" aria-label="9.4 out of 10"><span>9.4</span></div>
             <div class="greet"><p class="label">Greetings from</p><h3>Lake Como</h3></div>
@@ -448,7 +448,7 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
         <figure class="pc-side" style="margin:0">
           <figcaption class="label">The front</figcaption>
           <div class="pc pc-front">
-            <img src="img/own-como-sunset.jpg" alt="Lake Como at sunset" loading="lazy">
+            <img src="img/own-como-varenna.jpg" alt="Varenna on Lake Como" loading="lazy">
             <div class="shade"></div>
             <div class="frame"></div>
             <div class="score-stamp" aria-label="Rated 9.2 out of 10"><span>9.2</span></div>
@@ -465,7 +465,7 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
                 <span class="region">Italy</span><br>
                 <span class="month">SEP 2026</span>
               </div>
-              <div class="photo-stamp"><img src="img/own-como-varenna.jpg" alt="" loading="lazy"></div>
+              <div class="photo-stamp"><img src="img/own-como-garden.jpg" alt="" loading="lazy"></div>
             </div>
             <div class="split">
               <div class="words">
@@ -499,7 +499,6 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
       </div>
       <div class="mood" aria-label="An example board of saved places">
         <figure><img src="img/own-tuscany.jpg" alt="Vineyards and olive groves in Tuscany" loading="lazy"><figcaption>Tuscany</figcaption></figure>
-        <figure><img src="img/own-venice-canal.jpg" alt="The Grand Canal in Venice" loading="lazy"><figcaption>Venice</figcaption></figure>
         <figure><img src="img/own-cyprus-bridge.jpg" alt="A rock arch over clear water in Cyprus" loading="lazy"><figcaption>Cyprus</figcaption></figure>
         <figure><img src="img/own-mallorca.jpg" alt="A cove in Mallorca at dusk" loading="lazy"><figcaption>Mallorca</figcaption></figure>
         <figure><img src="img/own-como-varenna.jpg" alt="Varenna on Lake Como" loading="lazy"><figcaption>Varenna, Lake Como</figcaption></figure>
@@ -646,8 +645,8 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
 <script>
 (function () {
   // Example boards: tap a chip to show that board's places (Want to go is the moodboard already on the page).
-  const PICS = {"cabin-1": "img/board-cabin-1.jpg", "chalet-1": "img/board-chalet-1.jpg", "chamonix-1": "img/board-chamonix-1.jpg", "courchevel-1": "img/board-courchevel-1.jpg", "valthorens-1": "img/board-valthorens-1.jpg", "verbier-1": "img/board-verbier-1.jpg", "own-zurich": "img/own-zurich.jpg", "own-algarve": "img/own-algarve.jpg", "own-singapore": "img/own-singapore.jpg", "own-venice-canal": "img/own-venice-canal.jpg", "own-paris-eiffel": "img/own-paris-eiffel.jpg", "own-paris-tuileries": "img/own-paris-tuileries.jpg", "own-costa-brava": "img/own-costa-brava.jpg", "own-tenerife": "img/own-tenerife.jpg", "own-new-york": "img/own-new-york.jpg", "own-milan": "img/own-milan.jpg", "own-mallorca": "img/own-mallorca.jpg", "own-heidelberg": "img/own-heidelberg.jpg", "own-dubai": "img/own-dubai.jpg", "own-oxford": "img/own-oxford.jpg", "own-kitzbuehel": "img/own-kitzbuehel.jpg", "own-singapore-temple": "img/own-singapore-temple.jpg", "own-cyprus-bridge": "img/own-cyprus-bridge.jpg", "own-cyprus-beach-bar": "img/own-cyprus-beach-bar.jpg", "own-cyprus-beach": "img/own-cyprus-beach.jpg", "own-cyprus-water": "img/own-cyprus-water.jpg", "own-olive-garden": "img/own-olive-garden.jpg"};
-  const BOARDS = {"Want to go": null, "Beach resorts": [["own-cyprus-bridge", "Cyprus"], ["own-cyprus-beach", "Beach days, Cyprus"], ["own-mallorca", "Mallorca"], ["own-cyprus-beach-bar", "Beach bars, Cyprus"], ["own-costa-brava", "Costa Brava"], ["own-olive-garden", "Villa lunches"], ["own-tenerife", "Tenerife"], ["own-cyprus-water", "Clear water, Cyprus"]], "Winter sun": [["own-tenerife", "Tenerife"], ["own-dubai", "Dubai"], ["own-cyprus-water", "Cyprus"], ["own-algarve", "The Algarve"], ["own-singapore-temple", "Singapore"], ["own-cyprus-beach-bar", "Cyprus beach bars"]], "City breaks": [["own-paris-eiffel", "Paris"], ["own-new-york", "New York"], ["own-venice-canal", "Venice"], ["own-heidelberg", "Heidelberg"], ["own-milan", "Milan"], ["own-oxford", "Oxford"], ["own-singapore", "Singapore"], ["own-zurich", "Zurich"], ["own-paris-tuileries", "The Tuileries, Paris"], ["own-singapore-temple", "Chinatown, Singapore"]], "Ski trips": [["own-kitzbuehel", "Kitzb\u00fchel"], ["chalet-1", "Chalet weeks"], ["verbier-1", "Verbier"], ["courchevel-1", "Courchevel"], ["valthorens-1", "Val Thorens"], ["chamonix-1", "Chamonix"], ["cabin-1", "Mountain lakes"]]};
+  const PICS = {"cabin-1": "img/board-cabin-1.jpg", "chalet-1": "img/board-chalet-1.jpg", "chamonix-1": "img/board-chamonix-1.jpg", "courchevel-1": "img/board-courchevel-1.jpg", "valthorens-1": "img/board-valthorens-1.jpg", "verbier-1": "img/board-verbier-1.jpg", "own-zurich": "img/own-zurich.jpg", "own-algarve": "img/own-algarve.jpg", "own-singapore": "img/own-singapore.jpg", "own-paris-eiffel": "img/own-paris-eiffel.jpg", "own-paris-tuileries": "img/own-paris-tuileries.jpg", "own-costa-brava": "img/own-costa-brava.jpg", "own-tenerife": "img/own-tenerife.jpg", "own-new-york": "img/own-new-york.jpg", "own-milan": "img/own-milan.jpg", "own-mallorca": "img/own-mallorca.jpg", "own-heidelberg": "img/own-heidelberg.jpg", "own-dubai": "img/own-dubai.jpg", "own-oxford": "img/own-oxford.jpg", "own-kitzbuehel": "img/own-kitzbuehel.jpg", "own-singapore-temple": "img/own-singapore-temple.jpg", "own-cyprus-bridge": "img/own-cyprus-bridge.jpg", "own-cyprus-beach-bar": "img/own-cyprus-beach-bar.jpg", "own-cyprus-beach": "img/own-cyprus-beach.jpg", "own-cyprus-water": "img/own-cyprus-water.jpg", "own-olive-garden": "img/own-olive-garden.jpg"};
+  const BOARDS = {"Want to go": null, "Beach resorts": [["own-cyprus-bridge", "Cyprus"], ["own-cyprus-beach", "Beach days, Cyprus"], ["own-mallorca", "Mallorca"], ["own-cyprus-beach-bar", "Beach bars, Cyprus"], ["own-costa-brava", "Costa Brava"], ["own-olive-garden", "Villa lunches"], ["own-tenerife", "Tenerife"], ["own-cyprus-water", "Clear water, Cyprus"]], "Winter sun": [["own-tenerife", "Tenerife"], ["own-dubai", "Dubai"], ["own-cyprus-water", "Cyprus"], ["own-algarve", "The Algarve"], ["own-singapore-temple", "Singapore"], ["own-cyprus-beach-bar", "Cyprus beach bars"]], "City breaks": [["own-paris-eiffel", "Paris"], ["own-new-york", "New York"], ["own-heidelberg", "Heidelberg"], ["own-milan", "Milan"], ["own-oxford", "Oxford"], ["own-singapore", "Singapore"], ["own-zurich", "Zurich"], ["own-paris-tuileries", "The Tuileries, Paris"], ["own-singapore-temple", "Chinatown, Singapore"]], "Ski trips": [["own-kitzbuehel", "Kitzb\u00fchel"], ["chalet-1", "Chalet weeks"], ["verbier-1", "Verbier"], ["courchevel-1", "Courchevel"], ["valthorens-1", "Val Thorens"], ["chamonix-1", "Chamonix"], ["cabin-1", "Mountain lakes"]]};
   const mood = document.querySelector('.mood');
   const count = document.querySelector('.board-count');
   const chips = Array.from(document.querySelectorAll('.board-chips button'));

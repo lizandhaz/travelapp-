@@ -25,7 +25,7 @@
 
 .joined-star { width: 30px; height: 30px; color: var(--accent); flex: none; }
 
-.mood figcaption { right: 8px; max-width: max-content; line-height: 1.3; }
+.mood figcaption { right: 8px; max-width: max-content; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>
 <style>
 /* Layout: a rack of postcards. A split hero (words left, a stamped postcard right), then bands of the coastal palette, each holding one idea.
@@ -235,9 +235,10 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
 
 /* Boards: a masonry moodboard */
 .boards-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center; }
-.mood { columns: 3; column-gap: 10px; }
-.mood figure { margin: 0 0 10px; break-inside: avoid; position: relative; border-radius: 14px; overflow: hidden; }
-.mood img { width: 100%; display: block; }
+.mood { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.mood figure { margin: 0; position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 5; }
+.mood figure:nth-child(n+10) { display: none; } /* a tidy 3 × 3; the count still says how many are saved */
+.mood img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .mood figcaption { position: absolute; left: 8px; bottom: 8px; background: rgba(255,255,255,0.94); color: #353b2c; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 600; }
 .board-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
 .board-chips span { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 7px 14px; font-size: 14px; font-weight: 500; }
@@ -250,9 +251,11 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
 @media (max-width: 1000px) { .picks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 860px) {
   .boards-grid { grid-template-columns: 1fr; gap: 32px; }
-  .mood { columns: 2; }
+  .mood figure { aspect-ratio: 1; }
 }
 @media (max-width: 560px) {
+  .mood { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mood figure:nth-child(n+9) { display: none; }
   .picks { grid-template-columns: 1fr; }
 }
 
@@ -502,16 +505,16 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
         <figure><img src="img/own-tuscany.jpg" alt="Vineyards and olive groves in Tuscany" loading="lazy"><figcaption>Tuscany</figcaption></figure>
         <figure><img src="img/own-safari-cheetahs.jpg" alt="Two cheetahs on a termite mound" loading="lazy"><figcaption>South Africa</figcaption></figure>
         <figure><img src="img/own-cyprus-bridge.jpg" alt="A rock arch over clear water in Cyprus" loading="lazy"><figcaption>Cyprus</figcaption></figure>
-        <figure><img src="img/own-canada.jpg" alt="A red canoe on Lake Louise below a glacier, Canada" loading="lazy"><figcaption>Lake Louise, Canada</figcaption></figure>
+        <figure><img src="img/own-canada.jpg" alt="A red canoe on Lake Louise below a glacier, Canada" loading="lazy"><figcaption>Lake Louise</figcaption></figure>
+        <figure><img src="img/own-tuna-tartare.jpg" alt="Tuna tartare with crisp crackers and a chilli slice" loading="lazy"><figcaption>Tuna tartare</figcaption></figure>
         <figure><img src="img/own-mallorca.jpg" alt="A cove in Mallorca at dusk" loading="lazy"><figcaption>Mallorca</figcaption></figure>
-        <figure><img src="img/own-como-varenna.jpg" alt="Varenna on Lake Como" loading="lazy"><figcaption>Varenna, Lake Como</figcaption></figure>
+        <figure><img src="img/own-corfu-villa.jpg" alt="Sunloungers and parasols by a villa pool in Corfu" loading="lazy"><figcaption>Corfu villa</figcaption></figure>
+        <figure><img src="img/own-safari-balloons.jpg" alt="Hot-air balloons over the bush at sunrise" loading="lazy"><figcaption>Balloon ride</figcaption></figure>
+        <figure><img src="img/own-como-varenna.jpg" alt="Varenna on Lake Como" loading="lazy"><figcaption>Varenna</figcaption></figure>
         <figure><img src="img/own-crete.jpg" alt="A shaded terrace above the sea in Crete" loading="lazy"><figcaption>Crete</figcaption></figure>
-        <figure><img src="img/own-safari-drive.jpg" alt="A game drive by the river at sunset, South Africa" loading="lazy"><figcaption>Sunset game drive</figcaption></figure>
-        <figure><img src="img/own-corfu-villa.jpg" alt="Sunloungers and parasols by a villa pool in Corfu" loading="lazy"><figcaption>Villa pool, Corfu</figcaption></figure>
-        <figure><img src="img/own-corfu-table.jpg" alt="A table for two looking out to sea in Corfu" loading="lazy"><figcaption>Lunch with a view, Corfu</figcaption></figure>
-        <figure><img src="img/own-olive-garden.jpg" alt="A long table under olive trees" loading="lazy"><figcaption>Lunch under the olives</figcaption></figure>
-        <figure><img src="img/own-tuna-tartare.jpg" alt="Tuna tartare with crisp crackers and a chilli slice" loading="lazy"><figcaption>Tuna tartare, a lunch to remember</figcaption></figure>
-        <figure><img src="img/own-safari-balloons.jpg" alt="Hot-air balloons over the bush at sunrise" loading="lazy"><figcaption>Sunrise balloon ride</figcaption></figure>
+        <figure><img src="img/own-safari-drive.jpg" alt="A game drive by the river at sunset, South Africa" loading="lazy"><figcaption>Game drive</figcaption></figure>
+        <figure><img src="img/own-corfu-table.jpg" alt="A table for two looking out to sea in Corfu" loading="lazy"><figcaption>Lunch in Corfu</figcaption></figure>
+        <figure><img src="img/own-olive-garden.jpg" alt="A long table under olive trees" loading="lazy"><figcaption>Olive grove lunch</figcaption></figure>
         <figure><img src="img/own-tenerife.jpg" alt="The coast of Tenerife" loading="lazy"><figcaption>Tenerife</figcaption></figure>
         <figure><img src="img/own-costa-brava.jpg" alt="A pine-framed bay on the Costa Brava" loading="lazy"><figcaption>Costa Brava</figcaption></figure>
         <figure><img src="img/own-val-disere.jpg" alt="Ski slopes above Val d'Isère" loading="lazy"><figcaption>Val d'Isère</figcaption></figure>
@@ -652,7 +655,7 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
 (function () {
   // Example boards: tap a chip to show that board's places (Want to go is the moodboard already on the page).
   const PICS = {"cabin-1": "img/board-cabin-1.jpg", "chalet-1": "img/board-chalet-1.jpg", "chamonix-1": "img/board-chamonix-1.jpg", "courchevel-1": "img/board-courchevel-1.jpg", "valthorens-1": "img/board-valthorens-1.jpg", "verbier-1": "img/board-verbier-1.jpg", "own-zurich": "img/own-zurich.jpg", "own-algarve": "img/own-algarve.jpg", "own-singapore": "img/own-singapore.jpg", "own-paris-eiffel": "img/own-paris-eiffel.jpg", "own-paris-tuileries": "img/own-paris-tuileries.jpg", "own-costa-brava": "img/own-costa-brava.jpg", "own-tenerife": "img/own-tenerife.jpg", "own-new-york": "img/own-new-york.jpg", "own-milan": "img/own-milan.jpg", "own-mallorca": "img/own-mallorca.jpg", "own-dubai": "img/own-dubai.jpg", "own-oxford": "img/own-oxford.jpg", "own-kitzbuehel": "img/own-kitzbuehel.jpg", "own-singapore-temple": "img/own-singapore-temple.jpg", "own-cyprus-bridge": "img/own-cyprus-bridge.jpg", "own-cyprus-beach-bar": "img/own-cyprus-beach-bar.jpg", "own-cyprus-beach": "img/own-cyprus-beach.jpg", "own-cyprus-water": "img/own-cyprus-water.jpg", "own-olive-garden": "img/own-olive-garden.jpg", "own-safari-giraffes": "img/own-safari-giraffes.jpg", "own-sea-pool": "img/own-sea-pool.jpg", "own-canada": "img/own-canada.jpg", "own-crete": "img/own-crete.jpg", "own-safari-balloons": "img/own-safari-balloons.jpg", "own-bath": "img/own-bath.jpg", "own-val-disere": "img/own-val-disere.jpg", "own-safari-cheetahs": "img/own-safari-cheetahs.jpg", "own-safari-drive": "img/own-safari-drive.jpg", "own-canada-lake": "img/own-canada-lake.jpg", "own-corfu": "img/own-corfu.jpg", "own-corfu-villa": "img/own-corfu-villa.jpg", "own-corfu-table": "img/own-corfu-table.jpg"};
-  const BOARDS = {"Want to go": null, "Beach resorts": [["own-cyprus-bridge", "Cyprus"], ["own-corfu-villa", "Villa pool, Corfu"], ["own-corfu", "Corfu"], ["own-cyprus-beach", "Beach days, Cyprus"], ["own-mallorca", "Mallorca"], ["own-cyprus-beach-bar", "Beach bars, Cyprus"], ["own-crete", "Crete"], ["own-sea-pool", "Pool with a sea view"], ["own-costa-brava", "Costa Brava"], ["own-olive-garden", "Villa lunches"], ["own-tenerife", "Tenerife"], ["own-cyprus-water", "Clear water, Cyprus"], ["own-corfu-table", "Lunch with a view, Corfu"]], "Winter sun": [["own-tenerife", "Tenerife"], ["own-safari-giraffes", "Safari, South Africa"], ["own-safari-balloons", "Sunrise balloon ride"], ["own-safari-drive", "Sunset game drive"], ["own-dubai", "Dubai"], ["own-cyprus-water", "Cyprus"], ["own-safari-cheetahs", "Cheetahs on safari"], ["own-algarve", "The Algarve"], ["own-singapore-temple", "Singapore"], ["own-cyprus-beach-bar", "Cyprus beach bars"]], "City breaks": [["own-paris-eiffel", "Paris"], ["own-new-york", "New York"], ["own-bath", "Bath"], ["own-milan", "Milan"], ["own-oxford", "Oxford"], ["own-singapore", "Singapore"], ["own-zurich", "Zurich"], ["own-paris-tuileries", "The Tuileries, Paris"], ["own-singapore-temple", "Chinatown, Singapore"]], "Ski trips": [["own-val-disere", "Val d'Is\u00e8re"], ["own-kitzbuehel", "Kitzb\u00fchel"], ["chalet-1", "Chalet weeks"], ["verbier-1", "Verbier"], ["courchevel-1", "Courchevel"], ["valthorens-1", "Val Thorens"], ["chamonix-1", "Chamonix"], ["cabin-1", "Mountain lakes"]]};
+  const BOARDS = {"Want to go": null, "Beach resorts": [["own-cyprus-bridge", "Cyprus"], ["own-corfu-villa", "Corfu villa"], ["own-corfu", "Corfu"], ["own-cyprus-beach", "Cyprus beaches"], ["own-mallorca", "Mallorca"], ["own-cyprus-beach-bar", "Beach bars"], ["own-crete", "Crete"], ["own-sea-pool", "Sea-view pool"], ["own-costa-brava", "Costa Brava"], ["own-olive-garden", "Villa lunches"], ["own-tenerife", "Tenerife"], ["own-cyprus-water", "Cyprus coves"], ["own-corfu-table", "Lunch in Corfu"]], "Winter sun": [["own-tenerife", "Tenerife"], ["own-safari-giraffes", "Safari"], ["own-safari-balloons", "Balloon ride"], ["own-safari-drive", "Game drive"], ["own-dubai", "Dubai"], ["own-cyprus-water", "Cyprus"], ["own-safari-cheetahs", "Cheetahs"], ["own-algarve", "The Algarve"], ["own-singapore-temple", "Singapore"], ["own-cyprus-beach-bar", "Beach bars"]], "City breaks": [["own-paris-eiffel", "Paris"], ["own-new-york", "New York"], ["own-bath", "Bath"], ["own-milan", "Milan"], ["own-oxford", "Oxford"], ["own-singapore", "Singapore"], ["own-zurich", "Zurich"], ["own-paris-tuileries", "The Tuileries"], ["own-singapore-temple", "Chinatown"]], "Ski trips": [["own-val-disere", "Val d'Is\u00e8re"], ["own-kitzbuehel", "Kitzb\u00fchel"], ["chalet-1", "Chalet weeks"], ["verbier-1", "Verbier"], ["courchevel-1", "Courchevel"], ["valthorens-1", "Val Thorens"], ["chamonix-1", "Chamonix"], ["cabin-1", "Mountain lakes"]]};
   const mood = document.querySelector('.mood');
   const count = document.querySelector('.board-count');
   const chips = Array.from(document.querySelectorAll('.board-chips button'));

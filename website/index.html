@@ -13,7 +13,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&display=swap">
-<style>html,body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<style>html,body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+/* Board chips: tap one to see that board's places */
+.board-chips button { font: inherit; font-size: 14px; font-weight: 500; color: var(--ink); border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 8px 15px; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+.board-chips button:hover { border-color: var(--accent-deep); }
+.board-chips button[aria-pressed="true"] { background: var(--accent-deep); border-color: var(--accent-deep); color: var(--on-dark); }
+.board-count { margin-top: 12px; font-size: 14px; color: var(--muted); }
+.mood { transition: opacity .25s ease; }
+.mood.swap { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .mood { transition: none; } }
+</style>
 <style>
 /* Layout: a rack of postcards. A split hero (words left, a stamped postcard right), then bands of the coastal palette, each holding one idea.
    Palette: the owner's coastal moodboard (ivory, champagne, stone, sage, olive, dusty blue, deep ocean) with the app's blush pink for scores. */
@@ -473,7 +482,8 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
         <h2 id="boards-h" style="font-size:clamp(32px,4.4vw,50px);line-height:1.08">Save the places you <em>dream about</em></h2>
         <p>Build boards like a moodboard for your next trip: places, hotels, restaurants and things to do, all in one place. Keep a Want to go board, share a board with a friend, or invite someone to a place you both want to visit.</p>
         <p>The more you save, the better {{app}} knows what you'll love next.</p>
-        <div class="board-chips" aria-hidden="true"><span class="on">Want to go</span><span>Beach resorts</span><span>Food trips</span><span>Winter sun</span><span>City breaks</span></div>
+        <div class="board-chips" role="group" aria-label="Example boards"><button type="button" data-board="Want to go" aria-pressed="true">Want to go</button><button type="button" data-board="Beach resorts" aria-pressed="false">Beach resorts</button><button type="button" data-board="Food trips" aria-pressed="false">Food trips</button><button type="button" data-board="Winter sun" aria-pressed="false">Winter sun</button><button type="button" data-board="City breaks" aria-pressed="false">City breaks</button><button type="button" data-board="Ski trips" aria-pressed="false">Ski trips</button></div>
+        <p class="board-count" aria-live="polite">Tap a board to see what's on it.</p>
       </div>
       <div class="mood" aria-label="An example board of saved places">
         <figure><img src="img/a-white-beach-in-turks-and-caicos-23f579.jpg" alt="A white beach in Turks and Caicos" loading="lazy"><figcaption>Turks and Caicos</figcaption></figure>
@@ -617,6 +627,37 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
       } finally { button.disabled = false; }
     });
   });
+})();
+</script>
+<script>
+(function () {
+  // Example boards: tap a chip to show that board's places (Want to go is the moodboard already on the page).
+  const PICS = {"bath-1": "img/board-bath-1.jpg", "borabora-1": "img/board-borabora-1.jpg", "cabin-1": "img/board-cabin-1.jpg", "cafe-1": "img/board-cafe-1.jpg", "cambridge-1": "img/board-cambridge-1.jpg", "chalet-1": "img/board-chalet-1.jpg", "chamonix-1": "img/board-chamonix-1.jpg", "cheltenham-1": "img/board-cheltenham-1.jpg", "comporta-1": "img/board-comporta-1.jpg", "copenhagen-1": "img/board-copenhagen-1.jpg", "courchevel-1": "img/board-courchevel-1.jpg", "crete-1": "img/board-crete-1.jpg", "food-pasta": "img/board-food-pasta.jpg", "food-table": "img/board-food-table.jpg", "heidelberg-1": "img/board-heidelberg-1.jpg", "kaiseki-1": "img/board-kaiseki-1.jpg", "kyoto-1": "img/board-kyoto-1.jpg", "lemon-1": "img/board-lemon-1.jpg", "madeira-1": "img/board-madeira-1.jpg", "maldives-1": "img/board-maldives-1.jpg", "maldives-2": "img/board-maldives-2.jpg", "marrakech-1": "img/board-marrakech-1.jpg", "mauritius-1": "img/board-mauritius-1.jpg", "mykonos-1": "img/board-mykonos-1.jpg", "oxford-1": "img/board-oxford-1.jpg", "paris-2": "img/board-paris-2.jpg", "picnic-1": "img/board-picnic-1.jpg", "picnic-2": "img/board-picnic-2.jpg", "picnic-3": "img/board-picnic-3.jpg", "puglia-1": "img/board-puglia-1.jpg", "seychelles-1": "img/board-seychelles-1.jpg", "turks-1": "img/board-turks-1.jpg", "umbrellas-1": "img/board-umbrellas-1.jpg", "valthorens-1": "img/board-valthorens-1.jpg", "verbier-1": "img/board-verbier-1.jpg", "villa-1": "img/board-villa-1.jpg", "zanzibar-1": "img/board-zanzibar-1.jpg"};
+  const BOARDS = {"Want to go": null, "Beach resorts": [["maldives-2", "Water villas, Maldives"], ["borabora-1", "Bora Bora"], ["seychelles-1", "La Digue"], ["turks-1", "Turks and Caicos"], ["mauritius-1", "Mauritius"], ["villa-1", "Villa pools"], ["zanzibar-1", "Zanzibar"], ["crete-1", "Crete"], ["comporta-1", "Comporta"], ["umbrellas-1", "Beach clubs"]], "Food trips": [["food-pasta", "Long lunches, Amalfi"], ["kaiseki-1", "Kaiseki in Kyoto"], ["food-table", "Dinner with a view, Santorini"], ["picnic-1", "Market picnics"], ["lemon-1", "Lemon groves, Amalfi"], ["paris-2", "Paris caf\u00e9s"], ["picnic-3", "Vineyard picnics"], ["marrakech-1", "Riad breakfasts"], ["picnic-2", "Summer lunches"], ["cafe-1", "Caf\u00e9 stops"], ["puglia-1", "Puglia"]], "Winter sun": [["madeira-1", "Madeira"], ["mauritius-1", "Mauritius"], ["zanzibar-1", "Zanzibar"], ["maldives-1", "The Maldives"], ["marrakech-1", "Marrakech"], ["seychelles-1", "The Seychelles"], ["turks-1", "Turks and Caicos"], ["borabora-1", "Bora Bora"]], "City breaks": [["copenhagen-1", "Copenhagen"], ["kyoto-1", "Kyoto"], ["paris-2", "Paris"], ["heidelberg-1", "Heidelberg"], ["oxford-1", "Oxford"], ["bath-1", "Bath"], ["cambridge-1", "Cambridge"], ["mykonos-1", "Mykonos town"], ["cheltenham-1", "Cheltenham"]], "Ski trips": [["chalet-1", "Chalet weeks"], ["verbier-1", "Verbier"], ["courchevel-1", "Courchevel"], ["valthorens-1", "Val Thorens"], ["chamonix-1", "Chamonix"], ["cabin-1", "Mountain lakes"]]};
+  const mood = document.querySelector('.mood');
+  const count = document.querySelector('.board-count');
+  const chips = Array.from(document.querySelectorAll('.board-chips button'));
+  if (!mood || !chips.length) return;
+  const original = Array.from(mood.children).map(function (f) { return f.cloneNode(true); });
+  function show(name) {
+    chips.forEach(function (c) { c.setAttribute('aria-pressed', String(c.dataset.board === name)); });
+    mood.classList.add('swap');
+    setTimeout(function () {
+      mood.textContent = '';
+      const items = BOARDS[name];
+      if (!items) { original.forEach(function (f) { mood.appendChild(f.cloneNode(true)); }); }
+      else items.forEach(function (it) {
+        const fig = document.createElement('figure');
+        const img = document.createElement('img'); img.src = PICS[it[0]]; img.alt = it[1]; img.loading = 'lazy';
+        const cap = document.createElement('figcaption'); cap.textContent = it[1];
+        fig.appendChild(img); fig.appendChild(cap); mood.appendChild(fig);
+      });
+      mood.setAttribute('aria-label', name + ': an example board');
+      count.textContent = name + ' · ' + mood.children.length + ' saved places';
+      mood.classList.remove('swap');
+    }, 180);
+  }
+  chips.forEach(function (c) { c.addEventListener('click', function () { show(c.dataset.board); }); });
 })();
 </script>
 </body>

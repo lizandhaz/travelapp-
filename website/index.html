@@ -22,6 +22,8 @@
 .mood { transition: opacity .25s ease; }
 .mood.swap { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .mood { transition: none; } }
+
+.joined-star { width: 30px; height: 30px; color: var(--accent); flex: none; }
 </style>
 <style>
 /* Layout: a rack of postcards. A split hero (words left, a stamped postcard right), then bands of the coastal palette, each holding one idea.
@@ -334,7 +336,7 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
             <button type="submit">Join the waitlist</button>
           </div>
           <p class="note">Free to join · We'll only use your email to tell you when {{app}} opens. To be removed, just reply to that email.</p>
-          <div class="joined-card" role="status"><div class="score-stamp xs" aria-hidden="true"><span>10</span></div><div><strong>You're on the list</strong><span class="small">We'll email <span class="joined-email"></span> as soon as {{app}} opens.</span></div></div>
+          <div class="joined-card" role="status"><svg class="joined-star" aria-hidden="true"><use href="#star"/></svg><div><strong>Thank you, you're on the list!</strong><span class="small">We'll email <span class="joined-email"></span> as soon as {{app}} opens.</span></div></div>
           <p class="msg" aria-live="polite"></p>
         </form>
       </div>
@@ -568,7 +570,7 @@ footer .wrap { display: grid; gap: 10px; font-size: 13px; color: var(--muted); }
             <button type="submit">Join the waitlist</button>
           </div>
           <p class="note">Free to join · We'll only use your email to tell you when {{app}} opens. To be removed, just reply to that email.</p>
-          <div class="joined-card" role="status"><div class="score-stamp xs" aria-hidden="true"><span>10</span></div><div><strong>You're on the list</strong><span class="small">We'll email <span class="joined-email"></span> as soon as {{app}} opens.</span></div></div>
+          <div class="joined-card" role="status"><svg class="joined-star" aria-hidden="true"><use href="#star"/></svg><div><strong>Thank you, you're on the list!</strong><span class="small">We'll email <span class="joined-email"></span> as soon as {{app}} opens.</span></div></div>
           <p class="msg" aria-live="polite"></p>
         </form>
     </div>

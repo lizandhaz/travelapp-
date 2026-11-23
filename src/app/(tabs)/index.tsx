@@ -49,7 +49,11 @@ export default function Home() {
         .map((p) => ({ slug: p.slug, name: p.name, sub: p.region, photo: p.photo, r: t.forSlug(p.slug)! }))
         .sort((a, b) => rankValue(b.r) - rankValue(a.r))
         .slice(0, 8)
-    : rows.picked.map((p) => ({ slug: p.slug, name: p.name, sub: p.sub, photo: p.photo, r: t.forSlug(p.slug) }));
+        // Shown highest score first (owner, Nov 2026); the best matches above are the ones chosen.
+        .sort((a, b) => b.r.score - a.r.score)
+    : rows.picked
+        .map((p) => ({ slug: p.slug, name: p.name, sub: p.sub, photo: p.photo, r: t.forSlug(p.slug) }))
+        .sort((a, b) => (b.r?.score ?? 0) - (a.r?.score ?? 0));
 
   const collections = useMemo(
     () =>

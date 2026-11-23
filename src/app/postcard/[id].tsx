@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Dimensions, View } from 'react-native';
+import { ActivityIndicator, Dimensions, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { PostcardCard } from '@/components/PostcardCard';
@@ -8,9 +8,10 @@ import { Row } from '@/components/cards';
 import { PhotoTile } from '@/components/Photo';
 import { TripActions } from '@/components/TripActions';
 import { BackButton, Button, PageTitle, Screen, SectionHeader } from '@/components/ui';
-import { GUTTER } from '@/constants/theme';
+import { colors, GUTTER } from '@/constants/theme';
 import { getPostcard } from '@/lib/postcards';
-import { getFriendTrip, tripPlace } from '@/lib/friendTrips';
+import { photoCount, tripPic, tripPlace } from '@/lib/friendTrips';
+import { useFriendTrip } from '@/lib/friendsFeed';
 import NotFound from '../+not-found';
 
 /**
@@ -21,8 +22,11 @@ import NotFound from '../+not-found';
 export default function PostcardScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [flipped, setFlipped] = useState(false);
-  const trip = getPostcard(id)?.trip ?? getFriendTrip(id);
-  if (!trip) return <NotFound />;
+  const fromPostcard = getPostcard(id)?.trip ?? null;
+  const loaded = useFriendTrip(fromPostcard ? undefined : id);
+  const trip = fromPostcard ?? loaded.trip;
+  if (!trip) return loaded.loading ? <Loading /> : <NotFound />;
+  const pics = Array.from({ length: photoCount(trip) }, (_, i) => tripPic(trip, i)!);
   const width = Math.min(Dimensions.get('window').width, 480) - GUTTER * 2;
 
   return (
@@ -35,18 +39,18 @@ export default function PostcardScreen() {
       </PageTitle>
       <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
         <PostcardCard trip={trip} width={width} flipped={flipped} onFlip={() => setFlipped((f) => !f)} />
-        {trip.photos.length > 0 && <Button title={flipped ? 'See the front' : 'Turn over'} kind="outline" onPress={() => setFlipped((f) => !f)} />}
+        {pics.length > 0 && <Button title={flipped ? 'See the front' : 'Turn over'} kind="outline" onPress={() => setFlipped((f) => !f)} />}
         <View style={{ paddingTop: 6, paddingHorizontal: 4 }}>
-          <TripActions id={trip.id} who={trip.who} place={trip.place} slug={trip.slug} />
+          <TripActions id={trip.id} who={trip.who} place={trip.place} slug={trip.slug} country={trip.country} />
         </View>
       </View>
 
-      {trip.photos.length > 0 && (
+      {pics.length > 0 && (
         <View style={{ marginTop: 26 }}>
           <SectionHeader>{`${trip.who}’s photos`}</SectionHeader>
           <Row gap={12}>
-            {trip.photos.map((p) => (
-              <PhotoTile key={p} photo={p} style={{ width: Math.round(width * 0.78), height: Math.round(width * 0.98) }} shade={false} />
+            {pics.map((p, i) => (
+              <PhotoTile key={i} {...p} style={{ width: Math.round(width * 0.78), height: Math.round(width * 0.98) }} shade={false} />
             ))}
           </Row>
         </View>
@@ -54,7 +58,18 @@ export default function PostcardScreen() {
 
       <View style={{ paddingHorizontal: GUTTER, gap: 12, marginTop: 26 }}>
         <Button title={`See ${trip.who}’s whole trip`} kind="dark" onPress={() => router.push(`/friend-trip/${trip.id}`)} />
-        <Button title={`More about ${trip.place}`} kind="outline" onPress={() => router.push(`/place/${trip.slug}`)} />
+        {!!trip.slug && <Button title={`More about ${trip.place}`} kind="outline" onPress={() => router.push(`/place/${trip.slug}`)} />}
+      </View>
+    </Screen>
+  );
+}
+
+function Loading() {
+  return (
+    <Screen>
+      <View style={{ paddingHorizontal: GUTTER, paddingTop: 12, gap: 40 }}>
+        <BackButton />
+        <ActivityIndicator color={colors.accent} />
       </View>
     </Screen>
   );

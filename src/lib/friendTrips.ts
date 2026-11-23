@@ -23,11 +23,26 @@ export type FriendTrip = {
   companions: Companions | null;
   nights: number | null;
   photos: PhotoName[];
+  /** A real trip's photos (private links), used instead of `photos`. */
+  photoUrls?: string[];
+  /** A real trip's country (sample trips use the place's). */
+  country?: string;
+  /** A real person's profile picture (private link), used instead of `face`. */
+  faceUrl?: string | null;
   stay: { name: string; type: string; score: number | null; sub: string | null; photo: PhotoName | null } | null;
   eats: PlaceDetail['eats'];
   dos: PlaceDetail['dos'];
   tips: PlaceDetail['tips'];
 };
+
+/** How many photos a trip has (sample or real). */
+export const photoCount = (t: FriendTrip) => t.photoUrls?.length ?? t.photos.length;
+
+/** Photo i of a trip, as props for PhotoFill / PhotoTile / PhotoStamp: { photo } or { uri }, or null. */
+export function tripPic(t: FriendTrip, i: number): { photo?: PhotoName; uri?: string } | null {
+  if (t.photoUrls) return t.photoUrls[i] ? { uri: t.photoUrls[i] } : null;
+  return t.photos[i] ? { photo: t.photos[i] } : null;
+}
 
 export const tripId = (who: string, slug: string) => `${who}-${slug}`.toLowerCase();
 export const friendTripId = (f: { who: string; slug: string }) => tripId(f.who, f.slug);

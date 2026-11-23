@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Animated, Pressable, View } from 'react-native';
 
 import { colors, fonts, radius } from '@/constants/theme';
-import { companionsLabel, tripPlace, type FriendTrip } from '@/lib/friendTrips';
+import { companionsLabel, tripPic, tripPlace, type FriendTrip } from '@/lib/friendTrips';
 import { fitLines, fitWordSize } from '@/lib/fit';
 import { scoreWord } from '@/lib/score';
 import { MonthPill } from './MonthPill';
@@ -20,7 +20,7 @@ import { Text } from './Text';
 export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTrip; width: number; flipped: boolean; onFlip: () => void }) {
   // The back sets the card's height (so a half-filled postcard is shorter); the front fills the same space.
   const minHeight = Math.round(width * 0.82);
-  const backOnly = !trip.photos[0];
+  const backOnly = !tripPic(trip, 0);
   const showBack = backOnly || flipped;
   const [turn] = useState(() => new Animated.Value(backOnly ? 1 : 0));
   useEffect(() => {
@@ -35,12 +35,12 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
   const nights = trip.nights ? `${trip.nights} ${trip.nights === 1 ? 'night' : 'nights'}` : null;
   const ate = trip.eats[0]?.name ?? null;
   const tip = trip.tips[0]?.tip ?? null;
-  const front = trip.photos[0] ?? null;
+  const front = tripPic(trip, 0);
   const nameSize = fitWordSize(trip.place, width - 52, 46, 28);
-  const stamp = trip.photos[1] ?? trip.photos[0] ?? null;
+  const stamp = tripPic(trip, 1) ?? tripPic(trip, 0);
   const hasWords = !!trip.quote || !!tip;
   // No words? Show a big photo on the left instead (if there is one).
-  const leftPhoto = !hasWords ? (trip.photos[2] ?? trip.photos[1] ?? trip.photos[0] ?? null) : null;
+  const leftPhoto = !hasWords ? (tripPic(trip, 2) ?? tripPic(trip, 1) ?? tripPic(trip, 0)) : null;
   const hasLeft = hasWords || !!leftPhoto;
   type DetailRow = { label: string; value: string; sub?: string; score?: number | null };
   const details: DetailRow[] = [];
@@ -72,7 +72,7 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
       {/* Front: the photo (none without photos) */}
       {!backOnly && (
       <Animated.View style={[side('0deg', '180deg', true), { position: 'absolute', inset: 0, zIndex: 1, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.sand }]}>
-        <PhotoFill photo={front!} label={trip.place} />
+        <PhotoFill {...front} label={trip.place} />
         <Shade strength={0.55} />
         <View style={{ position: 'absolute', inset: 10, borderWidth: 1.5, borderColor: colors.onDark, borderRadius: radius.sm, opacity: 0.85 }} />
         {/* Their score as the postage stamp, top right (owner, Nov 2026). */}
@@ -110,7 +110,7 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
               <MonthPill month={trip.month} />
             </View>
           </View>
-          {!!stamp && <PhotoStamp photo={stamp} width={Math.round(width * 0.29)} height={Math.round(width * 0.35)} tilt={4} />}
+          {!!stamp && <PhotoStamp {...stamp} width={Math.round(width * 0.29)} height={Math.round(width * 0.35)} tilt={4} />}
         </View>
 
         <View style={{ flexGrow: 1, flexDirection: 'row', marginTop: 18 }}>
@@ -133,7 +133,7 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
                     </Text>
                   </View>
                 )}
-                {!!leftPhoto && <PhotoTile photo={leftPhoto} style={{ flex: 1, minHeight: Math.round(width * 0.5), borderRadius: radius.sm }} shade={false} />}
+                {!!leftPhoto && <PhotoTile {...leftPhoto} style={{ flex: 1, minHeight: Math.round(width * 0.5), borderRadius: radius.sm }} shade={false} />}
               </View>
 
               {/* The line down the middle of a postcard */}

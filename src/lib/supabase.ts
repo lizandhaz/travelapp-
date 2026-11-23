@@ -21,3 +21,10 @@ if (Platform.OS !== 'web') {
     else supabase.auth.stopAutoRefresh();
   });
 }
+
+/** The signed-in person's id (null when signed out). Followers can now read some of each other's rows
+ * (plan Step C), so "my" lists filter by this rather than relying on the database showing only yours. */
+export async function myUserId(): Promise<string | null> {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.user.id ?? null;
+}

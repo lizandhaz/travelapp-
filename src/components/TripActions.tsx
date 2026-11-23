@@ -14,7 +14,7 @@ import { Button, Input } from './ui';
  * Like, comment on, or save a friend's trip (save = put the place on one of your lists).
  * The comments open in a sheet.
  */
-export function TripActions({ id, who, place, slug }: { id: string; who: string; place: string; slug: string }) {
+export function TripActions({ id, who, place, slug, country }: { id: string; who: string; place: string; slug: string; country?: string }) {
   const r = useReactions(id);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -55,7 +55,7 @@ export function TripActions({ id, who, place, slug }: { id: string; who: string;
               sub="Add the place to Want to go or one of your boards"
               onPress={() => {
                 setSaving(false);
-                router.push({ pathname: '/save', params: { place, country: sampleCountry(slug), slug } });
+                router.push({ pathname: '/save', params: { place, country: country ?? sampleCountry(slug), slug } });
               }}
             />
             <SaveOption

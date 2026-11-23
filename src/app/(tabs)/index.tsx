@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
-import { useMemo } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
 import { Dimensions, Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
@@ -16,6 +16,7 @@ import { itemCollections, placeCollections, placesIn } from '@/lib/explore';
 import { rankValue } from '@/lib/match';
 import { friendsFeed, PHOTO_CREDITS, places, rows, unreadPostcardCount } from '@/lib/sample';
 import { useTaste } from '@/lib/taste';
+import { feedItemFor, fetchFriendsTrips, type RealFriendTrip } from '@/lib/friendsFeed';
 import { fitLines, fitWordSize } from '@/lib/fit';
 
 /**
@@ -26,6 +27,19 @@ export default function Home() {
   const width = Math.min(Dimensions.get('window').width, 480);
   const t = useTaste();
   const personal = t.profile.evidence > 0;
+  // Friends' real trips, refreshed each time Home comes back into view.
+  const [realFeed, setRealFeed] = useState<RealFriendTrip[] | null>(null);
+  useFocusEffect(
+    useCallback(() => {
+      let live = true;
+      fetchFriendsTrips()
+        .then((r) => live && setRealFeed(r))
+        .catch(() => {}); // keep what we had (or the sample feed)
+      return () => {
+        live = false;
+      };
+    }, []),
+  );
 
   // Top picks: your best matches that are new to you (not been, not saved). Before we
   // know your taste, the prototype's picks.
@@ -118,10 +132,17 @@ export default function Home() {
           <AccentTitle before="From your" accent="friends" variant="heading" />
         </SectionHeader>
         <View style={{ paddingHorizontal: GUTTER, gap: 22 }}>
-          {friendsFeed.map((f) => (
-            <FeedCard key={`${f.who}-${f.place}`} item={f} />
-          ))}
-          <Text variant="tiny">Preview: these are sample trips. Your friends’ real trips arrive soon.</Text>
+          {/* Real trips from people you follow, newest first; the sample feed until there are some. */}
+          {realFeed && realFeed.length > 0 ? (
+            realFeed.map((t) => <FeedCard key={t.id} item={feedItemFor(t)} />)
+          ) : (
+            <>
+              {friendsFeed.map((f) => (
+                <FeedCard key={`${f.who}-${f.place}`} item={f} />
+              ))}
+              <Text variant="tiny">Preview: these are sample trips. When people you follow add trips for their followers, they show here instead.</Text>
+            </>
+          )}
         </View>
       </View>
 

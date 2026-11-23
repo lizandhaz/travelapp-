@@ -2,7 +2,7 @@ import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 
 import { ALL_PLACES, countryOf, plain } from './knownPlaces';
 import { places as samplePlaces } from './sample';
-import { supabase } from './supabase';
+import { myUserId, supabase } from './supabase';
 import { tasteChanged } from './tasteEvents';
 
 /**
@@ -31,6 +31,8 @@ export type TripStay = { name: string; type: StayKind; /** Optional (owner, Nov 
 
 export type Trip = {
   id: string;
+  /** Who it belongs to (you, or someone you follow). */
+  ownerId: string;
   /** "YYYY-MM" */
   month: string;
   score: number;
@@ -50,18 +52,19 @@ export type Trip = {
 };
 
 /** What the Add a trip form sends to save_trip(). */
-export type TripInput = Omit<Trip, 'id' | 'createdAt'> & { id?: string };
+export type TripInput = Omit<Trip, 'id' | 'createdAt' | 'ownerId'> & { id?: string };
 
-const TRIP_SELECT = `
-  id, trip_month, score, visibility, companions, note, photo_paths, created_at,
+export const TRIP_SELECT = `
+  id, owner_id, trip_month, score, visibility, companions, note, photo_paths, created_at,
   trip_stops ( position, nights, destinations ( name, country ) ),
   stays ( name, type, score ),
   food_picks ( name, position ),
   top_tips ( tip )
 `;
 
-type Row = {
+export type TripRow = {
   id: string;
+  owner_id: string;
   trip_month: string;
   score: number;
   visibility: Visibility;
@@ -75,7 +78,7 @@ type Row = {
   top_tips: { tip: string }[] | null;
 };
 
-function fromRow(r: Row): Trip {
+export function fromRow(r: TripRow): Trip {
   const stops = [...(r.trip_stops ?? [])]
     .sort((a, b) => a.position - b.position)
     .map((s) => {
@@ -84,6 +87,7 @@ function fromRow(r: Row): Trip {
     });
   return {
     id: r.id,
+    ownerId: r.owner_id,
     month: r.trip_month.slice(0, 7),
     score: Number(r.score),
     visibility: r.visibility,
@@ -100,20 +104,23 @@ function fromRow(r: Row): Trip {
 
 /** Your trips, highest score first (then most recent). */
 export async function fetchMyTrips(): Promise<Trip[]> {
+  const me = await myUserId();
+  if (!me) return [];
   const { data, error } = await supabase
     .from('trips')
     .select(TRIP_SELECT)
+    .eq('owner_id', me) // followers' trips are readable too now (Step C)
     .order('score', { ascending: false })
     .order('trip_month', { ascending: false })
     .order('created_at', { ascending: false });
   if (error) throw new Error(friendlyError(error));
-  return (data as unknown as Row[]).map(fromRow);
+  return (data as unknown as TripRow[]).map(fromRow);
 }
 
 export async function fetchTrip(id: string): Promise<Trip | null> {
   const { data, error } = await supabase.from('trips').select(TRIP_SELECT).eq('id', id).maybeSingle();
   if (error) throw new Error(friendlyError(error));
-  return data ? fromRow(data as unknown as Row) : null;
+  return data ? fromRow(data as unknown as TripRow) : null;
 }
 
 /** Saves a new trip, or edits one when input.id is set. Returns the trip's id. */

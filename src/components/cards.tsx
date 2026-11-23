@@ -13,7 +13,8 @@ import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
 import { Card } from './ui';
 import { TripActions } from './TripActions';
-import { friendTripId, getFriendTrip, tripPlace } from '@/lib/friendTrips';
+import { friendTripId, tripPic, tripPlace } from '@/lib/friendTrips';
+import { useFriendTrip } from '@/lib/friendsFeed';
 
 const openPlace = (slug: string | null) => slug && router.push(`/place/${slug}`);
 
@@ -114,21 +115,23 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
 /** One friend's trip in the Friends feed: a big photo with who, when, where and their score, then their words and stay. */
 export function FeedCard({ item }: { item: FeedItem }) {
   // Opens as a postcard first, like a Postcard (owner, Nov 2026); their whole trip is below it.
-  const open = () => router.push(`/postcard/${friendTripId(item)}`);
+  const id = item.id ?? friendTripId(item);
+  const hasPhoto = !!(item.photoUri || item.photo);
+  const open = () => router.push(`/postcard/${id}`);
   // The place name shrinks so a long word fits beside the score stamp (card ~ screen minus margins, padding and stamp).
   const feedSize = fitWordSize(item.place, Math.min(Dimensions.get('window').width, 480) - 40 - 36 - 70, 34, 20);
   const label = `${item.who}'s ${item.place} trip, ${item.month}${item.posted ? `, posted ${item.posted.toLowerCase()}` : ''}. ${item.score.toFixed(1)} out of 10. Open their postcard`;
   return (
     <Pressable onPress={open} accessibilityRole="link" accessibilityLabel={label} style={({ pressed }) => pressed && { opacity: 0.92 }}>
       <Card>
-        {item.photo ? (
+        {hasPhoto ? (
           <View style={{ height: 380 }}>
-            <PhotoFill photo={item.photo} />
+            <PhotoFill photo={item.photo} uri={item.photoUri} />
             <LinearGradient colors={['rgba(0,0,0,0.38)', 'transparent']} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 110 }} />
             <Shade strength={0.6} />
             <View style={{ position: 'absolute', top: 14, left: 14, right: 14, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <View style={{ borderWidth: 2, borderColor: colors.onDark, borderRadius: 22 }}>
-                <Avatar face={item.face} name={item.who} size={36} />
+                <Avatar face={item.face} uri={item.faceUri} name={item.who} size={36} />
               </View>
               <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.onDark }}>
                 {item.who}
@@ -150,7 +153,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
           // No photos: a soft blush top with who and when, then the place in big type beside the score.
           <View style={{ backgroundColor: colors.blushSoft, padding: 16, gap: 14 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Avatar face={item.face} name={item.who} size={36} />
+              <Avatar face={item.face} uri={item.faceUri} name={item.who} size={36} />
               <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.ink }}>
                 {item.who}
                 {!!item.posted && <Text style={{ fontFamily: fonts.sans, fontSize: 13, color: colors.muted }}> · {item.posted}</Text>}
@@ -170,8 +173,9 @@ export function FeedCard({ item }: { item: FeedItem }) {
         )}
         <View style={{ padding: 16, gap: 14 }}>
           {!!item.quote && <Text variant="quote">{item.quote}</Text>}
+          {!!item.stayName && (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.sageSoft, borderRadius: radius.md, padding: 10 }}>
-            <ScoreStamp score={item.stayScore} size="sm" tone="olive" label={item.stayType} />
+            {item.stayScore != null && <ScoreStamp score={item.stayScore} size="sm" tone="olive" label={item.stayType} />}
             <View style={{ flex: 1 }}>
               <Text variant="label" style={{ fontSize: 10 }}>
                 Stayed at · {item.stayType}
@@ -184,7 +188,8 @@ export function FeedCard({ item }: { item: FeedItem }) {
               Their trip →
             </Text>
           </View>
-          <TripActions id={friendTripId(item)} who={item.who} place={item.place} slug={item.slug} />
+          )}
+          <TripActions id={id} who={item.who} place={item.place} slug={item.slug} country={item.country} />
         </View>
       </Card>
     </Pressable>
@@ -221,8 +226,9 @@ export function BoardTile({ item, height }: { item: BoardItem & { href?: string 
 
 /** A friend's trip you've saved: their photo (or soft blush with the place), "Maya's Hydra trip", month and score. */
 export function SavedTripCard({ id, width = 160 }: { id: string; width?: number }) {
-  const trip = getFriendTrip(id);
+  const { trip } = useFriendTrip(id);
   if (!trip) return null;
+  const cover = tripPic(trip, 0);
   const height = Math.round(width * 1.15);
   return (
     <Pressable
@@ -232,9 +238,9 @@ export function SavedTripCard({ id, width = 160 }: { id: string; width?: number 
       style={{ width }}
     >
       <View style={{ width, height, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.sand }}>
-        {trip.photos[0] ? (
+        {cover ? (
           <>
-            <PhotoFill photo={trip.photos[0]} />
+            <PhotoFill {...cover} />
             <Shade strength={0.5} />
           </>
         ) : (
@@ -249,8 +255,8 @@ export function SavedTripCard({ id, width = 160 }: { id: string; width?: number 
           <ScoreStamp score={trip.score} size="sm" />
         </View>
         <View style={{ position: 'absolute', left: 10, bottom: 10, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-          <Avatar face={trip.face} name={trip.who} size={24} />
-          <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 12, color: trip.photos[0] ? colors.onDark : colors.ink }}>{trip.who}</Text>
+          <Avatar face={trip.face} uri={trip.faceUrl} name={trip.who} size={24} />
+          <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 12, color: cover ? colors.onDark : colors.ink }}>{trip.who}</Text>
         </View>
       </View>
       <Text variant="strong" numberOfLines={1} style={{ marginTop: 8 }}>

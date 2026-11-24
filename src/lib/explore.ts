@@ -38,6 +38,9 @@ function topFriend(slug: string): { who: string; score: number } | null {
 
 const UK = /England|Scotland|Wales|Cornwall|Cotswolds/;
 
+/** Sample places on the Amalfi Coast (for its collection). */
+const AMALFI = ['positano'];
+
 export function placeCollections(): PlaceCollection[] {
   const m = thisMonth();
   const month = MONTHS[m];
@@ -133,13 +136,29 @@ export type ExploreItem = {
   photo: PhotoName | null;
 };
 
-export type ItemCollection = { id: string; title: string; items: () => ExploreItem[] };
+export type ItemCollection = { id: string; title: string; items: () => ExploreItem[]; /** A chosen cover photo. */ photo?: PhotoName };
 
 function gather(pick: (slug: string, placeName: string, placePhoto: PhotoName | null) => ExploreItem[]): ExploreItem[] {
   return places.flatMap((p) => pick(p.slug, p.name, p.photo));
 }
 
 export const itemCollections: ItemCollection[] = [
+  {
+    // Owner, Nov 2026: where friends stayed, ate and what they did on the Amalfi Coast (Positano for now; more places join as they're added).
+    id: 'amalfi',
+    title: 'Amalfi Coast',
+    photo: 'own-capri-faraglioni',
+    items: () =>
+      gather((slug, place, photo) => {
+        if (!AMALFI.includes(slug)) return [];
+        const d = placeDetails[slug];
+        return [
+          ...(d?.stays ?? []).map((x) => ({ key: `${slug}-${x.name}`, slug, place, kind: x.type, scoreKind: 'Stay' as const, name: x.name, what: x.sub, photo: x.photo ?? photo })),
+          ...(d?.eats ?? []).map((x) => ({ key: `${slug}-${x.name}`, slug, place, kind: 'Eat', scoreKind: 'Eat' as const, name: x.name, what: x.what, photo: x.photo ?? photo })),
+          ...(d?.dos ?? []).map((x) => ({ key: `${slug}-${x.name}`, slug, place, kind: x.gem ? 'Hidden gem' : x.tag, scoreKind: 'Do' as const, name: x.name, what: x.what, photo: photoForActivity(x) ?? photo })),
+        ];
+      }),
+  },
   {
     id: 'gems',
     title: 'Hidden gems',
@@ -324,7 +343,7 @@ export type CollectionTileInfo = { id: string; title: string; photo: PhotoName; 
 export function collectionTiles(): CollectionTileInfo[] {
   const all = [
     ...placeCollections().map((c) => ({ id: c.id, title: c.title, cover: c.photo ?? null, photos: placesIn(c).map((p) => p.photo) })),
-    ...itemCollections.map((c) => ({ id: c.id, title: c.title, cover: null as PhotoName | null, photos: c.items().map((i) => i.photo) })),
+    ...itemCollections.map((c) => ({ id: c.id, title: c.title, cover: c.photo ?? null, photos: c.items().map((i) => i.photo) })),
   ].filter((c) => c.photos.length >= 3);
   const used = new Set<PhotoName>(all.map((c) => c.cover).filter((p): p is PhotoName => !!p));
   const out: CollectionTileInfo[] = [];

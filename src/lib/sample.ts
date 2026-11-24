@@ -737,7 +737,9 @@ export const places: SamplePlace[] = [
     "score": 8.4,
     "photo": "paris-1",
     "photos": [
-      "paris-1"
+      "paris-1",
+      "own-paris-louvre",
+      "own-paris-hotel-de-ville"
     ]
   },
   {
@@ -1671,18 +1673,18 @@ export function getPlace(slug: string): SamplePlace | undefined {
  * The owner's own holiday photos for places that have no sample place page (yet), so a trip or a
  * board place there gets a real photo instead of a blank (owner, Nov 2026). Keys are plain lower case.
  */
-const OWN_PLACE_PHOTOS: Record<string, PhotoName> = {
+const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   corfu: 'own-corfu', kerkyra: 'own-corfu', kassiopi: 'own-corfu', paleokastritsa: 'own-corfu',
   dubai: 'own-dubai', 'united arab emirates': 'own-dubai',
-  tenerife: 'own-tenerife', 'santa cruz de tenerife': 'own-tenerife', 'puerto de la cruz': 'own-tenerife', adeje: 'own-tenerife', 'costa adeje': 'own-tenerife', 'playa de las americas': 'own-tenerife', 'los cristianos': 'own-tenerife',
-  venice: 'lemon-1', venezia: 'lemon-1', // lemon-1 is the owner's Venice palazzo photo
-  singapore: 'own-singapore',
-  'new york': 'own-new-york', 'new york city': 'own-new-york', nyc: 'own-new-york', manhattan: 'own-new-york',
-  milan: 'own-milan', milano: 'own-milan',
+  tenerife: ['own-tenerife', 'own-tenerife-beach'], 'santa cruz de tenerife': ['own-tenerife', 'own-tenerife-beach'], 'puerto de la cruz': ['own-tenerife', 'own-tenerife-beach'], adeje: ['own-tenerife', 'own-tenerife-beach'], 'costa adeje': ['own-tenerife', 'own-tenerife-beach'], 'playa de las americas': ['own-tenerife', 'own-tenerife-beach'], 'los cristianos': ['own-tenerife', 'own-tenerife-beach'],
+  venice: ['own-venice-salute', 'lemon-1'], venezia: ['own-venice-salute', 'lemon-1'], // lemon-1 is the owner's Venice palazzo photo
+  singapore: ['own-singapore', 'own-singapore-flyer', 'own-singapore-jewel', 'own-singapore-temple'],
+  'new york': ['own-new-york', 'own-new-york-sunset', 'own-new-york-central-park', 'own-new-york-rooftop', 'own-new-york-pier', 'own-new-york-liberty'], 'new york city': ['own-new-york', 'own-new-york-sunset', 'own-new-york-central-park', 'own-new-york-rooftop', 'own-new-york-pier', 'own-new-york-liberty'], nyc: ['own-new-york', 'own-new-york-sunset', 'own-new-york-central-park', 'own-new-york-rooftop', 'own-new-york-pier', 'own-new-york-liberty'], manhattan: ['own-new-york', 'own-new-york-sunset', 'own-new-york-central-park', 'own-new-york-rooftop', 'own-new-york-pier', 'own-new-york-liberty'],
+  milan: ['own-milan', 'own-milan-galleria'], milano: ['own-milan', 'own-milan-galleria'],
   zurich: 'own-zurich', 'lake zurich': 'own-zurich',
   tuscany: 'own-tuscany', chianti: 'own-tuscany', 'val d orcia': 'own-tuscany', siena: 'own-tuscany',
-  mallorca: 'own-mallorca', majorca: 'own-mallorca', palma: 'own-mallorca', 'palma de mallorca': 'own-mallorca',
-  algarve: 'own-algarve', faro: 'own-algarve', 'vale do lobo': 'own-algarve', 'quinta do lago': 'own-algarve',
+  mallorca: ['own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'], majorca: ['own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'], palma: ['own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'], 'palma de mallorca': ['own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'],
+  algarve: ['own-algarve', 'own-algarve-pool', 'own-algarve-path'], faro: ['own-algarve', 'own-algarve-pool', 'own-algarve-path'], 'vale do lobo': ['own-algarve', 'own-algarve-pool', 'own-algarve-path'], 'quinta do lago': ['own-algarve', 'own-algarve-pool', 'own-algarve-path'],
   cyprus: 'own-cyprus-bridge', 'ayia napa': 'own-cyprus-bridge', protaras: 'own-cyprus-bridge', paphos: 'own-cyprus-bridge', limassol: 'own-cyprus-bridge',
   'costa brava': 'own-costa-brava', begur: 'own-costa-brava', 'tossa de mar': 'own-costa-brava',
   kitzbuhel: 'own-kitzbuehel', kitzbuehel: 'own-kitzbuehel',
@@ -1696,6 +1698,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName> = {
   'las vegas strip': 'own-las-vegas-strip', 'the strip': 'own-las-vegas-strip', bellagio: 'own-las-vegas-strip',
   'victoria falls': 'own-victoria-falls', livingstone: 'own-victoria-falls', 'mosi oa tunya': 'own-victoria-falls',
   rottnest: 'own-rottnest', 'rottnest island': 'own-rottnest',
+  'statue of liberty': 'own-new-york-liberty', 'central park': 'own-new-york-central-park', 'marina bay': 'own-singapore-flyer', 'jewel changi': 'own-singapore-jewel',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 
@@ -1707,13 +1710,21 @@ const plainName = (s: string) =>
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
 
-/** A sample photo for a place name you typed (e.g. your trip to "Lisbon"), if we have one. */
-export function photoForPlaceName(name: string): PhotoName | null {
+/**
+ * A sample photo for a place name you typed (e.g. your trip to "Lisbon"), if we have one. Where the
+ * owner has several photos of a place, `seed` (a trip's or board item's id) picks one, so two trips
+ * to New York don't look the same.
+ */
+export function photoForPlaceName(name: string, seed = ''): PhotoName | null {
   const n = name.trim().toLowerCase();
   const p = places.find((x) => x.name.toLowerCase() === n || x.slug === n || x.name.toLowerCase().replace(/^the /, '') === n);
   if (p) return p.photo;
   const key = plainName(name).replace(/^the /, '');
-  return OWN_PLACE_PHOTOS[key] ?? null;
+  const own = OWN_PLACE_PHOTOS[key];
+  if (!own) return null;
+  if (!Array.isArray(own)) return own;
+  const pick = [...seed].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0);
+  return own[pick % own.length];
 }
 
 /** Everything in the sample content about one place (for its page). */

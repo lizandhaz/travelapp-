@@ -10,8 +10,8 @@ import { PhotoFill } from './Photo';
 import { Text } from './Text';
 
 /** The sample photo for a saved place, if we have one. */
-export function photoForItem(item: Pick<BoardItem, 'slug' | 'name'>): PhotoName | null {
-  return (item.slug ? getPlace(item.slug)?.photo : null) ?? photoForPlaceName(item.name);
+export function photoForItem(item: Pick<BoardItem, 'slug' | 'name'> & { id?: string }): PhotoName | null {
+  return (item.slug ? getPlace(item.slug)?.photo : null) ?? photoForPlaceName(item.name, item.id ?? '');
 }
 
 /** A sample place page for a saved place, if there is one. */

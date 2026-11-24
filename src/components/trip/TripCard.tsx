@@ -22,7 +22,7 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
   return (
     <Link href={`/trip/${trip.id}`} asChild>
       <Pressable accessibilityRole="link" accessibilityLabel={`${main?.name}, ${monthYear(trip.month)}, ${formatScore(trip.score)} out of 10`} style={{ width }}>
-        <PhotoStamp uri={photoUrl} photo={cover ? null : main ? photoForPlaceName(main.name) : null} width={width} height={width * 1.2}>
+        <PhotoStamp uri={photoUrl} photo={cover ? null : main ? photoForPlaceName(main.name, trip.id) : null} width={width} height={width * 1.2}>
           <View style={{ position: 'absolute', top: 18, left: 16 }}>
             <MonthPill month={monthYear(trip.month).toUpperCase()} onPhoto />
           </View>

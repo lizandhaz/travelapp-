@@ -102,7 +102,7 @@ export default function TripScreen() {
     <Screen noTopInset>
       {/* The back button and the title stack, so a long title grows the header instead of running into the button. */}
       <View style={{ minHeight: h, paddingTop: insets.top + 10, paddingBottom: 46, justifyContent: 'space-between' }}>
-        <PhotoFill uri={photoUrl} photo={cover ? null : photoForPlaceName(main.name)} label={main.name} />
+        <PhotoFill uri={photoUrl} photo={cover ? null : photoForPlaceName(main.name, trip.id)} label={main.name} />
         <Shade strength={0.55} />
         <View style={{ paddingHorizontal: GUTTER, alignItems: 'flex-start' }}>
           <BackButton onPhoto />

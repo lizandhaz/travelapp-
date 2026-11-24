@@ -242,7 +242,7 @@ export const rows = {
       "where": "For One day",
       "because": "Because you gave the Orangerie a 9.2",
       "friends": "1 friend has been too",
-      "photo": null
+      "photo": "own-kyoto-blossom"
     },
     {
       "slug": "lisbon",
@@ -495,7 +495,7 @@ export const rows = {
       "score": 8.9,
       "name": "Kyoto",
       "sub": "Japan",
-      "photo": null
+      "photo": "own-kyoto-blossom"
     },
     {
       "slug": "positano",
@@ -646,8 +646,11 @@ export const places: SamplePlace[] = [
     "name": "Kyoto",
     "region": "Japan",
     "score": 8.9,
-    "photo": null,
+    "photo": "own-kyoto-blossom",
     "photos": [
+      "own-kyoto-blossom",
+      "own-kyoto-pagoda",
+      "own-kyoto-river"
     ]
   },
   {
@@ -959,7 +962,7 @@ export const trendingThisMonth: RowItem[] = [
     "rank": "#6",
     "name": "Kyoto",
     "sub": "Top pick for autumn colours",
-    "photo": null
+    "photo": "own-kyoto-blossom"
   }
 ] as RowItem[];
 
@@ -1064,7 +1067,7 @@ export const board: BoardItem[] = [
     "slug": "borabora"
   },
   {
-    "photo": null,
+    "photo": "own-kyoto-blossom",
     "kind": "Culture · Festival",
     "name": "Gion Matsuri",
     "sub": "All of July · Kyoto, Japan",
@@ -1114,7 +1117,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": null,
+    "photo": "own-kyoto-blossom",
     "kind": "Eat",
     "name": "Kaiseki dinner",
     "sub": "Gion Okumura, Kyoto · £££",
@@ -1709,6 +1712,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   zanzibar: ['own-zanzibar-hammock', 'own-zanzibar-huts', 'own-zanzibar-coast'], 'stone town': 'own-zanzibar-coast', nungwi: 'own-zanzibar-huts', paje: 'own-zanzibar-hammock',
   tanzania: 'own-kilimanjaro-giraffe', kilimanjaro: 'own-kilimanjaro-giraffe', 'mount kilimanjaro': 'own-kilimanjaro-giraffe', arusha: 'own-kilimanjaro-giraffe', serengeti: 'own-kilimanjaro-giraffe', 'ngorongoro crater': 'own-kilimanjaro-giraffe', amboseli: 'own-kilimanjaro-giraffe',
   'bora bora': ['own-borabora-beach', 'own-borabora-pool', 'own-borabora-fish', 'own-water-villas'], 'french polynesia': ['own-borabora-beach', 'own-borabora-pool'],
+  kyoto: ['own-kyoto-blossom', 'own-kyoto-pagoda', 'own-kyoto-river'], arashiyama: 'own-kyoto-river', 'mount fuji': 'own-kyoto-pagoda', japan: ['own-kyoto-blossom', 'own-kyoto-pagoda'],
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

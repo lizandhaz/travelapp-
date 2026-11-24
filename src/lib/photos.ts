@@ -1,5 +1,5 @@
 // Sample photos: only the owner's own holiday photos (own-*.jpg, EXIF/GPS stripped), plus four the owner licensed
-// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach; owner confirmed bought, Nov 2026). The design prototype's
+// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach, own-kyoto-blossom/-pagoda/-river; owner confirmed bought, Nov 2026). The design prototype's
 // Unsplash photos were removed (owner, Nov 2026); some prototype names (e.g. 'bath-1') point at the owner's photos.
 // Sample content with no photo of the owner's shows a placeholder.
 
@@ -87,6 +87,9 @@ export const photos = {
   'own-copenhagen-nyhavn': require('../../assets/photos/own-copenhagen-nyhavn.jpg'),
   'own-hydra-harbour': require('../../assets/photos/own-hydra-harbour.jpg'),
   'own-turks-beach': require('../../assets/photos/own-turks-beach.jpg'),
+  'own-kyoto-blossom': require('../../assets/photos/own-kyoto-blossom.jpg'),
+  'own-kyoto-pagoda': require('../../assets/photos/own-kyoto-pagoda.jpg'),
+  'own-kyoto-river': require('../../assets/photos/own-kyoto-river.jpg'),
 } as const;
 
 export type PhotoName = keyof typeof photos;

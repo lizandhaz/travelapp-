@@ -76,7 +76,7 @@ export const rows = {
       "score": 9.3,
       "name": "Bora Bora",
       "sub": "French Polynesia",
-      "photo": null
+      "photo": "own-borabora-beach"
     },
     {
       "slug": "seychelles",
@@ -539,8 +539,9 @@ export const places: SamplePlace[] = [
     "name": "Bora Bora",
     "region": "French Polynesia",
     "score": 9.3,
-    "photo": null,
+    "photo": "own-borabora-beach",
     "photos": [
+      "own-borabora-beach"
     ]
   },
   {
@@ -1049,7 +1050,7 @@ export const board: BoardItem[] = [
     "slug": "hydra"
   },
   {
-    "photo": null,
+    "photo": "own-borabora-beach",
     "kind": "place",
     "score": 9.3,
     "name": "Bora Bora, French Polynesia",
@@ -1701,6 +1702,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   'statue of liberty': 'own-new-york-liberty', 'central park': 'own-new-york-central-park', 'marina bay': 'own-singapore-flyer', 'jewel changi': 'own-singapore-jewel',
   zanzibar: ['own-zanzibar-hammock', 'own-zanzibar-huts', 'own-zanzibar-coast'], 'stone town': 'own-zanzibar-coast', nungwi: 'own-zanzibar-huts', paje: 'own-zanzibar-hammock',
   tanzania: 'own-kilimanjaro-giraffe', kilimanjaro: 'own-kilimanjaro-giraffe', 'mount kilimanjaro': 'own-kilimanjaro-giraffe', arusha: 'own-kilimanjaro-giraffe', serengeti: 'own-kilimanjaro-giraffe', 'ngorongoro crater': 'own-kilimanjaro-giraffe', amboseli: 'own-kilimanjaro-giraffe',
+  'bora bora': 'own-borabora-beach', 'french polynesia': 'own-borabora-beach',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

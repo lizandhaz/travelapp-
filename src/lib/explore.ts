@@ -309,3 +309,32 @@ export function searchTrips(text: string): { understood: string[]; places: RowIt
     }),
   };
 }
+
+// ---------------------------------------------------------------------------
+// Collection tiles (Home's "Dip into collections", Explore's "Find your next trip")
+// ---------------------------------------------------------------------------
+
+export type CollectionTileInfo = { id: string; title: string; photo: PhotoName; count: number };
+
+/**
+ * Every collection with at least three things in it, each with its own cover photo: no two tiles share
+ * a photo (owner, Nov 2026). Chosen covers (a collection's `photo`) are kept first; the rest take the
+ * first photo of theirs not already used, and a collection with no unused photo is left out.
+ */
+export function collectionTiles(): CollectionTileInfo[] {
+  const all = [
+    ...placeCollections().map((c) => ({ id: c.id, title: c.title, cover: c.photo ?? null, photos: placesIn(c).map((p) => p.photo) })),
+    ...itemCollections.map((c) => ({ id: c.id, title: c.title, cover: null as PhotoName | null, photos: c.items().map((i) => i.photo) })),
+  ].filter((c) => c.photos.length >= 3);
+  const used = new Set<PhotoName>(all.map((c) => c.cover).filter((p): p is PhotoName => !!p));
+  const out: CollectionTileInfo[] = [];
+  for (const c of all) {
+    let photo = c.cover;
+    if (!photo) {
+      photo = c.photos.find((p): p is PhotoName => !!p && !used.has(p)) ?? null;
+      if (photo) used.add(photo);
+    }
+    if (photo) out.push({ id: c.id, title: c.title, photo, count: c.photos.length });
+  }
+  return out;
+}

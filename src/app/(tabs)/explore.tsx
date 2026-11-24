@@ -10,7 +10,7 @@ import { SearchIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
 import { Chip, Input, Screen, SectionHeader } from '@/components/ui';
 import { colors, GUTTER } from '@/constants/theme';
-import { exploreFeed, itemCollections, placeCollections, placesIn, searchTrips, type FeedItem } from '@/lib/explore';
+import { collectionTiles, exploreFeed, searchTrips, type FeedItem } from '@/lib/explore';
 import { rows, TASTES, trendingThisMonth } from '@/lib/sample';
 
 const STAYS = ['Riad', 'Villa', 'Ryokan', 'Hotel', 'B&B', 'Airbnb', 'Other'];
@@ -49,13 +49,8 @@ export default function Explore() {
     .filter((i) => !!i.photo)
     .filter(TASTES[tasteFilter].match)
     .sort((a, b) => (taste.profile.evidence > 0 ? taste.forItem(b).score - taste.forItem(a).score : 0));
-  const collections = useMemo(
-    () => [
-      ...placeCollections().map((c) => ({ id: c.id, title: c.title, cover: c.photo, items: placesIn(c).map((p) => p.photo) })),
-      ...itemCollections.map((c) => ({ id: c.id, title: c.title, cover: undefined, items: c.items().map((i) => i.photo) })),
-    ].filter((c) => c.items.length >= 3 && !!(c.cover ?? c.items.find(Boolean))),
-    [],
-  );
+  const collections = useMemo(() => collectionTiles(), []);
+
 
   const words = query.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
   const shown = useMemo(() => {
@@ -129,7 +124,7 @@ export default function Explore() {
           </View>
           <Row>
             {collections.map((c) => (
-              <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.cover ?? c.items.find(Boolean) ?? null} count={c.items.length} />
+              <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.photo} count={c.count} />
             ))}
           </Row>
         </View>

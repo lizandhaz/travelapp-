@@ -234,23 +234,14 @@ export function StayRow({ stays, at }: { stays: PlaceDetail['stays']; at?: SpotP
 }
 
 /**
- * Hotels and restaurants on a place page, Pinterest-style (owner, Nov 2026): no photos until friends add
- * their own, just soft coloured cards of different heights in two columns.
+ * Hotels and restaurants on a place page (owner, Nov 2026): no photos until friends add their own, just
+ * soft coloured cards in a row that scrolls sideways.
  */
 const PIN_TONES = [colors.sageSoft, colors.blushSoft, colors.skySoft, colors.champagneSoft];
 
+/** A row of spot cards that scrolls sideways (owner, Nov 2026: a scroll, not a long section). */
 function Pinboard({ items }: { items: React.ReactNode[] }) {
-  const cols: React.ReactNode[][] = [[], []];
-  items.forEach((it, i) => cols[i % 2].push(it));
-  return (
-    <View style={{ paddingHorizontal: GUTTER, flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
-      {cols.map((c, k) => (
-        <View key={k} style={{ flex: 1, gap: 12 }}>
-          {c}
-        </View>
-      ))}
-    </View>
-  );
+  return <Row gap={12}>{items}</Row>;
 }
 
 function SpotCard({
@@ -279,7 +270,7 @@ function SpotCard({
   a11y: string;
 }) {
   return (
-    <View accessible accessibilityLabel={a11y} style={{ borderRadius: radius.lg, backgroundColor: tone, padding: 14, paddingTop: 16, minHeight: tall ? 210 : 160, borderWidth: featured ? 2 : 0, borderColor: colors.olive }}>
+    <View accessible accessibilityLabel={a11y} style={{ width: tall ? 200 : 180, height: 220, borderRadius: radius.lg, backgroundColor: tone, padding: 14, paddingTop: 16, borderWidth: featured ? 2 : 0, borderColor: colors.olive }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingRight: 30 }}>
         <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' }}>{icon}</View>
         {!!kind && (
@@ -288,9 +279,11 @@ function SpotCard({
           </Text>
         )}
       </View>
-      <Text style={{ fontFamily: fonts.display, fontSize: 19, lineHeight: 23, color: colors.ink, marginTop: 14 }}>{name}</Text>
+      <Text numberOfLines={2} style={{ fontFamily: fonts.display, fontSize: 19, lineHeight: 23, color: colors.ink, marginTop: 14 }}>
+        {name}
+      </Text>
       {lines.filter(Boolean).map((l, k) => (
-        <Text key={k} variant="tiny" style={{ marginTop: 4, color: k ? colors.olive : colors.muted }}>
+        <Text key={k} variant="tiny" numberOfLines={2} style={{ marginTop: 4, color: k ? colors.olive : colors.muted }}>
           {l}
         </Text>
       ))}

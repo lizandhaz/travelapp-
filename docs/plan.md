@@ -190,6 +190,16 @@ Every score out of 10 and every % match is now worked out for you, in two equal 
 
 ---
 
+## Overnight audit (24–25 Nov 2026) ✅
+
+Claude clicked through every screen with realistic made-up data and fixed the biggest gaps (pull requests #82–#85, all on Expo Go). The morning plan with details: "COVA Morning Plan" (https://claude.ai/artifact/9gGKFLrNLbYWcaqJoMKNHu).
+- ✅ Explore search understands holiday searches ("beach in February", "romantic weekend no flying", "Greece", "ski", "cheap family holiday") and shows Best matches with reasons.
+- ✅ Share with a friend on your trips (score, stay, restaurants, tip as a message; never a location or link).
+- ✅ Trips without photos use your own photo of the place (Corfu, Dubai, Tenerife, Venice…) or a warm blush card, not grey.
+- ✅ Your trip links to the place's page ("More about Lake Como"); long names fit beside the score stamp.
+- **Waiting for your OK (database):** trips for "this month" can be refused for a few hours at the start of a month, because the database checks the month in UK winter time (GMT) while the phone uses local time. Fix: let the database allow the month of the date in the furthest-ahead time zone.
+- **Found for later:** likes/comments/saved trips stay on one phone and Postcards are samples (Step H); places only the owner has photographed have no page and sample map pins are rough (Step E); restaurant cards reuse a few food photos (Step E); new people see the sample friends' feed until they follow someone (Step I); the app icon is still the old red "P".
+
 ## Next steps (from the build plan, one pull request each)
 
 Each step's ready-made prompt is in your build plan doc ("XYZX: build plan from the preview").

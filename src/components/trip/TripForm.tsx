@@ -324,7 +324,7 @@ export function TripForm({
           </Group>
 
           {/* The score. */}
-          <Card tone="blush" style={{ padding: PAD, gap: 6 }}>
+          <Card tone="cream" style={{ padding: PAD, gap: 6 }}>
             <Text variant="heading" accessibilityRole="header" style={{ textAlign: 'center' }}>
               How was it?
             </Text>

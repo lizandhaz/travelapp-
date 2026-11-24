@@ -159,7 +159,7 @@ src/
                           lineHeight gets lineHeight ≈ 1.28× automatically, so big numbers aren't clipped on iPhone
     AccentTitle.tsx       Heading with one italic word and a terracotta swash ("Where did *you* go?")
     Wordmark.tsx          The app name in spaced serif capitals + terracotta star, and the tagline
-    ScoreStamp.tsx        Score in a perforated stamp: olive on sage (or white on olive for a stay)
+    ScoreStamp.tsx        Score in a perforated stamp: olive on sage, the same for every score (stays too)
     Photo.tsx             PhotoFill, Shade, PhotoTile (rounded photo), PhotoStamp (photo in a perforated frame)
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
@@ -186,7 +186,7 @@ src/
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
     trip/TripForm.tsx     Add/edit a trip (owner Nov 2026: tidy rows you tap into): the place; one card of rows (When, How long (required),
                           Who with), each showing your answer and opening its own page that slides up (SheetRow; picking a chip closes it);
-                          "How was it?" on blush (big centred score + slider); "Add more (optional)" rows that open pages with a "Save …"
+                          "How was it?" on cream (big centred score + slider); "Add more (optional)" rows that open pages with a "Save …"
                           button: photos (up to 6, hold one then drag to reorder; screen readers get Move left/right/Make cover), note,
                           where you stayed (score optional), other places, best restaurants (several, up to 10), top tip; a "Just me" switch; Save
     trip/PlacePicker.tsx  Search or type a place ("Sintra, Portugal" → name + country)
@@ -342,15 +342,15 @@ From the owner's palette (Nov 2026; toned down slightly later that month: accent
 | `accent` | `#ba7e66` | Terracotta Clay: swash under accent words, star, slider fill, large text only |
 | `accentDeep` | `#9e624a` | "Save trip" / "I've been" buttons (white text passes contrast) |
 | `accentText` | `#905640` | Small terracotta text: links, taglines, kickers |
-| `olive` | `#636b51` | Olive Grove, a shade deeper so small text passes: stay score stamp, stay pins, Want to go / saved |
+| `olive` | `#636b51` | Olive Grove, a shade deeper so small text passes: stay pins, Want to go / saved |
 | `blushSoft` / `sageSoft` / `skySoft` | `#f5e5de` / `#e8eadd` / `#e7eaeb` | Soft fills for cards and bands (`<Card tone="blush">`, `toneFill()`, `TONES` cycle) |
-| `cream` | `#fcf8ef` | The "Your score" card on place pages, with a thin border (owner Nov 2026: cream, not pink) |
+| `cream` | `#fcf8ef` | `<Card tone="cream">` (keeps its thin border): place pages' Your score, Add a trip's "How was it?", You's Trips tile, Saved's Want to go card, follow requests (owner Nov 2026: cream, not pink) |
 | `champagneSoft` | `#f3ecde` | Fourth soft card colour (place pages' hotel/restaurant cards) |
 | `skyDeep` | `#5b7389` | Misty sky deep enough for white initials (avatars) |
 | `gold` | `#b9975b` | Hidden-gem pins on place maps |
 | `onDark` | `#faf7f0` | Text on photos and dark buttons |
 
-Trips without photos use soft blush (`blushSoft`) with dark text (feed posts, saved-trip tiles, a friend's trip page); never the olive-to-terracotta gradient (owner disliked it). **Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, segmented switches and the tab bar's + and active tab are terracotta; dark buttons are olive; Explore's "Made for your taste" sits on a sage band; friends' feed cards are white with the stay on a sage strip; Trending rank badges (`PhotoBadge accent`) and the line under trend cards are terracotta; You's stats are three coloured tiles (Trips, Countries, % "Of the world" = countries / 195; no average score, owner Nov 2026); avatars without a photo use olive/terracotta/sky; place score card cream (not pink, owner Nov 2026), place facts sky/blush; Saved's Want to go card blush. The owner tried and didn't want fully tinted feed cards or a band behind Explore's Trending (too much), nor all-plain (too little): keep this middle ground. Collection tiles show no count.
+Trips without photos use soft blush (`blushSoft`) with dark text (feed posts, saved-trip tiles, a friend's trip page); never the olive-to-terracotta gradient (owner disliked it). **Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, segmented switches and the tab bar's + and active tab are terracotta; dark buttons are olive; Explore's "Made for your taste" sits on a sage band; friends' feed cards are white with the stay on a sage strip; Trending rank badges (`PhotoBadge accent`) and the line under trend cards are terracotta; You's stats are three tiles (Trips cream, Countries sage, world sky) (Trips, Countries, % "Of the world" = countries / 195; no average score, owner Nov 2026); avatars without a photo use olive/terracotta/sky; place score card cream (not pink, owner Nov 2026), place facts sky/blush; Saved's Want to go card cream. The owner tried and didn't want fully tinted feed cards or a band behind Explore's Trending (too much), nor all-plain (too little): keep this middle ground. Collection tiles show no count.
 
 `accent` is too light for small text on `bg`. Use `accentText` for small text and `accentDeep` behind white text. The place maps in `assets/maps/` have their pins drawn in `olive`/`accent`/`ink`/`gold` (rendered from the prototype's SVGs with those colours swapped in); if those change, redraw the maps so the key still matches.
 
@@ -365,7 +365,7 @@ Trips without photos use soft blush (`blushSoft`) with dark text (feed posts, sa
 
 - **Wordmark**: the app name in wide-spaced serif capitals with a small terracotta four-point star, and the tagline "Picked by you and those you trust".
 - **AccentTitle**: one italic word with a hand-drawn terracotta swash ("Your *trips*", "Find your *next* trip").
-- **ScoreStamp**: every score sits in a small perforated stamp, deep olive number on soft sage with a white dotted inner line (white on olive for stays).
+- **ScoreStamp**: every score sits in a small perforated stamp, deep olive number on soft sage with a white dotted inner line, the same for trips, places, stays and restaurants (owner Nov 2026: "all light green").
 - **PhotoStamp**: hero photos and your trips in a white perforated frame with a dotted inner border.
 - **MonthPill**: a trip month in a slightly tilted outline pill ("JUN 2026"). Never a current date or location.
 - **App icon**: still the earlier red stamp with "P". The name is now COVA, so it needs redoing.

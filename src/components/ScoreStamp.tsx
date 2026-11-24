@@ -26,24 +26,23 @@ export function perforatedPath(w: number, h: number, r: number) {
 }
 
 /**
- * A score in a small perforated stamp: olive number on soft sage with a dotted inner line (or white on olive
- * for a stay). Always one decimal place, out of 10.
+ * A score in a small perforated stamp: olive number on soft sage with a dotted inner line. Every score
+ * looks the same (owner Nov 2026: "all light green"; stays used to be olive). Always one decimal place, out of 10.
  */
 export function ScoreStamp({
   score,
   size = 'md',
-  tone = 'stamp',
   label,
 }: {
   score: number;
   size?: keyof typeof SIZES;
+  /** Ignored: every stamp is sage now. Kept so stays can still say what they are. */
   tone?: 'stamp' | 'olive';
   label?: string;
 }) {
   const s = SIZES[size];
   const inset = Math.max(4, s * 0.09);
   const shown = formatScore(score);
-  const sage = tone === 'stamp';
   const dot = inset + Math.max(2.5, s * 0.05);
   return (
     <View
@@ -54,8 +53,8 @@ export function ScoreStamp({
     >
       <Svg width={s} height={s} style={{ position: 'absolute' }}>
         <Path d={perforatedPath(s - 2, s - 2, Math.max(2, s * 0.045))} transform="translate(1,1)" fill={colors.card} stroke={colors.ink} strokeOpacity={0.12} strokeWidth={0.75} />
-        <Rect x={inset} y={inset} width={s - 2 * inset} height={s - 2 * inset} fill={sage ? colors.stampPaper : colors.olive} />
-        {sage && <Rect x={dot} y={dot} width={s - 2 * dot} height={s - 2 * dot} fill="none" stroke={colors.card} strokeWidth={1} strokeDasharray="1.5 2.5" strokeLinecap="round" />}
+        <Rect x={inset} y={inset} width={s - 2 * inset} height={s - 2 * inset} fill={colors.stampPaper} />
+        <Rect x={dot} y={dot} width={s - 2 * dot} height={s - 2 * dot} fill="none" stroke={colors.card} strokeWidth={1} strokeDasharray="1.5 2.5" strokeLinecap="round" />
       </Svg>
       <View
         style={{
@@ -68,7 +67,7 @@ export function ScoreStamp({
           justifyContent: 'center',
         }}
       >
-        <Text style={{ fontFamily: fonts.display, fontSize: s * 0.36, color: sage ? colors.stampInk : colors.onDark, fontVariant: ['tabular-nums'] }}>
+        <Text style={{ fontFamily: fonts.display, fontSize: s * 0.36, color: colors.stampInk, fontVariant: ['tabular-nums'] }}>
           {shown}
         </Text>
       </View>

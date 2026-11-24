@@ -60,7 +60,7 @@ export function ProfileTop({
 export function ProfileStats({ trips, countries }: { trips: number; countries: number }) {
   return (
     <View style={{ marginHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', gap: 8 }}>
-      <Stat label="Trips" value={trips} tone="blush" />
+      <Stat label="Trips" value={trips} tone="cream" />
       <Stat label="Countries" value={countries} tone="sage" />
       <Stat label="Of the world" value={worldShare(countries)} tone="sky" />
     </View>
@@ -69,7 +69,7 @@ export function ProfileStats({ trips, countries }: { trips: number; countries: n
 
 function Stat({ label, value, tone }: { label: string; value: string | number; tone: Tone }) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', paddingVertical: 14, borderRadius: radius.md, backgroundColor: toneFill(tone) }}>
+    <View style={{ flex: 1, alignItems: 'center', paddingVertical: 14, borderRadius: radius.md, backgroundColor: toneFill(tone), borderWidth: tone === 'cream' ? 1 : 0, borderColor: colors.line }}>
       <Text variant="title" style={{ fontSize: 26, lineHeight: 30 }}>
         {value}
       </Text>

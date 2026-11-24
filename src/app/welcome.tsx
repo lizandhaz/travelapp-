@@ -13,9 +13,9 @@ export default function Welcome() {
   return (
     <AuthFrame>
       <View style={{ alignItems: 'center', marginTop: 28 }}>
-        <PhotoStamp photo="hydra-2" width={w} height={w * 1.18} tilt={-3}>
+        <PhotoStamp photo="own-corfu" width={w} height={w * 1.18} tilt={-3}>
           <View style={{ position: 'absolute', left: 20, right: 20, bottom: 22 }}>
-            <Text style={{ fontFamily: fonts.displayBold, fontSize: 30, color: colors.onDark }}>Hydra</Text>
+            <Text style={{ fontFamily: fonts.displayBold, fontSize: 30, color: colors.onDark }}>Corfu</Text>
             <Text variant="label" style={{ color: colors.onDark }}>
               Maya rated it 9.4
             </Text>

@@ -31,7 +31,7 @@ Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations*
 - **Expo SDK 58**, React Native 0.88, React 19.3 and TypeScript (strict), with **Expo Router** (file-based screens in `src/app/`).
 - Styling uses `StyleSheet` / inline styles with the tokens in `src/constants/theme.ts`. There is no Tailwind.
 - Drawing (perforated stamp edges, the swash under accent words, icons) uses `react-native-svg`. Photo shades and placeholders use `expo-linear-gradient`; photos use `expo-image` (and `expo-image-picker` for picking).
-- **Sample photos** live in `assets/photos/` (from the prototype; all Unsplash, credited in `PHOTO_CREDITS` and shown at the bottom of Home). `src/lib/photos.ts` maps names (`'como-1'`) to the files; only photos the sample content uses are bundled.
+- **Sample photos** live in `assets/photos/`: the owner's own holiday photos (`own-*.jpg`, copied from `website/img/`, EXIF/GPS already stripped) wherever the place or subject matches (Bath, Lake Como, Crete, Oxford, Paris, South Africa, pools, tables, food; Nov 2026), and the prototype's Unsplash photos for the rest (credited in `PHOTO_CREDITS`, shown at the bottom of Home). Some prototype names (e.g. `'bath-1'`) now point at the owner's files in `photos.ts`. `src/lib/photos.ts` maps names (`'como-1'`) to the files; only photos the sample content uses are bundled.
 - Fonts come from `@expo-google-fonts/fraunces` and `@expo-google-fonts/dm-sans`. Import each style from its own subpath (e.g. `@expo-google-fonts/fraunces/600SemiBold`) so only the styles used get bundled.
 - **Supabase** (`@supabase/supabase-js`) handles accounts and profiles. The session is kept on the phone with `@react-native-async-storage/async-storage`.
 - **Real maps:** `react-native-maps` (in Expo Go: Apple Maps on iPhone, no key) for a place's big "Map" view (`components/AreaMap.tsx`: Apple's `mutedStandard` style in dark (`userInterfaceStyle="dark"`, owner Nov 2026, on the page and full screen), Apple's own points of interest hidden, our numbered pins with name labels; `AreaMap.web.tsx` is a world-outline stand-in, as the library doesn't run on the web). Apple Maps can't be recoloured in Expo Go (custom map styles need Google Maps and a development build). Never show or ask for the user's location (rule 2): `showsUserLocation={false}`.
@@ -78,12 +78,12 @@ The owner has **no computer**, only an iPhone (with Expo Go) and an iPad. Claude
 app.json                  Icon, splash, plugins, Expo project link
 app.config.ts             Adds the app name (from src/constants/brand.json) on top of app.json
 assets/images/            App icon, splash, Android adaptive icons, favicon
-assets/photos/            Sample photos from the design prototype (Unsplash)
+assets/photos/            Sample photos: the owner's own (own-*.jpg) + the prototype's (Unsplash)
 assets/maps/              Illustrated place maps from the prototype, drawn to JPEG (now only the web stand-in; pin positions come from them)
 src/
   app/                    Every file is a screen (Expo Router)
     _layout.tsx           Fonts, AuthProvider, Stack + Stack.Protected (signed in / signed out)
-    welcome.tsx           Signed out: wordmark, Hydra photo stamp, "Where your friends loved staying", Join / Log in
+    welcome.tsx           Signed out: wordmark, Corfu photo stamp (the owner's own photo), "Where your friends loved staying", Join / Log in
     signup.tsx, login.tsx Join (name, email, date of birth) / Log in (email), then the 6-digit code
     (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
     (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score, sideways;

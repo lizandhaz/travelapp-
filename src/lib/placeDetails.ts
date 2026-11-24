@@ -6769,7 +6769,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £700 a night · Sam stayed",
         "because": null,
         "score": 9.2,
-        "photo": "safari-1"
+        "photo": "own-safari-cheetahs"
       },
       {
         "name": "A flat in Bo-Kaap",

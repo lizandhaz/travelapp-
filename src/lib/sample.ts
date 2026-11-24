@@ -925,9 +925,12 @@ export const places: SamplePlace[] = [
     "name": "South Africa",
     "region": "Cape Town & Kruger, South Africa",
     "score": 9.1,
-    "photo": "safari-1",
+    "photo": "own-safari-drive",
     "photos": [
-      "safari-1"
+      "own-safari-drive",
+      "own-safari-giraffes",
+      "own-safari-cheetahs",
+      "own-safari-balloons"
     ]
   }
 ] as SamplePlace[];
@@ -1503,7 +1506,7 @@ export const friendsFeed: FeedItem[] = [
     "place": "South Africa",
     "region": "Cape Town & Kruger",
     "month": "Mar 2026",
-    "photo": "safari-1",
+    "photo": "own-safari-drive",
     "quote": "“Table Mountain in the morning, a wine farm for lunch, penguins by teatime.”",
     "score": 9.3,
     "stayType": "Hotel",
@@ -1694,7 +1697,7 @@ export const TASTES: { label: string; match: (t: TasteItem) => boolean }[] = [
 ];
 
 export const PHOTO_CREDITS =
-  'Photos: Julia Solonina, Bartłomiej Balicki, Christian Mackie, Gianluca Baio, Mauricio Muñoz, Adrian Cole, BEN ELLIOTT, Nick Karvounis, Xenia Bunina, Tobias Reich, Toa Heftiba, Jacek Urbanski, Ishan @seefromthesky, Roméo A., Christian Cacciamani, Marc Schmittbuhl, Humphrey M., Xavier Coiffic, James Shaw, Evy Prentice, Tim Alex, Illiya Vjestica, Ben Seymour, Swati Kedia, Lex Brogan, Tom Podmore, Helena Pfisterer, Joshua Kettle, Arash Bal, Nahum Ashworth, Chloe Frost-Smith, Denys Kostyuchenko, Yuliya Matuzava, orva studio, David Hieb, Tony Lee, Febiyan, Oliver Potter, Johannes W, Olivier Chatel, Svetlana Kuznetsova, Alessandro Rossi, Matthieu Oger, Yianni Mathioudakis, Chloé Lefleur, Khaled Ali, François Fayet, Egor Myznik, Mike Swigunski, Christina Terzidou, Yosuke Ota, Massimo Adami, Roberto Nickson on Unsplash';
+  'Photos: our own holidays, plus Julia Solonina, Bartłomiej Balicki, Christian Mackie, Gianluca Baio, Mauricio Muñoz, Adrian Cole, BEN ELLIOTT, Nick Karvounis, Xenia Bunina, Tobias Reich, Toa Heftiba, Jacek Urbanski, Ishan @seefromthesky, Roméo A., Christian Cacciamani, Marc Schmittbuhl, Humphrey M., Xavier Coiffic, James Shaw, Evy Prentice, Tim Alex, Illiya Vjestica, Ben Seymour, Swati Kedia, Lex Brogan, Tom Podmore, Helena Pfisterer, Joshua Kettle, Arash Bal, Nahum Ashworth, Chloe Frost-Smith, Denys Kostyuchenko, Yuliya Matuzava, orva studio, David Hieb, Tony Lee, Febiyan, Oliver Potter, Johannes W, Olivier Chatel, Svetlana Kuznetsova, Alessandro Rossi, Matthieu Oger, Yianni Mathioudakis, Chloé Lefleur, Khaled Ali, François Fayet, Egor Myznik, Mike Swigunski, Christina Terzidou, Yosuke Ota, Massimo Adami, Roberto Nickson on Unsplash';
 
 export const unreadPostcardCount = 2;
 

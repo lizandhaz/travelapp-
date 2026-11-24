@@ -1,22 +1,23 @@
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router, useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, Dimensions, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { Avatar } from '@/components/Avatar';
 import { PlusIcon, SlidersIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
+import { ProfileStats, ProfileTop, TasteTags, TripsSection } from '@/components/profile';
 import { TravelMapCard } from '@/components/TravelMap';
 import { TripCard } from '@/components/trip/TripCard';
-import { Button, Card, Chip, IconCircle, Screen, SectionHeader, toneFill, type Tone } from '@/components/ui';
+import { Button, Card, IconCircle, Screen, SectionHeader } from '@/components/ui';
 import { Row, SavedTripCard } from '@/components/cards';
 import { ListCover } from '@/components/lists';
 import { useSavedTrips } from '@/lib/reactions';
 import { fetchFollows, type Follows } from '@/lib/friends';
-import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { colors, GUTTER, radius } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
-import { TASTE_LABELS, useTaste } from '@/lib/taste';
+import { useTaste } from '@/lib/taste';
 import { beenPlaces, wishPlaces } from '@/lib/travelPlaces';
 import { boardMeta, fetchBoards, type Board } from '@/lib/boards';
 import { countriesIn, fetchMyTrips, setProfilePicture, type Trip } from '@/lib/trips';
@@ -64,33 +65,25 @@ export default function You() {
   const been = useMemo(() => beenPlaces(list), [list]);
   const wish = useMemo(() => wishPlaces(boards.find((x) => x.kind === 'wish')?.items ?? []), [boards]);
 
-  // Your trips: newest first by default, or oldest first / top rated, and a year filter.
-  const [order, setOrder] = useState<'newest' | 'oldest' | 'top'>('newest');
-  const [year, setYear] = useState<string | null>(null);
-  const years = useMemo(() => [...new Set(list.map((t) => t.month.slice(0, 4)))].sort().reverse(), [list]);
-  const shown = useMemo(() => {
-    const byDate = (a: Trip, b: Trip) => a.month.localeCompare(b.month) || a.createdAt.localeCompare(b.createdAt);
-    const sorted = [...list].sort((a, b) => (order === 'top' ? b.score - a.score || byDate(b, a) : order === 'newest' ? byDate(b, a) : byDate(a, b)));
-    return year ? sorted.filter((t) => t.month.startsWith(year)) : sorted;
-  }, [list, order, year]);
   const cardWidth = (Math.min(Dimensions.get('window').width, 480) - GUTTER * 2 - 14) / 2;
 
   return (
     <Screen tabBar>
-      <View style={{ paddingHorizontal: GUTTER, paddingTop: 20, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-        <ProfilePicture name={name} />
-        <View style={{ flex: 1 }}>
-          <Text variant="title" style={{ fontSize: 28, lineHeight: 32 }}>
-            {name}
-          </Text>
-          <Text variant="small">
-            @{profile?.handle ?? '…'} · {profile?.isPublic ? 'Public profile' : 'Private account'}
-          </Text>
-        </View>
-        <IconCircle label="Settings" onPress={() => router.push('/settings')}>
-          <SlidersIcon color={colors.ink} />
-        </IconCircle>
-      </View>
+      <ProfileTop
+        picture={<ProfilePicture name={name} />}
+        name={name}
+        line={`@${profile?.handle ?? '…'} · ${profile?.isPublic ? 'Public profile' : 'Private account'}`}
+        counts={[
+          { label: 'Followers', n: follows?.followers.length, onPress: () => router.push({ pathname: '/people', params: { tab: 'followers' } }) },
+          { label: 'Following', n: follows?.following.length, onPress: () => router.push({ pathname: '/people', params: { tab: 'following' } }) },
+          ...(follows?.requests.length ? [{ label: 'Requests', n: follows.requests.length, onPress: () => router.push({ pathname: '/people', params: { tab: 'requests' } }) }] : []),
+        ]}
+        right={
+          <IconCircle label="Settings" onPress={() => router.push('/settings')}>
+            <SlidersIcon color={colors.ink} />
+          </IconCircle>
+        }
+      />
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 20, flexDirection: 'row', gap: 10 }}>
         <Button title="Find friends" kind="outline" size="sm" style={{ flex: 1 }} onPress={() => router.push('/people')} />
@@ -99,37 +92,8 @@ export default function You() {
         </Link>
       </View>
 
-      <View style={{ marginHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', gap: 8 }}>
-        <Stat label="Trips" value={list.length} tone="blush" />
-        <Stat label="Countries" value={countriesIn(list)} tone="sage" />
-        <Stat label="Of the world" value={worldShare(countriesIn(list))} tone="sky" />
-      </View>
-
-      {/* Followers and following: tap either to see who. */}
-      <Card style={{ marginHorizontal: GUTTER, marginTop: 10, flexDirection: 'row' }}>
-        <FollowCount label="Followers" n={follows?.followers.length} onPress={() => router.push({ pathname: '/people', params: { tab: 'followers' } })} />
-        <View style={{ width: 1, backgroundColor: colors.line }} />
-        <FollowCount label="Following" n={follows?.following.length} onPress={() => router.push({ pathname: '/people', params: { tab: 'following' } })} />
-        {!!follows?.requests.length && (
-          <>
-            <View style={{ width: 1, backgroundColor: colors.line }} />
-            <FollowCount label="Requests" n={follows.requests.length} onPress={() => router.push({ pathname: '/people', params: { tab: 'requests' } })} />
-          </>
-        )}
-      </Card>
-
-      {taste.tastes.length > 0 && (
-        <View style={{ paddingHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
-          <Text variant="label">Your taste</Text>
-          {taste.tastes.map((t) => (
-            <View key={t} style={{ borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
-              <Text variant="small" style={{ color: colors.ink }}>
-                {TASTE_LABELS[t] ?? t}
-              </Text>
-            </View>
-          ))}
-        </View>
-      )}
+      <ProfileStats trips={list.length} countries={countriesIn(list)} />
+      <TasteTags label="Your taste" tastes={taste.tastes} />
 
       {trips && <TravelMapCard been={been} wish={wish} countries={countriesIn(list)} />}
 
@@ -156,88 +120,37 @@ export default function You() {
         </View>
       )}
 
-      <View style={{ paddingHorizontal: GUTTER, marginTop: 30, gap: 16 }}>
-        <AccentTitle before="Your" accent="trips" variant="heading" />
-        {error ? (
-          <Card style={{ padding: 16, gap: 8 }}>
-            <Text variant="body">{error}</Text>
-            <Pressable accessibilityRole="button" onPress={() => load()} hitSlop={8}>
-              <Text variant="link">Try again</Text>
-            </Pressable>
-          </Card>
-        ) : !trips ? (
-          <ActivityIndicator color={colors.accent} />
-        ) : trips.length === 0 ? (
-          <Card style={{ padding: 20, gap: 12, alignItems: 'flex-start' }}>
-            <Text variant="body">No trips yet. Add the last place you went and how it was.</Text>
-            <Link href="/add" asChild>
-              <Button title="Add your first trip" />
-            </Link>
-          </Card>
-        ) : (
-          <View style={{ gap: 14 }}>
-            <View accessibilityRole="tablist" accessibilityLabel="Order your trips" style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-              {(
-                [
-                  ['newest', 'Newest'],
-                  ['oldest', 'Oldest'],
-                  ['top', 'Top rated'],
-                ] as const
-              ).map(([id, label]) => (
-                <Chip key={id} label={label} selected={order === id} onPress={() => setOrder(id)} accessibilityLabel={`Order: ${label}`} />
-              ))}
-            </View>
-            {years.length > 1 && (
-              <View style={{ marginHorizontal: -GUTTER }}>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: GUTTER }}>
-                  <YearChip label="All years" selected={year == null} onPress={() => setYear(null)} />
-                  {years.map((y) => (
-                    <YearChip key={y} label={y} selected={year === y} onPress={() => setYear(year === y ? null : y)} />
-                  ))}
-                </ScrollView>
-              </View>
-            )}
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 14, rowGap: 18 }}>
-              {shown.map((t) => (
-                <TripCard key={t.id} trip={t} width={cardWidth} />
-              ))}
-            </View>
-          </View>
-        )}
-      </View>
+      {error ? (
+        <Card style={{ marginHorizontal: GUTTER, marginTop: 30, padding: 16, gap: 8 }}>
+          <Text variant="body">{error}</Text>
+          <Pressable accessibilityRole="button" onPress={() => load()} hitSlop={8}>
+            <Text variant="link">Try again</Text>
+          </Pressable>
+        </Card>
+      ) : !trips ? (
+        <ActivityIndicator color={colors.accent} style={{ marginTop: 30 }} />
+      ) : (
+        <TripsSection
+          title={['Your', 'trips']}
+          trips={list}
+          when={tripWhen}
+          score={tripScore}
+          render={(t) => <TripCard key={t.id} trip={t} width={cardWidth} />}
+          empty={
+            <Card style={{ padding: 20, gap: 12, alignItems: 'flex-start' }}>
+              <Text variant="body">No trips yet. Add the last place you went and how it was.</Text>
+              <Link href="/add" asChild>
+                <Button title="Add your first trip" />
+              </Link>
+            </Card>
+          }
+        />
+      )}
     </Screen>
   );
 }
 
-/** A small year filter pill ("2026"). */
-function YearChip({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityState={{ selected }}
-      accessibilityLabel={label === 'All years' ? 'Show trips from all years' : `Show trips from ${label}`}
-      style={{ borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5, backgroundColor: selected ? colors.sage + '73' : 'transparent', borderWidth: 1, borderColor: selected ? 'transparent' : colors.line }}
-    >
-      <Text variant="small" style={{ color: colors.ink, fontVariant: ['tabular-nums'] }}>
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
 
-function Stat({ label, value, tone }: { label: string; value: string | number; tone: Tone }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', paddingVertical: 14, borderRadius: radius.md, backgroundColor: toneFill(tone) }}>
-      <Text variant="title" style={{ fontSize: 26, lineHeight: 30 }}>
-        {value}
-      </Text>
-      <Text variant="label" style={{ fontSize: 10, marginTop: 2 }}>
-        {label}
-      </Text>
-    </View>
-  );
-}
 
 /** Your picture (or initials). Tap it to choose a photo. */
 function ProfilePicture({ name }: { name: string }) {
@@ -297,19 +210,8 @@ function ProfilePicture({ name }: { name: string }) {
   );
 }
 
-/** How much of the world you've been to, out of the 195 countries: "2.6%" (one decimal under 10%), "12%". */
-function worldShare(countries: number): string {
-  const pct = (countries / 195) * 100;
-  return `${pct < 10 ? pct.toFixed(1).replace(/\.0$/, '') : Math.round(pct)}%`;
-}
 
-function FollowCount({ label, n, onPress }: { label: string; n: number | undefined; onPress: () => void }) {
-  return (
-    <Pressable onPress={onPress} accessibilityRole="link" accessibilityLabel={`${n ?? 0} ${label.toLowerCase()}`} style={({ pressed }) => ({ flex: 1, alignItems: 'center', paddingVertical: 12, opacity: pressed ? 0.7 : 1 })}>
-      <Text style={{ fontFamily: fonts.display, fontSize: 20, lineHeight: 26, color: colors.ink }}>{n ?? '–'}</Text>
-      <Text variant="label" style={{ fontSize: 10 }}>
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
+
+// Stable helpers for TripsSection (outside the component, so sorting isn't redone every render).
+const tripWhen = (t: Trip) => `${t.month}|${t.createdAt}`;
+const tripScore = (t: Trip) => t.score;

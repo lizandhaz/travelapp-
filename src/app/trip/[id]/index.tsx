@@ -5,6 +5,7 @@ import { ActivityIndicator, Dimensions, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ForkIcon } from '@/components/Icons';
+import { placeSlugForItem } from '@/components/lists';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, Shade } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
@@ -12,6 +13,7 @@ import { Text } from '@/components/Text';
 import { BackButton, Button, Card, ErrorNotice, Notice, Screen } from '@/components/ui';
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { MONTH_NAMES_SHORT, monthIndexOf, monthYear, yearOf } from '@/lib/months';
+import { fitLines, fitWordSize } from '@/lib/fit';
 import { countryOf } from '@/lib/knownPlaces';
 import { photoForPlaceName } from '@/lib/sample';
 import { scoreWord } from '@/lib/score';
@@ -83,7 +85,12 @@ export default function TripScreen() {
 
   const [main, ...more] = trip.stops;
   const nights = trip.stops.reduce((n, s) => n + (s.nights ?? 0), 0);
-  const h = Math.min(Dimensions.get('window').width, 480) * 0.95;
+  // The place's own page (where friends stayed and ate, things to do), when there is one.
+  const guide = placeSlugForItem({ slug: null, name: main.name });
+  const screenW = Math.min(Dimensions.get('window').width, 480);
+  const h = screenW * 0.95;
+  // Big, but each word on one line and clear of the score stamp (lib/fit.ts).
+  const titleSize = fitWordSize(main.name, screenW - GUTTER * 2 - 100, 46, 28);
   const summary = [
     more.length ? `${trip.stops.length} places` : null,
     trip.stay ? '1 stay' : null,
@@ -100,10 +107,12 @@ export default function TripScreen() {
         <View style={{ paddingHorizontal: GUTTER, alignItems: 'flex-start' }}>
           <BackButton onPhoto />
         </View>
-        <View style={{ paddingHorizontal: GUTTER, marginTop: 24, flexDirection: 'row', alignItems: 'flex-end' }}>
+        <View style={{ paddingHorizontal: GUTTER, marginTop: 24, flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
           <View style={{ flex: 1, gap: 8 }}>
             <MonthPill month={monthYear(trip.month).toUpperCase()} onPhoto />
-            <Text style={{ fontFamily: fonts.displayBold, fontSize: 46, lineHeight: 48, color: colors.onDark }}>{main.name}</Text>
+            <Text {...fitLines(main.name)} style={{ fontFamily: fonts.displayBold, fontSize: titleSize, lineHeight: Math.round(titleSize * 1.05), color: colors.onDark }}>
+              {main.name}
+            </Text>
             {!!countryOf(main) && (
               <Text variant="body" style={{ color: colors.onDark }}>
                 {countryOf(main)}
@@ -210,6 +219,7 @@ export default function TripScreen() {
               {shareNote}
             </Text>
           )}
+          {!!guide && <Button title={`More about ${main.name}`} kind="outline" onPress={() => router.push(`/place/${guide}`)} />}
           <Link href={`/trip/${trip.id}/edit`} asChild>
             <Button title="Edit trip" />
           </Link>

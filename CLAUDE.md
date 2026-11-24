@@ -133,7 +133,7 @@ src/
                           I look at, clear viewed places, sign out), opened from You
     place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, On the map, best time, what friends said, where to stay/eat, things to do,
                           culture and top tips, "I've been" (opens Add a trip with the place filled in)
-    trip/[id]/index.tsx   One of your trips, with Share with a friend (lib/share.ts tripShareText: place, month, score, who/nights, note, stay,
+    trip/[id]/index.tsx   One of your trips (title sized with fitWordSize/fitLines beside the stamp), with Share with a friend, "More about <place>" (when the place has a page) (lib/share.ts tripShareText: place, month, score, who/nights, note, stay,
                           restaurants, tip as plain text; never a location or link), Edit and Delete (confirm first)
     trip/[id]/edit.tsx    Edit a trip (same TripForm, prefilled)
     +not-found.tsx        "Lost in the post"

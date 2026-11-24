@@ -10,6 +10,8 @@ import { useTaste } from '@/lib/taste';
 import { formatScore, scoreWord } from '@/lib/score';
 import { getTrip, tripId } from '@/lib/friendTrips';
 import { personHref } from '@/lib/samplePeople';
+import { photoForActivity } from '@/lib/sample';
+import { PhotoTile } from './Photo';
 import { Avatar } from './Avatar';
 import { Row } from './cards';
 import { ScoreStamp } from './ScoreStamp';
@@ -370,8 +372,9 @@ export function DoRow({ dos, at }: { dos: PlaceDetail['dos']; at?: SpotPlace }) 
           <View
             accessible
             accessibilityLabel={[d.tag, d.name, d.what, d.from ? `${d.gem ? 'found by' : 'from'} ${d.from}` : null].filter(Boolean).join(', ')}
-            style={{ width: 220, flex: 1, borderRadius: radius.lg, padding: 16, paddingRight: 44, backgroundColor: d.gem ? colors.ink : colors.card, borderWidth: d.gem ? 0 : 1, borderColor: colors.line }}
+            style={{ width: 220, flex: 1, borderRadius: radius.lg, overflow: 'hidden', padding: 16, paddingRight: 44, backgroundColor: d.gem ? colors.ink : colors.card, borderWidth: d.gem ? 0 : 1, borderColor: colors.line }}
           >
+            {!!photoForActivity(d) && <PhotoTile photo={photoForActivity(d)} shade={false} style={{ height: 120, marginTop: -16, marginLeft: -16, marginRight: -44, marginBottom: 12, borderRadius: 0 }} />}
             <Pill text={d.tag} bg={d.gem ? colors.stamp : tint(colors.stamp, 0.4)} />
             <Text variant="subheading" style={{ marginTop: 10, color: d.gem ? colors.onDark : colors.ink }}>
               {d.name}

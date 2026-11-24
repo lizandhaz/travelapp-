@@ -3,7 +3,7 @@ import { currentMonth } from './months';
 import type { PhotoName } from './photos';
 import { placeDetails } from './placeDetails';
 import { featuresForSlug, parseStaySub } from './placeFeatures';
-import { board, friendsFeed, getPlace, places, type BoardItem, type RowItem } from './sample';
+import { board, friendsFeed, getPlace, photoForActivity, places, type BoardItem, type RowItem } from './sample';
 import { describeQuery, hasCriteria, parseTripQuery, searchPlaces, type SearchablePlace } from './tripQuery';
 
 /**
@@ -145,7 +145,7 @@ export const itemCollections: ItemCollection[] = [
     title: 'Hidden gems',
     items: () =>
       gather((slug, place, photo) =>
-        (placeDetails[slug]?.dos ?? []).filter((d) => d.gem).map((d) => ({ key: `${slug}-${d.name}`, slug, place, kind: 'Hidden gem', scoreKind: 'Do' as const, name: d.name, what: d.what, photo })),
+        (placeDetails[slug]?.dos ?? []).filter((d) => d.gem).map((d) => ({ key: `${slug}-${d.name}`, slug, place, kind: 'Hidden gem', scoreKind: 'Do' as const, name: d.name, what: d.what, photo: photoForActivity(d) ?? photo })),
       ),
   },
   {
@@ -171,7 +171,7 @@ export const itemCollections: ItemCollection[] = [
     title: 'Things to do',
     items: () =>
       gather((slug, place, photo) =>
-        (placeDetails[slug]?.dos ?? []).filter((d) => !d.gem).map((d) => ({ key: `${slug}-${d.name}`, slug, place, kind: d.tag, scoreKind: 'Do' as const, name: d.name, what: d.what, photo })),
+        (placeDetails[slug]?.dos ?? []).filter((d) => !d.gem).map((d) => ({ key: `${slug}-${d.name}`, slug, place, kind: d.tag, scoreKind: 'Do' as const, name: d.name, what: d.what, photo: photoForActivity(d) ?? photo })),
       ),
   },
   {

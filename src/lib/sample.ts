@@ -1716,6 +1716,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   'bora bora': ['own-borabora-beach', 'own-borabora-pool', 'own-borabora-fish', 'own-water-villas'], 'french polynesia': ['own-borabora-beach', 'own-borabora-pool'],
   kyoto: ['own-kyoto-blossom', 'own-kyoto-pagoda', 'own-kyoto-river'], arashiyama: 'own-kyoto-river', 'mount fuji': 'own-kyoto-pagoda', japan: ['own-kyoto-blossom', 'own-kyoto-pagoda'],
   marrakech: ['own-marrakech-koutoubia', 'own-marrakech-rooftops'], morocco: ['own-marrakech-koutoubia', 'own-marrakech-rooftops'],
+  'sri lanka': ['own-srilanka-bay', 'own-srilanka-sigiriya'], sigiriya: 'own-srilanka-sigiriya', hiriketiya: 'own-srilanka-bay', galle: ['own-srilanka-bay', 'own-srilanka-sigiriya'], mirissa: 'own-srilanka-bay', weligama: 'own-srilanka-bay', tangalle: 'own-srilanka-bay', unawatuna: 'own-srilanka-bay', bentota: 'own-srilanka-bay', kandy: 'own-srilanka-sigiriya', ella: 'own-srilanka-sigiriya', dambulla: 'own-srilanka-sigiriya',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 
@@ -1742,6 +1743,11 @@ export function photoForPlaceName(name: string, seed = ''): PhotoName | null {
   if (!Array.isArray(own)) return own;
   const pick = [...seed].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0);
   return own[pick % own.length];
+}
+
+/** A photo for a thing to do, from what it is: turtles get the owner's turtle photo (owner, Nov 2026). */
+export function photoForActivity(d: { name: string; what?: string | null }): PhotoName | null {
+  return /turtle/i.test(`${d.name} ${d.what ?? ''}`) ? 'own-srilanka-turtles' : null;
 }
 
 /** Everything in the sample content about one place (for its page). */

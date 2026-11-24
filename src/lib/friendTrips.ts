@@ -29,7 +29,9 @@ export type FriendTrip = {
   country?: string;
   /** A real person's profile picture (private link), used instead of `face`. */
   faceUrl?: string | null;
-  stay: { name: string; type: string; score: number | null; sub: string | null; photo: PhotoName | null } | null;
+  stay: { name: string; type: string; score: number | null; sub: string | null; photo: PhotoName | null; wouldReturn?: boolean | null } | null;
+  /** "Would you go back?" (owner, Nov 2026). null = not answered. */
+  wouldReturn?: boolean | null;
   eats: PlaceDetail['eats'];
   dos: PlaceDetail['dos'];
   tips: PlaceDetail['tips'];
@@ -65,6 +67,9 @@ const EXTRAS: Record<string, { companions: Companions; nights: number }> = {
 };
 
 const isPhoto = (name: string): name is PhotoName => name in photos;
+
+/** Sample friends' "Would you go back?": yes for 8.5 and over, no under 7, otherwise not answered. */
+export const sampleWouldReturn = (score: number): boolean | null => (score >= 8.5 ? true : score < 7 ? false : null);
 const stripQuotes = (q: string | null) => (q ? q.replace(/^[“"]|[”"]$/g, '') : null);
 
 export function getTrip(who: string, slug: string): FriendTrip | null {
@@ -90,12 +95,13 @@ export function getTrip(who: string, slug: string): FriendTrip | null {
     score: feed?.score ?? said!.score!,
     quote: stripQuotes(feed?.quote ?? said?.quote ?? null),
     ...extras,
+    wouldReturn: sampleWouldReturn(feed?.score ?? said!.score!),
     // A feed post without photos stays without photos on their trip and postcard too.
     photos: feed && !feed.photo ? [] : [...new Set([...(feed?.photo ? [feed.photo] : []), ...more])],
     stay: feed
-      ? { name: feed.stayName, type: feed.stayType, score: feed.stayScore, sub: stayed?.sub ?? null, photo: stayed?.photo ?? null }
+      ? { name: feed.stayName, type: feed.stayType, score: feed.stayScore, sub: stayed?.sub ?? null, photo: stayed?.photo ?? null, wouldReturn: feed.stayScore != null ? sampleWouldReturn(feed.stayScore) : null }
       : stayed
-        ? { name: stayed.name, type: stayed.type, score: stayed.score, sub: stayed.sub, photo: stayed.photo }
+        ? { name: stayed.name, type: stayed.type, score: stayed.score, sub: stayed.sub, photo: stayed.photo, wouldReturn: stayed.score != null ? sampleWouldReturn(stayed.score) : null }
         : null,
     eats: theirs(detail?.eats).slice(0, 4),
     dos: theirs(detail?.dos).slice(0, 4),
@@ -109,4 +115,17 @@ export function getFriendTrip(id: string): FriendTrip | null {
   if (dash < 1) return null;
   const who = id.slice(0, dash);
   return getTrip(who.charAt(0).toUpperCase() + who.slice(1), id.slice(dash + 1));
+}
+
+/** "3 of 4 friends would go back": friends who answered for a sample place, and how many said yes. */
+export function wouldGoBack(slug: string, who: string[]): { yes: number; answered: number } {
+  let yes = 0;
+  let answered = 0;
+  for (const w of new Set(who)) {
+    const t = getTrip(w, slug);
+    if (t?.wouldReturn == null) continue;
+    answered++;
+    if (t.wouldReturn) yes++;
+  }
+  return { yes, answered };
 }

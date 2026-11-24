@@ -97,6 +97,7 @@ export default function TripScreen() {
     trip.stay ? '1 stay' : null,
     trip.restaurants.length ? `${trip.restaurants.length} ${trip.restaurants.length === 1 ? 'restaurant' : 'restaurants'}` : null,
     trip.tip ? '1 tip' : null,
+    trip.wouldReturn === true ? 'Would go back' : trip.wouldReturn === false ? 'Wouldn’t go back' : null,
   ].filter(Boolean);
 
   return (
@@ -186,6 +187,7 @@ export default function TripScreen() {
                   </Text>
                 </View>
                 <Text variant="subheading">{trip.stay.name}</Text>
+                {trip.stay.wouldReturn != null && <Text variant="tiny">{trip.stay.wouldReturn ? 'Would stay again' : 'Wouldn’t stay again'}</Text>}
               </View>
               {trip.stay.score != null && <ScoreStamp score={trip.stay.score} tone="olive" label="Stay" />}
             </Card>

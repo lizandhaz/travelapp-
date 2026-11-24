@@ -96,6 +96,8 @@ export function TripForm({
   const [stayName, setStayName] = useState(initial?.stay?.name ?? '');
   const [stayType, setStayType] = useState<StayKind | null>(initial?.stay?.type ?? null);
   const [stayScore, setStayScore] = useState<number | null>(initial?.stay?.score ?? null);
+  const [stayAgain, setStayAgain] = useState<boolean | null>(initial?.stay?.wouldReturn ?? null);
+  const [goBack, setGoBack] = useState<boolean | null>(initial?.wouldReturn ?? null);
   // Best restaurants: one box each, in order (up to 10). Keys keep each box steady as you add or remove.
   const restKey = useRef(1000);
   const [restaurants, setRestaurants] = useState<{ key: number; name: string }[]>(() =>
@@ -155,7 +157,8 @@ export function TripForm({
           { ...place!, nights: nights! },
           ...stops.map((e) => ({ ...e.place!, nights: e.nights ? Number(e.nights) : null })),
         ],
-        stay: hasStay ? { name: stayName.trim(), type: stayType!, score: stayScore } : null,
+        stay: hasStay ? { name: stayName.trim(), type: stayType!, score: stayScore, wouldReturn: stayAgain } : null,
+        wouldReturn: goBack,
         restaurants: restaurants.map((r) => r.name.trim()).filter(Boolean),
         tip: tip.trim() || null,
         companions,
@@ -326,6 +329,7 @@ export function TripForm({
               How was it?
             </Text>
             <ScorePicker value={score} onChange={setScore} label="How was it" bare />
+            <YesNo question="Would you go back?" value={goBack} onChange={setGoBack} />
           </Card>
 
           {/* Optional extras: each row opens in place. */}
@@ -418,6 +422,7 @@ export function TripForm({
                 ))}
               </View>
               <ScorePicker value={stayScore} onChange={setStayScore} label="Stay score (optional)" compact />
+              <YesNo question="Would you stay here again?" value={stayAgain} onChange={setStayAgain} />
             </SheetRow>
             <Divider />
             <SheetRow
@@ -777,6 +782,22 @@ function PhotoThumb({
           <Text style={{ color: colors.onDark, fontFamily: fonts.sansBold, fontSize: 14, lineHeight: 16 }}>×</Text>
         </Pressable>
       )}
+    </View>
+  );
+}
+
+/**
+ * "Would you go back?": Yes / No chips (owner, Nov 2026). Optional: tap the chosen one again to clear it.
+ * Friends then see how many would go back to a place or a stay.
+ */
+function YesNo({ question, value, onChange }: { question: string; value: boolean | null; onChange: (v: boolean | null) => void }) {
+  return (
+    <View style={{ marginTop: 10, alignItems: 'center', gap: 8 }} accessibilityRole="radiogroup" accessibilityLabel={question}>
+      <Text variant="strong">{question}</Text>
+      <View style={{ flexDirection: 'row', gap: 10 }}>
+        <Chip label="Yes" selected={value === true} onPress={() => onChange(value === true ? null : true)} />
+        <Chip label="No" selected={value === false} onPress={() => onChange(value === false ? null : false)} />
+      </View>
     </View>
   );
 }

@@ -39,7 +39,7 @@ export const rows = {
       "rank": "#1",
       "name": "Polignano a Mare",
       "sub": "Puglia, Italy",
-      "photo": null
+      "photo": "own-polignano-cove"
     },
     {
       "slug": "madeira",
@@ -502,7 +502,7 @@ export const rows = {
       "score": 8.6,
       "name": "Positano",
       "sub": "Italy",
-      "photo": null
+      "photo": "own-positano-town"
     },
     {
       "slug": "deia",
@@ -696,7 +696,8 @@ export const places: SamplePlace[] = [
       "own-maldives-palms",
       "own-maldives-sunset-pool",
       "own-maldives-sunset-boat",
-      "maldives-2"
+      "maldives-2",
+      "own-maldives-boardwalk"
     ]
   },
   {
@@ -758,8 +759,10 @@ export const places: SamplePlace[] = [
     "name": "Positano",
     "region": "Italy",
     "score": 8.6,
-    "photo": null,
+    "photo": "own-positano-town",
     "photos": [
+      "own-positano-town",
+      "own-capri-faraglioni"
     ]
   },
   {
@@ -767,8 +770,9 @@ export const places: SamplePlace[] = [
     "name": "Polignano a Mare",
     "region": "Puglia, Italy",
     "score": 8.8,
-    "photo": null,
+    "photo": "own-polignano-cove",
     "photos": [
+      "own-polignano-cove"
     ]
   },
   {
@@ -933,7 +937,7 @@ export const trendingThisMonth: RowItem[] = [
     "rank": "#1 ↑3",
     "name": "Polignano a Mare",
     "sub": "+64% more postcards in October",
-    "photo": null
+    "photo": "own-polignano-cove"
   },
   {
     "slug": "madeira",
@@ -998,7 +1002,7 @@ export const board: BoardItem[] = [
     "slug": "orlando"
   },
   {
-    "photo": null,
+    "photo": "own-polignano-cove",
     "kind": "place",
     "score": 8.8,
     "name": "Polignano a Mare, Puglia, Italy",
@@ -1159,7 +1163,7 @@ export const board: BoardItem[] = [
     "slug": "warwick"
   },
   {
-    "photo": null,
+    "photo": "own-positano-town",
     "kind": "Hidden gem",
     "name": "Fornillo beach",
     "sub": "Hidden gem in Positano · found by Priya",
@@ -1261,7 +1265,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": null,
+    "photo": "own-polignano-cove",
     "kind": "Do",
     "name": "Sea cave boat trip",
     "sub": "Boat · Polignano a Mare",
@@ -1724,6 +1728,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   mauritius: ['own-mauritius-aerial', 'own-mauritius-palms'], 'le morne': 'own-mauritius-aerial', 'grand baie': 'own-mauritius-palms', 'belle mare': 'own-mauritius-palms', flic: 'own-mauritius-aerial',
   'la digue': 'own-ladigue-rocks', seychelles: 'own-ladigue-rocks', 'anse source d argent': 'own-ladigue-rocks', praslin: 'own-ladigue-rocks', mahe: 'own-ladigue-rocks',
   palermo: 'own-palermo-cathedral', sicily: 'own-palermo-cathedral',
+  capri: 'own-capri-faraglioni', anacapri: 'own-capri-faraglioni', 'amalfi coast': ['own-positano-town', 'own-capri-faraglioni'], amalfi: 'own-positano-town', ravello: 'own-positano-town', sorrento: 'own-capri-faraglioni', positano: 'own-positano-town', 'polignano a mare': 'own-polignano-cove', polignano: 'own-polignano-cove', puglia: 'own-polignano-cove', bari: 'own-polignano-cove', monopoli: 'own-polignano-cove',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

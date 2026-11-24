@@ -15,6 +15,7 @@ import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { countryOf } from '@/lib/knownPlaces';
 import { placeDetails } from '@/lib/placeDetails';
+import { wouldGoBack } from '@/lib/friendTrips';
 import { aboutPlace, getPlace } from '@/lib/sample';
 import { stayKind } from '@/lib/placeFeatures';
 import { tasteNote, useTaste } from '@/lib/taste';
@@ -121,6 +122,14 @@ export default function PlaceScreen() {
       {(said.length > 0 || moreSaid.length > 0) && (
         <View style={{ marginTop: 28 }}>
           <SectionHeader>What friends said</SectionHeader>
+          {(() => {
+            const g = wouldGoBack(slug, [...said.map((s) => s.who), ...moreSaid.map((s) => s.who)]);
+            return g.answered > 0 ? (
+              <Text variant="strong" style={{ paddingHorizontal: GUTTER, marginTop: -4, marginBottom: 12, color: colors.olive }} accessibilityLabel={`${g.yes} of ${g.answered} friends would go back`}>
+                ↺ {g.yes} of {g.answered} {g.answered === 1 ? 'friend' : 'friends'} would go back
+              </Text>
+            ) : null;
+          })()}
           <View style={{ paddingHorizontal: GUTTER, gap: 12 }}>
             {said.map((s) => (
               <Card key={s.who + s.month} style={{ padding: 16, gap: 12 }}>

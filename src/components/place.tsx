@@ -272,7 +272,7 @@ function SpotCard({
   a11y: string;
 }) {
   return (
-    <View accessible accessibilityLabel={a11y} style={{ width: tall ? 200 : 180, height: 220, borderRadius: radius.lg, backgroundColor: tone, padding: 14, paddingTop: 16, borderWidth: featured ? 2 : 0, borderColor: colors.olive }}>
+    <View accessible accessibilityLabel={a11y} style={{ width: tall ? 200 : 180, minHeight: 230, borderRadius: radius.lg, backgroundColor: tone, padding: 14, paddingTop: 16, borderWidth: featured ? 2 : 0, borderColor: colors.olive }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingRight: 30 }}>
         <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' }}>{icon}</View>
         {!!kind && (
@@ -281,7 +281,15 @@ function SpotCard({
           </Text>
         )}
       </View>
-      <Text numberOfLines={2} style={{ fontFamily: fonts.display, fontSize: 19, lineHeight: 23, color: colors.ink, marginTop: 14 }}>
+      {featured && (
+        // Its own line near the top, so it never wraps beside the score stamp (owner, Nov 2026).
+        <View style={{ alignSelf: 'flex-start', marginTop: 10, backgroundColor: colors.card, borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 3 }}>
+          <Text variant="tiny" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} style={{ color: colors.olive, fontFamily: fonts.sansSemiBold }}>
+            ✦ We think you’d like it
+          </Text>
+        </View>
+      )}
+      <Text numberOfLines={2} style={{ fontFamily: fonts.display, fontSize: 19, lineHeight: 23, color: colors.ink, marginTop: featured ? 8 : 14 }}>
         {name}
       </Text>
       {lines.filter(Boolean).map((l, k) => (
@@ -291,8 +299,8 @@ function SpotCard({
       ))}
       <View style={{ flex: 1 }} />
       <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 12, gap: 8 }}>
-        <Text variant="tiny" numberOfLines={2} style={{ flex: 1, color: colors.accentText }}>
-          {featured ? '✦ We think you’d like it' : (footer ?? '')}
+        <Text variant="tiny" numberOfLines={1} style={{ flex: 1, color: colors.accentText }}>
+          {footer ?? ''}
         </Text>
         {score != null && <ScoreStamp score={score} size="sm" tone={scoreTone} label={`${formatScore(score)} out of 10`} />}
       </View>

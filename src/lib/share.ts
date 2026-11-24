@@ -36,6 +36,7 @@ export function tripShareText(trip: Trip): string {
   const who = companionsLabel(trip.companions);
   const lines = [`${where} · ${longMonth(trip.month)}`, `${formatScore(trip.score)}/10 – ${scoreWord(trip.score)}`];
   const details = [who && (trip.companions === 'solo' ? 'Solo' : `With ${who.toLowerCase()}`), nights ? `${nights} ${nights === 1 ? 'night' : 'nights'}` : null].filter(Boolean);
+  if (trip.wouldReturn != null) details.push(trip.wouldReturn ? 'Would go back' : 'Wouldn’t go back');
   if (details.length) lines.push(details.join(' · '));
   if (more.length) lines.push(`Also: ${more.map((s) => s.name).join(', ')}`);
   if (trip.note) lines.push('', `“${trip.note}”`);

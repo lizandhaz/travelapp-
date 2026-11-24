@@ -27,7 +27,7 @@ export const companionsLabel = (c: Companions | null) => COMPANIONS.find(([id]) 
 
 export type Place = { name: string; country: string };
 export type TripStop = Place & { nights: number | null };
-export type TripStay = { name: string; type: StayKind; /** Optional (owner, Nov 2026). */ score: number | null };
+export type TripStay = { name: string; type: StayKind; /** Optional (owner, Nov 2026). */ score: number | null; /** Would you stay there again? null = not answered. */ wouldReturn?: boolean | null };
 
 export type Trip = {
   id: string;
@@ -49,15 +49,17 @@ export type Trip = {
   photoPaths: string[];
   /** When it was added, ISO date-time. */
   createdAt: string;
+  /** "Would you go back?" (owner, Nov 2026). null = not answered. */
+  wouldReturn: boolean | null;
 };
 
 /** What the Add a trip form sends to save_trip(). */
 export type TripInput = Omit<Trip, 'id' | 'createdAt' | 'ownerId'> & { id?: string };
 
 export const TRIP_SELECT = `
-  id, owner_id, trip_month, score, visibility, companions, note, photo_paths, created_at,
+  id, owner_id, trip_month, score, visibility, companions, note, photo_paths, created_at, would_return,
   trip_stops ( position, nights, destinations ( name, country ) ),
-  stays ( name, type, score ),
+  stays ( name, type, score, would_return ),
   food_picks ( name, position ),
   top_tips ( tip )
 `;
@@ -72,8 +74,9 @@ export type TripRow = {
   note: string | null;
   photo_paths: string[] | null;
   created_at: string;
+  would_return?: boolean | null;
   trip_stops: { position: number; nights: number | null; destinations: Place | Place[] | null }[] | null;
-  stays: TripStay[] | null;
+  stays: (Omit<TripStay, 'wouldReturn'> & { would_return?: boolean | null })[] | null;
   food_picks: { name: string; position: number | null }[] | null;
   top_tips: { tip: string }[] | null;
 };
@@ -92,13 +95,14 @@ export function fromRow(r: TripRow): Trip {
     score: Number(r.score),
     visibility: r.visibility,
     stops,
-    stay: r.stays?.[0] ? { ...r.stays[0], score: r.stays[0].score == null ? null : Number(r.stays[0].score) } : null,
+    stay: r.stays?.[0] ? { name: r.stays[0].name, type: r.stays[0].type, score: r.stays[0].score == null ? null : Number(r.stays[0].score), wouldReturn: r.stays[0].would_return ?? null } : null,
     restaurants: [...(r.food_picks ?? [])].sort((a, b) => (a.position ?? 0) - (b.position ?? 0)).map((f) => f.name),
     tip: r.top_tips?.[0]?.tip ?? null,
     companions: r.companions,
     note: r.note,
     photoPaths: r.photo_paths ?? [],
     createdAt: r.created_at,
+    wouldReturn: r.would_return ?? null,
   };
 }
 
@@ -132,7 +136,8 @@ export async function saveTrip(input: TripInput): Promise<string> {
       score: input.score,
       visibility: input.visibility,
       stops: input.stops.map((s) => ({ name: s.name.trim(), country: s.country.trim(), nights: s.nights })),
-      stay: input.stay,
+      stay: input.stay ? { name: input.stay.name, type: input.stay.type, score: input.stay.score, would_return: input.stay.wouldReturn ?? null } : null,
+      would_return: input.wouldReturn,
       restaurants: input.restaurants.map((r) => r.trim()).filter(Boolean),
       tip: input.tip?.trim() || null,
       companions: input.companions,

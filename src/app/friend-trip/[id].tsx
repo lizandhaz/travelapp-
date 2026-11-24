@@ -67,10 +67,11 @@ export default function FriendTripScreen() {
           </View>
           <ScoreStamp score={trip.score} size="md" label={`${trip.who}'s score for ${trip.place}`} />
         </View>
-        {(!!trip.companions || !!trip.nights) && (
+        {(!!trip.companions || !!trip.nights || trip.wouldReturn != null) && (
           <View style={{ flexDirection: 'row', gap: 10 }}>
             {!!trip.companions && <Fact label="Went" value={companionsLabel(trip.companions)} />}
             {!!trip.nights && <Fact label="For" value={`${trip.nights} ${trip.nights === 1 ? 'night' : 'nights'}`} />}
+            {trip.wouldReturn != null && <Fact label="Go back?" value={trip.wouldReturn ? 'Yes' : 'No'} />}
           </View>
         )}
         {!!trip.quote && <Text variant="quote">“{trip.quote}”</Text>}
@@ -101,6 +102,11 @@ export default function FriendTripScreen() {
             <View style={{ flex: 1 }}>
               <Text variant="subheading">{stay.name}</Text>
               <Text variant="tiny">{[stay.type, stay.sub].filter(Boolean).join(' · ')}</Text>
+              {stay.wouldReturn != null && (
+                <Text variant="tiny" style={{ marginTop: 2, color: colors.olive }}>
+                  {stay.wouldReturn ? `${trip.who} would stay again` : `${trip.who} wouldn’t stay again`}
+                </Text>
+              )}
             </View>
             {stay.score != null && <ScoreStamp score={stay.score} size="sm" tone="olive" label={`${trip.who}'s score for ${stay.name}`} />}
           </View>

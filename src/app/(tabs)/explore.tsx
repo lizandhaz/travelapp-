@@ -1,16 +1,16 @@
 import { useMemo, useRef, useState, type ComponentRef } from 'react';
-import { ActivityIndicator, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Dimensions, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccentTitle } from '@/components/AccentTitle';
-import { BoardTile, Row, TasteCard, TrendCard } from '@/components/cards';
+import { BoardTile, PlaceCard, Row, TasteCard, TrendCard } from '@/components/cards';
 import { useTaste } from '@/lib/taste';
 import { CollectionTile } from '@/components/explore';
 import { SearchIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
 import { Chip, Input, Screen, SectionHeader } from '@/components/ui';
 import { colors, GUTTER } from '@/constants/theme';
-import { exploreFeed, itemCollections, placeCollections, placesIn, type FeedItem } from '@/lib/explore';
+import { exploreFeed, itemCollections, placeCollections, placesIn, searchTrips, type FeedItem } from '@/lib/explore';
 import { rows, TASTES, trendingThisMonth } from '@/lib/sample';
 
 const STAYS = ['Riad', 'Villa', 'Ryokan', 'Hotel', 'B&B', 'Airbnb', 'Other'];
@@ -61,10 +61,13 @@ export default function Explore() {
     const f = FILTERS.find((x) => x.id === filter)!;
     return feed.filter((b) => f.match(b) && (!words.length || words.some((w) => `${b.name} ${b.sub} ${b.kind}`.toLowerCase().includes(w))));
   }, [feed, filter, words]);
+  // "Beach in February", "romantic weekend", "Greece": the places that fit, with why.
+  const search = useMemo(() => (query.trim() ? searchTrips(query) : null), [query]);
   const visible = shown.slice(0, limit);
   const left = visible.filter((_, i) => i % 2 === 0);
   const right = visible.filter((_, i) => i % 2 === 1);
   const heights = [230, 170, 200, 250, 180];
+  const cardWidth = (Math.min(Dimensions.get('window').width, 480) - GUTTER * 2 - 14) / 2;
 
   // The search bar and chips stay pinned at the top; picking a chip (or searching) jumps down to the feed.
   const insets = useSafeAreaInsets();
@@ -158,9 +161,32 @@ export default function Explore() {
         </View>
 
         <View onLayout={(e) => (spots.current.feed = e.nativeEvent.layout.y)} style={{ paddingTop: 30 }}>
-          <View style={{ paddingHorizontal: GUTTER, marginBottom: 14 }}>
-            <AccentTitle before="Just" accent="for you" variant="heading" />
-          </View>
+          {search && (
+            <View style={{ marginBottom: 30 }}>
+              <View style={{ paddingHorizontal: GUTTER, marginBottom: 6 }}>
+                <AccentTitle before="Best" accent="matches" variant="heading" />
+              </View>
+              <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginBottom: 14 }} accessibilityLabel={`Looking for ${search.understood.join(', ')}`}>
+                Looking for <Text variant="tiny" style={{ color: colors.accentText }}>{search.understood.join(' · ')}</Text>
+              </Text>
+              {search.places.length ? (
+                <View style={{ paddingHorizontal: GUTTER, flexDirection: 'row', flexWrap: 'wrap', gap: 14, rowGap: 22 }}>
+                  {search.places.slice(0, 12).map((p) => (
+                    <PlaceCard key={p.slug} item={p} width={cardWidth} height={cardWidth * 1.1} />
+                  ))}
+                </View>
+              ) : (
+                <Text variant="bodySoft" style={{ paddingHorizontal: GUTTER }}>
+                  No place has all of that yet. Try fewer words, like “beach” or “February”.
+                </Text>
+              )}
+            </View>
+          )}
+          {!(search && shown.length === 0) && (
+            <View style={{ paddingHorizontal: GUTTER, marginBottom: 14 }}>
+              {search ? <AccentTitle before="More" accent="ideas" variant="heading" /> : <AccentTitle before="Just" accent="for you" variant="heading" />}
+            </View>
+          )}
           <View style={{ paddingHorizontal: GUTTER, flexDirection: 'row', gap: 12 }}>
             {[left, right].map((col, c) => (
               <View key={c} style={{ flex: 1 }}>
@@ -175,7 +201,7 @@ export default function Explore() {
               <ActivityIndicator color={colors.muted} />
             </View>
           )}
-          {shown.length === 0 && (
+          {shown.length === 0 && !search && (
             <Text variant="bodySoft" style={{ textAlign: 'center', marginTop: 24, paddingHorizontal: GUTTER }}>
               Nothing matches that yet. Try other words, or tap All.
             </Text>

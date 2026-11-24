@@ -4,6 +4,7 @@ import type { PhotoName } from './photos';
 import { placeDetails } from './placeDetails';
 import { featuresForSlug, parseStaySub } from './placeFeatures';
 import { board, friendsFeed, getPlace, places, type BoardItem, type RowItem } from './sample';
+import { describeQuery, hasCriteria, parseTripQuery, searchPlaces, type SearchablePlace } from './tripQuery';
 
 /**
  * Explore's collections, worked out from each sample place's details (holiday types,
@@ -262,4 +263,49 @@ export function exploreFeed(): FeedItem[] {
     }
   }
   return out;
+}
+
+// ---------------------------------------------------------------------------
+// Search: "beach in February", "romantic weekend", "Greece" (lib/tripQuery.ts)
+// ---------------------------------------------------------------------------
+
+const noFlyTest = (slug: string) => UK.test(region(slug)) || slug === 'paris';
+
+let searchable: SearchablePlace[] | null = null;
+/** Every sample place in the search's terms (worked out once). */
+function searchablePlaces(): SearchablePlace[] {
+  searchable ??= places.map((p) => {
+    const f = featuresForSlug(p.slug);
+    const d = placeDetails[p.slug];
+    return {
+      slug: p.slug,
+      name: p.name,
+      where: `${p.region} ${countryOf({ name: p.name, country: p.region.split(', ').pop() ?? '' })}`,
+      tags: f?.tags ?? {},
+      temps: d?.temps ?? null,
+      bestMonths: d?.bestMonths ?? [],
+      goodFor: d?.goodFor ?? [],
+      priceFrom: price(p.slug),
+      noFly: noFlyTest(p.slug),
+      rating: p.score ?? f?.baseScore ?? null,
+    };
+  });
+  return searchable;
+}
+
+/**
+ * Explore's search. Null when the words carry no meaning ("a nice trip"); otherwise what we
+ * understood ("Beach", "February") and the places that fit, best first, each with why.
+ */
+export function searchTrips(text: string): { understood: string[]; places: RowItem[] } | null {
+  const q = parseTripQuery(text);
+  if (!hasCriteria(q)) return null;
+  const found = searchPlaces(q, searchablePlaces(), thisMonth());
+  return {
+    understood: describeQuery(q),
+    places: found.map((r) => {
+      const p = getPlace(r.slug)!;
+      return { slug: p.slug, name: p.name, sub: r.reasons.slice(0, 3).join(' · ') || p.region, photo: p.photo, score: p.score ?? undefined };
+    }),
+  };
 }

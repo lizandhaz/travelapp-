@@ -698,6 +698,7 @@ export const places: SamplePlace[] = [
       "own-maldives-sunset",
       "own-maldives-hammock",
       "own-maldives-turtle",
+      "own-diving",
       "own-maldives-villas",
       "own-maldives-swings",
       "own-maldives-palms",
@@ -1737,9 +1738,12 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName> = {
   'lake louise': 'own-canada', banff: 'own-canada', 'banff national park': 'own-canada',
   'las vegas': 'own-las-vegas', vegas: 'own-las-vegas',
   'san francisco': 'own-san-francisco',
-  whitsundays: 'own-whitsundays', 'whitsunday islands': 'own-whitsundays', 'whitehaven beach': 'own-whitsundays', 'airlie beach': 'own-whitsundays', 'hamilton island': 'own-whitsundays',
+  whitsundays: 'own-whitsundays', 'whitsunday islands': 'own-whitsundays', 'whitehaven beach': 'own-whitsundays', 'airlie beach': 'own-whitsundays', 'hamilton island': 'own-hamilton-island',
   'walt disney world': 'orlando-1', 'disney world': 'orlando-1', 'magic kingdom': 'orlando-1', kissimmee: 'orlando-1', // orlando-1 is the owner's Disney photo
   avoriaz: 'own-skiing',
+  'las vegas strip': 'own-las-vegas-strip', 'the strip': 'own-las-vegas-strip', bellagio: 'own-las-vegas-strip',
+  'victoria falls': 'own-victoria-falls', livingstone: 'own-victoria-falls', 'mosi oa tunya': 'own-victoria-falls',
+  rottnest: 'own-rottnest', 'rottnest island': 'own-rottnest',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

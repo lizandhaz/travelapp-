@@ -53,7 +53,7 @@ export function placeCollections(): PlaceCollection[] {
       },
     },
     { id: 'islands', title: 'Island escapes', test: (s) => ((tags(s).island ?? 0) >= 0.5 ? kicker(s) || region(s) : false) },
-    { id: 'beaches', title: 'Beach holidays', test: (s) => ((tags(s).beach ?? 0) >= 0.6 ? kicker(s) || region(s) : false) },
+    { id: 'beaches', title: 'Beach holidays', photo: 'own-water-villas', test: (s) => ((tags(s).beach ?? 0) >= 0.6 ? kicker(s) || region(s) : false) },
     {
       id: 'winter-sun',
       title: 'Winter sun',

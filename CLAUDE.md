@@ -159,7 +159,7 @@ src/
                           lineHeight gets lineHeight ≈ 1.28× automatically, so big numbers aren't clipped on iPhone
     AccentTitle.tsx       Heading with one italic word and a terracotta swash ("Where did *you* go?")
     Wordmark.tsx          The app name in spaced serif capitals + terracotta star, and the tagline
-    ScoreStamp.tsx        Score in a perforated stamp: ink on blush (or white on olive for a stay)
+    ScoreStamp.tsx        Score in a perforated stamp: ink on off-white (or white on olive for a stay)
     Photo.tsx             PhotoFill, Shade, PhotoTile (rounded photo), PhotoStamp (photo in a perforated frame)
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
@@ -335,7 +335,8 @@ From the owner's palette (Nov 2026; toned down slightly later that month: accent
 | `mapLand` | `#b9c3ad` | Dotted land on the travel map (light sage) |
 | `ink` | `#353b2c` | Main text (deep olive charcoal) |
 | `muted` | `#646858` | Secondary text, labels |
-| `stamp` | `#e2bdb7` | Score stamps, the + sign (Blush Petal) |
+| `stamp` | `#e2bdb7` | The + sign, gem tags (Blush Petal) |
+| `stampPaper` | `#f8f3e8` | Inside score stamps: warm off-white (owner Nov 2026: not pink) |
 | `sage` | `#a7b39e` | Soft tags (stay type) (Sage Whisper) |
 | `sky` | `#bac6d3` | Quieter months in the best-time chart (Misty Sky) |
 | `accent` | `#ba7e66` | Terracotta Clay: swash under accent words, star, slider fill, large text only |
@@ -363,7 +364,7 @@ Trips without photos use soft blush (`blushSoft`) with dark text (feed posts, sa
 
 - **Wordmark**: the app name in wide-spaced serif capitals with a small terracotta four-point star, and the tagline "Picked by you and those you trust".
 - **AccentTitle**: one italic word with a hand-drawn terracotta swash ("Your *trips*", "Find your *next* trip").
-- **ScoreStamp**: every score sits in a small perforated stamp, dark ink on blush (white on olive for stays).
+- **ScoreStamp**: every score sits in a small perforated stamp, dark ink on warm off-white paper (white on olive for stays).
 - **PhotoStamp**: hero photos and your trips in a white perforated frame with a dotted inner border.
 - **MonthPill**: a trip month in a slightly tilted outline pill ("JUN 2026"). Never a current date or location.
 - **App icon**: still the earlier red stamp with "P". The name is now COVA, so it needs redoing.

@@ -3,12 +3,11 @@ import { useCallback, useState } from 'react';
 import { Dimensions, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Avatar } from '@/components/Avatar';
 import { WantToGoButton } from '@/components/lists';
 import { InviteSheet } from '@/components/InviteSheet';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
-import { BestTimeChart, DoRow, EatRow, MoreAbout, PlaceFacts, PlaceMapSection, SaidList, StayRow, YourScore } from '@/components/place';
+import { BestTimeChart, DoRow, EatRow, FriendName, FriendTripLink, MoreAbout, PlaceFacts, PlaceMapSection, SaidList, StayRow, YourScore } from '@/components/place';
 import { PhotoBadge, Row } from '@/components/cards';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
@@ -125,10 +124,11 @@ export default function PlaceScreen() {
             {said.map((s) => (
               <Card key={s.who + s.month} style={{ padding: 16, gap: 12 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <Avatar face={s.face} name={s.who} size={34} />
-                  <Text variant="strong" style={{ flex: 1 }}>
-                    {s.who}
-                  </Text>
+                  <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                    <FriendName who={s.who} face={s.face} size={34}>
+                      <Text variant="strong">{s.who}</Text>
+                    </FriendName>
+                  </View>
                   <MonthPill month={s.month} />
                 </View>
                 {!!s.quote && <Text variant="quote">{s.quote}</Text>}
@@ -139,12 +139,13 @@ export default function PlaceScreen() {
                   </Text>
                   {s.stayScore != null && <ScoreStamp score={s.stayScore} size="sm" tone="olive" label={s.stayType} />}
                 </View>
+                <FriendTripLink who={s.who} slug={slug} />
               </Card>
             ))}
           </View>
           {moreSaid.length > 0 && (
             <View style={{ marginTop: said.length ? 16 : 0 }}>
-              <SaidList items={moreSaid} />
+              <SaidList items={moreSaid} slug={slug} />
             </View>
           )}
         </View>

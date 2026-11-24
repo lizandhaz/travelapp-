@@ -46,20 +46,21 @@ export default function Explore() {
   const taste = useTaste();
   const [tasteFilter, setTasteFilter] = useState(0);
   const tasteItems = rows.taste
+    .filter((i) => !!i.photo)
     .filter(TASTES[tasteFilter].match)
     .sort((a, b) => (taste.profile.evidence > 0 ? taste.forItem(b).score - taste.forItem(a).score : 0));
   const collections = useMemo(
     () => [
       ...placeCollections().map((c) => ({ id: c.id, title: c.title, cover: c.photo, items: placesIn(c).map((p) => p.photo) })),
       ...itemCollections.map((c) => ({ id: c.id, title: c.title, cover: undefined, items: c.items().map((i) => i.photo) })),
-    ].filter((c) => c.items.length >= 3),
+    ].filter((c) => c.items.length >= 3 && !!(c.cover ?? c.items.find(Boolean))),
     [],
   );
 
   const words = query.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
   const shown = useMemo(() => {
     const f = FILTERS.find((x) => x.id === filter)!;
-    return feed.filter((b) => f.match(b) && (!words.length || words.some((w) => `${b.name} ${b.sub} ${b.kind}`.toLowerCase().includes(w))));
+    return feed.filter((b) => !!b.photo && f.match(b) && (!words.length || words.some((w) => `${b.name} ${b.sub} ${b.kind}`.toLowerCase().includes(w))));
   }, [feed, filter, words]);
   // "Beach in February", "romantic weekend", "Greece": the places that fit, with why.
   const search = useMemo(() => (query.trim() ? searchTrips(query) : null), [query]);
@@ -128,7 +129,7 @@ export default function Explore() {
           </View>
           <Row>
             {collections.map((c) => (
-              <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.cover ?? c.items[0]} count={c.items.length} />
+              <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.cover ?? c.items.find(Boolean) ?? null} count={c.items.length} />
             ))}
           </Row>
         </View>
@@ -136,7 +137,7 @@ export default function Explore() {
         <View style={{ marginTop: 28 }}>
           <SectionHeader>Trending this month</SectionHeader>
           <Row>
-            {trendingThisMonth.map((t) => (
+            {trendingThisMonth.filter((t) => !!t.photo).map((t) => (
               <TrendCard key={t.slug} item={t} width={170} height={180} />
             ))}
           </Row>

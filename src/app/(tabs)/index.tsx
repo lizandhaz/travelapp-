@@ -14,7 +14,7 @@ import { Wordmark } from '@/components/Wordmark';
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { itemCollections, placeCollections, placesIn } from '@/lib/explore';
 import { rankValue } from '@/lib/match';
-import { friendsFeed, PHOTO_CREDITS, places, rows, unreadPostcardCount } from '@/lib/sample';
+import { friendsFeed, places, rows, unreadPostcardCount } from '@/lib/sample';
 import { useTaste } from '@/lib/taste';
 import { feedItemFor, fetchFriendsTrips, type RealFriendTrip } from '@/lib/friendsFeed';
 import { fitLines, fitWordSize } from '@/lib/fit';
@@ -45,13 +45,14 @@ export default function Home() {
   // know your taste, the prototype's picks.
   const picks = personal
     ? places
-        .filter((p) => p.score != null && !t.forSlug(p.slug)?.yours && !t.isSaved(p.slug))
+        .filter((p) => p.score != null && !!p.photo && !t.forSlug(p.slug)?.yours && !t.isSaved(p.slug))
         .map((p) => ({ slug: p.slug, name: p.name, sub: p.region, photo: p.photo, r: t.forSlug(p.slug)! }))
         .sort((a, b) => rankValue(b.r) - rankValue(a.r))
         .slice(0, 8)
         // Shown highest score first (owner, Nov 2026); the best matches above are the ones chosen.
         .sort((a, b) => b.r.score - a.r.score)
     : rows.picked
+        .filter((p) => !!p.photo)
         .map((p) => ({ slug: p.slug, name: p.name, sub: p.sub, photo: p.photo, r: t.forSlug(p.slug) }))
         .sort((a, b) => (b.r?.score ?? 0) - (a.r?.score ?? 0));
 
@@ -60,7 +61,7 @@ export default function Home() {
       [
         ...placeCollections().map((c) => ({ id: c.id, title: c.title, cover: c.photo, photos: placesIn(c).map((p) => p.photo) })),
         ...itemCollections.map((c) => ({ id: c.id, title: c.title, cover: undefined, photos: c.items().map((i) => i.photo) })),
-      ].filter((c) => c.photos.length >= 3),
+      ].filter((c) => c.photos.length >= 3 && !!(c.cover ?? c.photos.find(Boolean))),
     [],
   );
 
@@ -124,7 +125,7 @@ export default function Home() {
         </SectionHeader>
         <Row>
           {collections.map((c) => (
-            <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.cover ?? c.photos[0]} count={c.photos.length} />
+            <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.cover ?? c.photos.find(Boolean) ?? null} count={c.photos.length} />
           ))}
         </Row>
       </View>
@@ -149,10 +150,6 @@ export default function Home() {
           )}
         </View>
       </View>
-
-      <Text variant="tiny" style={{ paddingHorizontal: GUTTER, fontSize: 10, lineHeight: 14, marginTop: 28 }}>
-        {PHOTO_CREDITS}
-      </Text>
     </Screen>
   );
 }

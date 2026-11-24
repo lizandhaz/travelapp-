@@ -135,7 +135,7 @@ How it's set up (done in Nov 2026):
 - **Saved:** your boards.
 - **Your trips:** shown as photo stamps on **You**, with a new trip page.
 - **Scores have one decimal place (8.8)**, set with a slider.
-- **Sample content and photos come from the prototype** (Unsplash, credited at the bottom of Home). Only your own trips are real so far.
+- **Sample content comes from the prototype; the photos are only your own** (the Unsplash photos were removed, Nov 2026). Only your own trips are real so far.
 
 **Also in this step (Nov 2026):** each trip can now say **who you went with** (Solo, Partner, Friends, Family), have a **note**, and a **photo that's saved for real**. Photos are private to you, shrunk, and have location data removed before saving.
 

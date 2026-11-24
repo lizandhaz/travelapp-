@@ -12,7 +12,7 @@ import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
 
 /** A photo tile with a collection's name ("Island escapes"), opening its page. */
-export function CollectionTile({ id, title, photo, count }: { id: string; title: string; photo: PhotoName; count: number }) {
+export function CollectionTile({ id, title, photo, count }: { id: string; title: string; photo: PhotoName | null; count: number }) {
   return (
     <Pressable onPress={() => router.push(`/collection/${id}`)} accessibilityRole="link" accessibilityLabel={`${title}, ${count} ${count === 1 ? 'idea' : 'ideas'}`}>
       <PhotoTile photo={photo} style={{ width: 128, height: 160 }}>

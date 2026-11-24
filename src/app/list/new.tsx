@@ -17,7 +17,7 @@ const WHO = [
 ] as const;
 
 /** Good cover photos to pick from, after the photos of places already on the board. */
-const COVER_CHOICES: PhotoName[] = ['maldives-1', 'positano-1', 'hydra-1', 'kyoto-1', 'como-1', 'zanzibar-1', 'puglia-1', 'cotswolds-1', 'marrakech-1', 'copenhagen-1', 'safari-1', 'valthorens-1'];
+const COVER_CHOICES: PhotoName[] = ['maldives-1', 'own-maldives-hammock', 'como-1', 'own-corfu', 'paris-1', 'own-skiing', 'own-whitsundays', 'own-las-vegas', 'own-victoria-falls', 'own-tuscany'];
 
 /**
  * Make a new list, or rename one (?id=…). Coming from "Save to a list"

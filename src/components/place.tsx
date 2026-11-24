@@ -499,7 +499,7 @@ export function YourScore({ result, note }: { result: PlaceResult; note: string 
       ? 'No ratings yet, so we start from 7.0'
       : `Rated ${b.base.toFixed(1)} by ${b.baseFrom === 'everyone' ? 'everyone' : b.baseFrom === 'friends' ? `${b.friendsCount} ${b.friendsCount === 1 ? 'friend' : 'friends'}` : `everyone and ${b.friendsCount} ${b.friendsCount === 1 ? 'friend' : 'friends'}`}`;
   return (
-    <Card style={{ marginHorizontal: GUTTER, marginTop: -30, padding: 14, gap: 12, backgroundColor: colors.cream }}>
+    <Card tone="cream" style={{ marginHorizontal: GUTTER, marginTop: -30, padding: 14, gap: 12 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
         <ScoreStamp score={result.score} size="md" label={result.yours != null ? 'Your rating' : 'Your score'} />
         <View style={{ flex: 1 }}>

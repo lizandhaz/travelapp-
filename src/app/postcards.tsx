@@ -77,7 +77,7 @@ export default function Postcards() {
           <SectionHeader>Follow requests</SectionHeader>
           <View style={{ paddingHorizontal: GUTTER, gap: 10 }}>
             {requests.map((r) => (
-              <Card key={r.userId} tone="blush" style={{ padding: 14, gap: 12 }}>
+              <Card key={r.userId} tone="cream" style={{ padding: 14, gap: 12 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                   <Avatar name={r.name} size={42} />
                   <View style={{ flex: 1 }}>

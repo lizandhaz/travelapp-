@@ -233,13 +233,13 @@ export function Segmented<T extends string>({
 }
 
 /** Soft colour fills from the palette, for cards and bands. */
-export type Tone = 'white' | 'blush' | 'sage' | 'sky';
+export type Tone = 'white' | 'cream' | 'blush' | 'sage' | 'sky';
 export const TONES: Tone[] = ['blush', 'sage', 'sky'];
 export const toneFill = (tone: Tone) =>
-  tone === 'blush' ? colors.blushSoft : tone === 'sage' ? colors.sageSoft : tone === 'sky' ? colors.skySoft : colors.card;
+  tone === 'cream' ? colors.cream : tone === 'blush' ? colors.blushSoft : tone === 'sage' ? colors.sageSoft : tone === 'sky' ? colors.skySoft : colors.card;
 
 export function Card({ children, style, tone = 'white' }: { children: React.ReactNode; style?: ViewStyle; tone?: Tone }) {
-  return <View style={[styles.card, tone !== 'white' && { backgroundColor: toneFill(tone), borderColor: 'transparent' }, style]}>{children}</View>;
+  return <View style={[styles.card, tone !== 'white' && { backgroundColor: toneFill(tone), borderColor: tone === 'cream' ? colors.line : 'transparent' }, style]}>{children}</View>;
 }
 
 export function Notice({ tone = 'error', children }: { tone?: 'error' | 'info'; children: React.ReactNode }) {

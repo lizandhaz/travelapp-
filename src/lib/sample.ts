@@ -7,10 +7,10 @@ import type { PhotoName } from './photos';
  * Scores are out of 10 with one decimal place.
  */
 
-export type SamplePlace = { slug: string; name: string; region: string; score: number | null; photo: PhotoName; photos: PhotoName[] };
-export type RowItem = { slug: string; name: string; sub: string; photo: PhotoName; score?: number; rank?: string };
-export type TasteItem = { slug: string; kind: string; match: string; name: string; where: string; because: string; friends: string; photo: PhotoName };
-export type BoardItem = { slug: string | null; kind: string; name: string; sub: string; photo: PhotoName; score?: number };
+export type SamplePlace = { slug: string; name: string; region: string; score: number | null; photo: PhotoName | null; photos: PhotoName[] };
+export type RowItem = { slug: string; name: string; sub: string; photo: PhotoName | null; score?: number; rank?: string };
+export type TasteItem = { slug: string; kind: string; match: string; name: string; where: string; because: string; friends: string; photo: PhotoName | null };
+export type BoardItem = { slug: string | null; kind: string; name: string; sub: string; photo: PhotoName | null; score?: number };
 export type FeedItem = {
   who: string; face: PhotoName | null; place: string; region: string; month: string; photo: PhotoName | null;
   quote: string | null; score: number; stayType: string; stayName: string; stayScore: number | null; slug: string;
@@ -21,7 +21,7 @@ export type FeedItem = {
 };
 export type Board = { name: string; meta: string; photos: PhotoName[] };
 export type SamplePostcard = { who: string; text: string; when: string; photo: PhotoName | null; slug: string };
-export type Collection = { name: string; photo: PhotoName; filter: string };
+export type Collection = { name: string; photo: PhotoName | null; filter: string };
 
 export const hero = {
   "slug": "como",
@@ -39,28 +39,28 @@ export const rows = {
       "rank": "#1",
       "name": "Polignano a Mare",
       "sub": "Puglia, Italy",
-      "photo": "puglia-1"
+      "photo": null
     },
     {
       "slug": "madeira",
       "rank": "#2",
       "name": "Madeira",
       "sub": "Portugal",
-      "photo": "madeira-1"
+      "photo": null
     },
     {
       "slug": "sicily",
       "rank": "#3",
       "name": "Palermo",
       "sub": "Sicily, Italy",
-      "photo": "sicily-1"
+      "photo": null
     },
     {
       "slug": "hydra",
       "rank": "#4",
       "name": "Hydra",
       "sub": "Greece",
-      "photo": "hydra-2"
+      "photo": null
     }
   ],
   "islands": [
@@ -76,35 +76,35 @@ export const rows = {
       "score": 9.3,
       "name": "Bora Bora",
       "sub": "French Polynesia",
-      "photo": "borabora-1"
+      "photo": null
     },
     {
       "slug": "seychelles",
       "score": 9.2,
       "name": "La Digue",
       "sub": "Seychelles",
-      "photo": "seychelles-1"
+      "photo": null
     },
     {
       "slug": "turks",
       "score": 9.0,
       "name": "Turks and Caicos",
       "sub": "Caribbean",
-      "photo": "turks-1"
+      "photo": null
     },
     {
       "slug": "zanzibar",
       "score": 8.9,
       "name": "Zanzibar",
       "sub": "Tanzania",
-      "photo": "zanzibar-1"
+      "photo": null
     },
     {
       "slug": "mauritius",
       "score": 8.8,
       "name": "Mauritius",
       "sub": "Indian Ocean",
-      "photo": "mauritius-1"
+      "photo": null
     }
   ],
   "weekends": [
@@ -113,21 +113,21 @@ export const rows = {
       "score": 8.7,
       "name": "The Cotswolds",
       "sub": "1h 45m drive from London",
-      "photo": "cotswolds-1"
+      "photo": null
     },
     {
       "slug": "stives",
       "score": 8.6,
       "name": "St Ives",
       "sub": "5h train from Paddington",
-      "photo": "stives-1"
+      "photo": null
     },
     {
       "slug": "copenhagen",
       "score": 8.5,
       "name": "Copenhagen",
       "sub": "1h 50m flight",
-      "photo": "copenhagen-1"
+      "photo": null
     },
     {
       "slug": "paris",
@@ -141,21 +141,21 @@ export const rows = {
       "score": 8.4,
       "name": "Heidelberg",
       "sub": "1h 30m flight to Frankfurt",
-      "photo": "heidelberg-1"
+      "photo": null
     },
     {
       "slug": "marrakech",
       "score": 8.2,
       "name": "Marrakech",
       "sub": "3h 30m flight",
-      "photo": "marrakech-2"
+      "photo": null
     },
     {
       "slug": "lisbon",
       "score": 8.1,
       "name": "Lisbon",
       "sub": "2h 40m flight",
-      "photo": "lisbon-1"
+      "photo": null
     }
   ],
   "overnight": [
@@ -171,28 +171,28 @@ export const rows = {
       "score": 8.9,
       "name": "Cambridge",
       "sub": "About 1h by train",
-      "photo": "cambridge-1"
+      "photo": null
     },
     {
       "slug": "york",
       "score": 8.9,
       "name": "York",
       "sub": "About 2h by train",
-      "photo": "york-1"
+      "photo": null
     },
     {
       "slug": "cheltenham",
       "score": 8.8,
       "name": "Cheltenham",
       "sub": "About 2h by train",
-      "photo": "cheltenham-1"
+      "photo": null
     },
     {
       "slug": "warwick",
       "score": 8.8,
       "name": "Warwick Castle",
       "sub": "About 1h30 by train",
-      "photo": "warwick-1"
+      "photo": null
     },
     {
       "slug": "oxford",
@@ -213,14 +213,14 @@ export const rows = {
       "score": 8.6,
       "name": "Stratford-upon-Avon",
       "sub": "About 2h by train",
-      "photo": "stratford-1"
+      "photo": null
     },
     {
       "slug": "brighton",
       "score": 8.4,
       "name": "Brighton",
       "sub": "About 1h by train",
-      "photo": "brighton-1"
+      "photo": null
     }
   ],
   "taste": [
@@ -242,7 +242,7 @@ export const rows = {
       "where": "For One day",
       "because": "Because you gave the Orangerie a 9.2",
       "friends": "1 friend has been too",
-      "photo": "kyoto-2"
+      "photo": null
     },
     {
       "slug": "lisbon",
@@ -252,7 +252,7 @@ export const rows = {
       "where": "Lisbon, Portugal",
       "because": "Because you loved the corner boulangerie in Paris",
       "friends": "New to your friends. Found by {app}",
-      "photo": "cafe-2"
+      "photo": null
     },
     {
       "slug": "hydra",
@@ -272,7 +272,7 @@ export const rows = {
       "where": "Paris, France",
       "because": "Because you loved the corner boulangerie in Paris",
       "friends": "1 friend has been too",
-      "photo": "picnic-1"
+      "photo": null
     },
     {
       "slug": "puglia",
@@ -302,7 +302,7 @@ export const rows = {
       "where": "Lisbon, Portugal",
       "because": "Because you loved sunset spritz in Positano",
       "friends": "1 friend has been too",
-      "photo": "lisbon-1"
+      "photo": null
     },
     {
       "slug": "paris",
@@ -322,7 +322,7 @@ export const rows = {
       "where": "Copenhagen, Denmark",
       "because": "Because you loved Café des Épices in Marrakech",
       "friends": "New to your friends. Found by {app}",
-      "photo": "cafe-1"
+      "photo": null
     },
     {
       "slug": "crete",
@@ -332,7 +332,7 @@ export const rows = {
       "where": "Crete, Greece",
       "because": "Because you loved Pego beach at 8pm",
       "friends": "1 friend has been too",
-      "photo": "crete-3"
+      "photo": null
     },
     {
       "slug": "copenhagen",
@@ -342,7 +342,7 @@ export const rows = {
       "where": "Copenhagen, Denmark",
       "because": "Because you gave the Orangerie a 9.2",
       "friends": "1 friend has been too",
-      "photo": "copenhagen-2"
+      "photo": null
     },
     {
       "slug": "stives",
@@ -352,7 +352,7 @@ export const rows = {
       "where": "St Ives, Cornwall, England",
       "because": "Because you gave Sal in Comporta a 9.0",
       "friends": "1 friend has been too",
-      "photo": "stives-2"
+      "photo": null
     },
     {
       "slug": "hydra",
@@ -362,7 +362,7 @@ export const rows = {
       "where": "Hydra, Greece",
       "because": "Because you gave Villa Limone a 9.0",
       "friends": "2 friends have been too",
-      "photo": "balcony-2"
+      "photo": null
     },
     {
       "slug": "paris",
@@ -392,7 +392,7 @@ export const rows = {
       "where": "Palermo, Sicily, Italy",
       "because": "Because you loved Café des Épices in Marrakech",
       "friends": "New to your friends. Found by {app}",
-      "photo": "cafe-1"
+      "photo": null
     },
     {
       "slug": "heidelberg",
@@ -402,7 +402,7 @@ export const rows = {
       "where": "Heidelberg, Germany",
       "because": "Because you loved Pego beach at 8pm",
       "friends": "1 friend has been too",
-      "photo": "heidelberg-2"
+      "photo": null
     },
     {
       "slug": "stives",
@@ -412,7 +412,7 @@ export const rows = {
       "where": "St Ives, Cornwall, England",
       "because": "Because you gave the Orangerie a 9.2",
       "friends": "New to your friends. Found by {app}",
-      "photo": "stives-1"
+      "photo": null
     },
     {
       "slug": "puglia",
@@ -432,7 +432,7 @@ export const rows = {
       "where": "Crete, Greece",
       "because": "Because you gave Villa Limone a 9.0",
       "friends": "1 friend has been too",
-      "photo": "crete-5"
+      "photo": null
     },
     {
       "slug": "orlando",
@@ -442,7 +442,7 @@ export const rows = {
       "where": "Orlando, Florida, USA",
       "because": "Because you loved the corner boulangerie in Paris",
       "friends": "1 friend has been too",
-      "photo": "picnic-1"
+      "photo": null
     },
     {
       "slug": "crete",
@@ -452,7 +452,7 @@ export const rows = {
       "where": "Crete, Greece",
       "because": "Because you gave the Orangerie a 9.2",
       "friends": "New to your friends. Found by {app}",
-      "photo": "crete-4"
+      "photo": null
     },
     {
       "slug": "como",
@@ -472,7 +472,7 @@ export const rows = {
       "where": "Heidelberg, Germany",
       "because": "Because you gave the Orangerie a 9.2",
       "friends": "1 friend has been too",
-      "photo": "heidelberg-1"
+      "photo": null
     }
   ],
   "picked": [
@@ -481,7 +481,7 @@ export const rows = {
       "score": 9.1,
       "name": "Hydra",
       "sub": "Greece",
-      "photo": "hydra-2"
+      "photo": null
     },
     {
       "slug": "crete",
@@ -495,21 +495,21 @@ export const rows = {
       "score": 8.9,
       "name": "Kyoto",
       "sub": "Japan",
-      "photo": "kyoto-1"
+      "photo": null
     },
     {
       "slug": "positano",
       "score": 8.6,
       "name": "Positano",
       "sub": "Italy",
-      "photo": "positano-1"
+      "photo": null
     },
     {
       "slug": "deia",
       "score": 8.4,
       "name": "Deià",
       "sub": "Mallorca, Spain",
-      "photo": "deia-1"
+      "photo": null
     },
     {
       "slug": "orlando",
@@ -539,9 +539,8 @@ export const places: SamplePlace[] = [
     "name": "Bora Bora",
     "region": "French Polynesia",
     "score": 9.3,
-    "photo": "borabora-1",
+    "photo": null,
     "photos": [
-      "borabora-1"
     ]
   },
   {
@@ -549,9 +548,8 @@ export const places: SamplePlace[] = [
     "name": "Brighton",
     "region": "England",
     "score": 8.4,
-    "photo": "brighton-1",
+    "photo": null,
     "photos": [
-      "brighton-1"
     ]
   },
   {
@@ -559,9 +557,8 @@ export const places: SamplePlace[] = [
     "name": "Cambridge",
     "region": "England",
     "score": 8.9,
-    "photo": "cambridge-1",
+    "photo": null,
     "photos": [
-      "cambridge-1"
     ]
   },
   {
@@ -569,9 +566,8 @@ export const places: SamplePlace[] = [
     "name": "Cheltenham",
     "region": "England",
     "score": 8.8,
-    "photo": "cheltenham-1",
+    "photo": null,
     "photos": [
-      "cheltenham-1"
     ]
   },
   {
@@ -589,10 +585,8 @@ export const places: SamplePlace[] = [
     "name": "Copenhagen",
     "region": "Denmark",
     "score": 8.5,
-    "photo": "copenhagen-1",
+    "photo": null,
     "photos": [
-      "copenhagen-1",
-      "copenhagen-2"
     ]
   },
   {
@@ -600,9 +594,8 @@ export const places: SamplePlace[] = [
     "name": "The Cotswolds",
     "region": "England",
     "score": 8.7,
-    "photo": "cotswolds-1",
+    "photo": null,
     "photos": [
-      "cotswolds-1"
     ]
   },
   {
@@ -620,9 +613,8 @@ export const places: SamplePlace[] = [
     "name": "Deià",
     "region": "Mallorca, Spain",
     "score": 8.4,
-    "photo": "deia-1",
+    "photo": null,
     "photos": [
-      "deia-1"
     ]
   },
   {
@@ -630,10 +622,8 @@ export const places: SamplePlace[] = [
     "name": "Heidelberg",
     "region": "Germany",
     "score": 8.4,
-    "photo": "heidelberg-1",
+    "photo": null,
     "photos": [
-      "heidelberg-1",
-      "heidelberg-2"
     ]
   },
   {
@@ -641,10 +631,8 @@ export const places: SamplePlace[] = [
     "name": "Hydra",
     "region": "Greece",
     "score": 9.1,
-    "photo": "hydra-2",
+    "photo": null,
     "photos": [
-      "hydra-2",
-      "hydra-1"
     ]
   },
   {
@@ -652,9 +640,8 @@ export const places: SamplePlace[] = [
     "name": "Kyoto",
     "region": "Japan",
     "score": 8.9,
-    "photo": "kyoto-1",
+    "photo": null,
     "photos": [
-      "kyoto-1"
     ]
   },
   {
@@ -662,9 +649,8 @@ export const places: SamplePlace[] = [
     "name": "Lisbon",
     "region": "Portugal",
     "score": 8.1,
-    "photo": "lisbon-1",
+    "photo": null,
     "photos": [
-      "lisbon-1"
     ]
   },
   {
@@ -682,9 +668,8 @@ export const places: SamplePlace[] = [
     "name": "Madeira",
     "region": "Portugal",
     "score": 8.3,
-    "photo": "madeira-1",
+    "photo": null,
     "photos": [
-      "madeira-1"
     ]
   },
   {
@@ -712,10 +697,8 @@ export const places: SamplePlace[] = [
     "name": "Marrakech",
     "region": "Morocco",
     "score": 8.2,
-    "photo": "marrakech-2",
+    "photo": null,
     "photos": [
-      "marrakech-2",
-      "marrakech-1"
     ]
   },
   {
@@ -723,9 +706,8 @@ export const places: SamplePlace[] = [
     "name": "Mauritius",
     "region": "Indian Ocean",
     "score": 8.8,
-    "photo": "mauritius-1",
+    "photo": null,
     "photos": [
-      "mauritius-1"
     ]
   },
   {
@@ -763,9 +745,8 @@ export const places: SamplePlace[] = [
     "name": "Positano",
     "region": "Italy",
     "score": 8.6,
-    "photo": "positano-1",
+    "photo": null,
     "photos": [
-      "positano-1"
     ]
   },
   {
@@ -773,9 +754,8 @@ export const places: SamplePlace[] = [
     "name": "Polignano a Mare",
     "region": "Puglia, Italy",
     "score": 8.8,
-    "photo": "puglia-1",
+    "photo": null,
     "photos": [
-      "puglia-1"
     ]
   },
   {
@@ -783,9 +763,8 @@ export const places: SamplePlace[] = [
     "name": "La Digue",
     "region": "Seychelles",
     "score": 9.2,
-    "photo": "seychelles-1",
+    "photo": null,
     "photos": [
-      "seychelles-1"
     ]
   },
   {
@@ -793,9 +772,8 @@ export const places: SamplePlace[] = [
     "name": "Palermo",
     "region": "Sicily, Italy",
     "score": 8.5,
-    "photo": "sicily-1",
+    "photo": null,
     "photos": [
-      "sicily-1"
     ]
   },
   {
@@ -803,9 +781,8 @@ export const places: SamplePlace[] = [
     "name": "St Anton",
     "region": "Austria",
     "score": 9.0,
-    "photo": "stanton-1",
+    "photo": null,
     "photos": [
-      "stanton-1"
     ]
   },
   {
@@ -813,9 +790,8 @@ export const places: SamplePlace[] = [
     "name": "St Ives",
     "region": "Cornwall, England",
     "score": 8.6,
-    "photo": "stives-1",
+    "photo": null,
     "photos": [
-      "stives-1"
     ]
   },
   {
@@ -823,9 +799,8 @@ export const places: SamplePlace[] = [
     "name": "Stratford-upon-Avon",
     "region": "England",
     "score": 8.6,
-    "photo": "stratford-1",
+    "photo": null,
     "photos": [
-      "stratford-1"
     ]
   },
   {
@@ -833,10 +808,8 @@ export const places: SamplePlace[] = [
     "name": "Turks and Caicos",
     "region": "Caribbean",
     "score": 9.0,
-    "photo": "turks-1",
+    "photo": null,
     "photos": [
-      "turks-1",
-      "turks-2"
     ]
   },
   {
@@ -844,9 +817,8 @@ export const places: SamplePlace[] = [
     "name": "Verbier",
     "region": "Switzerland",
     "score": 8.9,
-    "photo": "verbier-1",
+    "photo": null,
     "photos": [
-      "verbier-1"
     ]
   },
   {
@@ -854,9 +826,8 @@ export const places: SamplePlace[] = [
     "name": "Warwick Castle",
     "region": "England",
     "score": 8.8,
-    "photo": "warwick-1",
+    "photo": null,
     "photos": [
-      "warwick-1"
     ]
   },
   {
@@ -864,9 +835,8 @@ export const places: SamplePlace[] = [
     "name": "York",
     "region": "England",
     "score": 8.9,
-    "photo": "york-1",
+    "photo": null,
     "photos": [
-      "york-1"
     ]
   },
   {
@@ -874,10 +844,8 @@ export const places: SamplePlace[] = [
     "name": "Zanzibar",
     "region": "Tanzania",
     "score": 8.9,
-    "photo": "zanzibar-1",
+    "photo": null,
     "photos": [
-      "zanzibar-1",
-      "zanzibar-2"
     ]
   },
   {
@@ -885,9 +853,8 @@ export const places: SamplePlace[] = [
     "name": "Zermatt",
     "region": "Switzerland",
     "score": 8.8,
-    "photo": "zermatt-3",
+    "photo": null,
     "photos": [
-      "zermatt-3"
     ]
   },
   {
@@ -895,9 +862,8 @@ export const places: SamplePlace[] = [
     "name": "Comporta",
     "region": "Portugal",
     "score": 9.0,
-    "photo": "comporta-1",
+    "photo": null,
     "photos": [
-      "comporta-1"
     ]
   },
   {
@@ -905,9 +871,8 @@ export const places: SamplePlace[] = [
     "name": "Chamonix",
     "region": "French Alps",
     "score": 8.6,
-    "photo": "chamonix-1",
+    "photo": null,
     "photos": [
-      "chamonix-1"
     ]
   },
   {
@@ -915,9 +880,8 @@ export const places: SamplePlace[] = [
     "name": "Courchevel",
     "region": "French Alps",
     "score": 8.7,
-    "photo": "courchevel-1",
+    "photo": null,
     "photos": [
-      "courchevel-1"
     ]
   },
   {
@@ -925,9 +889,8 @@ export const places: SamplePlace[] = [
     "name": "Val Thorens",
     "region": "French Alps",
     "score": 8.4,
-    "photo": "valthorens-1",
+    "photo": null,
     "photos": [
-      "valthorens-1"
     ]
   },
   {
@@ -951,28 +914,28 @@ export const trendingThisMonth: RowItem[] = [
     "rank": "#1 ↑3",
     "name": "Polignano a Mare",
     "sub": "+64% more postcards in October",
-    "photo": "puglia-1"
+    "photo": null
   },
   {
     "slug": "madeira",
     "rank": "#2 ↑5",
     "name": "Madeira",
     "sub": "Most-saved for spring 2027",
-    "photo": "madeira-1"
+    "photo": null
   },
   {
     "slug": "sicily",
     "rank": "#3 ↑1",
     "name": "Palermo",
     "sub": "+41% more postcards in October",
-    "photo": "sicily-1"
+    "photo": null
   },
   {
     "slug": "hydra",
     "rank": "#4",
     "name": "Hydra",
     "sub": "Still the top-rated island this year",
-    "photo": "hydra-2"
+    "photo": null
   },
   {
     "slug": "como",
@@ -986,7 +949,7 @@ export const trendingThisMonth: RowItem[] = [
     "rank": "#6",
     "name": "Kyoto",
     "sub": "Top pick for autumn colours",
-    "photo": "kyoto-1"
+    "photo": null
   }
 ] as RowItem[];
 
@@ -1016,7 +979,7 @@ export const board: BoardItem[] = [
     "slug": "orlando"
   },
   {
-    "photo": "puglia-1",
+    "photo": null,
     "kind": "place",
     "score": 8.8,
     "name": "Polignano a Mare, Puglia, Italy",
@@ -1024,14 +987,14 @@ export const board: BoardItem[] = [
     "slug": "puglia"
   },
   {
-    "photo": "cotswolds-2",
+    "photo": null,
     "kind": "Collection",
     "name": "Weekends away",
     "sub": "Easy from London",
     "slug": null
   },
   {
-    "photo": "marrakech-2",
+    "photo": null,
     "kind": "Riad",
     "name": "Riad Zitoun",
     "sub": "Marrakech · from £120 a night · 9.1",
@@ -1060,14 +1023,14 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": "comporta-1",
+    "photo": null,
     "kind": "Hidden gem",
     "name": "Carrasqueira pier",
     "sub": "Hidden gem in Comporta · found by Priya",
     "slug": "comporta"
   },
   {
-    "photo": "stives-1",
+    "photo": null,
     "kind": "place",
     "score": 8.6,
     "name": "St Ives, Cornwall, England",
@@ -1075,7 +1038,7 @@ export const board: BoardItem[] = [
     "slug": "stives"
   },
   {
-    "photo": "hydra-1",
+    "photo": null,
     "kind": "place",
     "score": 9.1,
     "name": "Hydra, Greece",
@@ -1083,7 +1046,7 @@ export const board: BoardItem[] = [
     "slug": "hydra"
   },
   {
-    "photo": "borabora-1",
+    "photo": null,
     "kind": "place",
     "score": 9.3,
     "name": "Bora Bora, French Polynesia",
@@ -1091,7 +1054,7 @@ export const board: BoardItem[] = [
     "slug": "borabora"
   },
   {
-    "photo": "kyoto-1",
+    "photo": null,
     "kind": "Culture · Festival",
     "name": "Gion Matsuri",
     "sub": "All of July · Kyoto, Japan",
@@ -1105,14 +1068,14 @@ export const board: BoardItem[] = [
     "slug": "bath"
   },
   {
-    "photo": "picnic-1",
+    "photo": null,
     "kind": "Collection",
     "name": "Picnic season",
     "sub": "Where to spread a blanket",
     "slug": null
   },
   {
-    "photo": "madeira-1",
+    "photo": null,
     "kind": "Do",
     "name": "Levada walk",
     "sub": "Hike · Madeira",
@@ -1126,7 +1089,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": "cotswolds-1",
+    "photo": null,
     "kind": "place",
     "score": 8.7,
     "name": "The Cotswolds, England",
@@ -1141,21 +1104,21 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": "kaiseki-1",
+    "photo": null,
     "kind": "Eat",
     "name": "Kaiseki dinner",
     "sub": "Gion Okumura, Kyoto · £££",
     "slug": "kyoto"
   },
   {
-    "photo": "cabin-1",
+    "photo": null,
     "kind": "Collection",
     "name": "Cabins by the water",
     "sub": "Switch off for a weekend",
     "slug": null
   },
   {
-    "photo": "copenhagen-2",
+    "photo": null,
     "kind": "place",
     "score": 8.5,
     "name": "Copenhagen, Denmark",
@@ -1163,28 +1126,28 @@ export const board: BoardItem[] = [
     "slug": "copenhagen"
   },
   {
-    "photo": "marrakech-3",
+    "photo": null,
     "kind": "Culture · Music",
     "name": "Jemaa el-Fnaa at dusk",
     "sub": "Marrakech, Morocco",
     "slug": "marrakech"
   },
   {
-    "photo": "warwick-1",
+    "photo": null,
     "kind": "One night away",
     "name": "One night in Warwick Castle",
     "sub": "78% match · About 1h30 by train",
     "slug": "warwick"
   },
   {
-    "photo": "lemon-2",
+    "photo": null,
     "kind": "Hidden gem",
     "name": "Fornillo beach",
     "sub": "Hidden gem in Positano · found by Priya",
     "slug": "positano"
   },
   {
-    "photo": "lisbon-1",
+    "photo": null,
     "kind": "place",
     "score": 8.1,
     "name": "Lisbon, Portugal",
@@ -1192,7 +1155,7 @@ export const board: BoardItem[] = [
     "slug": "lisbon"
   },
   {
-    "photo": "heidelberg-2",
+    "photo": null,
     "kind": "place",
     "score": 8.4,
     "name": "Heidelberg, Germany",
@@ -1200,7 +1163,7 @@ export const board: BoardItem[] = [
     "slug": "heidelberg"
   },
   {
-    "photo": "seychelles-1",
+    "photo": null,
     "kind": "place",
     "score": 9.2,
     "name": "La Digue, Seychelles",
@@ -1208,7 +1171,7 @@ export const board: BoardItem[] = [
     "slug": "seychelles"
   },
   {
-    "photo": "zanzibar-2",
+    "photo": null,
     "kind": "place",
     "score": 8.9,
     "name": "Zanzibar, Tanzania",
@@ -1216,28 +1179,28 @@ export const board: BoardItem[] = [
     "slug": "zanzibar"
   },
   {
-    "photo": "sicily-1",
+    "photo": null,
     "kind": "Culture · Art",
     "name": "Puppet theatre",
     "sub": "Palermo, Sicily, Italy",
     "slug": "sicily"
   },
   {
-    "photo": "stives-2",
+    "photo": null,
     "kind": "Culture · Art",
     "name": "Barbara Hepworth's garden",
     "sub": "St Ives, Cornwall, England",
     "slug": "stives"
   },
   {
-    "photo": "york-1",
+    "photo": null,
     "kind": "One night away",
     "name": "One night in York",
     "sub": "89% match · About 2h by train",
     "slug": "york"
   },
   {
-    "photo": "cheltenham-1",
+    "photo": null,
     "kind": "One night away",
     "name": "One night in Cheltenham",
     "sub": "87% match · About 2h by train",
@@ -1251,14 +1214,14 @@ export const board: BoardItem[] = [
     "slug": "oxford"
   },
   {
-    "photo": "brighton-1",
+    "photo": null,
     "kind": "One night away",
     "name": "One night in Brighton",
     "sub": "93% match · About 1h by train",
     "slug": "brighton"
   },
   {
-    "photo": "paris-2",
+    "photo": null,
     "kind": "Eat",
     "name": "Steak frites and a carafe of red",
     "sub": "Le Bistrot d'à Côté, Paris · ££",
@@ -1279,7 +1242,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": "puglia-2",
+    "photo": null,
     "kind": "Do",
     "name": "Sea cave boat trip",
     "sub": "Boat · Polignano a Mare",
@@ -1294,28 +1257,28 @@ export const board: BoardItem[] = [
     "slug": "como"
   },
   {
-    "photo": "minttea-1",
+    "photo": null,
     "kind": "Eat",
     "name": "Mint tea above the spice square",
     "sub": "Café des Épices, Marrakech · £",
     "slug": "marrakech"
   },
   {
-    "photo": "balcony-2",
+    "photo": null,
     "kind": "Collection",
     "name": "Rooms with a sea view",
     "sub": "Friends rated 8+",
     "slug": null
   },
   {
-    "photo": "stives-2",
+    "photo": null,
     "kind": "Hidden gem",
     "name": "Porthgwidden",
     "sub": "Hidden gem in St Ives · found by Maya",
     "slug": "stives"
   },
   {
-    "photo": "sicily-1",
+    "photo": null,
     "kind": "place",
     "score": 8.5,
     "name": "Palermo, Sicily, Italy",
@@ -1323,7 +1286,7 @@ export const board: BoardItem[] = [
     "slug": "sicily"
   },
   {
-    "photo": "mauritius-1",
+    "photo": null,
     "kind": "place",
     "score": 8.8,
     "name": "Mauritius, Indian Ocean",
@@ -1331,7 +1294,7 @@ export const board: BoardItem[] = [
     "slug": "mauritius"
   },
   {
-    "photo": "turks-2",
+    "photo": null,
     "kind": "place",
     "score": 9.0,
     "name": "Turks and Caicos, Caribbean",
@@ -1339,28 +1302,28 @@ export const board: BoardItem[] = [
     "slug": "turks"
   },
   {
-    "photo": "mykonos-1",
+    "photo": null,
     "kind": "Collection",
     "name": "Whitewashed islands",
     "sub": "Greece in June",
     "slug": null
   },
   {
-    "photo": "kyoto-2",
+    "photo": null,
     "kind": "Ryokan",
     "name": "Ryokan Hana",
     "sub": "Kyoto · from £310 a night · 9.3",
     "slug": null
   },
   {
-    "photo": "picnic-2",
+    "photo": null,
     "kind": "Collection",
     "name": "Long lunches",
     "sub": "Tables friends never wanted to leave",
     "slug": null
   },
   {
-    "photo": "madeira-1",
+    "photo": null,
     "kind": "place",
     "score": 8.3,
     "name": "Madeira, Portugal",
@@ -1368,7 +1331,7 @@ export const board: BoardItem[] = [
     "slug": "madeira"
   },
   {
-    "photo": "copenhagen-1",
+    "photo": null,
     "kind": "Do",
     "name": "Harbour swim",
     "sub": "Outdoors · Copenhagen",
@@ -1382,7 +1345,7 @@ export const board: BoardItem[] = [
     "slug": "hydra"
   },
   {
-    "photo": "marrakech-1",
+    "photo": null,
     "kind": "place",
     "score": 8.2,
     "name": "Marrakech, Morocco",
@@ -1404,35 +1367,35 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": "orlando-5",
+    "photo": null,
     "kind": "Villa",
     "name": "Lakeside Pool Villa",
     "sub": "Orlando · from £290 a night · 8.8",
     "slug": null
   },
   {
-    "photo": "crete-3",
+    "photo": null,
     "kind": "Hidden gem",
     "name": "Loutro",
     "sub": "Hidden gem in Crete · found by Maya",
     "slug": "crete"
   },
   {
-    "photo": "orlando-3",
+    "photo": null,
     "kind": "Do",
     "name": "Theme park days",
     "sub": "Family · Orlando",
     "slug": "orlando"
   },
   {
-    "photo": "crete-4",
+    "photo": null,
     "kind": "Do",
     "name": "Palace of Knossos",
     "sub": "Culture · Crete",
     "slug": "crete"
   },
   {
-    "photo": "zermatt-3",
+    "photo": null,
     "kind": "place",
     "score": 8.8,
     "name": "Zermatt, Switzerland",
@@ -1440,7 +1403,7 @@ export const board: BoardItem[] = [
     "slug": "zermatt"
   },
   {
-    "photo": "verbier-1",
+    "photo": null,
     "kind": "place",
     "score": 8.9,
     "name": "Verbier, Switzerland",
@@ -1448,7 +1411,7 @@ export const board: BoardItem[] = [
     "slug": "verbier"
   },
   {
-    "photo": "stanton-1",
+    "photo": null,
     "kind": "place",
     "score": 9.0,
     "name": "St Anton, Austria",
@@ -1456,7 +1419,7 @@ export const board: BoardItem[] = [
     "slug": "stanton"
   },
   {
-    "photo": "chalet-1",
+    "photo": null,
     "kind": "Collection",
     "name": "Ski chalets",
     "sub": "Snow, fires and fondue",
@@ -1467,11 +1430,11 @@ export const board: BoardItem[] = [
 export const friendsFeed: FeedItem[] = [
   {
     "who": "Maya",
-    "face": "face-maya",
+    "face": null,
     "place": "Hydra",
     "region": "Greece",
     "month": "Jun 2026",
-    "photo": "hydra-1",
+    "photo": null,
     "quote": "“No cars, just donkeys and swimming off the rocks.”",
     "score": 9.4,
     "stayType": "Hotel",
@@ -1482,7 +1445,7 @@ export const friendsFeed: FeedItem[] = [
   },
   {
     "who": "Priya",
-    "face": "face-priya",
+    "face": null,
     "place": "Positano",
     "region": "Italy",
     "month": "May 2026",
@@ -1497,11 +1460,11 @@ export const friendsFeed: FeedItem[] = [
   },
   {
     "who": "Tom",
-    "face": "face-tom",
+    "face": null,
     "place": "Kyoto",
     "region": "Japan",
     "month": "Apr 2026",
-    "photo": "kyoto-1",
+    "photo": null,
     "quote": null,
     "score": 9.5,
     "stayType": "Ryokan",
@@ -1512,7 +1475,7 @@ export const friendsFeed: FeedItem[] = [
   },
   {
     "who": "Sophie",
-    "face": "face-sophie",
+    "face": null,
     "place": "South Africa",
     "region": "Cape Town & Kruger",
     "month": "Mar 2026",
@@ -1527,7 +1490,7 @@ export const friendsFeed: FeedItem[] = [
   },
   {
     "who": "Maya",
-    "face": "face-maya",
+    "face": null,
     "place": "Marrakech",
     "region": "Morocco",
     "month": "Mar 2026",
@@ -1542,11 +1505,11 @@ export const friendsFeed: FeedItem[] = [
   },
   {
     "who": "Jonah",
-    "face": "face-jonah",
+    "face": null,
     "place": "Zanzibar",
     "region": "Tanzania",
     "month": "Aug 2025",
-    "photo": "zanzibar-2",
+    "photo": null,
     "quote": "“Stone Town at dusk, then a week on the beach. Perfect mix.”",
     "score": 8.9,
     "stayType": "Hotel",
@@ -1563,16 +1526,12 @@ export const boards: Board[] = [
     "meta": "6 saves",
     "photos": [
       "food-pasta",
-      "kaiseki-1",
-      "minttea-1"
     ]
   },
   {
     "name": "Summer 2027",
     "meta": "5 saves · shared with 2",
     "photos": [
-      "puglia-1",
-      "deia-1",
       "pool-1"
     ]
   },
@@ -1581,7 +1540,6 @@ export const boards: Board[] = [
     "meta": "3 saves",
     "photos": [
       "crete-1",
-      "kyoto-2",
       "maldives-1"
     ]
   },
@@ -1589,9 +1547,6 @@ export const boards: Board[] = [
     "name": "One day",
     "meta": "3 saves",
     "photos": [
-      "kyoto-1",
-      "marrakech-2",
-      "copenhagen-1"
     ]
   }
 ] as Board[];
@@ -1601,14 +1556,14 @@ export const samplePostcards: SamplePostcard[] = [
     "who": "Tom",
     "text": "rated Kyoto 9.5. It's on your Want to go board ★",
     "when": "1h",
-    "photo": "kyoto-1",
+    "photo": null,
     "slug": "kyoto"
   },
   {
     "who": "Tom",
     "text": "sent you a postcard from Kyoto",
     "when": "2h",
-    "photo": "kyoto-1",
+    "photo": null,
     "slug": "kyoto"
   },
   {
@@ -1629,7 +1584,7 @@ export const samplePostcards: SamplePostcard[] = [
     "who": "{app}",
     "text": "Polignano a Mare is trending. Two friends went this autumn",
     "when": "Tue",
-    "photo": "puglia-1",
+    "photo": null,
     "slug": "puglia"
   },
   {
@@ -1656,22 +1611,22 @@ export const collections: Collection[] = [
   },
   {
     "name": "Weekends away",
-    "photo": "cotswolds-1",
+    "photo": null,
     "filter": "weekends"
   },
   {
     "name": "One night away",
-    "photo": "york-1",
+    "photo": null,
     "filter": "overnight"
   },
   {
     "name": "Hidden gems",
-    "photo": "stives-2",
+    "photo": null,
     "filter": "gems"
   },
   {
     "name": "Culture",
-    "photo": "kyoto-2",
+    "photo": null,
     "filter": "culture"
   },
   {
@@ -1681,17 +1636,17 @@ export const collections: Collection[] = [
   },
   {
     "name": "Eat & drink",
-    "photo": "picnic-2",
+    "photo": null,
     "filter": "food"
   },
   {
     "name": "Things to do",
-    "photo": "madeira-1",
+    "photo": null,
     "filter": "todo"
   },
   {
     "name": "Destinations",
-    "photo": "hydra-1",
+    "photo": null,
     "filter": "destinations"
   }
 ] as Collection[];
@@ -1705,9 +1660,6 @@ export const TASTES: { label: string; match: (t: TasteItem) => boolean }[] = [
   { label: 'Sunset drinks', match: (t) => t.kind === 'Drink' },
   { label: 'Art first thing', match: (t) => t.kind === 'Do' },
 ];
-
-export const PHOTO_CREDITS =
-  'Photos: our own holidays, plus Julia Solonina, Bartłomiej Balicki, Christian Mackie, Gianluca Baio, Mauricio Muñoz, Adrian Cole, BEN ELLIOTT, Nick Karvounis, Xenia Bunina, Tobias Reich, Toa Heftiba, Jacek Urbanski, Ishan @seefromthesky, Roméo A., Christian Cacciamani, Marc Schmittbuhl, Humphrey M., Xavier Coiffic, James Shaw, Evy Prentice, Tim Alex, Illiya Vjestica, Ben Seymour, Swati Kedia, Lex Brogan, Tom Podmore, Helena Pfisterer, Joshua Kettle, Arash Bal, Nahum Ashworth, Chloe Frost-Smith, Denys Kostyuchenko, Yuliya Matuzava, orva studio, David Hieb, Tony Lee, Febiyan, Oliver Potter, Johannes W, Olivier Chatel, Svetlana Kuznetsova, Alessandro Rossi, Matthieu Oger, Yianni Mathioudakis, Chloé Lefleur, Khaled Ali, François Fayet, Egor Myznik, Mike Swigunski, Christina Terzidou, Yosuke Ota, Massimo Adami, Roberto Nickson on Unsplash';
 
 export const unreadPostcardCount = 2;
 

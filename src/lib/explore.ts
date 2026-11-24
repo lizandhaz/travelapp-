@@ -130,12 +130,12 @@ export type ExploreItem = {
   scoreKind: 'Stay' | 'Eat' | 'Do';
   name: string;
   what: string | null;
-  photo: PhotoName;
+  photo: PhotoName | null;
 };
 
 export type ItemCollection = { id: string; title: string; items: () => ExploreItem[] };
 
-function gather(pick: (slug: string, placeName: string, placePhoto: PhotoName) => ExploreItem[]): ExploreItem[] {
+function gather(pick: (slug: string, placeName: string, placePhoto: PhotoName | null) => ExploreItem[]): ExploreItem[] {
   return places.flatMap((p) => pick(p.slug, p.name, p.photo));
 }
 

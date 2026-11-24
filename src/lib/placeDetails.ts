@@ -76,7 +76,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Oct 2026",
         "quote": "Felt like a proper break in just one night.",
         "score": 9.1,
-        "face": "face-maya"
+        "face": null
       }
     ],
     "stays": [
@@ -118,7 +118,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £160 a night · Sam stayed",
         "because": null,
         "score": 8.5,
-        "photo": "balcony-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -138,7 +138,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.8,
         "from": "Sophie",
         "match": 83,
-        "photo": "cafe-1"
+        "photo": null
       },
       {
         "name": "Corkage",
@@ -199,7 +199,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: James Shaw, Johannes W, Tony Lee, Olivier Chatel on Unsplash"
+    "credits": null
   },
   "borabora": {
     "kicker": "Island · Beach",
@@ -251,7 +251,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Sep 2025",
         "quote": "The most beautiful place I've ever been. Honeymoon sorted.",
         "score": 9.3,
-        "face": "face-priya"
+        "face": null
       }
     ],
     "stays": [
@@ -263,7 +263,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £1400 a night · Overwater villas with their own plunge pool.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "borabora-2"
+        "photo": null
       },
       {
         "name": "Four Seasons Bora Bora",
@@ -273,7 +273,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £1600 a night · Priya stayed",
         "because": null,
         "score": 9.5,
-        "photo": "borabora-1"
+        "photo": null
       },
       {
         "name": "Conrad Bora Bora Nui",
@@ -283,7 +283,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £1200 a night · Sam stayed",
         "because": null,
         "score": 9.0,
-        "photo": "borabora-2"
+        "photo": null
       },
       {
         "name": "Le Bora Bora by Pearl Resorts",
@@ -293,7 +293,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £650 a night · Sam stayed",
         "because": null,
         "score": 8.7,
-        "photo": "borabora-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -374,7 +374,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Roméo A., john ko, Olivier Chatel, orva studio on Unsplash"
+    "credits": null
   },
   "brighton": {
     "kicker": "Seaside · One night",
@@ -424,7 +424,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Aug 2026",
         "quote": "The kids loved the pier, we loved the Lanes.",
         "score": 8.4,
-        "face": "face-priya"
+        "face": null
       }
     ],
     "stays": [
@@ -436,7 +436,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £190 a night · Sea-view rooms with baths in the window.",
         "because": "Because you loved the views at Casa Arrozal",
         "score": null,
-        "photo": "brighton-1"
+        "photo": null
       },
       {
         "name": "Artist Residence Brighton",
@@ -446,7 +446,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £180 a night · Priya stayed",
         "because": null,
         "score": 8.5,
-        "photo": "brighton-1"
+        "photo": null
       },
       {
         "name": "The Grand Brighton",
@@ -456,7 +456,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £220 a night · Mum stayed",
         "because": null,
         "score": 8.4,
-        "photo": "balcony-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -467,7 +467,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.4,
         "from": "Sam",
         "match": 87,
-        "photo": "cafe-1"
+        "photo": null
       },
       {
         "name": "Burnt Orange",
@@ -530,7 +530,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Lex Brogan, Keegan Checks, orva studio, Tony Lee on Unsplash"
+    "credits": null
   },
   "cambridge": {
     "kicker": "City · One night",
@@ -580,7 +580,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jun 2026",
         "quote": "Punting at golden hour was magic.",
         "score": 8.9,
-        "face": "face-tom"
+        "face": null
       }
     ],
     "stays": [
@@ -592,7 +592,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £200 a night · Overlooks Parker's Piece, a short walk to the colleges.",
         "because": "Because you liked the small, central Hôtel du Marais",
         "score": null,
-        "photo": "cambridge-1"
+        "photo": null
       },
       {
         "name": "University Arms",
@@ -602,7 +602,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £260 a night · Tom stayed",
         "because": null,
         "score": 9.0,
-        "photo": "cambridge-1"
+        "photo": null
       },
       {
         "name": "Graduate Cambridge",
@@ -612,7 +612,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £210 a night · Sam stayed",
         "because": null,
         "score": 8.4,
-        "photo": "balcony-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -686,7 +686,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Tim Alex, Johannes W, Olivier Chatel, Alessandro Rossi on Unsplash"
+    "credits": null
   },
   "chamonix": {
     "kicker": "Ski · Mountains",
@@ -736,7 +736,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jan 2026",
         "quote": "A real mountain town, not just a resort.",
         "score": 8.6,
-        "face": "face-sam"
+        "face": null
       }
     ],
     "stays": [
@@ -748,7 +748,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £280 a night · Pool and spa by the Argentière lifts.",
         "because": "Because you loved breakfast in the garden at Es Molí",
         "score": null,
-        "photo": "chamonix-1"
+        "photo": null
       },
       {
         "name": "Hameau Albert 1er",
@@ -758,7 +758,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £420 a night · Sophie stayed",
         "because": null,
         "score": 9.0,
-        "photo": "chalet-2"
+        "photo": null
       },
       {
         "name": "Chalet Les Praz",
@@ -768,7 +768,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £240 a night · Tom stayed",
         "because": null,
         "score": 8.5,
-        "photo": "cabin-1"
+        "photo": null
       },
       {
         "name": "Hôtel Mont-Blanc Chamonix",
@@ -778,7 +778,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £340 a night · Sam stayed",
         "because": null,
         "score": 8.7,
-        "photo": "chalet-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -840,7 +840,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: J dG, Baptx, Tristan Gevaux, Sekwang Chia, orva studio, Olivier Chatel on Unsplash"
+    "credits": null
   },
   "cheltenham": {
     "kicker": "Spa town · One night",
@@ -890,7 +890,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Sep 2026",
         "quote": "Elegant, easy and the shopping is great.",
         "score": 8.8,
-        "face": "face-maya"
+        "face": null
       }
     ],
     "stays": [
@@ -902,7 +902,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £190 a night · A pretty Georgian townhouse with an honesty bar.",
         "because": "Because you liked the small, central Hôtel du Marais",
         "score": null,
-        "photo": "cheltenham-1"
+        "photo": null
       },
       {
         "name": "No. 131",
@@ -912,7 +912,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £210 a night · Maya stayed",
         "because": null,
         "score": 8.9,
-        "photo": "cheltenham-1"
+        "photo": null
       },
       {
         "name": "Ellenborough Park",
@@ -922,7 +922,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £260 a night · Sophie stayed",
         "because": null,
         "score": 8.9,
-        "photo": "cabin-2"
+        "photo": null
       },
       {
         "name": "The Queens Hotel",
@@ -952,7 +952,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.4,
         "from": "Sam",
         "match": 85,
-        "photo": "cafe-2"
+        "photo": null
       },
       {
         "name": "The Ivy Montpellier Brasserie",
@@ -1013,7 +1013,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Evy Prentice, James Shaw, Bjørn-Magnus Kristiansen, orva studio, Yuliya Matuzava on Unsplash"
+    "credits": null
   },
   "como": {
     "kicker": "Lakes · Slow",
@@ -1062,7 +1062,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jun 2026",
         "quote": "Every view looks like a painting.",
         "score": 8.9,
-        "face": "face-tom"
+        "face": null
       }
     ],
     "stays": [
@@ -1094,7 +1094,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £210 a night · Sophie stayed",
         "because": null,
         "score": 8.8,
-        "photo": "balcony-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -1171,7 +1171,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Tom"
       }
     ],
-    "credits": "Photos: Julia Solonina, Yianni Mathioudakis, Keegan Checks, Alessandro Rossi, Olivier Chatel on Unsplash"
+    "credits": null
   },
   "comporta": {
     "kicker": "Beach · Slow",
@@ -1223,7 +1223,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jul 2025",
         "quote": "Empty beaches and grilled fish.",
         "score": 8.8,
-        "face": "face-priya"
+        "face": null
       }
     ],
     "stays": [
@@ -1332,7 +1332,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Priya"
       }
     ],
-    "credits": "Photos: Ben Hickingbotham, Steffen Lemmerzahl, Roberto Nickson, David Hieb, Olivier Chatel, orva studio on Unsplash"
+    "credits": null
   },
   "copenhagen": {
     "kicker": "City · Weekend",
@@ -1380,7 +1380,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jul 2026",
         "quote": "Expensive, but so easy and so pretty.",
         "score": 8.5,
-        "face": "face-jonah"
+        "face": null
       }
     ],
     "stays": [
@@ -1392,7 +1392,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £380 a night · Tiny, cosy and a short walk to Nyhavn.",
         "because": "Because you liked the small, central Hôtel du Marais",
         "score": null,
-        "photo": "copenhagen-1"
+        "photo": null
       },
       {
         "name": "Nyhavn Canal Flat",
@@ -1402,7 +1402,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £230 a night · Jonah stayed",
         "because": null,
         "score": 8.4,
-        "photo": "copenhagen-1"
+        "photo": null
       },
       {
         "name": "Nobis Hotel",
@@ -1412,7 +1412,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £300 a night · Tom stayed",
         "because": null,
         "score": 8.6,
-        "photo": "balcony-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -1423,7 +1423,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.1,
         "from": "Maya",
         "match": 86,
-        "photo": "cafe-1"
+        "photo": null
       },
       {
         "name": "Barr",
@@ -1489,7 +1489,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Jonah"
       }
     ],
-    "credits": "Photos: Nick Karvounis, Febiyan, Johannes W, orva studio, Tony Lee on Unsplash"
+    "credits": null
   },
   "cotswolds": {
     "kicker": "Countryside · Weekend",
@@ -1539,7 +1539,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Oct 2026",
         "quote": "The best reset weekend. Walk, pub, sleep, repeat.",
         "score": 8.9,
-        "face": "face-priya"
+        "face": null
       }
     ],
     "stays": [
@@ -1551,7 +1551,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £280 a night · Treehouses and shepherd's huts on a big estate.",
         "because": "Because you loved breakfast in the garden at Es Molí",
         "score": null,
-        "photo": "cotswolds-2"
+        "photo": null
       },
       {
         "name": "Thyme",
@@ -1561,7 +1561,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £380 a night · Sophie stayed",
         "because": null,
         "score": 9.2,
-        "photo": "cabin-2"
+        "photo": null
       },
       {
         "name": "The Wild Rabbit Cottage",
@@ -1571,7 +1571,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £210 a night · Priya stayed",
         "because": null,
         "score": 9.0,
-        "photo": "cotswolds-3"
+        "photo": null
       },
       {
         "name": "The Lygon Arms",
@@ -1592,7 +1592,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.8,
         "from": "Tom",
         "match": 85,
-        "photo": "picnic-3"
+        "photo": null
       },
       {
         "name": "The Wild Rabbit",
@@ -1610,7 +1610,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Mum",
         "match": 82,
-        "photo": "cafe-2"
+        "photo": null
       }
     ],
     "dos": [
@@ -1658,7 +1658,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Priya"
       }
     ],
-    "credits": "Photos: Adrian Cole, Vicky Hincks, George Ciobra, Bjørn-Magnus Kristiansen, James Shaw, Kateryna Hliznitsova, orva studio, Yuliya Matuzava on Unsplash"
+    "credits": null
   },
   "courchevel": {
     "kicker": "Ski · Luxury",
@@ -1708,7 +1708,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Mar 2026",
         "quote": "Immaculate pistes. Bring a big budget.",
         "score": 8.7,
-        "face": "face-maya"
+        "face": null
       }
     ],
     "stays": [
@@ -1720,7 +1720,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £1200 a night · Chalet suites hidden in the forest.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "courchevel-1"
+        "photo": null
       },
       {
         "name": "Les Grandes Alpes",
@@ -1730,7 +1730,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £780 a night · Sophie stayed",
         "because": null,
         "score": 8.9,
-        "photo": "chalet-1"
+        "photo": null
       },
       {
         "name": "Hotel Le Lana",
@@ -1750,7 +1750,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £690 a night · Maya stayed",
         "because": null,
         "score": 8.8,
-        "photo": "chalet-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -1812,7 +1812,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Maya"
       }
     ],
-    "credits": "Photos: Piotr Figlarz, Tristan Gevaux, Baptx, James Shaw, Olivier Chatel, orva studio on Unsplash"
+    "credits": null
   },
   "crete": {
     "kicker": "Islands · Beach · Food",
@@ -1865,14 +1865,14 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jun 2026",
         "quote": "Big enough for a fortnight. Food is the best in Greece.",
         "score": 9.0,
-        "face": "face-maya"
+        "face": null
       },
       {
         "who": "Priya",
         "month": "Sep 2025",
         "quote": "Book a villa with friends and split it.",
         "score": 8.8,
-        "face": "face-priya"
+        "face": null
       }
     ],
     "stays": [
@@ -1884,7 +1884,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £520 a night · Private plunge pools looking at Spinalonga island.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "crete-2"
+        "photo": null
       },
       {
         "name": "Villa Elounda Blue",
@@ -1894,7 +1894,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £380 a night · Priya stayed",
         "because": null,
         "score": 9.1,
-        "photo": "crete-5"
+        "photo": null
       },
       {
         "name": "Chania Old Port Rooms",
@@ -1904,7 +1904,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £115 a night · Maya stayed",
         "because": null,
         "score": 8.6,
-        "photo": "crete-3"
+        "photo": null
       },
       {
         "name": "Serenissima Boutique",
@@ -1952,7 +1952,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Maya",
         "match": 83,
-        "photo": "cafe-2"
+        "photo": null
       }
     ],
     "dos": [
@@ -2018,7 +2018,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Priya"
       }
     ],
-    "credits": "Photos: Joshua Kettle, Evangelos Mpikakis, Matthieu Oger, Egor Myznik, Sara Abilova, François Fayet, orva studio, Yuliya Matuzava on Unsplash"
+    "credits": null
   },
   "deia": {
     "kicker": "Mountains · Coast",
@@ -2068,7 +2068,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jun 2025",
         "quote": "Hire a car. Swim at the cove every morning.",
         "score": 8.5,
-        "face": "face-jonah"
+        "face": null
       }
     ],
     "stays": [
@@ -2100,7 +2100,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £180 a night · Sam stayed",
         "because": null,
         "score": 8.6,
-        "photo": "lemon-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -2129,7 +2129,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.2,
         "from": "Sam",
         "match": 79,
-        "photo": "cafe-1"
+        "photo": null
       }
     ],
     "dos": [
@@ -2177,7 +2177,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Jonah"
       }
     ],
-    "credits": "Photos: Chloe Frost-Smith, Milin John, Sara Abilova, Eric Prouzet, orva studio, Olivier Chatel, Tony Lee on Unsplash"
+    "credits": null
   },
   "heidelberg": {
     "kicker": "Old town · River · Weekend",
@@ -2228,7 +2228,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Sep 2026",
         "quote": "Like walking into a fairytale. Perfect for two nights.",
         "score": 8.6,
-        "face": "face-sophie"
+        "face": null
       }
     ],
     "stays": [
@@ -2240,7 +2240,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £160 a night · Small design hotel with a garden, right in the old town.",
         "because": "Because you liked the small, central Hôtel du Marais",
         "score": null,
-        "photo": "heidelberg-2"
+        "photo": null
       },
       {
         "name": "Hotel Die Hirschgasse",
@@ -2250,7 +2250,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £230 a night · Sophie stayed",
         "because": null,
         "score": 9.0,
-        "photo": "cabin-2"
+        "photo": null
       },
       {
         "name": "Hotel Zum Ritter St. Georg",
@@ -2260,7 +2260,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £150 a night · Sophie stayed",
         "because": null,
         "score": 8.5,
-        "photo": "heidelberg-2"
+        "photo": null
       },
       {
         "name": "Der Europäische Hof",
@@ -2290,7 +2290,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.4,
         "from": "Mum",
         "match": 84,
-        "photo": "cafe-1"
+        "photo": null
       },
       {
         "name": "Schnitzelbank",
@@ -2347,7 +2347,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sophie"
       }
     ],
-    "credits": "Photos: Tobias Reich, Khaled Ali, James Shaw, Bjørn-Magnus Kristiansen, orva studio, Olivier Chatel, Tony Lee on Unsplash"
+    "credits": null
   },
   "hydra": {
     "kicker": "Islands · Slow",
@@ -2398,14 +2398,14 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jun 2026",
         "quote": "No cars, just donkeys and swimming off the rocks.",
         "score": 9.4,
-        "face": "face-maya"
+        "face": null
       },
       {
         "who": "Jonah",
         "month": "Sep 2025",
         "quote": "Go in September when the boats quieten down.",
         "score": 8.7,
-        "face": "face-jonah"
+        "face": null
       }
     ],
     "stays": [
@@ -2417,7 +2417,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £240 a night · An old captain's mansion with a shady courtyard.",
         "because": "Because you loved breakfast in the garden at Es Molí",
         "score": null,
-        "photo": "balcony-1"
+        "photo": null
       },
       {
         "name": "The Old Mill House",
@@ -2437,7 +2437,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £190 a night · Sophie stayed",
         "because": null,
         "score": 8.7,
-        "photo": "balcony-1"
+        "photo": null
       },
       {
         "name": "Casa Ammos",
@@ -2447,7 +2447,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £190 a night · Maya stayed",
         "because": null,
         "score": 8.8,
-        "photo": "balcony-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -2485,7 +2485,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.3,
         "from": "Sam",
         "match": 84,
-        "photo": "cafe-1"
+        "photo": null
       }
     ],
     "dos": [
@@ -2555,7 +2555,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Maya"
       }
     ],
-    "credits": "Photos: Mauricio Muñoz, Christina Terzidou, Keegan Checks, Johannes W, Sara Abilova, orva studio, Olivier Chatel, François Fayet, Tony Lee on Unsplash"
+    "credits": null
   },
   "kyoto": {
     "kicker": "City · Culture",
@@ -2607,7 +2607,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Apr 2026",
         "quote": "Stay in a ryokan at least two nights.",
         "score": 9.5,
-        "face": "face-tom"
+        "face": null
       }
     ],
     "stays": [
@@ -2619,7 +2619,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £900 a night · Arrive by boat up the river to a quiet garden ryokan.",
         "because": "Because you gave Riad Zitoun a 9.1",
         "score": null,
-        "photo": "kyoto-1"
+        "photo": null
       },
       {
         "name": "Ryokan Hana",
@@ -2629,7 +2629,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £310 a night · Tom stayed",
         "because": null,
         "score": 9.3,
-        "photo": "kyoto-2"
+        "photo": null
       },
       {
         "name": "Machiya in Higashiyama",
@@ -2639,7 +2639,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £160 a night · Sam stayed",
         "because": null,
         "score": 8.8,
-        "photo": "cabin-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -2650,7 +2650,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.5,
         "from": "Tom",
         "match": 93,
-        "photo": "kaiseki-1"
+        "photo": null
       },
       {
         "name": "Weekenders Coffee",
@@ -2659,7 +2659,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.9,
         "from": "Sophie",
         "match": 88,
-        "photo": "cafe-2"
+        "photo": null
       },
       {
         "name": "Nishiki Market",
@@ -2668,7 +2668,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Sam",
         "match": 82,
-        "photo": "kaiseki-1"
+        "photo": null
       }
     ],
     "dos": [
@@ -2727,7 +2727,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Tom"
       }
     ],
-    "credits": "Photos: Arash Bal, Chloé Lefleur, Sekwang Chia, Yosuke Ota, Yuliya Matuzava on Unsplash"
+    "credits": null
   },
   "lisbon": {
     "kicker": "City · Food",
@@ -2778,7 +2778,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Apr 2026",
         "quote": "Perfect long weekend.",
         "score": 8.2,
-        "face": "face-priya"
+        "face": null
       }
     ],
     "stays": [
@@ -2790,7 +2790,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £260 a night · Small rooftop pool looking over Alfama and the river.",
         "because": "Because you liked the small, central Hôtel du Marais",
         "score": null,
-        "photo": "lisbon-1"
+        "photo": null
       },
       {
         "name": "Santiago de Alfama",
@@ -2800,7 +2800,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £280 a night · Maya stayed",
         "because": null,
         "score": 9.0,
-        "photo": "balcony-1"
+        "photo": null
       },
       {
         "name": "Casa Alfama",
@@ -2810,7 +2810,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £95 a night · Priya stayed",
         "because": null,
         "score": 8.3,
-        "photo": "balcony-1"
+        "photo": null
       },
       {
         "name": "The Lumiares",
@@ -2820,7 +2820,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £230 a night · Sam stayed",
         "because": null,
         "score": 8.6,
-        "photo": "balcony-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -2849,7 +2849,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Sophie",
         "match": 86,
-        "photo": "cafe-1"
+        "photo": null
       }
     ],
     "dos": [
@@ -2904,7 +2904,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Priya"
       }
     ],
-    "credits": "Photos: Jacek Urbanski, Keegan Checks, Johannes W, Olivier Chatel, orva studio, Tony Lee on Unsplash"
+    "credits": null
   },
   "longleat": {
     "kicker": "Safari · One night",
@@ -2953,7 +2953,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jul 2026",
         "quote": "Giraffes next to the car. Unbeatable.",
         "score": 8.7,
-        "face": "face-maya"
+        "face": null
       }
     ],
     "stays": [
@@ -2975,7 +2975,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £220 a night · Mum stayed",
         "because": null,
         "score": 8.7,
-        "photo": "cabin-1"
+        "photo": null
       },
       {
         "name": "The Lord Thynne",
@@ -2985,7 +2985,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £140 a night · Sophie stayed",
         "because": null,
         "score": 8.5,
-        "photo": "cabin-2"
+        "photo": null
       },
       {
         "name": "Center Parcs Longleat Forest",
@@ -3024,7 +3024,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 7.9,
         "from": "Sam",
         "match": 74,
-        "photo": "cafe-1"
+        "photo": null
       }
     ],
     "dos": [
@@ -3069,7 +3069,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Helena Pfisterer, Bjørn-Magnus Kristiansen, Sekwang Chia, orva studio, Tony Lee on Unsplash"
+    "credits": null
   },
   "madeira": {
     "kicker": "Hiking · Coast",
@@ -3125,7 +3125,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Oct 2026",
         "quote": "Like Hawaii, three hours from Gatwick.",
         "score": 8.6,
-        "face": "face-jonah"
+        "face": null
       }
     ],
     "stays": [
@@ -3137,7 +3137,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £190 a night · An old manor in a botanical garden above Funchal.",
         "because": "Because you loved breakfast in the garden at Es Molí",
         "score": null,
-        "photo": "balcony-2"
+        "photo": null
       },
       {
         "name": "Reid's Palace",
@@ -3157,7 +3157,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £130 a night · Jonah stayed",
         "because": null,
         "score": 8.5,
-        "photo": "balcony-1"
+        "photo": null
       },
       {
         "name": "Quinta do Furão",
@@ -3244,7 +3244,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Jonah"
       }
     ],
-    "credits": "Photos: Christian Mackie, Johannes W, Keegan Checks, Milin John, David Hieb, orva studio, Olivier Chatel on Unsplash"
+    "credits": null
   },
   "maldives": {
     "kicker": "Island · Beach",
@@ -3294,7 +3294,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Feb 2026",
         "quote": "Like swimming in a swimming pool the size of the sea.",
         "score": 9.4,
-        "face": "face-maya"
+        "face": null
       }
     ],
     "stays": [
@@ -3427,7 +3427,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Ishan @seefromthesky, Mike Swigunski, Milin John, Olivier Chatel, orva studio on Unsplash"
+    "credits": null
   },
   "marrakech": {
     "kicker": "City · Food",
@@ -3479,7 +3479,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Mar 2026",
         "quote": "Book a riad with a roof terrace.",
         "score": 9.0,
-        "face": "face-maya"
+        "face": null
       }
     ],
     "stays": [
@@ -3491,7 +3491,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £380 a night · Pink walls, rooftop pool and a lot of art.",
         "because": "Because you gave Riad Zitoun a 9.1",
         "score": null,
-        "photo": "marrakech-2"
+        "photo": null
       },
       {
         "name": "Riad Zitoun",
@@ -3501,7 +3501,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £120 a night · Maya stayed",
         "because": null,
         "score": 9.1,
-        "photo": "marrakech-3"
+        "photo": null
       },
       {
         "name": "Riad Yasmine",
@@ -3521,7 +3521,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £330 a night · Priya stayed",
         "because": null,
         "score": 8.4,
-        "photo": "marrakech-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -3541,7 +3541,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.5,
         "from": "Priya",
         "match": 85,
-        "photo": "minttea-1"
+        "photo": null
       },
       {
         "name": "Dar Yacout",
@@ -3559,7 +3559,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Priya",
         "match": 80,
-        "photo": "minttea-1"
+        "photo": null
       }
     ],
     "dos": [
@@ -3625,7 +3625,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Priya"
       }
     ],
-    "credits": "Photos: Toa Heftiba, Annie Spratt, Alex Azabache, Milin John, Massimo Adami, orva studio on Unsplash"
+    "credits": null
   },
   "mauritius": {
     "kicker": "Island · Beach",
@@ -3678,7 +3678,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Oct 2025",
         "quote": "Great for families. Something for everyone.",
         "score": 8.8,
-        "face": "face-sam"
+        "face": null
       }
     ],
     "stays": [
@@ -3690,7 +3690,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £900 a night · On its own peninsula with calm lagoon on both sides.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "mauritius-1"
+        "photo": null
       },
       {
         "name": "LUX* Le Morne",
@@ -3700,7 +3700,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £520 a night · Sam stayed",
         "because": null,
         "score": 9.0,
-        "photo": "mauritius-2"
+        "photo": null
       },
       {
         "name": "Lakaz Chamarel",
@@ -3710,7 +3710,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £260 a night · Sam stayed",
         "because": null,
         "score": 8.7,
-        "photo": "cabin-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -3791,7 +3791,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Xavier Coiffic, Ondrej Bocek, Sekwang Chia, Olivier Chatel, orva studio on Unsplash"
+    "credits": null
   },
   "orlando": {
     "kicker": "Theme parks · Family",
@@ -3842,14 +3842,14 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Apr 2026",
         "quote": "Exhausting but the kids still talk about it.",
         "score": 8.4,
-        "face": "face-tom"
+        "face": null
       },
       {
         "who": "Jonah",
         "month": "May 2025",
         "quote": "Go in May, not August. The heat is serious.",
         "score": 7.8,
-        "face": "face-jonah"
+        "face": null
       }
     ],
     "stays": [
@@ -3861,7 +3861,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £600 a night · Huge pool with a lazy river, inside Disney.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "orlando-3"
+        "photo": null
       },
       {
         "name": "Lakeside Pool Villa",
@@ -3871,7 +3871,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £290 a night · Tom stayed",
         "because": null,
         "score": 8.8,
-        "photo": "orlando-5"
+        "photo": null
       },
       {
         "name": "Disney's Animal Kingdom Lodge",
@@ -3901,7 +3901,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £210 a night · Jonah stayed",
         "because": null,
         "score": 8.2,
-        "photo": "orlando-4"
+        "photo": null
       }
     ],
     "eats": [
@@ -3921,7 +3921,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Tom",
         "match": 83,
-        "photo": "picnic-1"
+        "photo": null
       },
       {
         "name": "Kathmandu Kitchen",
@@ -3939,7 +3939,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.3,
         "from": "Jonah",
         "match": 78,
-        "photo": "orlando-2"
+        "photo": null
       }
     ],
     "dos": [
@@ -4005,7 +4005,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Jonah"
       }
     ],
-    "credits": "Photos: Denys Kostyuchenko, Itai Aarons, paws and prints, Valeriia Neganova, Brian Zajac, Roberto Nickson, Milin John, Svetlana Kuznetsova, orva studio, Olivier Chatel on Unsplash"
+    "credits": null
   },
   "oxford": {
     "kicker": "City · One night",
@@ -4055,7 +4055,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "May 2026",
         "quote": "Felt like walking through a film set.",
         "score": 8.7,
-        "face": "face-priya"
+        "face": null
       }
     ],
     "stays": [
@@ -4077,7 +4077,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £180 a night · Sam stayed",
         "because": null,
         "score": 8.4,
-        "photo": "balcony-2"
+        "photo": null
       },
       {
         "name": "Old Bank Hotel",
@@ -4116,7 +4116,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.5,
         "from": "Sam",
         "match": 79,
-        "photo": "cafe-2"
+        "photo": null
       }
     ],
     "dos": [
@@ -4161,7 +4161,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Ben Seymour, Johannes W, Olivier Chatel, Yuliya Matuzava on Unsplash"
+    "credits": null
   },
   "paris": {
     "kicker": "City · Weekend",
@@ -4211,7 +4211,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Sep 2026",
         "quote": "Never gets old. Book dinners ahead.",
         "score": 8.6,
-        "face": "face-tom"
+        "face": null
       }
     ],
     "stays": [
@@ -4233,7 +4233,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £290 a night · Sophie stayed",
         "because": null,
         "score": 8.9,
-        "photo": "balcony-1"
+        "photo": null
       },
       {
         "name": "Le Pigalle",
@@ -4243,7 +4243,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £260 a night · Sam stayed",
         "because": null,
         "score": 8.7,
-        "photo": "balcony-2"
+        "photo": null
       },
       {
         "name": "Hôtel du Marais",
@@ -4253,7 +4253,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £175 a night · Tom stayed",
         "because": null,
         "score": 8.5,
-        "photo": "paris-3"
+        "photo": null
       }
     ],
     "eats": [
@@ -4273,7 +4273,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.9,
         "from": "Tom",
         "match": 85,
-        "photo": "paris-2"
+        "photo": null
       },
       {
         "name": "Bouillon Pigalle",
@@ -4337,7 +4337,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Priya"
       }
     ],
-    "credits": "Photos: Xenia Bunina, Camille Brodard, Giulia Perera, Johannes W, Keegan Checks, Olivier Chatel, orva studio on Unsplash"
+    "credits": null
   },
   "positano": {
     "kicker": "Coast · Food",
@@ -4385,14 +4385,14 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "May 2026",
         "quote": "Expensive but I'd go back tomorrow.",
         "score": 9.2,
-        "face": "face-priya"
+        "face": null
       },
       {
         "who": "Tom",
         "month": "Aug 2025",
         "quote": "Stairs everywhere. Worth it for dinner at sunset.",
         "score": 8.0,
-        "face": "face-tom"
+        "face": null
       }
     ],
     "stays": [
@@ -4404,7 +4404,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £950 a night · Red-and-white terraces and the best pool view in town.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "lemon-2"
+        "photo": null
       },
       {
         "name": "Casa Buonocore",
@@ -4434,7 +4434,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £260 a night · Tom stayed",
         "because": null,
         "score": 7.9,
-        "photo": "balcony-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -4524,7 +4524,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Tom"
       }
     ],
-    "credits": "Photos: Nahum Ashworth, Eric Prouzet, David Hieb, Keegan Checks, Sara Abilova, Alessandro Rossi, orva studio on Unsplash"
+    "credits": null
   },
   "puglia": {
     "kicker": "Coast · Food",
@@ -4575,7 +4575,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Sep 2026",
         "quote": "Better food than the Amalfi coast for half the price.",
         "score": 9.0,
-        "face": "face-priya"
+        "face": null
       }
     ],
     "stays": [
@@ -4597,7 +4597,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £340 a night · Maya stayed",
         "because": null,
         "score": 8.8,
-        "photo": "balcony-1"
+        "photo": null
       },
       {
         "name": "Masseria Ulivo",
@@ -4617,7 +4617,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £150 a night · Sophie stayed",
         "because": null,
         "score": 9.0,
-        "photo": "cabin-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -4637,7 +4637,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Sam",
         "match": 85,
-        "photo": "cafe-2"
+        "photo": null
       },
       {
         "name": "Antiche Mura",
@@ -4701,7 +4701,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Priya"
       }
     ],
-    "credits": "Photos: Bartłomiej Balicki, Thay Pellerin, Roberto Nickson, David Hieb, Keegan Checks, Bjørn-Magnus Kristiansen, Alessandro Rossi, Yuliya Matuzava on Unsplash"
+    "credits": null
   },
   "seychelles": {
     "kicker": "Island · Beach",
@@ -4752,7 +4752,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Apr 2025",
         "quote": "Every beach looks like a screensaver.",
         "score": 9.2,
-        "face": "face-tom"
+        "face": null
       }
     ],
     "stays": [
@@ -4764,7 +4764,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £220 a night · An old vanilla plantation house in the jungle.",
         "because": "Because you loved breakfast in the garden at Es Molí",
         "score": null,
-        "photo": "seychelles-1"
+        "photo": null
       },
       {
         "name": "Six Senses Zil Pasyon",
@@ -4784,7 +4784,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £480 a night · Tom stayed",
         "because": null,
         "score": 9.1,
-        "photo": "seychelles-1"
+        "photo": null
       },
       {
         "name": "Le Repaire",
@@ -4794,7 +4794,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £220 a night · Sam stayed",
         "because": null,
         "score": 8.6,
-        "photo": "lemon-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -4814,7 +4814,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.4,
         "from": "Maya",
         "match": 82,
-        "photo": "cafe-2"
+        "photo": null
       },
       {
         "name": "Fish Trap",
@@ -4868,7 +4868,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Christian Cacciamani, Eric Prouzet, Roberto Nickson, orva studio, Yuliya Matuzava on Unsplash"
+    "credits": null
   },
   "sicily": {
     "kicker": "City · Beach",
@@ -4919,7 +4919,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Oct 2026",
         "quote": "Chaotic and brilliant. Eat everything.",
         "score": 8.5,
-        "face": "face-maya"
+        "face": null
       }
     ],
     "stays": [
@@ -4931,7 +4931,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £450 a night · Art nouveau palace with a pool right on the sea.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "balcony-1"
+        "photo": null
       },
       {
         "name": "Palazzo Butera Rooms",
@@ -4941,7 +4941,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £110 a night · Maya stayed",
         "because": null,
         "score": 8.7,
-        "photo": "balcony-2"
+        "photo": null
       },
       {
         "name": "BB22 Palace",
@@ -4951,7 +4951,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £120 a night · Sam stayed",
         "because": null,
         "score": 8.5,
-        "photo": "balcony-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -5035,7 +5035,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Maya"
       }
     ],
-    "credits": "Photos: Gianluca Baio, Ricardo Gomez Angel, Keegan Checks, Johannes W, Alessandro Rossi, orva studio on Unsplash"
+    "credits": null
   },
   "stanton": {
     "kicker": "Ski · Après",
@@ -5084,14 +5084,14 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jan 2026",
         "quote": "Huge mountain and the most fun après anywhere.",
         "score": 9.2,
-        "face": "face-tom"
+        "face": null
       },
       {
         "who": "Sam",
         "month": "Feb 2026",
         "quote": "Not for beginners, but brilliant.",
         "score": 8.8,
-        "face": "face-sam"
+        "face": null
       }
     ],
     "stays": [
@@ -5103,7 +5103,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £260 a night · Small design hotel a minute from the Galzig lift.",
         "because": "Because you liked the small, central Hôtel du Marais",
         "score": null,
-        "photo": "chalet-2"
+        "photo": null
       },
       {
         "name": "Chalet Valluga",
@@ -5113,7 +5113,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £300 a night · Sophie stayed",
         "because": null,
         "score": 8.9,
-        "photo": "cabin-2"
+        "photo": null
       },
       {
         "name": "Hotel Schwarzer Adler",
@@ -5123,7 +5123,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £380 a night · Tom stayed",
         "because": null,
         "score": 9.0,
-        "photo": "chalet-2"
+        "photo": null
       },
       {
         "name": "Arlberg1800 Resort",
@@ -5133,7 +5133,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £450 a night · Sam stayed",
         "because": null,
         "score": 8.8,
-        "photo": "chalet-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -5195,7 +5195,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Tom"
       }
     ],
-    "credits": "Photos: Maarten Scheer, Baptx, Tristan Gevaux, Bjørn-Magnus Kristiansen, Olivier Chatel, orva studio on Unsplash"
+    "credits": null
   },
   "stives": {
     "kicker": "Beach · Weekend",
@@ -5246,7 +5246,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Aug 2026",
         "quote": "That water is unreal on a sunny day.",
         "score": 8.8,
-        "face": "face-maya"
+        "face": null
       }
     ],
     "stays": [
@@ -5258,7 +5258,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £230 a night · Every room looks out over Carbis Bay.",
         "because": "Because you loved the views at Casa Arrozal",
         "score": null,
-        "photo": "stives-1"
+        "photo": null
       },
       {
         "name": "Harbour Loft",
@@ -5268,7 +5268,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £150 a night · Maya stayed",
         "because": null,
         "score": 8.7,
-        "photo": "stives-2"
+        "photo": null
       },
       {
         "name": "Tregenna Castle",
@@ -5355,7 +5355,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Maya"
       }
     ],
-    "credits": "Photos: BEN ELLIOTT, Oliver Potter, Roberto Nickson, orva studio, Olivier Chatel on Unsplash"
+    "credits": null
   },
   "stratford": {
     "kicker": "Town · One night",
@@ -5405,7 +5405,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jul 2026",
         "quote": "The play was the highlight of my year.",
         "score": 8.6,
-        "face": "face-sam"
+        "face": null
       }
     ],
     "stays": [
@@ -5417,7 +5417,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £160 a night · A Tudor building on the high street.",
         "because": "Because you liked the small, central Hôtel du Marais",
         "score": null,
-        "photo": "stratford-1"
+        "photo": null
       },
       {
         "name": "The Arden Hotel",
@@ -5427,7 +5427,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £190 a night · Sam stayed",
         "because": null,
         "score": 8.7,
-        "photo": "stratford-1"
+        "photo": null
       },
       {
         "name": "Hotel du Vin Stratford",
@@ -5447,7 +5447,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £190 a night · Mum stayed",
         "because": null,
         "score": 8.6,
-        "photo": "cabin-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -5521,7 +5521,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Swati Kedia, James Shaw, Bjørn-Magnus Kristiansen, orva studio, Olivier Chatel on Unsplash"
+    "credits": null
   },
   "turks": {
     "kicker": "Island · Beach",
@@ -5573,7 +5573,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Mar 2026",
         "quote": "The softest sand and clearest water in the Caribbean.",
         "score": 9.0,
-        "face": "face-priya"
+        "face": null
       }
     ],
     "stays": [
@@ -5585,7 +5585,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £1100 a night · A private island with a long, empty beach.",
         "because": "Because you loved the views at Casa Arrozal",
         "score": null,
-        "photo": "turks-2"
+        "photo": null
       },
       {
         "name": "Grace Bay Club",
@@ -5595,7 +5595,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £750 a night · Priya stayed",
         "because": null,
         "score": 9.1,
-        "photo": "turks-1"
+        "photo": null
       },
       {
         "name": "The Palms",
@@ -5679,7 +5679,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Marc Schmittbuhl, Romello Williams, Milin John, Olivier Chatel, orva studio on Unsplash"
+    "credits": null
   },
   "valthorens": {
     "kicker": "Ski · Après",
@@ -5726,7 +5726,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Jan 2026",
         "quote": "Snow is brilliant even in April. Great for groups.",
         "score": 8.4,
-        "face": "face-maya"
+        "face": null
       }
     ],
     "stays": [
@@ -5738,7 +5738,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £520 a night · Ski-in, ski-out with a big outdoor pool.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "valthorens-1"
+        "photo": null
       },
       {
         "name": "Fitz Roy",
@@ -5748,7 +5748,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £520 a night · Sophie stayed",
         "because": null,
         "score": 8.8,
-        "photo": "chalet-1"
+        "photo": null
       },
       {
         "name": "Ski-in Chalet Cîmes",
@@ -5758,7 +5758,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £320 a night · Maya stayed",
         "because": null,
         "score": 8.5,
-        "photo": "chalet-1"
+        "photo": null
       },
       {
         "name": "Koh-I Nor",
@@ -5768,7 +5768,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £480 a night · Sam stayed",
         "because": null,
         "score": 8.6,
-        "photo": "chalet-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -5779,7 +5779,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Maya",
         "match": 83,
-        "photo": "valthorens-2"
+        "photo": null
       },
       {
         "name": "Les Chalets du Thorens",
@@ -5838,7 +5838,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Maya"
       }
     ],
-    "credits": "Photos: Dominik Lückmann, Joan Oger, Samuel Arkwright, Baptx, Tristan Gevaux, orva studio, Olivier Chatel on Unsplash"
+    "credits": null
   },
   "verbier": {
     "kicker": "Ski · Mountains",
@@ -5888,7 +5888,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Feb 2026",
         "quote": "Gorgeous village and properly challenging skiing.",
         "score": 9.0,
-        "face": "face-sophie"
+        "face": null
       }
     ],
     "stays": [
@@ -5900,7 +5900,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £480 a night · Calm, wood-panelled, with a spa.",
         "because": "Because you gave Riad Zitoun a 9.1",
         "score": null,
-        "photo": "verbier-1"
+        "photo": null
       },
       {
         "name": "Chalet d'Adrien",
@@ -5910,7 +5910,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £640 a night · Maya stayed",
         "because": null,
         "score": 9.1,
-        "photo": "chalet-2"
+        "photo": null
       },
       {
         "name": "W Verbier",
@@ -5920,7 +5920,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £520 a night · Sophie stayed",
         "because": null,
         "score": 8.8,
-        "photo": "chalet-1"
+        "photo": null
       },
       {
         "name": "Hotel Farinet",
@@ -5992,7 +5992,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sophie"
       }
     ],
-    "credits": "Photos: Sebastian Staines, Baptx, Tristan Gevaux, James Shaw, orva studio, Olivier Chatel on Unsplash"
+    "credits": null
   },
   "warwick": {
     "kicker": "Castle · One night",
@@ -6041,7 +6041,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Aug 2026",
         "quote": "The kids talked about it for weeks.",
         "score": 8.8,
-        "face": "face-sam"
+        "face": null
       }
     ],
     "stays": [
@@ -6053,7 +6053,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £130 a night · Old coaching inn, a short walk to the castle.",
         "because": "Because you liked the small, central Hôtel du Marais",
         "score": null,
-        "photo": "warwick-1"
+        "photo": null
       },
       {
         "name": "Warwick Castle Knight's Village",
@@ -6063,7 +6063,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £220 a night · Sam stayed",
         "because": null,
         "score": 8.9,
-        "photo": "warwick-1"
+        "photo": null
       },
       {
         "name": "Warwick Castle Glamping",
@@ -6073,7 +6073,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £160 a night · Sam stayed",
         "because": null,
         "score": 8.4,
-        "photo": "cabin-1"
+        "photo": null
       },
       {
         "name": "The Tudor House Inn",
@@ -6083,7 +6083,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £110 a night · Mum stayed",
         "because": null,
         "score": 8.0,
-        "photo": "cabin-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -6103,7 +6103,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.3,
         "from": "Sophie",
         "match": 79,
-        "photo": "cafe-2"
+        "photo": null
       },
       {
         "name": "The castle feast",
@@ -6157,7 +6157,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Tom Podmore, Sekwang Chia, Bjørn-Magnus Kristiansen, orva studio, Yuliya Matuzava on Unsplash"
+    "credits": null
   },
   "york": {
     "kicker": "City · One night",
@@ -6207,7 +6207,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Dec 2025",
         "quote": "So much history in such a small place.",
         "score": 8.9,
-        "face": "face-tom"
+        "face": null
       }
     ],
     "stays": [
@@ -6219,7 +6219,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £220 a night · Right by the Minster, with a private garden on the city walls.",
         "because": "Because you loved breakfast in the garden at Es Molí",
         "score": null,
-        "photo": "york-1"
+        "photo": null
       },
       {
         "name": "The Grand, York",
@@ -6229,7 +6229,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £230 a night · Tom stayed",
         "because": null,
         "score": 9.0,
-        "photo": "york-1"
+        "photo": null
       },
       {
         "name": "Middlethorpe Hall",
@@ -6239,7 +6239,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £230 a night · Mum stayed",
         "because": null,
         "score": 8.9,
-        "photo": "cabin-2"
+        "photo": null
       },
       {
         "name": "No.1 York",
@@ -6260,7 +6260,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Sophie",
         "match": 84,
-        "photo": "cafe-1"
+        "photo": null
       },
       {
         "name": "Bettys",
@@ -6323,7 +6323,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Illiya Vjestica, Bjørn-Magnus Kristiansen, James Shaw, orva studio, Tony Lee on Unsplash"
+    "credits": null
   },
   "zanzibar": {
     "kicker": "Island · Beach",
@@ -6377,7 +6377,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Aug 2025",
         "quote": "Stone Town at dusk, then a week on the beach. Perfect mix.",
         "score": 8.9,
-        "face": "face-jonah"
+        "face": null
       }
     ],
     "stays": [
@@ -6389,7 +6389,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £400 a night · Thatched bungalows on a cliff over the reef.",
         "because": "Because you gave Riad Zitoun a 9.1",
         "score": null,
-        "photo": "zanzibar-1"
+        "photo": null
       },
       {
         "name": "Zuri Zanzibar",
@@ -6399,7 +6399,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £450 a night · Jonah stayed",
         "because": null,
         "score": 9.0,
-        "photo": "zanzibar-1"
+        "photo": null
       },
       {
         "name": "Kholle House",
@@ -6409,7 +6409,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £180 a night · Sam stayed",
         "because": null,
         "score": 8.6,
-        "photo": "balcony-2"
+        "photo": null
       },
       {
         "name": "Emerson Spice",
@@ -6419,7 +6419,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £180 a night · Priya stayed",
         "because": null,
         "score": 8.8,
-        "photo": "zanzibar-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -6509,7 +6509,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Sam"
       }
     ],
-    "credits": "Photos: Humphrey M., Olga Budko, Johannes W, Olivier Chatel, orva studio on Unsplash"
+    "credits": null
   },
   "zermatt": {
     "kicker": "Ski · Mountains",
@@ -6559,7 +6559,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Feb 2026",
         "quote": "Pricey, but the best skiing and food I've had.",
         "score": 9.1,
-        "face": "face-jonah"
+        "face": null
       }
     ],
     "stays": [
@@ -6571,7 +6571,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £650 a night · A calm hideaway on the rock above town.",
         "because": "Because you gave Riad Zitoun a 9.1",
         "score": null,
-        "photo": "zermatt-2"
+        "photo": null
       },
       {
         "name": "Chalet Matterhorn View",
@@ -6581,7 +6581,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £450 a night · Jonah stayed",
         "because": null,
         "score": 9.2,
-        "photo": "chalet-1"
+        "photo": null
       },
       {
         "name": "Cervo Mountain Resort",
@@ -6591,7 +6591,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £540 a night · Tom stayed",
         "because": null,
         "score": 9.0,
-        "photo": "chalet-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -6602,7 +6602,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.3,
         "from": "Jonah",
         "match": 91,
-        "photo": "chalet-2"
+        "photo": null
       },
       {
         "name": "Findlerhof",
@@ -6668,7 +6668,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "from": "Jonah"
       }
     ],
-    "credits": "Photos: The 414 Company, Robert Rey, Daniel Cox, Tristan Gevaux, Baptx, orva studio, Olivier Chatel on Unsplash"
+    "credits": null
   },
   "southafrica": {
     "kicker": "City · Safari · Food",
@@ -6723,21 +6723,21 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "month": "Mar 2026",
         "quote": "Table Mountain in the morning, a wine farm for lunch, penguins by teatime.",
         "score": 9.3,
-        "face": "face-sophie"
+        "face": null
       },
       {
         "who": "Sam",
         "month": "Sep 2025",
         "quote": "Three days in Kruger and we saw the big five. Unreal.",
         "score": 9.2,
-        "face": "face-sam"
+        "face": null
       },
       {
         "who": "Priya",
         "month": "Jan 2026",
         "quote": "Cape Town has everything: beaches, mountains and brilliant food.",
         "score": 8.9,
-        "face": "face-priya"
+        "face": null
       }
     ],
     "stays": [

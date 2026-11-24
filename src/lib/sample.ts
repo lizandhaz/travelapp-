@@ -83,7 +83,7 @@ export const rows = {
       "score": 9.2,
       "name": "La Digue",
       "sub": "Seychelles",
-      "photo": null
+      "photo": "own-ladigue-rocks"
     },
     {
       "slug": "turks",
@@ -776,8 +776,9 @@ export const places: SamplePlace[] = [
     "name": "La Digue",
     "region": "Seychelles",
     "score": 9.2,
-    "photo": null,
+    "photo": "own-ladigue-rocks",
     "photos": [
+      "own-ladigue-rocks"
     ]
   },
   {
@@ -1180,7 +1181,7 @@ export const board: BoardItem[] = [
     "slug": "heidelberg"
   },
   {
-    "photo": null,
+    "photo": "own-ladigue-rocks",
     "kind": "place",
     "score": 9.2,
     "name": "La Digue, Seychelles",
@@ -1720,6 +1721,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   marrakech: ['own-marrakech-koutoubia', 'own-marrakech-rooftops'], morocco: ['own-marrakech-koutoubia', 'own-marrakech-rooftops'],
   'sri lanka': ['own-srilanka-bay', 'own-srilanka-sigiriya'], sigiriya: 'own-srilanka-sigiriya', hiriketiya: 'own-srilanka-bay', galle: ['own-srilanka-bay', 'own-srilanka-sigiriya'], mirissa: 'own-srilanka-bay', weligama: 'own-srilanka-bay', tangalle: 'own-srilanka-bay', unawatuna: 'own-srilanka-bay', bentota: 'own-srilanka-bay', kandy: 'own-srilanka-sigiriya', ella: 'own-srilanka-sigiriya', dambulla: 'own-srilanka-sigiriya',
   mauritius: ['own-mauritius-aerial', 'own-mauritius-palms'], 'le morne': 'own-mauritius-aerial', 'grand baie': 'own-mauritius-palms', 'belle mare': 'own-mauritius-palms', flic: 'own-mauritius-aerial',
+  'la digue': 'own-ladigue-rocks', seychelles: 'own-ladigue-rocks', 'anse source d argent': 'own-ladigue-rocks', praslin: 'own-ladigue-rocks', mahe: 'own-ladigue-rocks',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

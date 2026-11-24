@@ -148,7 +148,7 @@ export const rows = {
       "score": 8.2,
       "name": "Marrakech",
       "sub": "3h 30m flight",
-      "photo": null
+      "photo": "own-marrakech-koutoubia"
     },
     {
       "slug": "lisbon",
@@ -704,8 +704,10 @@ export const places: SamplePlace[] = [
     "name": "Marrakech",
     "region": "Morocco",
     "score": 8.2,
-    "photo": null,
+    "photo": "own-marrakech-koutoubia",
     "photos": [
+      "own-marrakech-koutoubia",
+      "own-marrakech-rooftops"
     ]
   },
   {
@@ -1139,7 +1141,7 @@ export const board: BoardItem[] = [
     "slug": "copenhagen"
   },
   {
-    "photo": null,
+    "photo": "own-marrakech-koutoubia",
     "kind": "Culture · Music",
     "name": "Jemaa el-Fnaa at dusk",
     "sub": "Marrakech, Morocco",
@@ -1270,7 +1272,7 @@ export const board: BoardItem[] = [
     "slug": "como"
   },
   {
-    "photo": null,
+    "photo": "own-marrakech-koutoubia",
     "kind": "Eat",
     "name": "Mint tea above the spice square",
     "sub": "Café des Épices, Marrakech · £",
@@ -1358,7 +1360,7 @@ export const board: BoardItem[] = [
     "slug": "hydra"
   },
   {
-    "photo": null,
+    "photo": "own-marrakech-koutoubia",
     "kind": "place",
     "score": 8.2,
     "name": "Marrakech, Morocco",
@@ -1477,7 +1479,7 @@ export const friendsFeed: FeedItem[] = [
     "place": "Kyoto",
     "region": "Japan",
     "month": "Apr 2026",
-    "photo": null,
+    "photo": "own-kyoto-river",
     "quote": null,
     "score": 9.5,
     "stayType": "Ryokan",
@@ -1507,7 +1509,7 @@ export const friendsFeed: FeedItem[] = [
     "place": "Marrakech",
     "region": "Morocco",
     "month": "Mar 2026",
-    "photo": null,
+    "photo": "own-marrakech-rooftops",
     "quote": null,
     "score": 9.0,
     "stayType": "Riad",
@@ -1522,7 +1524,7 @@ export const friendsFeed: FeedItem[] = [
     "place": "Zanzibar",
     "region": "Tanzania",
     "month": "Aug 2025",
-    "photo": null,
+    "photo": "own-zanzibar-coast",
     "quote": "“Stone Town at dusk, then a week on the beach. Perfect mix.”",
     "score": 8.9,
     "stayType": "Hotel",
@@ -1713,6 +1715,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   tanzania: 'own-kilimanjaro-giraffe', kilimanjaro: 'own-kilimanjaro-giraffe', 'mount kilimanjaro': 'own-kilimanjaro-giraffe', arusha: 'own-kilimanjaro-giraffe', serengeti: 'own-kilimanjaro-giraffe', 'ngorongoro crater': 'own-kilimanjaro-giraffe', amboseli: 'own-kilimanjaro-giraffe',
   'bora bora': ['own-borabora-beach', 'own-borabora-pool', 'own-borabora-fish', 'own-water-villas'], 'french polynesia': ['own-borabora-beach', 'own-borabora-pool'],
   kyoto: ['own-kyoto-blossom', 'own-kyoto-pagoda', 'own-kyoto-river'], arashiyama: 'own-kyoto-river', 'mount fuji': 'own-kyoto-pagoda', japan: ['own-kyoto-blossom', 'own-kyoto-pagoda'],
+  marrakech: ['own-marrakech-koutoubia', 'own-marrakech-rooftops'], morocco: ['own-marrakech-koutoubia', 'own-marrakech-rooftops'],
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

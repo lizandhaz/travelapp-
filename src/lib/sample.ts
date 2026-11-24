@@ -104,7 +104,7 @@ export const rows = {
       "score": 8.8,
       "name": "Mauritius",
       "sub": "Indian Ocean",
-      "photo": null
+      "photo": "own-mauritius-aerial"
     }
   ],
   "weekends": [
@@ -715,8 +715,10 @@ export const places: SamplePlace[] = [
     "name": "Mauritius",
     "region": "Indian Ocean",
     "score": 8.8,
-    "photo": null,
+    "photo": "own-mauritius-aerial",
     "photos": [
+      "own-mauritius-aerial",
+      "own-mauritius-palms"
     ]
   },
   {
@@ -1301,7 +1303,7 @@ export const board: BoardItem[] = [
     "slug": "sicily"
   },
   {
-    "photo": null,
+    "photo": "own-mauritius-aerial",
     "kind": "place",
     "score": 8.8,
     "name": "Mauritius, Indian Ocean",
@@ -1717,6 +1719,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   kyoto: ['own-kyoto-blossom', 'own-kyoto-pagoda', 'own-kyoto-river'], arashiyama: 'own-kyoto-river', 'mount fuji': 'own-kyoto-pagoda', japan: ['own-kyoto-blossom', 'own-kyoto-pagoda'],
   marrakech: ['own-marrakech-koutoubia', 'own-marrakech-rooftops'], morocco: ['own-marrakech-koutoubia', 'own-marrakech-rooftops'],
   'sri lanka': ['own-srilanka-bay', 'own-srilanka-sigiriya'], sigiriya: 'own-srilanka-sigiriya', hiriketiya: 'own-srilanka-bay', galle: ['own-srilanka-bay', 'own-srilanka-sigiriya'], mirissa: 'own-srilanka-bay', weligama: 'own-srilanka-bay', tangalle: 'own-srilanka-bay', unawatuna: 'own-srilanka-bay', bentota: 'own-srilanka-bay', kandy: 'own-srilanka-sigiriya', ella: 'own-srilanka-sigiriya', dambulla: 'own-srilanka-sigiriya',
+  mauritius: ['own-mauritius-aerial', 'own-mauritius-palms'], 'le morne': 'own-mauritius-aerial', 'grand baie': 'own-mauritius-palms', 'belle mare': 'own-mauritius-palms', flic: 'own-mauritius-aerial',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

@@ -1,5 +1,5 @@
 // Sample photos: only the owner's own holiday photos (own-*.jpg, EXIF/GPS stripped), plus four the owner licensed
-// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach, own-kyoto-blossom/-pagoda/-river, own-marrakech-koutoubia/-rooftops, own-srilanka-sigiriya/-turtles/-bay; owner confirmed bought, Nov 2026). The design prototype's
+// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach, own-kyoto-blossom/-pagoda/-river, own-marrakech-koutoubia/-rooftops, own-srilanka-sigiriya/-turtles/-bay, own-mauritius-aerial/-palms; owner confirmed bought, Nov 2026). The design prototype's
 // Unsplash photos were removed (owner, Nov 2026); some prototype names (e.g. 'bath-1') point at the owner's photos.
 // Sample content with no photo of the owner's shows a placeholder.
 
@@ -95,6 +95,8 @@ export const photos = {
   'own-srilanka-sigiriya': require('../../assets/photos/own-srilanka-sigiriya.jpg'),
   'own-srilanka-turtles': require('../../assets/photos/own-srilanka-turtles.jpg'),
   'own-srilanka-bay': require('../../assets/photos/own-srilanka-bay.jpg'),
+  'own-mauritius-aerial': require('../../assets/photos/own-mauritius-aerial.jpg'),
+  'own-mauritius-palms': require('../../assets/photos/own-mauritius-palms.jpg'),
 } as const;
 
 export type PhotoName = keyof typeof photos;

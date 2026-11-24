@@ -11,13 +11,12 @@ import { formatScore, scoreWord } from '@/lib/score';
 import { getTrip, tripId } from '@/lib/friendTrips';
 import { personHref } from '@/lib/samplePeople';
 import { Avatar } from './Avatar';
-import { PhotoBadge, Row } from './cards';
-import { PhotoTile } from './Photo';
+import { Row } from './cards';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
 import { Card, Input, SectionHeader } from './ui';
 import { AreaMap } from './AreaMap';
-import { BookmarkIcon } from './Icons';
+import { BedIcon, BookmarkIcon, ForkIcon } from './Icons';
 
 const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -212,43 +211,96 @@ export function StayRow({ stays, at }: { stays: PlaceDetail['stays']; at?: SpotP
   return (
     <View style={{ marginTop: 28 }}>
       <SectionHeader>Where to stay</SectionHeader>
-      <Row gap={12}>
-        {stays.map((s) => {
-          const w = s.featured ? 250 : 230;
-          return (
-            <WithSave key={s.name} at={at} name={s.name} kind="stay">
-            <View
-              accessible
-              accessibilityLabel={[s.name, s.type, s.sub, s.because, s.score != null ? `${formatScore(s.score)} out of 10` : null].filter(Boolean).join(', ')}
-              style={{ width: w, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.card, borderWidth: s.featured ? 2 : 1, borderColor: s.featured ? colors.olive : colors.line }}
-            >
-              <PhotoTile photo={s.photo} shade={false} style={{ width: '100%', height: w * 0.72, borderRadius: 0 }}>
-                <PhotoBadge text={s.type} style={{ position: 'absolute', top: 10, left: 10 }} />
-                {s.featured && <PhotoBadge text="✦ We think you’d like" style={{ position: 'absolute', bottom: 10, left: 10 }} />}
-              </PhotoTile>
-              <View style={{ padding: 12, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <View style={{ flex: 1 }}>
-                  <Text variant="strong" numberOfLines={1}>
-                    {s.name}
-                  </Text>
-                  {!!s.sub && (
-                    <Text variant="tiny" style={{ marginTop: 2 }}>
-                      {s.sub}
-                    </Text>
-                  )}
-                  {!!s.because && (
-                    <Text variant="tiny" style={{ color: colors.olive, marginTop: 6, fontSize: 12.5 }}>
-                      {s.because}
-                    </Text>
-                  )}
-                </View>
-                {s.score != null && <Text style={{ fontFamily: fonts.display, fontSize: 20, color: colors.olive, fontVariant: ['tabular-nums'] }}>{formatScore(s.score)}</Text>}
-              </View>
-            </View>
-            </WithSave>
-          );
-        })}
-      </Row>
+      <Pinboard
+        items={stays.map((s, i) => (
+          <WithSave key={s.name} at={at} name={s.name} kind="stay">
+            <SpotCard
+              tone={PIN_TONES[i % PIN_TONES.length]}
+              icon={<BedIcon color={colors.olive} size={18} />}
+              kind={s.type}
+              name={s.name}
+              lines={[s.sub, s.because]}
+              score={s.score}
+              scoreTone="olive"
+              featured={s.featured}
+              tall={i % 3 === 0}
+              a11y={[s.name, s.type, s.sub, s.because, s.score != null ? `${formatScore(s.score)} out of 10` : null].filter(Boolean).join(', ')}
+            />
+          </WithSave>
+        ))}
+      />
+    </View>
+  );
+}
+
+/**
+ * Hotels and restaurants on a place page, Pinterest-style (owner, Nov 2026): no photos until friends add
+ * their own, just soft coloured cards of different heights in two columns.
+ */
+const PIN_TONES = [colors.sageSoft, colors.blushSoft, colors.skySoft, colors.champagneSoft];
+
+function Pinboard({ items }: { items: React.ReactNode[] }) {
+  const cols: React.ReactNode[][] = [[], []];
+  items.forEach((it, i) => cols[i % 2].push(it));
+  return (
+    <View style={{ paddingHorizontal: GUTTER, flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
+      {cols.map((c, k) => (
+        <View key={k} style={{ flex: 1, gap: 12 }}>
+          {c}
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function SpotCard({
+  tone,
+  icon,
+  kind,
+  name,
+  lines,
+  score,
+  scoreTone,
+  featured,
+  tall,
+  footer,
+  a11y,
+}: {
+  tone: string;
+  icon: React.ReactNode;
+  kind: string | null;
+  name: string;
+  lines: (string | null | undefined)[];
+  score: number | null;
+  scoreTone: 'olive' | 'stamp';
+  featured?: boolean;
+  tall?: boolean;
+  footer?: string | null;
+  a11y: string;
+}) {
+  return (
+    <View accessible accessibilityLabel={a11y} style={{ borderRadius: radius.lg, backgroundColor: tone, padding: 14, paddingTop: 16, minHeight: tall ? 210 : 160, borderWidth: featured ? 2 : 0, borderColor: colors.olive }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingRight: 30 }}>
+        <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' }}>{icon}</View>
+        {!!kind && (
+          <Text variant="label" numberOfLines={1} style={{ fontSize: 10, flexShrink: 1 }}>
+            {kind}
+          </Text>
+        )}
+      </View>
+      <Text style={{ fontFamily: fonts.display, fontSize: 19, lineHeight: 23, color: colors.ink, marginTop: 14 }}>{name}</Text>
+      {lines.filter(Boolean).map((l, k) => (
+        <Text key={k} variant="tiny" style={{ marginTop: 4, color: k ? colors.olive : colors.muted }}>
+          {l}
+        </Text>
+      ))}
+      <View style={{ flex: 1 }} />
+      <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 12, gap: 8 }}>
+        <Text variant="tiny" numberOfLines={2} style={{ flex: 1, color: colors.accentText }}>
+          {featured ? '✦ We think you’d like it' : (footer ?? '')}
+        </Text>
+        {score != null && <ScoreStamp score={score} size="sm" tone={scoreTone} label={`${formatScore(score)} out of 10`} />}
+      </View>
     </View>
   );
 }
@@ -287,47 +339,29 @@ function WithSave({ at, name, kind, onDark = false, children }: { at?: SpotPlace
   );
 }
 
-/** Where to eat: a photo (or the first letter), price, what to order and your score out of 10. */
+/** Where to eat: soft cards with what to order, price and your score (no photos until friends add them). */
 export function EatRow({ eats, at }: { eats: PlaceDetail['eats']; at?: SpotPlace }) {
   return (
     <View style={{ marginTop: 28 }}>
       <SectionHeader>Where to eat</SectionHeader>
-      <Row gap={12}>
-        {eats.map((e) => (
+      <Pinboard
+        items={eats.map((e, i) => (
           <WithSave key={e.name} at={at} name={e.name} kind="eat">
-          <View
-            accessible
-            accessibilityLabel={[e.name, e.price ? `price ${e.price}` : null, e.what, e.score != null ? `${formatScore(e.score)} out of 10` : null, e.from ? `from ${e.from}` : null].filter(Boolean).join(', ')}
-            style={{ width: 200, flex: 1, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line }}
-          >
-            {e.photo ? (
-              <PhotoTile photo={e.photo} shade={false} style={{ width: '100%', height: 144, borderRadius: 0 }} />
-            ) : (
-              <View style={{ height: 144, backgroundColor: tint(colors.stamp, 0.4), alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontFamily: fonts.display, fontSize: 32, color: colors.accent }}>{e.name[0]}</Text>
-              </View>
-            )}
-            <View style={{ padding: 12, flex: 1 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <Text variant="strong" numberOfLines={1} style={{ flex: 1 }}>
-                  {e.name}
-                </Text>
-                {!!e.price && <Text variant="tiny">{e.price}</Text>}
-              </View>
-              {!!e.what && (
-                <Text variant="tiny" style={{ marginTop: 3 }}>
-                  {e.what}
-                </Text>
-              )}
-              <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, marginTop: 8 }}>
-                {e.score != null && <Text style={{ fontFamily: fonts.display, fontSize: 17, color: colors.accentText, fontVariant: ['tabular-nums'] }}>{formatScore(e.score)}</Text>}
-                {!!e.from && <Text variant="tiny">· {e.from}’s pick</Text>}
-              </View>
-            </View>
-          </View>
+            <SpotCard
+              tone={PIN_TONES[(i + 1) % PIN_TONES.length]}
+              icon={<ForkIcon color={colors.accentDeep} size={17} />}
+              kind={e.price}
+              name={e.name}
+              lines={[e.what]}
+              score={e.score}
+              scoreTone="stamp"
+              tall={i % 3 === 1}
+              footer={e.from ? `${e.from}’s pick` : null}
+              a11y={[e.name, e.price ? `price ${e.price}` : null, e.what, e.score != null ? `${formatScore(e.score)} out of 10` : null, e.from ? `from ${e.from}` : null].filter(Boolean).join(', ')}
+            />
           </WithSave>
         ))}
-      </Row>
+      />
     </View>
   );
 }

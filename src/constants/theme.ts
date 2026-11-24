@@ -12,7 +12,8 @@ export const colors = {
   ink: '#353b2c', // main text, dark buttons, selected chips/tabs: deep olive charcoal
   muted: '#646858', // secondary text, labels
   stamp: '#e2bdb7', // the "+" on the Add button, gem tags: blush petal
-  stampPaper: '#f8f3e8', // inside score stamps: warm off-white paper (owner Nov 2026: not pink)
+  stampPaper: '#dfe3d4', // inside score stamps: soft sage paper (owner Nov 2026: not pink)
+  stampInk: '#4f5741', // the number on a score stamp: deep olive
   sage: '#a7b39e', // soft tags (e.g. stay type): sage whisper
   sky: '#bac6d3', // misty sky: the quieter months in the best-time chart
   accent: '#ba7e66', // terracotta clay: swash under italic words, star, slider fill, shapes, large text

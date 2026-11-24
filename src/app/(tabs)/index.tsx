@@ -14,7 +14,8 @@ import { Wordmark } from '@/components/Wordmark';
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { itemCollections, placeCollections, placesIn } from '@/lib/explore';
 import { rankValue } from '@/lib/match';
-import { friendsFeed, places, rows, unreadPostcardCount } from '@/lib/sample';
+import { friendsFeed, places, rows } from '@/lib/sample';
+import { refreshUnread, useUnreadPostcards } from '@/lib/postcardsLive';
 import { useTaste } from '@/lib/taste';
 import { feedItemFor, fetchFriendsTrips, type RealFriendTrip } from '@/lib/friendsFeed';
 import { fitLines, fitWordSize } from '@/lib/fit';
@@ -26,6 +27,7 @@ import { fitLines, fitWordSize } from '@/lib/fit';
 export default function Home() {
   const width = Math.min(Dimensions.get('window').width, 480);
   const t = useTaste();
+  const unreadPostcards = useUnreadPostcards();
   const personal = t.profile.evidence > 0;
   // Friends' real trips, refreshed each time Home comes back into view.
   const [realFeed, setRealFeed] = useState<RealFriendTrip[] | null>(null);
@@ -35,6 +37,7 @@ export default function Home() {
       fetchFriendsTrips()
         .then((r) => live && setRealFeed(r))
         .catch(() => {}); // keep what we had (or the sample feed)
+      refreshUnread().catch(() => {}); // the paper plane's count
       return () => {
         live = false;
       };
@@ -76,7 +79,7 @@ export default function Home() {
           <IconCircle label="Find friends" onPress={() => router.push('/people')}>
             <AddPersonIcon color={colors.ink} />
           </IconCircle>
-          <IconCircle label="Postcards" badge={unreadPostcardCount} onPress={() => router.push('/postcards')}>
+          <IconCircle label="Postcards" badge={unreadPostcards} onPress={() => router.push('/postcards')}>
             <SendIcon color={colors.ink} />
           </IconCircle>
         </View>

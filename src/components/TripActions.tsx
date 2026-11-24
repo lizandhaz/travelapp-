@@ -142,3 +142,55 @@ function SaveOption({ title, sub, onPress, selected = false }: { title: string; 
     </Pressable>
   );
 }
+
+/**
+ * On your own trip: who liked it and what friends said (plan Step H), with a box to reply. Shows nothing
+ * until someone has liked or commented.
+ */
+export function TripLikesAndComments({ id }: { id: string }) {
+  const r = useReactions(id);
+  const [draft, setDraft] = useState('');
+  if (!r.likes && !r.comments.length) return null;
+  const names = r.likers.filter((n) => n !== 'You');
+  const likedBy = names.length <= 2 ? names.join(' and ') : `${names.slice(0, 2).join(', ')} and ${names.length - 2} more`;
+  return (
+    <View style={{ gap: 12 }}>
+      <Text variant="heading" accessibilityRole="header">
+        Likes and comments
+      </Text>
+      {r.likes > 0 && (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <HeartIcon color={colors.accentDeep} filled size={18} />
+          <Text variant="body">
+            {r.likes} {r.likes === 1 ? 'like' : 'likes'}
+            {!!likedBy && <Text variant="small">{`  ·  ${likedBy}`}</Text>}
+          </Text>
+        </View>
+      )}
+      {r.comments.map((c, i) => (
+        <View key={i} style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
+          <Avatar name={c.who} size={30} />
+          <View style={{ flex: 1 }}>
+            <Text variant="small" style={{ color: colors.ink }}>
+              <Text variant="strong" style={{ fontSize: 14 }}>
+                {c.who}
+              </Text>
+              {`  ${c.when}`}
+            </Text>
+            <Text variant="body" style={{ fontSize: 15 }}>
+              {c.text}
+            </Text>
+          </View>
+        </View>
+      ))}
+      {r.comments.length > 0 && (
+        <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+          <View style={{ flex: 1 }}>
+            <Input value={draft} onChangeText={setDraft} placeholder="Reply…" accessibilityLabel="Reply to the comments" maxLength={500} returnKeyType="send" onSubmitEditing={() => (addComment(id, draft), setDraft(''))} />
+          </View>
+          <Button title="Send" kind="dark" size="sm" disabled={!draft.trim()} onPress={() => (addComment(id, draft), setDraft(''))} />
+        </View>
+      )}
+    </View>
+  );
+}

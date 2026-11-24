@@ -76,7 +76,6 @@ export default function You() {
         counts={[
           { label: 'Followers', n: follows?.followers.length, onPress: () => router.push({ pathname: '/people', params: { tab: 'followers' } }) },
           { label: 'Following', n: follows?.following.length, onPress: () => router.push({ pathname: '/people', params: { tab: 'following' } }) },
-          ...(follows?.requests.length ? [{ label: 'Requests', n: follows.requests.length, onPress: () => router.push({ pathname: '/people', params: { tab: 'requests' } }) }] : []),
         ]}
         right={
           <IconCircle label="Settings" onPress={() => router.push('/settings')}>

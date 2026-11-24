@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
+import { Modal, Pressable, ScrollView, View } from 'react-native';
 
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { sampleCountry } from '@/lib/placeFeatures';
@@ -72,12 +72,19 @@ export function TripActions({ id, who, place, slug, country }: { id: string; who
       </Modal>
 
       <Modal visible={open} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setOpen(false)}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, backgroundColor: colors.bg }}>
+        {/* The box to write in sits at the top, under the heading, so the keyboard can never cover it (owner, Nov 2026). */}
+        <View style={{ flex: 1, backgroundColor: colors.bg }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: GUTTER, paddingTop: 18, paddingBottom: 10 }}>
             <Text variant="heading">Comments</Text>
             <Pressable onPress={() => setOpen(false)} accessibilityRole="button" accessibilityLabel="Close comments" hitSlop={10}>
               <Text variant="link">Done</Text>
             </Pressable>
+          </View>
+          <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', paddingHorizontal: GUTTER, paddingBottom: 14, marginBottom: 6, borderBottomWidth: 1, borderBottomColor: colors.line }}>
+            <View style={{ flex: 1 }}>
+              <Input value={draft} onChangeText={setDraft} placeholder={`Comment on ${who}’s trip`} accessibilityLabel="Write a comment" returnKeyType="send" onSubmitEditing={send} maxLength={500} />
+            </View>
+            <Button title="Send" kind="dark" size="sm" disabled={!draft.trim()} onPress={send} />
           </View>
           <ScrollView contentContainerStyle={{ paddingHorizontal: GUTTER, gap: 16, paddingBottom: 20 }} keyboardShouldPersistTaps="handled">
             {r.comments.length === 0 && <Text variant="bodySoft">No comments yet. Say something nice to {who}.</Text>}
@@ -98,13 +105,7 @@ export function TripActions({ id, who, place, slug, country }: { id: string; who
               </View>
             ))}
           </ScrollView>
-          <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', paddingHorizontal: GUTTER, paddingTop: 10, paddingBottom: 28, borderTopWidth: 1, borderTopColor: colors.line }}>
-            <View style={{ flex: 1 }}>
-              <Input value={draft} onChangeText={setDraft} placeholder={`Comment on ${who}’s trip`} accessibilityLabel="Write a comment" returnKeyType="send" onSubmitEditing={send} maxLength={500} />
-            </View>
-            <Button title="Send" kind="dark" size="sm" disabled={!draft.trim()} onPress={send} />
-          </View>
-        </KeyboardAvoidingView>
+        </View>
       </Modal>
     </>
   );
@@ -194,3 +195,4 @@ export function TripLikesAndComments({ id }: { id: string }) {
     </View>
   );
 }
+

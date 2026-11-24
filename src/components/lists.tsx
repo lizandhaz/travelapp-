@@ -110,8 +110,10 @@ export function WantToGoButton({
       accessibilityState={{ selected: saved, busy }}
       accessibilityLabel={saved ? 'On your Want to go board. Tap to remove' : 'Add to your Want to go board'}
       hitSlop={6}
-      style={[
+      style={({ pressed }) => [
         {
+          opacity: pressed ? 0.75 : 1,
+          transform: [{ scale: pressed ? 0.97 : 1 }],
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',

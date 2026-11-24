@@ -64,7 +64,8 @@ export default function PlaceScreen() {
   const h = Math.min(Dimensions.get('window').width, 480) * 1.0;
 
   return (
-    <Screen noTopInset>
+    // Keeps what you're looking at still when the line under the top buttons appears.
+    <Screen noTopInset maintainVisibleContentPosition={{ minIndexForVisible: 0 }}>
       {/* The back button and the title stack, so a long title grows the header instead of running into the button. */}
       <View style={{ minHeight: h, paddingTop: insets.top + 10, paddingBottom: detail ? 48 : 22, justifyContent: 'space-between' }}>
         <PhotoFill photo={place.photo} label={place.name} />
@@ -180,6 +181,16 @@ export default function PlaceScreen() {
         <WantToGoButton variant="block" saved={wish.saved} busy={wish.busy || !wish.ready} onPress={wish.toggle} style={{ flex: 1 }} />
         <Button title="Save to a board" kind="outline" style={{ flex: 1 }} onPress={() => router.push({ pathname: '/save', params: { place: place.name, country, slug } })} />
       </View>
+      {/* Say what happened right here, not only at the top of the page. */}
+      {!!wish.error ? (
+        <Text variant="small" style={{ paddingHorizontal: GUTTER, marginTop: 8, color: colors.accentText }}>
+          {wish.error}
+        </Text>
+      ) : wish.saved ? (
+        <Text variant="small" style={{ paddingHorizontal: GUTTER, marginTop: 8, color: colors.olive }}>
+          ✓ On your Want to go board
+        </Text>
+      ) : null}
 
       <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 18 }}>
         Sample content for now.{detail?.credits ? ` ${detail.credits}` : ''}

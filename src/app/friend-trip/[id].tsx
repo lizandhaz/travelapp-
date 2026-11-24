@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { ActivityIndicator, Dimensions, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/Avatar';
@@ -11,6 +11,7 @@ import { Text } from '@/components/Text';
 import { TripActions } from '@/components/TripActions';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { personHref } from '@/lib/samplePeople';
 import { companionsLabel, photoCount, tripPic, tripPlace } from '@/lib/friendTrips';
 import { useFriendTrip } from '@/lib/friendsFeed';
 import { scoreWord } from '@/lib/score';
@@ -57,7 +58,9 @@ export default function FriendTripScreen() {
 
       <Card tone={hasPhoto ? "blush" : "white"} style={{ marginHorizontal: GUTTER, marginTop: -24, padding: 16, gap: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <Avatar face={trip.face} uri={trip.faceUrl} name={trip.who} size={40} />
+          <Pressable disabled={!personHref(trip.who)} onPress={() => router.push(personHref(trip.who) as never)} accessibilityRole="link" accessibilityLabel={`${trip.who}. Open their profile`} hitSlop={6}>
+            <Avatar face={trip.face} uri={trip.faceUrl} name={trip.who} size={40} />
+          </Pressable>
           <View style={{ flex: 1 }}>
             <Text variant="strong">{trip.who} rated it</Text>
             <Text style={{ fontFamily: fonts.displayItalic, fontSize: 17, color: colors.accentText }}>{scoreWord(trip.score)}</Text>
@@ -167,6 +170,7 @@ export default function FriendTripScreen() {
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 30 }}>
         {!!trip.slug && <Button title={`More about ${trip.place}`} kind="outline" onPress={() => router.push(`/place/${trip.slug}`)} />}
+        {!!personHref(trip.who) && <Button title={`See ${trip.who}’s profile`} kind="outline" style={{ marginTop: 12 }} onPress={() => router.push(personHref(trip.who) as never)} />}
       </View>
       {!isReal && (
         <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 14 }}>

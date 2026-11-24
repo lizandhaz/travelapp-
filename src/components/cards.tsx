@@ -14,6 +14,7 @@ import { Text } from './Text';
 import { Card } from './ui';
 import { TripActions } from './TripActions';
 import { friendTripId, tripPic, tripPlace } from '@/lib/friendTrips';
+import { personHref } from '@/lib/samplePeople';
 import { useFriendTrip } from '@/lib/friendsFeed';
 
 const openPlace = (slug: string | null) => slug && router.push(`/place/${slug}`);
@@ -130,9 +131,9 @@ export function FeedCard({ item }: { item: FeedItem }) {
             <LinearGradient colors={['rgba(0,0,0,0.38)', 'transparent']} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 110 }} />
             <Shade strength={0.6} />
             <View style={{ position: 'absolute', top: 14, left: 14, right: 14, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <View style={{ borderWidth: 2, borderColor: colors.onDark, borderRadius: 22 }}>
+              <Pressable disabled={!personHref(item.who)} onPress={() => router.push(personHref(item.who) as never)} accessibilityRole="link" accessibilityLabel={`${item.who}. Open their profile`} hitSlop={6} style={{ borderWidth: 2, borderColor: colors.onDark, borderRadius: 22 }}>
                 <Avatar face={item.face} uri={item.faceUri} name={item.who} size={36} />
-              </View>
+              </Pressable>
               <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.onDark }}>
                 {item.who}
                 {!!item.posted && <Text style={{ fontFamily: fonts.sans, fontSize: 13, color: colors.onDark }}> · {item.posted}</Text>}
@@ -153,7 +154,9 @@ export function FeedCard({ item }: { item: FeedItem }) {
           // No photos: a soft blush top with who and when, then the place in big type beside the score.
           <View style={{ backgroundColor: colors.blushSoft, padding: 16, gap: 14 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Avatar face={item.face} uri={item.faceUri} name={item.who} size={36} />
+              <Pressable disabled={!personHref(item.who)} onPress={() => router.push(personHref(item.who) as never)} accessibilityRole="link" accessibilityLabel={`${item.who}. Open their profile`} hitSlop={6}>
+                <Avatar face={item.face} uri={item.faceUri} name={item.who} size={36} />
+              </Pressable>
               <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.ink }}>
                 {item.who}
                 {!!item.posted && <Text style={{ fontFamily: fonts.sans, fontSize: 13, color: colors.muted }}> · {item.posted}</Text>}

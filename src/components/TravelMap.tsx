@@ -143,18 +143,19 @@ const cardStyle = {
  * "Your travel map" on You: a calm map zoomed to your places (pins only, no names)
  * and a one-line key. Tap it for the full map with names and zoom.
  */
-export function TravelMapCard({ been, wish, countries }: { been: MapPlace[]; wish: MapPlace[]; countries: number }) {
+/** `title` replaces "Your travel map" (e.g. on a friend's profile: ["Tom's travel", "map"]); `open` false makes it a still picture. */
+export function TravelMapCard({ been, wish, countries, title, open = true }: { been: MapPlace[]; wish: MapPlace[]; countries: number; title?: [string, string]; open?: boolean }) {
   const pins = useMemo(() => [...toPins(wish, 'wish'), ...toPins(been, 'been')], [been, wish]);
   const view = frame(pins, false);
   return (
     <View style={{ paddingHorizontal: GUTTER, marginTop: 30, gap: 12 }}>
       <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
-        <AccentTitle before="Your travel" accent="map" variant="heading" />
+        <AccentTitle before={title?.[0] ?? 'Your travel'} accent={title?.[1] ?? 'map'} variant="heading" />
         <Text variant="small">
           {countries} {countries === 1 ? 'country' : 'countries'}
         </Text>
       </View>
-      <Pressable onPress={() => router.push('/map')} accessibilityRole="button" accessibilityLabel={`${describe(been, wish)} Opens the full map.`} style={({ pressed }) => [cardStyle, { opacity: pressed ? 0.9 : 1 }]}>
+      <Pressable disabled={!open} onPress={() => router.push('/map')} accessibilityRole={open ? 'button' : 'image'} accessibilityLabel={`${describe(been, wish)}${open ? ' Opens the full map.' : ''}`} style={({ pressed }) => [cardStyle, { opacity: pressed ? 0.9 : 1 }]}>
         <MapCanvas pins={pins} view={view} aspect={ASPECT} labels={false} description="" />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 14, paddingVertical: 11, borderTopWidth: 1, borderTopColor: colors.line }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -170,8 +171,8 @@ export function TravelMapCard({ been, wish, countries }: { been: MapPlace[]; wis
             </Text>
           </View>
           <View style={{ flex: 1 }} />
-          <Text variant="link">Open</Text>
-          <ChevronIcon color={colors.accentText} size={14} />
+          {open && <Text variant="link">Open</Text>}
+          {open && <ChevronIcon color={colors.accentText} size={14} />}
         </View>
       </Pressable>
     </View>

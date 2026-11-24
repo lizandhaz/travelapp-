@@ -8,6 +8,8 @@ import { placeDetails, type PlaceDetail } from '@/lib/placeDetails';
 import { placeCentres, placeMaps } from '@/lib/placeMaps';
 import { useTaste } from '@/lib/taste';
 import { formatScore, scoreWord } from '@/lib/score';
+import { getTrip, tripId } from '@/lib/friendTrips';
+import { personHref } from '@/lib/samplePeople';
 import { Avatar } from './Avatar';
 import { PhotoBadge, Row } from './cards';
 import { PhotoTile } from './Photo';
@@ -144,24 +146,55 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
 }
 
 /** Short "what friends said" rows (name, month, quote, score). */
-export function SaidList({ items }: { items: PlaceDetail['said'] }) {
+/** A friend's face and name; taps through to their profile when they have one. */
+export function FriendName({ who, face, size = 36, children }: { who: string; face: PlaceDetail['said'][number]['face']; size?: number; children?: React.ReactNode }) {
+  const href = personHref(who);
+  return (
+    <Pressable
+      disabled={!href}
+      onPress={() => href && router.push(href as never)}
+      accessibilityRole={href ? 'link' : undefined}
+      accessibilityLabel={href ? `${who}. Open their profile` : who}
+      hitSlop={6}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexShrink: 1 }}
+    >
+      <Avatar face={face} name={who} size={size} />
+      {children}
+    </Pressable>
+  );
+}
+
+/** "See Tom's trip →": opens a friend's trip to this place, when there is one. */
+export function FriendTripLink({ who, slug }: { who: string; slug: string }) {
+  if (!getTrip(who, slug)) return null;
+  return (
+    <Pressable onPress={() => router.push(`/friend-trip/${tripId(who, slug)}`)} accessibilityRole="link" hitSlop={6} style={{ alignSelf: 'flex-start' }}>
+      <Text variant="small" style={{ color: colors.accentText, fontFamily: fonts.sansSemiBold }}>
+        See {who}’s trip →
+      </Text>
+    </Pressable>
+  );
+}
+
+export function SaidList({ items, slug }: { items: PlaceDetail['said']; slug: string }) {
   return (
     <View style={{ paddingHorizontal: GUTTER, gap: 14 }}>
       {items.map((s) => (
         <View key={s.who + s.month} style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
-          <Avatar face={s.face} name={s.who} size={36} />
-          <View style={{ flex: 1 }}>
+          <FriendName who={s.who} face={s.face} />
+          <View style={{ flex: 1, gap: 4 }}>
             <Text variant="small" style={{ color: colors.ink }}>
-              <Text variant="strong" style={{ fontSize: 14 }}>
+              <Text variant="strong" style={{ fontSize: 14 }} onPress={personHref(s.who) ? () => router.push(personHref(s.who) as never) : undefined}>
                 {s.who}
               </Text>
               <Text variant="small"> · {s.month}</Text>
             </Text>
             {!!s.quote && (
-              <Text variant="small" style={{ color: colors.ink, marginTop: 2 }}>
+              <Text variant="small" style={{ color: colors.ink }}>
                 {s.quote}
               </Text>
             )}
+            <FriendTripLink who={s.who} slug={slug} />
           </View>
           {s.score != null && (
             <Text accessibilityLabel={`${formatScore(s.score)} out of 10`} style={{ fontFamily: fonts.display, fontSize: 20, color: colors.ink, fontVariant: ['tabular-nums'] }}>

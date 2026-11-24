@@ -9,6 +9,7 @@ import { PhotoTile } from '@/components/Photo';
 import { TripActions } from '@/components/TripActions';
 import { BackButton, Button, PageTitle, Screen, SectionHeader } from '@/components/ui';
 import { colors, GUTTER } from '@/constants/theme';
+import { personHref } from '@/lib/samplePeople';
 import { getPostcard } from '@/lib/postcards';
 import { photoCount, tripPic, tripPlace } from '@/lib/friendTrips';
 import { useFriendTrip } from '@/lib/friendsFeed';
@@ -59,6 +60,7 @@ export default function PostcardScreen() {
       <View style={{ paddingHorizontal: GUTTER, gap: 12, marginTop: 26 }}>
         <Button title={`See ${trip.who}’s whole trip`} kind="dark" onPress={() => router.push(`/friend-trip/${trip.id}`)} />
         {!!trip.slug && <Button title={`More about ${trip.place}`} kind="outline" onPress={() => router.push(`/place/${trip.slug}`)} />}
+        {!!personHref(trip.who) && <Button title={`See ${trip.who}’s profile`} kind="outline" onPress={() => router.push(personHref(trip.who) as never)} />}
       </View>
     </Screen>
   );

@@ -127,6 +127,12 @@ src/
                           a big photo on the left (or details full width), no photos → no front: the whole trip (the back) shows
                           straight away, with no Turn over (owner disliked the olive-orange stand-in), and the back's
                           content sets the card's height. Then Like / Comment / Save, big photos, "See <who>'s whole trip" and "More about <place>"
+    person/[who].tsx      A sample friend's profile (owner Nov 2026; lib/samplePeople.ts): face/initials, name, @handle · home town, "Follows you",
+                          bio, Follow/Following (local only), stats tiles (Trips, Countries, Of the world), Followers/Following counts,
+                          their travel map (TravelMapCard title + open={false}), then Trips / Boards / Followers / Following tabs (trips open
+                          friend-trip/[id]; boards are Want to go + one themed board with place chips; people open their profile).
+                          Linked from friends' avatars on feed cards, place pages' "What friends said" (FriendName), friend-trip and postcard
+                          pages ("See <who>'s profile"). Place pages also show "See <who>'s trip →" (FriendTripLink) under each friend's quote
     friend-trip/[id].tsx  A friend's trip (sample id "maya-hydra", or a real trip's id via useFriendTrip): their score, who with, nights, quote, photos,
                           where they stayed, where they ate, what they did, their tips, "More about <place>"
     settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places
@@ -221,6 +227,8 @@ src/
     tasteEvents.ts        tasteChanged()/onTasteChanged(): saveTrip/deleteTrip, list changes and new views call it
     views.ts              Place pages you've looked at: recordPlaceView, fetchPlaceViews, clearPlaceViews, on/off setting
     matchSettings.ts      What scores may use (trips, saves, friends; stored on the phone): getMatchSettings/setMatchSetting
+    samplePeople.ts       Example profiles for the six sample friends: getPerson, personHref, tripsOf, statsOf, boardsOf (Want to go +
+                          a board themed on the holidays they take most), followers worked out from who follows whom
     friendTrips.ts        Sample friends' trips from the Friends feed or the place details naming that friend (getTrip, getFriendTrip,
                           tripId, companionsLabel); who-with and nights are sample values and may be null (not filled in)
     postcards.ts          Sample Postcards, each linked to the friend's trip it's about (postcards, getPostcard)

@@ -11,7 +11,8 @@ export const colors = {
   mapLand: '#b9c3ad', // dotted land on the travel map: light sage
   ink: '#353b2c', // main text, dark buttons, selected chips/tabs: deep olive charcoal
   muted: '#646858', // secondary text, labels
-  stamp: '#e2bdb7', // score stamps, the "+" on the Add button: blush petal
+  stamp: '#e2bdb7', // the "+" on the Add button, gem tags: blush petal
+  stampPaper: '#f8f3e8', // inside score stamps: warm off-white paper (owner Nov 2026: not pink)
   sage: '#a7b39e', // soft tags (e.g. stay type): sage whisper
   sky: '#bac6d3', // misty sky: the quieter months in the best-time chart
   accent: '#ba7e66', // terracotta clay: swash under italic words, star, slider fill, shapes, large text

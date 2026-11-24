@@ -83,7 +83,7 @@ export function placeCollections(): PlaceCollection[] {
       test: (s) => (UK.test(region(s)) ? 'No flight needed' : s === 'paris' ? 'By Eurostar' : false),
     },
     { id: 'lakes-mountains', title: 'Lakes and mountains', test: (s) => (Math.max(tags(s).lakes ?? 0, tags(s).mountains ?? 0) >= 0.6 && (tags(s).ski ?? 0) < 0.5 ? kicker(s) || region(s) : false) },
-    { id: 'ski', title: 'Ski and snow', test: (s) => ((tags(s).ski ?? 0) >= 0.5 ? placeDetails[s]?.bestTime ?? region(s) : false) },
+    { id: 'ski', title: 'Ski and snow', photo: 'own-skiing', test: (s) => ((tags(s).ski ?? 0) >= 0.5 ? placeDetails[s]?.bestTime ?? region(s) : false) },
     { id: 'countryside', title: 'Countryside escapes', test: (s) => ((tags(s).countryside ?? 0) >= 0.6 ? region(s) : false) },
     {
       id: 'splurge',

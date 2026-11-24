@@ -58,8 +58,8 @@ export default function Home() {
   const collections = useMemo(
     () =>
       [
-        ...placeCollections().map((c) => ({ id: c.id, title: c.title, photos: placesIn(c).map((p) => p.photo) })),
-        ...itemCollections.map((c) => ({ id: c.id, title: c.title, photos: c.items().map((i) => i.photo) })),
+        ...placeCollections().map((c) => ({ id: c.id, title: c.title, cover: c.photo, photos: placesIn(c).map((p) => p.photo) })),
+        ...itemCollections.map((c) => ({ id: c.id, title: c.title, cover: undefined, photos: c.items().map((i) => i.photo) })),
       ].filter((c) => c.photos.length >= 3),
     [],
   );
@@ -124,7 +124,7 @@ export default function Home() {
         </SectionHeader>
         <Row>
           {collections.map((c) => (
-            <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.photos[0]} count={c.photos.length} />
+            <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.cover ?? c.photos[0]} count={c.photos.length} />
           ))}
         </Row>
       </View>

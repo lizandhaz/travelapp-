@@ -50,8 +50,8 @@ export default function Explore() {
     .sort((a, b) => (taste.profile.evidence > 0 ? taste.forItem(b).score - taste.forItem(a).score : 0));
   const collections = useMemo(
     () => [
-      ...placeCollections().map((c) => ({ id: c.id, title: c.title, items: placesIn(c).map((p) => p.photo) })),
-      ...itemCollections.map((c) => ({ id: c.id, title: c.title, items: c.items().map((i) => i.photo) })),
+      ...placeCollections().map((c) => ({ id: c.id, title: c.title, cover: c.photo, items: placesIn(c).map((p) => p.photo) })),
+      ...itemCollections.map((c) => ({ id: c.id, title: c.title, cover: undefined, items: c.items().map((i) => i.photo) })),
     ].filter((c) => c.items.length >= 3),
     [],
   );
@@ -128,7 +128,7 @@ export default function Explore() {
           </View>
           <Row>
             {collections.map((c) => (
-              <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.items[0]} count={c.items.length} />
+              <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.cover ?? c.items[0]} count={c.items.length} />
             ))}
           </Row>
         </View>

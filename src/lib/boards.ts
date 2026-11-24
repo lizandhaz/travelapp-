@@ -1,6 +1,5 @@
-import { Platform, Share } from 'react-native';
-
 import { APP_NAME } from '@/constants/brand';
+import { shareText } from './share';
 import { myUserId, supabase } from './supabase';
 import { tasteChanged } from './tasteEvents';
 import { friendlyError, placeLabel, type Place, type Visibility } from './trips';
@@ -186,17 +185,7 @@ export function boardMeta(board: Board) {
 export async function shareBoard(board: Board): Promise<boolean> {
   const lines = board.items.map((i) => `• ${placeLabel(i)}`);
   const message = `${board.name}\n\n${lines.length ? lines.join('\n') : 'No places yet.'}\n\nFrom my ${APP_NAME} boards`;
-  try {
-    if (Platform.OS === 'web' && typeof navigator !== 'undefined' && !navigator.share) {
-      if (!navigator.clipboard) return false;
-      await navigator.clipboard.writeText(message);
-      return true;
-    }
-    await Share.share({ title: board.name, message });
-    return true;
-  } catch {
-    return false;
-  }
+  return (await shareText(board.name, message)) !== false;
 }
 
 /** Only the places on a board (not the hotels, restaurants and so on saved under them). */

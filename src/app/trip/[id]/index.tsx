@@ -15,6 +15,7 @@ import { MONTH_NAMES_SHORT, monthIndexOf, monthYear, yearOf } from '@/lib/months
 import { countryOf } from '@/lib/knownPlaces';
 import { photoForPlaceName } from '@/lib/sample';
 import { scoreWord } from '@/lib/score';
+import { shareText, tripShareText } from '@/lib/share';
 import { companionsLabel, deleteTrip, fetchTrip, type Trip } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
 
@@ -27,6 +28,7 @@ export default function TripScreen() {
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<{ message: string } | null>(null);
+  const [shareNote, setShareNote] = useState<string | null>(null);
   const cover = trip?.photoPaths[0] ?? null;
   const photoUrl = useTripPhoto(cover);
 
@@ -42,6 +44,12 @@ export default function TripScreen() {
       };
     }, [id]),
   );
+
+  async function share() {
+    if (!trip) return;
+    const done = await shareText(`My ${trip.stops[0]?.name} trip`, tripShareText(trip));
+    setShareNote(done === 'copied' ? 'Copied. Paste it into a message.' : done ? null : 'Sharing isn’t available on this device.');
+  }
 
   async function remove() {
     setDeleting(true);
@@ -196,6 +204,12 @@ export default function TripScreen() {
         )}
 
         <View style={{ gap: 12, marginTop: 4 }}>
+          <Button title="Share with a friend" kind="accent" onPress={share} accessibilityHint="Opens your phone’s share sheet with your score, stay, restaurants and tip" />
+          {!!shareNote && (
+            <Text variant="small" style={{ textAlign: 'center' }}>
+              {shareNote}
+            </Text>
+          )}
           <Link href={`/trip/${trip.id}/edit`} asChild>
             <Button title="Edit trip" />
           </Link>

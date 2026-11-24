@@ -97,7 +97,7 @@ export const rows = {
       "score": 8.9,
       "name": "Zanzibar",
       "sub": "Tanzania",
-      "photo": null
+      "photo": "own-zanzibar-hammock"
     },
     {
       "slug": "mauritius",
@@ -844,8 +844,11 @@ export const places: SamplePlace[] = [
     "name": "Zanzibar",
     "region": "Tanzania",
     "score": 8.9,
-    "photo": null,
+    "photo": "own-zanzibar-hammock",
     "photos": [
+      "own-zanzibar-hammock",
+      "own-zanzibar-huts",
+      "own-zanzibar-coast"
     ]
   },
   {
@@ -1171,7 +1174,7 @@ export const board: BoardItem[] = [
     "slug": "seychelles"
   },
   {
-    "photo": null,
+    "photo": "own-zanzibar-hammock",
     "kind": "place",
     "score": 8.9,
     "name": "Zanzibar, Tanzania",
@@ -1696,6 +1699,8 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   'victoria falls': 'own-victoria-falls', livingstone: 'own-victoria-falls', 'mosi oa tunya': 'own-victoria-falls',
   rottnest: 'own-rottnest', 'rottnest island': 'own-rottnest',
   'statue of liberty': 'own-new-york-liberty', 'central park': 'own-new-york-central-park', 'marina bay': 'own-singapore-flyer', 'jewel changi': 'own-singapore-jewel',
+  zanzibar: ['own-zanzibar-hammock', 'own-zanzibar-huts', 'own-zanzibar-coast'], 'stone town': 'own-zanzibar-coast', nungwi: 'own-zanzibar-huts', paje: 'own-zanzibar-hammock',
+  tanzania: 'own-kilimanjaro-giraffe', kilimanjaro: 'own-kilimanjaro-giraffe', 'mount kilimanjaro': 'own-kilimanjaro-giraffe', arusha: 'own-kilimanjaro-giraffe', serengeti: 'own-kilimanjaro-giraffe', 'ngorongoro crater': 'own-kilimanjaro-giraffe', amboseli: 'own-kilimanjaro-giraffe',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

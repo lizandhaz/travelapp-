@@ -12,7 +12,7 @@ import { Text } from '@/components/Text';
 import { IconCircle, Screen, SectionHeader } from '@/components/ui';
 import { Wordmark } from '@/components/Wordmark';
 import { colors, fonts, GUTTER } from '@/constants/theme';
-import { itemCollections, placeCollections, placesIn } from '@/lib/explore';
+import { collectionTiles } from '@/lib/explore';
 import { rankValue } from '@/lib/match';
 import { friendsFeed, places, rows } from '@/lib/sample';
 import { refreshUnread, useUnreadPostcards } from '@/lib/postcardsLive';
@@ -59,14 +59,8 @@ export default function Home() {
         .map((p) => ({ slug: p.slug, name: p.name, sub: p.sub, photo: p.photo, r: t.forSlug(p.slug) }))
         .sort((a, b) => (b.r?.score ?? 0) - (a.r?.score ?? 0));
 
-  const collections = useMemo(
-    () =>
-      [
-        ...placeCollections().map((c) => ({ id: c.id, title: c.title, cover: c.photo, photos: placesIn(c).map((p) => p.photo) })),
-        ...itemCollections.map((c) => ({ id: c.id, title: c.title, cover: undefined, photos: c.items().map((i) => i.photo) })),
-      ].filter((c) => c.photos.length >= 3 && !!(c.cover ?? c.photos.find(Boolean))),
-    [],
-  );
+  const collections = useMemo(() => collectionTiles(), []);
+
 
   const cardW = Math.round((width - GUTTER * 2) * 0.78);
   const cardH = Math.round(cardW * 1.22);
@@ -128,7 +122,7 @@ export default function Home() {
         </SectionHeader>
         <Row>
           {collections.map((c) => (
-            <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.cover ?? c.photos.find(Boolean) ?? null} count={c.photos.length} />
+            <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.photo} count={c.count} />
           ))}
         </Row>
       </View>

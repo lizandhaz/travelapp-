@@ -27,6 +27,8 @@ export const Screen = forwardRef<ComponentRef<typeof ScrollView>, ScrollViewProp
         style={{ flex: 1, backgroundColor: colors.bg }}
         contentContainerStyle={[{ paddingTop: noTopInset ? 0 : insets.top, paddingBottom: (tabBar ? 120 : 48) + insets.bottom }, contentStyle]}
         keyboardShouldPersistTaps="handled"
+        // iPhone: scroll so a focused text box isn't hidden behind the keyboard.
+        automaticallyAdjustKeyboardInsets
         {...props}
       >
         {children}

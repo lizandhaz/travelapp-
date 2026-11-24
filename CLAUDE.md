@@ -177,7 +177,8 @@ src/
                           row that scrolls sideways, with icon, type/price, name, why, score stamp, save bookmark), DoRow, MoreAbout
     AreaMap.tsx           The real map of a place (Apple Maps, mutedStandard; numbered pins with name labels; `preview` = still, tap to
                           open). AreaMap.web.tsx shows the drawn map instead, as react-native-maps doesn't run on the web
-    TripActions.tsx       Like (heart + count), Comment (sheet with comments and a box to add yours) and Save (a sheet: "Save <place>"
+    TripActions.tsx       Like (heart + count), Comment (sheet: the box to write in sits at the top under the heading, so the keyboard
+                          never covers it (owner, Nov 2026); comments below) and Save (a sheet: "Save <place>"
                           → save.tsx, or "Save <who>'s trip" → Saved → Friends' trips; the bookmark fills when the trip is saved) for a
                           friend's trip; on feed cards and the friend's trip page
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)

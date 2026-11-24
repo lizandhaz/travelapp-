@@ -132,6 +132,11 @@ export const photos = {
   'own-san-francisco': require('../../assets/photos/own-san-francisco.jpg'),
   'own-skiing': require('../../assets/photos/own-skiing.jpg'),
   'own-whitsundays': require('../../assets/photos/own-whitsundays.jpg'),
+  'own-diving': require('../../assets/photos/own-diving.jpg'),
+  'own-hamilton-island': require('../../assets/photos/own-hamilton-island.jpg'),
+  'own-las-vegas-strip': require('../../assets/photos/own-las-vegas-strip.jpg'),
+  'own-rottnest': require('../../assets/photos/own-rottnest.jpg'),
+  'own-victoria-falls': require('../../assets/photos/own-victoria-falls.jpg'),
 } as const;
 
 export type PhotoName = keyof typeof photos;

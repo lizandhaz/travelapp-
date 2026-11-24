@@ -8,7 +8,7 @@ import { colors, fonts } from '@/constants/theme';
 import { monthYear } from '@/lib/months';
 import { photoForPlaceName } from '@/lib/sample';
 import { fitLines, fitWordSize } from '@/lib/fit';
-import { formatScore, scoreWord } from '@/lib/score';
+import { formatScore } from '@/lib/score';
 import type { Trip } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
 
@@ -30,9 +30,8 @@ export function TripCard({ trip, width }: { trip: Trip; width: number }) {
             <Text {...fitLines(main?.name ?? '')} style={{ fontFamily: fonts.display, fontSize: nameSize, lineHeight: Math.round(nameSize * 1.18), color: colors.onDark }}>
               {main?.name}
             </Text>
-            <Text numberOfLines={1} style={{ marginTop: 2 }}>
-              <Text style={{ fontFamily: fonts.display, fontSize: 17, color: colors.onDark, fontVariant: ['tabular-nums'] }}>{formatScore(trip.score)}</Text>
-              <Text style={{ fontFamily: fonts.displayItalic, fontSize: 13, color: colors.onDark }}>{`  ${scoreWord(trip.score)}`}</Text>
+            <Text numberOfLines={1} style={{ marginTop: 2, fontFamily: fonts.display, fontSize: 17, color: colors.onDark, fontVariant: ['tabular-nums'] }}>
+              {formatScore(trip.score)}
             </Text>
           </View>
         </PhotoStamp>

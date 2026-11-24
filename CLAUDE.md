@@ -181,7 +181,7 @@ src/
     trip/NightsPicker.tsx "How long did you stay?": 1 night … two weeks, or "Longer…" (type up to 365)
     trip/MonthPicker.tsx  This month + last 6 months as chips ("Nov 2026"), or "Earlier…"
     trip/ScorePicker.tsx  "Slide to rate out of 10": 1.0–10.0 in 0.1 steps; accessibilityRole "adjustable"
-    trip/TripCard.tsx     One of your trips as a photo stamp: the name on its own full-width line, the score and its word under it
+    trip/TripCard.tsx     One of your trips as a photo stamp: the name on its own full-width line, the score under it (no "Loved it" word, owner Nov 2026)
   constants/theme.ts      Colours, fonts, radius, GUTTER (the only place for raw hex values)
   constants/brand.json    The app name ("COVA"); brand.ts exports APP_NAME. Sample text writes {app} for it (postcards.ts fills it in)
   lib/

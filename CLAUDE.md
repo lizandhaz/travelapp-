@@ -133,7 +133,8 @@ src/
                           I look at, clear viewed places, sign out), opened from You
     place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, On the map, best time, what friends said, where to stay/eat, things to do,
                           culture and top tips, "I've been" (opens Add a trip with the place filled in)
-    trip/[id]/index.tsx   One of your trips, with Edit and Delete (confirm first)
+    trip/[id]/index.tsx   One of your trips, with Share with a friend (lib/share.ts tripShareText: place, month, score, who/nights, note, stay,
+                          restaurants, tip as plain text; never a location or link), Edit and Delete (confirm first)
     trip/[id]/edit.tsx    Edit a trip (same TripForm, prefilled)
     +not-found.tsx        "Lost in the post"
   components/
@@ -228,6 +229,7 @@ src/
                           useFriendTrip(id) (sample or real), postedAgo
     reactions.ts          Likes, comments and saved friends' trips: sample counts + yours, kept on the phone (useReactions, toggleLike,
                           addComment, toggleSavedTrip, useSavedTrips). Moves to the database when friends' real trips arrive
+    share.ts              shareText() (phone share sheet; copies on web) and tripShareText(); boards.ts shareBoard uses it
     knownStays.ts         Stays for suggestions: the stay guide + the sample place details; searchStays(query, tripPlace, limit, tripCountry)
     stayGuide.ts          Hand-picked well-known stays (~1,280 hotels, villas, B&Bs, hostels, lodges) in ~250 holiday areas, each with
                           the towns in it, so a trip's place finds its area. Add areas here; names must be real places

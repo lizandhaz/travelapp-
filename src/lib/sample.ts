@@ -885,8 +885,9 @@ export const places: SamplePlace[] = [
     "name": "Comporta",
     "region": "Portugal",
     "score": 9.0,
-    "photo": null,
+    "photo": "own-comporta-boardwalk",
     "photos": [
+      "own-comporta-boardwalk"
     ]
   },
   {
@@ -1046,7 +1047,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": null,
+    "photo": "own-comporta-boardwalk",
     "kind": "Hidden gem",
     "name": "Carrasqueira pier",
     "sub": "Hidden gem in Comporta · found by Priya",
@@ -1729,6 +1730,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   'la digue': 'own-ladigue-rocks', seychelles: 'own-ladigue-rocks', 'anse source d argent': 'own-ladigue-rocks', praslin: 'own-ladigue-rocks', mahe: 'own-ladigue-rocks',
   palermo: 'own-palermo-cathedral', sicily: 'own-palermo-cathedral',
   capri: 'own-capri-faraglioni', anacapri: 'own-capri-faraglioni', 'amalfi coast': ['own-positano-town', 'own-capri-faraglioni'], amalfi: 'own-positano-town', ravello: 'own-positano-town', sorrento: 'own-capri-faraglioni', positano: 'own-positano-town', 'polignano a mare': 'own-polignano-cove', polignano: 'own-polignano-cove', puglia: 'own-polignano-cove', bari: 'own-polignano-cove', monopoli: 'own-polignano-cove',
+  comporta: 'own-comporta-boardwalk', carvalhal: 'own-comporta-boardwalk', melides: 'own-comporta-boardwalk', alentejo: 'own-comporta-boardwalk',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

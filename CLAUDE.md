@@ -99,8 +99,8 @@ src/
     (tabs)/saved.tsx      Saved ("Your boards"; lists are called **boards** in the UI, owner Nov 2026, though the code and database still
                           say boards/lists): your Want to go board and your own boards ("Made by you", + New board), and
                           Friends' trips you've saved (SavedTripCard grid)
-    (tabs)/profile.tsx    You: profile picture (tap to change), Find friends / Add a trip buttons, stats, Your taste (plain outline tags, no
-                          colours), Followers / Following / Requests counts (tap → people.tsx), travel map card (tap → map), "Your collections" (your lists + saved friends' trips, each opens; See all
+    (tabs)/profile.tsx    You (built from components/profile.tsx): profile picture (tap to change), name, followers / following / requests counts
+                          at the top (tap → people.tsx), Find friends / Add a trip buttons, stats, Your taste (plain outline tags, no colours), travel map card (tap → map), "Your collections" (your lists + saved friends' trips, each opens; See all
                           → Saved), your trips as photo
                           stamps: Newest (default) / Oldest / Top rated, and a year filter
     list/[id].tsx         One board: cover (chosen photo, or a collage of its places) with the name, Share/Edit circles, places as a
@@ -127,12 +127,13 @@ src/
                           a big photo on the left (or details full width), no photos → no front: the whole trip (the back) shows
                           straight away, with no Turn over (owner disliked the olive-orange stand-in), and the back's
                           content sets the card's height. Then Like / Comment / Save, big photos, "See <who>'s whole trip" and "More about <place>"
-    person/[who].tsx      A sample friend's profile (owner Nov 2026; lib/samplePeople.ts): face/initials, name, @handle · home town, "Follows you",
-                          bio, Follow/Following (local only), stats tiles (Trips, Countries, Of the world), Followers/Following counts,
-                          their travel map (TravelMapCard title + open={false}), then Trips / Boards / Followers / Following tabs (trips open
-                          friend-trip/[id]; boards are Want to go + one themed board with place chips; people open their profile).
-                          Linked from friends' avatars on feed cards, place pages' "What friends said" (FriendName), friend-trip and postcard
-                          pages ("See <who>'s profile"). Place pages also show "See <who>'s trip →" (FriendTripLink) under each friend's quote
+    person/[who]/         A sample friend's profile, laid out like You (owner Nov 2026: "everyone's profile the same as mine"; lib/samplePeople.ts):
+                          index.tsx: picture/initials, name, @handle · home town, followers & following counts at the top, bio, Follow/Following
+                          (local only) + "Follows you", stats tiles, their taste, travel map (open={false}), "<Name>'s collections" (boards) and
+                          "<Name>'s trips" (photo stamps, Newest/Oldest/Top rated + years). follows.tsx: Followers/Following lists (?tab=).
+                          board.tsx?i=: one board's places. Linked from friends' avatars on feed cards, place pages' "What friends said"
+                          (FriendName), friend-trip and postcard pages ("See <who>'s profile"). Place pages also show "See <who>'s trip →"
+                          (FriendTripLink) under each friend's quote
     friend-trip/[id].tsx  A friend's trip (sample id "maya-hydra", or a real trip's id via useFriendTrip): their score, who with, nights, quote, photos,
                           where they stayed, where they ate, what they did, their tips, "More about <place>"
     settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places
@@ -148,6 +149,8 @@ src/
   components/
     ui.tsx                Screen, PageTitle, SectionHeader, IconCircle, BackButton, Button (dark/accent/outline, optional icon),
                           Input (optional icon), Field, Chip, Segmented, Card (tone: white/blush/sage/sky), Notice, ErrorNotice
+    profile.tsx           Shared by You and friends' profiles: ProfileTop (picture, name, line, followers/following(/requests) counts at the
+                          top), ProfileStats, TasteTags, TripsSection (order chips + year filter + grid), FriendTripStamp, worldShare
     Text.tsx              All text goes through <Text variant="…"> (fonts + colours). A bigger fontSize without a
                           lineHeight gets lineHeight ≈ 1.28× automatically, so big numbers aren't clipped on iPhone
     AccentTitle.tsx       Heading with one italic word and a terracotta swash ("Where did *you* go?")

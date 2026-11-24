@@ -116,3 +116,23 @@ export function boardsOf(p: SamplePerson): SampleBoard[] {
 
 /** A board's cover: the first place on it with one of the owner's photos. */
 export const boardCover = (b: SampleBoard): PhotoName | null => b.slugs.map((s) => getPlace(s)?.photo).find(Boolean) ?? null;
+
+/** Their taste: the holiday types of the places they rated well (as "Your taste" on You), top four. */
+export function tasteOf(p: SamplePerson): string[] {
+  const sum: Record<string, number> = {};
+  for (const t of tripsOf(p)) {
+    const w = (t.score - 6.5) / 3.5;
+    for (const [tag, v] of Object.entries(featuresForSlug(t.slug)?.tags ?? {})) sum[tag] = (sum[tag] ?? 0) + w * v;
+  }
+  return Object.entries(sum)
+    .filter(([, v]) => v > 0.6)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([t]) => t);
+}
+
+/** "Aug 2026" → "2026-08", for sorting and the year filter. */
+export function isoMonth(m: string): string {
+  const v = monthValue(m);
+  return `${Math.floor(v / 12)}-${String((v % 12) + 1).padStart(2, '0')}`;
+}

@@ -23,6 +23,7 @@ export const colors = {
   blushSoft: '#f5e5de', // soft blush fill for cards and bands
   sageSoft: '#e8eadd', // soft sage fill for cards and bands
   skySoft: '#e7eaeb', // soft misty-sky fill for cards and bands
+  cream: '#fcf8ef', // the "Your score" card on place pages (owner Nov 2026: cream, not pink)
   champagneSoft: '#f3ecde', // soft champagne: the fourth card colour for place pages' hotels and restaurants
   skyDeep: '#5b7389', // misty sky, deep enough for white initials
   gold: '#b9975b', // hidden-gem pins on place maps

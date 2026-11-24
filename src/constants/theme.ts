@@ -19,9 +19,8 @@ export const colors = {
   olive: '#636b51', // olive grove (a shade deeper so small text passes): stay score stamp, stay pins, saved
   blushSoft: '#f6e1dc', // soft blush fill for cards and bands
   sageSoft: '#e2e8da', // soft sage fill for cards and bands
-  skySoft: '#e1e8f0',
-  // Soft champagne: the fourth Pinterest card colour on place pages.
-  champagneSoft: '#f3ecdc', // soft misty-sky fill for cards and bands
+  skySoft: '#e1e8f0', // soft misty-sky fill for cards and bands
+  champagneSoft: '#f3ecdc', // soft champagne: the fourth card colour for place pages' hotels and restaurants
   skyDeep: '#5b7389', // misty sky, deep enough for white initials
   gold: '#b9975b', // hidden-gem pins on place maps
   onDark: '#faf7f0', // text on photos and dark buttons

@@ -6,7 +6,7 @@ import type { PhotoName } from './photos';
 import { getPlace, places } from './sample';
 
 /**
- * Example profiles for the sample friends (Maya, Priya, Tom, Sam, Jonah, Sophie): who they are, their
+ * Example profiles for the sample friends (Maya, Priya, Tom, Sam, Jonah, Sophie, Harriet): who they are, their
  * trips (every sample place they rated, from the Friends feed and "What friends said"), who they
  * follow and who follows them, their boards and their stats. Sample content until real profiles are
  * shown to followers; the profile screen is app/person/[who].tsx.
@@ -31,11 +31,12 @@ export type SamplePerson = {
 
 const PEOPLE: Omit<SamplePerson, 'followers'>[] = [
   { id: 'maya', name: 'Maya', handle: 'mayatravels', home: 'Bristol', bio: 'Islands, slow mornings and a good book by the water.', face: null, following: ['priya', 'tom', 'sophie', 'jonah'], followsYou: true },
-  { id: 'priya', name: 'Priya', handle: 'priya.eats', home: 'London', bio: 'I plan holidays around lunch. Coast, food, repeat.', face: null, following: ['maya', 'sam', 'sophie'], followsYou: true },
+  { id: 'priya', name: 'Priya', handle: 'priya.eats', home: 'London', bio: 'I plan holidays around lunch. Coast, food, repeat.', face: null, following: ['maya', 'sam', 'sophie', 'harriet'], followsYou: true },
   { id: 'tom', name: 'Tom', handle: 'tomwanders', home: 'Manchester', bio: 'Cities, mountains and the odd ski week. Always the long walk.', face: null, following: ['maya', 'jonah', 'sam'], followsYou: true },
   { id: 'sam', name: 'Sam', handle: 'samontheslopes', home: 'Edinburgh', bio: 'Snow in winter, safari when I can. Early starts are worth it.', face: null, following: ['tom', 'priya'], followsYou: false },
   { id: 'jonah', name: 'Jonah', handle: 'jonah.j', home: 'Leeds', bio: 'Weekends away with the kids. Castles, beaches, ice cream.', face: null, following: ['maya', 'tom', 'sophie'], followsYou: true },
-  { id: 'sophie', name: 'Sophie', handle: 'sophieabroad', home: 'Brighton', bio: 'Big trips, rarely. I save for the ones I’ll talk about for years.', face: null, following: ['maya', 'priya', 'jonah'], followsYou: false },
+  { id: 'harriet', name: 'Harriet', handle: 'harrietabroad', home: 'London', bio: 'Summer festivals, long lunches and gelato wherever I can find it.', face: null, following: ['maya', 'priya', 'sophie', 'tom'], followsYou: true },
+  { id: 'sophie', name: 'Sophie', handle: 'sophieabroad', home: 'Brighton', bio: 'Big trips, rarely. I save for the ones I’ll talk about for years.', face: null, following: ['maya', 'priya', 'jonah', 'harriet'], followsYou: false },
 ];
 
 const withFollowers: SamplePerson[] = PEOPLE.map((p) => ({ ...p, followers: PEOPLE.filter((o) => o.following.includes(p.id)).map((o) => o.id) }));

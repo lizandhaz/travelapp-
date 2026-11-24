@@ -227,7 +227,7 @@ src/
     tasteEvents.ts        tasteChanged()/onTasteChanged(): saveTrip/deleteTrip, list changes and new views call it
     views.ts              Place pages you've looked at: recordPlaceView, fetchPlaceViews, clearPlaceViews, on/off setting
     matchSettings.ts      What scores may use (trips, saves, friends; stored on the phone): getMatchSettings/setMatchSetting
-    samplePeople.ts       Example profiles for the six sample friends: getPerson, personHref, tripsOf, statsOf, boardsOf (Want to go +
+    samplePeople.ts       Example profiles for the seven sample friends (Harriet added by the owner, Nov 2026; her trips are "said" entries in placeDetails): getPerson, personHref, tripsOf, statsOf, boardsOf (Want to go +
                           a board themed on the holidays they take most), followers worked out from who follows whom
     friendTrips.ts        Sample friends' trips from the Friends feed or the place details naming that friend (getTrip, getFriendTrip,
                           tripId, companionsLabel); who-with and nights are sample values and may be null (not filled in)

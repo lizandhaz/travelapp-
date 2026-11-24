@@ -72,6 +72,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
     ],
     "said": [
       {
+        "who": "Harriet",
+        "month": "Feb 2026",
+        "quote": "Thermae Spa on the roof at sunset. Book it.",
+        "score": 9.0,
+        "face": null
+      },
+      {
         "who": "Maya",
         "month": "Oct 2026",
         "quote": "Felt like a proper break in just one night.",
@@ -1058,6 +1065,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
     ],
     "said": [
       {
+        "who": "Harriet",
+        "month": "Aug 2026",
+        "quote": "Gelato on the ferry to Bellagio, every single day.",
+        "score": 9.4,
+        "face": null
+      },
+      {
         "who": "Tom",
         "month": "Jun 2026",
         "quote": "Every view looks like a painting.",
@@ -1860,6 +1874,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
       1
     ],
     "said": [
+      {
+        "who": "Harriet",
+        "month": "Jun 2026",
+        "quote": "Long lunches, warm sea and the best tomatoes of my life.",
+        "score": 9.2,
+        "face": null
+      },
       {
         "who": "Maya",
         "month": "Jun 2026",
@@ -4051,6 +4072,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
     ],
     "said": [
       {
+        "who": "Harriet",
+        "month": "Oct 2025",
+        "quote": "Punting, pubs and a very long lunch at the Covered Market.",
+        "score": 8.6,
+        "face": null
+      },
+      {
         "who": "Priya",
         "month": "May 2026",
         "quote": "Felt like walking through a film set.",
@@ -4206,6 +4234,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
       2
     ],
     "said": [
+      {
+        "who": "Harriet",
+        "month": "Apr 2026",
+        "quote": "A picnic in the Tuileries beats any restaurant.",
+        "score": 8.9,
+        "face": null
+      },
       {
         "who": "Tom",
         "month": "Sep 2026",
@@ -4380,6 +4415,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
       1
     ],
     "said": [
+      {
+        "who": "Harriet",
+        "month": "Jul 2025",
+        "quote": "Lemon everything. Worth every step.",
+        "score": 9.3,
+        "face": null
+      },
       {
         "who": "Priya",
         "month": "May 2026",

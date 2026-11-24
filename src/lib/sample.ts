@@ -53,7 +53,7 @@ export const rows = {
       "rank": "#3",
       "name": "Palermo",
       "sub": "Sicily, Italy",
-      "photo": null
+      "photo": "own-palermo-cathedral"
     },
     {
       "slug": "hydra",
@@ -786,8 +786,9 @@ export const places: SamplePlace[] = [
     "name": "Palermo",
     "region": "Sicily, Italy",
     "score": 8.5,
-    "photo": null,
+    "photo": "own-palermo-cathedral",
     "photos": [
+      "own-palermo-cathedral"
     ]
   },
   {
@@ -946,7 +947,7 @@ export const trendingThisMonth: RowItem[] = [
     "rank": "#3 ↑1",
     "name": "Palermo",
     "sub": "+41% more postcards in October",
-    "photo": null
+    "photo": "own-palermo-cathedral"
   },
   {
     "slug": "hydra",
@@ -1197,7 +1198,7 @@ export const board: BoardItem[] = [
     "slug": "zanzibar"
   },
   {
-    "photo": null,
+    "photo": "own-palermo-cathedral",
     "kind": "Culture · Art",
     "name": "Puppet theatre",
     "sub": "Palermo, Sicily, Italy",
@@ -1296,7 +1297,7 @@ export const board: BoardItem[] = [
     "slug": "stives"
   },
   {
-    "photo": null,
+    "photo": "own-palermo-cathedral",
     "kind": "place",
     "score": 8.5,
     "name": "Palermo, Sicily, Italy",
@@ -1722,6 +1723,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   'sri lanka': ['own-srilanka-bay', 'own-srilanka-sigiriya'], sigiriya: 'own-srilanka-sigiriya', hiriketiya: 'own-srilanka-bay', galle: ['own-srilanka-bay', 'own-srilanka-sigiriya'], mirissa: 'own-srilanka-bay', weligama: 'own-srilanka-bay', tangalle: 'own-srilanka-bay', unawatuna: 'own-srilanka-bay', bentota: 'own-srilanka-bay', kandy: 'own-srilanka-sigiriya', ella: 'own-srilanka-sigiriya', dambulla: 'own-srilanka-sigiriya',
   mauritius: ['own-mauritius-aerial', 'own-mauritius-palms'], 'le morne': 'own-mauritius-aerial', 'grand baie': 'own-mauritius-palms', 'belle mare': 'own-mauritius-palms', flic: 'own-mauritius-aerial',
   'la digue': 'own-ladigue-rocks', seychelles: 'own-ladigue-rocks', 'anse source d argent': 'own-ladigue-rocks', praslin: 'own-ladigue-rocks', mahe: 'own-ladigue-rocks',
+  palermo: 'own-palermo-cathedral', sicily: 'own-palermo-cathedral',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

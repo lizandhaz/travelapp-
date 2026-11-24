@@ -65,8 +65,7 @@ export default function PlaceScreen() {
   const h = Math.min(Dimensions.get('window').width, 480) * 1.0;
 
   return (
-    // Keeps what you're looking at still when the line under the top buttons appears.
-    <Screen noTopInset maintainVisibleContentPosition={{ minIndexForVisible: 0 }}>
+    <Screen noTopInset>
       {/* The back button and the title stack, so a long title grows the header instead of running into the button. */}
       <View style={{ minHeight: h, paddingTop: insets.top + 10, paddingBottom: detail ? 48 : 22, justifyContent: 'space-between' }}>
         <PhotoFill photo={place.photo} label={place.name} />
@@ -95,8 +94,17 @@ export default function PlaceScreen() {
         <Button title="I’ve been" kind="accent" style={{ flex: 1 }} onPress={() => router.navigate({ pathname: '/add', params: { place: place.name, country } })} />
       </View>
       {/* Once it's on Want to go: invite people you'd go with. */}
-      {wish.saved && !!wish.itemId && (
-        <Pressable onPress={() => setInviting(true)} accessibilityRole="button" accessibilityLabel={`Invite people to go to ${place.name} with you`} style={{ paddingHorizontal: GUTTER, marginTop: 8 }}>
+      {/* The space is always kept (hidden until it's on Want to go), so the page never shifts under your finger when you tap Want to go. */}
+      {wish.ready && (
+        <Pressable
+          disabled={!(wish.saved && !!wish.itemId)}
+          onPress={() => setInviting(true)}
+          accessibilityRole="button"
+          accessibilityElementsHidden={!(wish.saved && !!wish.itemId)}
+          importantForAccessibility={wish.saved && !!wish.itemId ? 'auto' : 'no-hide-descendants'}
+          accessibilityLabel={`Invite people to go to ${place.name} with you`}
+          style={{ paddingHorizontal: GUTTER, marginTop: 8, opacity: wish.saved && !!wish.itemId ? 1 : 0 }}
+        >
           <Text variant="small" style={{ color: colors.accentText }}>
             On your Want to go. Going with someone? <Text variant="small" style={{ color: colors.accentText, fontFamily: fonts.sansSemiBold }}>Invite them →</Text>
           </Text>
@@ -195,11 +203,11 @@ export default function PlaceScreen() {
         <Text variant="small" style={{ paddingHorizontal: GUTTER, marginTop: 8, color: colors.accentText }}>
           {wish.error}
         </Text>
-      ) : wish.saved ? (
-        <Text variant="small" style={{ paddingHorizontal: GUTTER, marginTop: 8, color: colors.olive }}>
+      ) : (
+        <Text variant="small" style={{ paddingHorizontal: GUTTER, marginTop: 8, color: colors.olive, opacity: wish.saved ? 1 : 0 }} accessibilityElementsHidden={!wish.saved}>
           ✓ On your Want to go board
         </Text>
-      ) : null}
+      )}
 
       <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 18 }}>
         Sample content for now.{detail?.credits ? ` ${detail.credits}` : ''}

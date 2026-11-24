@@ -33,8 +33,15 @@ export function useWantToGo(place: SavePlace) {
     const wasSaved = !!itemId;
     setItemId(wasSaved ? null : 'saving'); // show the change straight away
     try {
-      if (wasSaved && itemId !== 'saving') await removeFromBoard(itemId!);
-      else await addToBoard(await ensureWishList(), place);
+      if (wasSaved) {
+        // Remove it, even if we hadn't learnt its id yet: look it up first.
+        let id = itemId !== 'saving' ? itemId : null;
+        if (!id) {
+          const wish = (await fetchBoards()).find((b) => b.kind === 'wish');
+          id = (wish && findOnBoard(wish, { name, country })?.id) ?? null;
+        }
+        if (id) await removeFromBoard(id);
+      } else await addToBoard(await ensureWishList(), place);
       await refresh();
     } catch (e) {
       setItemId(wasSaved ? itemId : null);

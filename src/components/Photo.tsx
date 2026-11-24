@@ -7,13 +7,13 @@ import { colors, radius } from '@/constants/theme';
 import { photos, type PhotoName } from '@/lib/photos';
 import { perforatedPath } from './ScoreStamp';
 
-/** A photo (or a warm placeholder when there isn't one), filling its box. */
+/** A photo (or a warm blush-to-terracotta placeholder when there isn't one), filling its box. */
 export function PhotoFill({ photo, uri, label }: { photo?: PhotoName | null; uri?: string | null; label?: string }) {
   const source = uri ? { uri } : photo ? photos[photo] : null;
   if (!source) {
     return (
       <LinearGradient
-        colors={[colors.sand, colors.sage]}
+        colors={[colors.stamp, colors.accentDeep]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{ position: 'absolute', inset: 0 }}

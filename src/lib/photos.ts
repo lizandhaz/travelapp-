@@ -106,6 +106,20 @@ export const photos = {
   'own-safari-cheetahs': require('../../assets/photos/own-safari-cheetahs.jpg'),
   'own-safari-drive': require('../../assets/photos/own-safari-drive.jpg'),
   'own-safari-giraffes': require('../../assets/photos/own-safari-giraffes.jpg'),
+  'own-algarve': require('../../assets/photos/own-algarve.jpg'),
+  'own-canada': require('../../assets/photos/own-canada.jpg'),
+  'own-costa-brava': require('../../assets/photos/own-costa-brava.jpg'),
+  'own-cyprus-bridge': require('../../assets/photos/own-cyprus-bridge.jpg'),
+  'own-dubai': require('../../assets/photos/own-dubai.jpg'),
+  'own-kitzbuehel': require('../../assets/photos/own-kitzbuehel.jpg'),
+  'own-mallorca': require('../../assets/photos/own-mallorca.jpg'),
+  'own-milan': require('../../assets/photos/own-milan.jpg'),
+  'own-new-york': require('../../assets/photos/own-new-york.jpg'),
+  'own-singapore': require('../../assets/photos/own-singapore.jpg'),
+  'own-tenerife': require('../../assets/photos/own-tenerife.jpg'),
+  'own-tuscany': require('../../assets/photos/own-tuscany.jpg'),
+  'own-val-disere': require('../../assets/photos/own-val-disere.jpg'),
+  'own-zurich': require('../../assets/photos/own-zurich.jpg'),
 } as const;
 
 export type PhotoName = keyof typeof photos;

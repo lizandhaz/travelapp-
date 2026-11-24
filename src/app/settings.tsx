@@ -114,7 +114,7 @@ function SwitchRow({ title, sub, value, onChange }: { title: string; sub: string
         <Text variant="strong">{title}</Text>
         <Text variant="small">{sub}</Text>
       </View>
-      <Switch value={value} onValueChange={onChange} trackColor={{ true: colors.olive, false: colors.line }} accessibilityLabel={`Use ${title.toLowerCase()} for my scores`} />
+      <Switch value={value} onValueChange={onChange} trackColor={{ true: colors.olive, false: colors.line }} thumbColor={colors.card} ios_backgroundColor={colors.line} accessibilityLabel={`Use ${title.toLowerCase()} for my scores`} />
     </View>
   );
 }

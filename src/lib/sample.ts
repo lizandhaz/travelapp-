@@ -694,7 +694,16 @@ export const places: SamplePlace[] = [
     "score": 9.4,
     "photo": "maldives-1",
     "photos": [
-      "maldives-1"
+      "maldives-1",
+      "own-maldives-sunset",
+      "own-maldives-hammock",
+      "own-maldives-turtle",
+      "own-maldives-villas",
+      "own-maldives-swings",
+      "own-maldives-palms",
+      "own-maldives-sunset-pool",
+      "own-maldives-sunset-boat",
+      "maldives-2"
     ]
   },
   {
@@ -1726,6 +1735,11 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName> = {
   kitzbuhel: 'own-kitzbuehel', kitzbuehel: 'own-kitzbuehel',
   'val d isere': 'own-val-disere',
   'lake louise': 'own-canada', banff: 'own-canada', 'banff national park': 'own-canada',
+  'las vegas': 'own-las-vegas', vegas: 'own-las-vegas',
+  'san francisco': 'own-san-francisco',
+  whitsundays: 'own-whitsundays', 'whitsunday islands': 'own-whitsundays', 'whitehaven beach': 'own-whitsundays', 'airlie beach': 'own-whitsundays', 'hamilton island': 'own-whitsundays',
+  'walt disney world': 'orlando-1', 'disney world': 'orlando-1', 'magic kingdom': 'orlando-1', kissimmee: 'orlando-1', // orlando-1 is the owner's Disney photo
+  avoriaz: 'own-skiing',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

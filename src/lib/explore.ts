@@ -64,7 +64,7 @@ export function placeCollections(): PlaceCollection[] {
         return avg >= 25 ? `${t[0]}° in January` : false;
       },
     },
-    { id: 'cities', title: 'City breaks', test: (s) => ((tags(s).city ?? 0) >= 0.6 ? region(s) : false) },
+    { id: 'cities', title: 'City breaks', photo: 'own-new-york-central-park', test: (s) => ((tags(s).city ?? 0) >= 0.6 ? region(s) : false) },
     {
       id: 'food',
       title: 'Foodie trips',

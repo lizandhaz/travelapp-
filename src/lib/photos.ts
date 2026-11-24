@@ -58,6 +58,23 @@ export const photos = {
   'own-las-vegas-strip': require('../../assets/photos/own-las-vegas-strip.jpg'),
   'own-rottnest': require('../../assets/photos/own-rottnest.jpg'),
   'own-victoria-falls': require('../../assets/photos/own-victoria-falls.jpg'),
+  'own-algarve-path': require('../../assets/photos/own-algarve-path.jpg'),
+  'own-algarve-pool': require('../../assets/photos/own-algarve-pool.jpg'),
+  'own-mallorca-pergola': require('../../assets/photos/own-mallorca-pergola.jpg'),
+  'own-mallorca-villa': require('../../assets/photos/own-mallorca-villa.jpg'),
+  'own-milan-galleria': require('../../assets/photos/own-milan-galleria.jpg'),
+  'own-new-york-central-park': require('../../assets/photos/own-new-york-central-park.jpg'),
+  'own-new-york-liberty': require('../../assets/photos/own-new-york-liberty.jpg'),
+  'own-new-york-pier': require('../../assets/photos/own-new-york-pier.jpg'),
+  'own-new-york-rooftop': require('../../assets/photos/own-new-york-rooftop.jpg'),
+  'own-new-york-sunset': require('../../assets/photos/own-new-york-sunset.jpg'),
+  'own-paris-hotel-de-ville': require('../../assets/photos/own-paris-hotel-de-ville.jpg'),
+  'own-paris-louvre': require('../../assets/photos/own-paris-louvre.jpg'),
+  'own-singapore-flyer': require('../../assets/photos/own-singapore-flyer.jpg'),
+  'own-singapore-jewel': require('../../assets/photos/own-singapore-jewel.jpg'),
+  'own-tenerife-beach': require('../../assets/photos/own-tenerife-beach.jpg'),
+  'own-venice-salute': require('../../assets/photos/own-venice-salute.jpg'),
+  'own-singapore-temple': require('../../assets/photos/own-singapore-temple.jpg'),
 } as const;
 
 export type PhotoName = keyof typeof photos;

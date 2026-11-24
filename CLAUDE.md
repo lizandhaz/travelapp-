@@ -174,7 +174,7 @@ src/
                           "Where are you staying?" (typing only; picks the stay once one name matches) → "Near <stay>": the rest
                           nearest first, Right nearby / A short way / Further out. The drawn maps are no longer shown on phones
                           (owner, Nov 2026); they're only the web stand-in), BestTimeChart, SaidList, StayRow, EatRow (Pinterest-style: no photos until friends add their own, owner Nov 2026; soft sage/blush/sky/champagne cards in a
-                          row that scrolls sideways, with icon, type/price, name, why, score stamp, save bookmark), DoRow, MoreAbout
+                          row that scrolls sideways, with icon, type/price, a one-line "✦ We think you'd like it" pill above the name when featured (never beside the stamp, owner Nov 2026), name, why, a one-line friend's pick, score stamp, save bookmark), DoRow, MoreAbout
     AreaMap.tsx           The real map of a place (Apple Maps, mutedStandard; numbered pins with name labels; `preview` = still, tap to
                           open). AreaMap.web.tsx shows the drawn map instead, as react-native-maps doesn't run on the web
     TripActions.tsx       Like (heart + count), Comment (sheet: the box to write in sits at the top under the heading, so the keyboard

@@ -60,7 +60,7 @@ export const rows = {
       "rank": "#4",
       "name": "Hydra",
       "sub": "Greece",
-      "photo": null
+      "photo": "own-hydra-harbour"
     }
   ],
   "islands": [
@@ -90,7 +90,7 @@ export const rows = {
       "score": 9.0,
       "name": "Turks and Caicos",
       "sub": "Caribbean",
-      "photo": null
+      "photo": "own-turks-beach"
     },
     {
       "slug": "zanzibar",
@@ -127,7 +127,7 @@ export const rows = {
       "score": 8.5,
       "name": "Copenhagen",
       "sub": "1h 50m flight",
-      "photo": null
+      "photo": "own-copenhagen-nyhavn"
     },
     {
       "slug": "paris",
@@ -342,7 +342,7 @@ export const rows = {
       "where": "Copenhagen, Denmark",
       "because": "Because you gave the Orangerie a 9.2",
       "friends": "1 friend has been too",
-      "photo": null
+      "photo": "own-copenhagen-nyhavn"
     },
     {
       "slug": "stives",
@@ -362,7 +362,7 @@ export const rows = {
       "where": "Hydra, Greece",
       "because": "Because you gave Villa Limone a 9.0",
       "friends": "2 friends have been too",
-      "photo": null
+      "photo": "own-hydra-harbour"
     },
     {
       "slug": "paris",
@@ -481,7 +481,7 @@ export const rows = {
       "score": 9.1,
       "name": "Hydra",
       "sub": "Greece",
-      "photo": null
+      "photo": "own-hydra-harbour"
     },
     {
       "slug": "crete",
@@ -589,8 +589,9 @@ export const places: SamplePlace[] = [
     "name": "Copenhagen",
     "region": "Denmark",
     "score": 8.5,
-    "photo": null,
+    "photo": "own-copenhagen-nyhavn",
     "photos": [
+      "own-copenhagen-nyhavn"
     ]
   },
   {
@@ -635,8 +636,9 @@ export const places: SamplePlace[] = [
     "name": "Hydra",
     "region": "Greece",
     "score": 9.1,
-    "photo": null,
+    "photo": "own-hydra-harbour",
     "photos": [
+      "own-hydra-harbour"
     ]
   },
   {
@@ -812,8 +814,9 @@ export const places: SamplePlace[] = [
     "name": "Turks and Caicos",
     "region": "Caribbean",
     "score": 9.0,
-    "photo": null,
+    "photo": "own-turks-beach",
     "photos": [
+      "own-turks-beach"
     ]
   },
   {
@@ -942,7 +945,7 @@ export const trendingThisMonth: RowItem[] = [
     "rank": "#4",
     "name": "Hydra",
     "sub": "Still the top-rated island this year",
-    "photo": null
+    "photo": "own-hydra-harbour"
   },
   {
     "slug": "como",
@@ -1045,7 +1048,7 @@ export const board: BoardItem[] = [
     "slug": "stives"
   },
   {
-    "photo": null,
+    "photo": "own-hydra-harbour",
     "kind": "place",
     "score": 9.1,
     "name": "Hydra, Greece",
@@ -1125,7 +1128,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": null,
+    "photo": "own-copenhagen-nyhavn",
     "kind": "place",
     "score": 8.5,
     "name": "Copenhagen, Denmark",
@@ -1301,7 +1304,7 @@ export const board: BoardItem[] = [
     "slug": "mauritius"
   },
   {
-    "photo": null,
+    "photo": "own-turks-beach",
     "kind": "place",
     "score": 9.0,
     "name": "Turks and Caicos, Caribbean",
@@ -1338,7 +1341,7 @@ export const board: BoardItem[] = [
     "slug": "madeira"
   },
   {
-    "photo": null,
+    "photo": "own-copenhagen-nyhavn",
     "kind": "Do",
     "name": "Harbour swim",
     "sub": "Outdoors · Copenhagen",

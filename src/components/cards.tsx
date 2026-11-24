@@ -152,7 +152,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
           </View>
         ) : (
           // No photos: a soft blush top with who and when, then the place in big type beside the score.
-          <View style={{ backgroundColor: colors.blushSoft, padding: 16, gap: 14 }}>
+          <View style={{ backgroundColor: colors.champagneSoft, padding: 16, gap: 14 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Pressable disabled={!personHref(item.who)} onPress={() => router.push(personHref(item.who) as never)} accessibilityRole="link" accessibilityLabel={`${item.who}. Open their profile`} hitSlop={6}>
                 <Avatar face={item.face} uri={item.faceUri} name={item.who} size={36} />

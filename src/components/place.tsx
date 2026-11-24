@@ -7,7 +7,7 @@ import type { PlaceResult } from '@/lib/match';
 import { placeDetails, type PlaceDetail } from '@/lib/placeDetails';
 import { placeCentres, placeMaps } from '@/lib/placeMaps';
 import { useTaste } from '@/lib/taste';
-import { formatScore, scoreWord } from '@/lib/score';
+import { formatScore } from '@/lib/score';
 import { getTrip, tripId } from '@/lib/friendTrips';
 import { personHref } from '@/lib/samplePeople';
 import { photoForActivity } from '@/lib/sample';
@@ -496,7 +496,7 @@ export function YourScore({ result, note }: { result: PlaceResult; note: string 
         <ScoreStamp score={result.score} size="md" label={result.yours != null ? 'Your rating' : 'Your score'} />
         <View style={{ flex: 1 }}>
           <Text variant="subheading">
-            {result.yours != null ? 'Your rating' : 'Your score'} · <Text variant="subheading" style={{ fontFamily: fonts.displayItalic }}>{scoreWord(result.score)}</Text>
+            {result.yours != null ? 'Your rating' : 'Your score'}
           </Text>
           <Text variant="small">{result.yours != null ? 'You’ve been. This is the score you gave it.' : 'Worked out for you'}</Text>
         </View>

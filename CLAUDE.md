@@ -88,7 +88,7 @@ src/
     (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
     (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score, sideways;
                           no text under them); "Dip into collections" (Explore's collection tiles); "From your friends" (FeedCard: big photo
-                          with who, when they posted, month, place and score, or for a post without photos a blush top with the place in big
+                          with who, when they posted, month, place and score, or for a post without photos a soft champagne top (not pink, owner Nov 2026) with the place in big
                           type, then their quote, stay, and Like / Comment / Save; opens as a postcard (postcard/[id] with the friend's trip id), owner Nov 2026. Real trips from people
                           you follow (lib/friendsFeed) replace the sample feed once there are any; the sample feed mixes photos/no photos on purpose). A thin line sits above "From your friends"
     (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
@@ -168,7 +168,7 @@ src/
     lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, WantToGoButton, photoForItem, placeSlugForItem
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
                           TravelMapFull (map screen: names placed so they don't overlap, filters, pinch zoom, place chips)
-    place.tsx             Place page pieces (stay/eat/do cards have a bookmark to save that spot to a board under its place): YourScore, PlaceFacts (Best time / Stays as plain text, no boxes), PlaceMapSection
+    place.tsx             Place page pieces (stay/eat/do cards have a bookmark to save that spot to a board under its place): YourScore ("Your score" with no word after it, owner Nov 2026), PlaceFacts (Best time / Stays as plain text, no boxes), PlaceMapSection
                           (on the page: the real map itself, interactive (pinch, drag, tap a pin to open it in the key) + the numbered
                           key with your score for each spot, tap for why; tap the map or "Full screen" for the big real map (zoom from the street to the world) +
                           "Where are you staying?" (typing only; picks the stay once one name matches) → "Near <stay>": the rest

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Dimensions, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { LockIcon, PencilIcon, SearchIcon, ShareIcon } from '@/components/Icons';
+import { LockIcon, PencilIcon, PlusIcon, ShareIcon } from '@/components/Icons';
 import { photoForItem, placeSlugForItem, WishStar } from '@/components/lists';
 import { PhotoFill, Shade } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
@@ -178,8 +178,24 @@ export default function ListScreen() {
         </View>
       </View>
 
+      {/* A small "+ Add a place" at the top of the board (owner, Nov 2026); it opens the search sheet. */}
+      <View style={{ paddingHorizontal: GUTTER, marginTop: 16, flexDirection: 'row', justifyContent: 'flex-end' }}>
+        <Pressable
+          onPress={() => setSearching(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Add a place to this board"
+          hitSlop={8}
+          style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 6, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, paddingHorizontal: 14, paddingVertical: 8, opacity: pressed ? 0.8 : 1 })}
+        >
+          <PlusIcon color={colors.accentText} size={16} strokeWidth={2.2} />
+          <Text variant="small" style={{ color: colors.accentText, fontFamily: fonts.sansSemiBold }}>
+            Add a place
+          </Text>
+        </Pressable>
+      </View>
+
       {/* Places */}
-      <View style={{ paddingHorizontal: GUTTER, marginTop: 22 }}>
+      <View style={{ paddingHorizontal: GUTTER, marginTop: 12 }}>
         {n === 0 && spots.length === 0 ? (
           <Card style={{ padding: 24, alignItems: 'center', gap: 10 }}>
             <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: colors.sage + '40', alignItems: 'center', justifyContent: 'center' }}>
@@ -187,7 +203,7 @@ export default function ListScreen() {
             </View>
             <Text variant="subheading">Nothing here yet</Text>
             <Text variant="small" style={{ textAlign: 'center' }}>
-              Add a place below, or tap {isWish ? '“Want to go”' : '“Save to a board”'} on any place page.
+              Tap “Add a place” above, or tap {isWish ? '“Want to go”' : '“Save to a board”'} on any place page.
             </Text>
           </Card>
         ) : (
@@ -270,19 +286,6 @@ export default function ListScreen() {
         />
       )}
 
-      {/* Add a place: tapping the box opens the search sheet. */}
-      <Card style={{ marginHorizontal: GUTTER, marginTop: 22, padding: 14, gap: 10 }}>
-        <Text variant="label">Add a place</Text>
-        <Pressable
-          onPress={() => setSearching(true)}
-          accessibilityRole="button"
-          accessibilityLabel="Add a place"
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: radius.md, paddingHorizontal: 14, paddingVertical: 14 }}
-        >
-          <SearchIcon color={colors.muted} />
-          <Text variant="bodySoft">Search or type a place</Text>
-        </Pressable>
-      </Card>
       <View style={{ paddingHorizontal: GUTTER, marginTop: 10 }}>
         <ErrorNotice error={error} />
       </View>

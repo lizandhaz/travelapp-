@@ -1712,7 +1712,7 @@ export function getPlace(slug: string): SamplePlace | undefined {
 const OWN_PLACE_PHOTOS: Record<string, PhotoName> = {
   corfu: 'own-corfu', kerkyra: 'own-corfu', kassiopi: 'own-corfu', paleokastritsa: 'own-corfu',
   dubai: 'own-dubai', 'united arab emirates': 'own-dubai',
-  tenerife: 'own-tenerife', 'costa adeje': 'own-tenerife', 'playa de las americas': 'own-tenerife', 'los cristianos': 'own-tenerife',
+  tenerife: 'own-tenerife', 'santa cruz de tenerife': 'own-tenerife', 'puerto de la cruz': 'own-tenerife', adeje: 'own-tenerife', 'costa adeje': 'own-tenerife', 'playa de las americas': 'own-tenerife', 'los cristianos': 'own-tenerife',
   venice: 'lemon-1', venezia: 'lemon-1', // lemon-1 is the owner's Venice palazzo photo
   singapore: 'own-singapore',
   'new york': 'own-new-york', 'new york city': 'own-new-york', nyc: 'own-new-york', manhattan: 'own-new-york',

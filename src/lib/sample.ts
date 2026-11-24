@@ -1589,7 +1589,7 @@ export const boards: Board[] = [
 export const samplePostcards: SamplePostcard[] = [
   {
     "who": "Tom",
-    "text": "rated Kyoto 9.5. It's on your wishlist ★",
+    "text": "rated Kyoto 9.5. It's on your Want to go board ★",
     "when": "1h",
     "photo": "kyoto-1",
     "slug": "kyoto"
@@ -1610,7 +1610,7 @@ export const samplePostcards: SamplePostcard[] = [
   },
   {
     "who": "Maya",
-    "text": "rated the Maldives 9.4. It's on your wishlist ★",
+    "text": "rated the Maldives 9.4. It's on your Want to go board ★",
     "when": "Wed",
     "photo": "maldives-1",
     "slug": "maldives"
@@ -1705,11 +1705,45 @@ export function getPlace(slug: string): SamplePlace | undefined {
   return places.find((p) => p.slug === slug);
 }
 
+/**
+ * The owner's own holiday photos for places that have no sample place page (yet), so a trip or a
+ * board place there gets a real photo instead of a blank (owner, Nov 2026). Keys are plain lower case.
+ */
+const OWN_PLACE_PHOTOS: Record<string, PhotoName> = {
+  corfu: 'own-corfu', kerkyra: 'own-corfu', kassiopi: 'own-corfu', paleokastritsa: 'own-corfu',
+  dubai: 'own-dubai', 'united arab emirates': 'own-dubai',
+  tenerife: 'own-tenerife', 'costa adeje': 'own-tenerife', 'playa de las americas': 'own-tenerife', 'los cristianos': 'own-tenerife',
+  venice: 'lemon-1', venezia: 'lemon-1', // lemon-1 is the owner's Venice palazzo photo
+  singapore: 'own-singapore',
+  'new york': 'own-new-york', 'new york city': 'own-new-york', nyc: 'own-new-york', manhattan: 'own-new-york',
+  milan: 'own-milan', milano: 'own-milan',
+  zurich: 'own-zurich', 'lake zurich': 'own-zurich',
+  tuscany: 'own-tuscany', chianti: 'own-tuscany', 'val d orcia': 'own-tuscany', siena: 'own-tuscany',
+  mallorca: 'own-mallorca', majorca: 'own-mallorca', palma: 'own-mallorca', 'palma de mallorca': 'own-mallorca',
+  algarve: 'own-algarve', faro: 'own-algarve', 'vale do lobo': 'own-algarve', 'quinta do lago': 'own-algarve',
+  cyprus: 'own-cyprus-bridge', 'ayia napa': 'own-cyprus-bridge', protaras: 'own-cyprus-bridge', paphos: 'own-cyprus-bridge', limassol: 'own-cyprus-bridge',
+  'costa brava': 'own-costa-brava', begur: 'own-costa-brava', 'tossa de mar': 'own-costa-brava',
+  kitzbuhel: 'own-kitzbuehel', kitzbuehel: 'own-kitzbuehel',
+  'val d isere': 'own-val-disere',
+  'lake louise': 'own-canada', banff: 'own-canada', 'banff national park': 'own-canada',
+  'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
+};
+
+const plainName = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+
 /** A sample photo for a place name you typed (e.g. your trip to "Lisbon"), if we have one. */
 export function photoForPlaceName(name: string): PhotoName | null {
   const n = name.trim().toLowerCase();
   const p = places.find((x) => x.name.toLowerCase() === n || x.slug === n || x.name.toLowerCase().replace(/^the /, '') === n);
-  return p ? p.photo : null;
+  if (p) return p.photo;
+  const key = plainName(name).replace(/^the /, '');
+  return OWN_PLACE_PHOTOS[key] ?? null;
 }
 
 /** Everything in the sample content about one place (for its page). */

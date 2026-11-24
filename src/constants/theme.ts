@@ -1,6 +1,7 @@
 /**
  * Brand tokens, from the owner's palette (Oat Milk, Blush Petal, Terracotta Clay, Sage Whisper, Misty Sky, Olive Grove).
- * Use these, never raw hex values, in components.
+ * Use these, never raw hex values, in components. Toned down slightly (owner, Nov 2026: "slightly less colourful"):
+ * the accents are 20% less saturated and the soft fills sit 35% closer to the oat-milk background.
  */
 export const colors = {
   bg: '#f2ede2', // page background: oat milk
@@ -10,17 +11,17 @@ export const colors = {
   mapLand: '#b9c3ad', // dotted land on the travel map: light sage
   ink: '#353b2c', // main text, dark buttons, selected chips/tabs: deep olive charcoal
   muted: '#646858', // secondary text, labels
-  stamp: '#e7b9b2', // score stamps, the "+" on the Add button: blush petal
-  sage: '#a7b59c', // soft tags (e.g. stay type): sage whisper
-  sky: '#b7c6d6', // misty sky: the quieter months in the best-time chart
-  accent: '#c47a5c', // terracotta clay: swash under italic words, star, slider fill, shapes, large text
-  accentDeep: '#a95d40', // "Save trip" / "I've been" buttons (white text passes contrast)
-  accentText: '#9a5236', // small terracotta text: links, taglines, labels (passes contrast)
+  stamp: '#e2bdb7', // score stamps, the "+" on the Add button: blush petal
+  sage: '#a7b39e', // soft tags (e.g. stay type): sage whisper
+  sky: '#bac6d3', // misty sky: the quieter months in the best-time chart
+  accent: '#ba7e66', // terracotta clay: swash under italic words, star, slider fill, shapes, large text
+  accentDeep: '#9e624a', // "Save trip" / "I've been" buttons (white text passes contrast)
+  accentText: '#905640', // small terracotta text: links, taglines, labels (passes contrast)
   olive: '#636b51', // olive grove (a shade deeper so small text passes): stay score stamp, stay pins, saved
-  blushSoft: '#f6e1dc', // soft blush fill for cards and bands
-  sageSoft: '#e2e8da', // soft sage fill for cards and bands
-  skySoft: '#e1e8f0', // soft misty-sky fill for cards and bands
-  champagneSoft: '#f3ecdc', // soft champagne: the fourth card colour for place pages' hotels and restaurants
+  blushSoft: '#f5e5de', // soft blush fill for cards and bands
+  sageSoft: '#e8eadd', // soft sage fill for cards and bands
+  skySoft: '#e7eaeb', // soft misty-sky fill for cards and bands
+  champagneSoft: '#f3ecde', // soft champagne: the fourth card colour for place pages' hotels and restaurants
   skyDeep: '#5b7389', // misty sky, deep enough for white initials
   gold: '#b9975b', // hidden-gem pins on place maps
   onDark: '#faf7f0', // text on photos and dark buttons

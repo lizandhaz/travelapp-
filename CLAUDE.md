@@ -323,7 +323,7 @@ The look follows the owner's prototype: **clean, warm and photo-led**. A warm oa
 
 ### Colours (`src/constants/theme.ts` → `colors.*`)
 
-From the owner's palette (Nov 2026): Oat Milk, Blush Petal, Terracotta Clay, Sage Whisper, Misty Sky, Olive Grove. The palette has no dark colour, so text and dark buttons use a deep olive charcoal.
+From the owner's palette (Nov 2026; toned down slightly later that month: accents 20% less saturated, soft fills 35% nearer the background): Oat Milk, Blush Petal, Terracotta Clay, Sage Whisper, Misty Sky, Olive Grove. The palette has no dark colour, so text and dark buttons use a deep olive charcoal.
 
 | Token | Hex | Use |
 |---|---|---|
@@ -334,15 +334,15 @@ From the owner's palette (Nov 2026): Oat Milk, Blush Petal, Terracotta Clay, Sag
 | `mapLand` | `#b9c3ad` | Dotted land on the travel map (light sage) |
 | `ink` | `#353b2c` | Main text (deep olive charcoal) |
 | `muted` | `#646858` | Secondary text, labels |
-| `stamp` | `#e7b9b2` | Score stamps, the + sign (Blush Petal) |
-| `sage` | `#a7b59c` | Soft tags (stay type) (Sage Whisper) |
-| `sky` | `#b7c6d6` | Quieter months in the best-time chart (Misty Sky) |
-| `accent` | `#c47a5c` | Terracotta Clay: swash under accent words, star, slider fill, large text only |
-| `accentDeep` | `#a95d40` | "Save trip" / "I've been" buttons (white text passes contrast) |
-| `accentText` | `#9a5236` | Small terracotta text: links, taglines, kickers |
+| `stamp` | `#e2bdb7` | Score stamps, the + sign (Blush Petal) |
+| `sage` | `#a7b39e` | Soft tags (stay type) (Sage Whisper) |
+| `sky` | `#bac6d3` | Quieter months in the best-time chart (Misty Sky) |
+| `accent` | `#ba7e66` | Terracotta Clay: swash under accent words, star, slider fill, large text only |
+| `accentDeep` | `#9e624a` | "Save trip" / "I've been" buttons (white text passes contrast) |
+| `accentText` | `#905640` | Small terracotta text: links, taglines, kickers |
 | `olive` | `#636b51` | Olive Grove, a shade deeper so small text passes: stay score stamp, stay pins, Want to go / saved |
-| `blushSoft` / `sageSoft` / `skySoft` | `#f6e1dc` / `#e2e8da` / `#e1e8f0` | Soft fills for cards and bands (`<Card tone="blush">`, `toneFill()`, `TONES` cycle) |
-| `champagneSoft` | `#f3ecdc` | Fourth soft card colour (place pages' hotel/restaurant cards) |
+| `blushSoft` / `sageSoft` / `skySoft` | `#f5e5de` / `#e8eadd` / `#e7eaeb` | Soft fills for cards and bands (`<Card tone="blush">`, `toneFill()`, `TONES` cycle) |
+| `champagneSoft` | `#f3ecde` | Fourth soft card colour (place pages' hotel/restaurant cards) |
 | `skyDeep` | `#5b7389` | Misty sky deep enough for white initials (avatars) |
 | `gold` | `#b9975b` | Hidden-gem pins on place maps |
 | `onDark` | `#faf7f0` | Text on photos and dark buttons |

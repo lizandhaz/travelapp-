@@ -18,7 +18,6 @@ export const photos = {
   'paris-1': require('../../assets/photos/own-paris-eiffel.jpg'),
   'pool-1': require('../../assets/photos/own-sea-pool.jpg'),
   'pool-2': require('../../assets/photos/own-corfu-villa.jpg'),
-  'safari-1': require('../../assets/photos/own-safari-giraffes.jpg'),
   'taverna-1': require('../../assets/photos/own-olive-garden.jpg'),
   'umbrellas-1': require('../../assets/photos/own-cyprus-beach.jpg'),
   'villa-1': require('../../assets/photos/own-cyprus-beach-bar.jpg'),

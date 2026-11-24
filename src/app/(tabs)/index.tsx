@@ -45,7 +45,7 @@ export default function Home() {
   // know your taste, the prototype's picks.
   const picks = personal
     ? places
-        .filter((p) => p.score != null && !!p.photo && !t.forSlug(p.slug)?.yours && !t.isSaved(p.slug))
+        .filter((p) => p.score != null && !t.forSlug(p.slug)?.yours && !t.isSaved(p.slug))
         .map((p) => ({ slug: p.slug, name: p.name, sub: p.region, photo: p.photo, r: t.forSlug(p.slug)! }))
         .sort((a, b) => rankValue(b.r) - rankValue(a.r))
         .slice(0, 8)

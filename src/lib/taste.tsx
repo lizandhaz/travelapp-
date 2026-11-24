@@ -3,8 +3,9 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useAuth } from './auth';
 import { fetchBoards, placesOn } from './boards';
 import { countryOf } from './knownPlaces';
-import { buildProfile, itemScore, scorePlace, stayScore, topTastes, type FriendRating, type PlaceResult, type Profile, type Signal } from './match';
+import { buildProfile, itemScore, tagRarity, scorePlace, stayScore, topTastes, type FriendRating, type PlaceResult, type Profile, type Signal } from './match';
 import { featuresForPlace, featuresForSlug, parseStaySub, sampleFriendRatings, stayKind, tagsForListName, tasteItemInfo } from './placeFeatures';
+import { places } from './sample';
 import { onTasteChanged } from './tasteEvents';
 import { fetchMyTrips, type Place } from './trips';
 import { fetchPlaceViews } from './views';
@@ -40,6 +41,10 @@ type TasteValue = {
 };
 
 const EMPTY = buildProfile([]);
+
+// How telling each holiday type is, from every sample place (worked out once).
+let rarityCache: ReturnType<typeof tagRarity> | null = null;
+const rarity = () => (rarityCache ??= tagRarity(places.map((p) => featuresForSlug(p.slug)?.tags ?? {})));
 
 // Results for each place, remembered per taste profile. Kept outside the component and keyed
 // by the profile itself, so a new profile (after a trip or a save) can never reuse old results.
@@ -118,7 +123,7 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
   const usingFriends = (loaded && loaded.user === userId ? loaded.settings : DEFAULT_MATCH_SETTINGS).friends;
   // Friends' ratings only count when "Use my friends' scores" is on.
   const friends: FriendRating[] = useMemo(() => (usingFriends ? sampleFriendRatings() : []), [usingFriends]);
-  const profile = useMemo(() => (signals ? buildProfile(signals, friends) : EMPTY), [signals, friends]);
+  const profile = useMemo(() => (signals ? buildProfile(signals, friends, new Date(), rarity()) : EMPTY), [signals, friends]);
 
   const value = useMemo<TasteValue>(() => {
     const cache = resultsFor(profile);

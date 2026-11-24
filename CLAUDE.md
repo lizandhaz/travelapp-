@@ -56,7 +56,7 @@ npx expo start       # dev server; scan the QR code with Expo Go
 npx expo start --web # same app in a browser
 npx tsc --noEmit     # type check: must pass before any PR
 npx expo lint        # lint: must pass before any PR
-npm test             # matching engine tests: must pass before any PR
+npm test             # matching engine + search tests: must pass before any PR
 npx expo export --platform ios --platform android   # proves the phone bundles build
 EXPO_TOKEN=proxy-injected npx eas-cli@latest update --branch preview --environment preview --message "…" --non-interactive
                      # publish to Expo Go (the owner's phone); see "Publishing to the owner's phone"
@@ -202,6 +202,10 @@ src/
     useTripPhoto.ts       Hook: a signed URL for one of your photos (trip photos and profile picture)
     knownPlaces.ts        ~525 popular holiday places + countries + WORLD_PLACES: suggestions, countryOf(), plain()
     worldPlaces.ts        Generated: ~10,400 towns/cities with positions (GeoNames, CC BY 4.0; credited in Settings)
+    tripQuery.ts          Explore's search (pure, tested in tests/tripQuery.test.mjs): parseTripQuery() reads "beach in February",
+                          "romantic weekend", "winter sun", "no flying", "cheap", "Greece" into months/warmth/holiday types/who/short/
+                          no-fly/budget/place words; searchPlaces() ranks places (more than half of what was asked; reasons like
+                          "27° in February"). explore.ts searchTrips() feeds it the sample places; Explore shows "Best matches" + "Looking for …"
     explore.ts            Explore's collections (worked out from place details: "Sunshine in <month>" from monthly temps,
                           Island escapes, Holiday without flying, Good value…), things gathered from every place, exploreFeed()
                           (the prototype's board first, then every other place, stay, restaurant, thing to do and gem)

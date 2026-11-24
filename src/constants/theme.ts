@@ -1,3 +1,5 @@
+import { Dimensions } from 'react-native';
+
 /**
  * Brand tokens, from the owner's palette (Oat Milk, Blush Petal, Terracotta Clay, Sage Whisper, Misty Sky, Olive Grove).
  * Use these, never raw hex values, in components. Toned down slightly (owner, Nov 2026: "slightly less colourful"):
@@ -46,3 +48,10 @@ export const radius = { sm: 8, md: 16, lg: 20, xl: 24, pill: 999 } as const;
 
 /** Side padding for every screen. */
 export const GUTTER = 20;
+
+/**
+ * The app is one centred column at most this wide, on iPad and computers too (owner Nov 2026: iPad
+ * testing). Screens size photos and grids from appWidth(), never the raw screen width.
+ */
+export const MAX_WIDTH = 600;
+export const appWidth = () => Math.min(Dimensions.get('window').width, MAX_WIDTH);

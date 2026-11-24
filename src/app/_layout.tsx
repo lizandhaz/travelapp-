@@ -12,10 +12,10 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { colors } from '@/constants/theme';
+import { colors, MAX_WIDTH } from '@/constants/theme';
 import { AuthProvider, useAuth } from '@/lib/auth';
 import { TasteProvider } from '@/lib/taste';
 
@@ -61,8 +61,8 @@ function Navigator() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      {/* On a computer browser, keep the app phone-width and centred. */}
-      <View style={{ flex: 1, width: '100%', maxWidth: Platform.OS === 'web' ? 480 : undefined, alignSelf: 'center' }}>
+      {/* On iPad and computers, keep the app one centred column (MAX_WIDTH). */}
+      <View style={{ flex: 1, width: '100%', maxWidth: MAX_WIDTH, alignSelf: 'center' }}>
         <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
           <Stack.Protected guard={signedIn} redirectTo="/welcome">
             <Stack.Screen name="(tabs)" />

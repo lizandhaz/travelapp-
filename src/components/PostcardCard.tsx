@@ -4,7 +4,6 @@ import { Animated, Pressable, View } from 'react-native';
 import { colors, fonts, radius } from '@/constants/theme';
 import { companionsLabel, tripPic, tripPlace, type FriendTrip } from '@/lib/friendTrips';
 import { fitLines, fitWordSize } from '@/lib/fit';
-import { scoreWord } from '@/lib/score';
 import { MonthPill } from './MonthPill';
 import { PhotoFill, PhotoStamp, PhotoTile, Shade } from './Photo';
 import { ScoreStamp } from './ScoreStamp';
@@ -145,7 +144,9 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
           <View style={{ flex: 1, paddingLeft: hasLeft ? 14 : 0, gap: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <ScoreStamp score={trip.score} size={hasLeft ? 'sm' : 'md'} label={`${trip.who}'s score`} />
-              <Text style={{ flex: 1, fontFamily: fonts.displayItalic, fontSize: hasLeft ? 18 : 24, lineHeight: hasLeft ? 22 : 29, color: colors.accentText }}>{scoreWord(trip.score)}</Text>
+              <Text variant="label" style={{ flex: 1, fontSize: 10 }}>
+                {trip.who}’s score
+              </Text>
             </View>
             <View style={hasLeft ? { gap: 12 } : { flexDirection: 'row', flexWrap: 'wrap', columnGap: 14, rowGap: 12 }}>
               {details.map((d) => (
@@ -172,8 +173,8 @@ function Detail({ label, value, sub, score }: { label: string; value: string; su
           {value}
         </Text>
         {score != null && (
-          <View style={{ backgroundColor: colors.olive, borderRadius: 6, paddingHorizontal: 5, paddingVertical: 1 }}>
-            <Text style={{ fontFamily: fonts.display, fontSize: 12, color: colors.onDark }}>{score.toFixed(1)}</Text>
+          <View style={{ backgroundColor: colors.stampPaper, borderRadius: 6, paddingHorizontal: 5, paddingVertical: 1 }}>
+            <Text style={{ fontFamily: fonts.display, fontSize: 12, color: colors.stampInk }}>{score.toFixed(1)}</Text>
           </View>
         )}
       </View>

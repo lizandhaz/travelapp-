@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Dimensions, Modal, Pressable, ScrollView, View } from 'react-native';
 
-import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { colors, fonts, GUTTER, radius, MAX_WIDTH } from '@/constants/theme';
 import type { PlaceResult } from '@/lib/match';
 import { placeDetails, type PlaceDetail } from '@/lib/placeDetails';
 import { placeCentres, placeMaps } from '@/lib/placeMaps';
@@ -555,7 +555,7 @@ const PIN_COLOURS: Record<string, string> = { Stay: colors.olive, Eat: colors.ac
 export function PlaceMapSection({ slug, name }: { slug: string; name: string }) {
   const taste = useTaste();
   const screen = Dimensions.get('window');
-  const width = Math.min(screen.width, 480);
+  const width = Math.min(screen.width, MAX_WIDTH);
   // The big map: as wide as the screen and a bit over half its height; it starts filling that window,
   // and zooms out until the whole map shows (and in, a long way).
   const bigHeight = Math.round(Math.max(width * 0.75, screen.height * 0.55));

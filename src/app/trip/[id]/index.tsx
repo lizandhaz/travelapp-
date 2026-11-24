@@ -1,7 +1,7 @@
 import { Link, router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Image } from 'expo-image';
-import { ActivityIndicator, Dimensions, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChevronIcon, ForkIcon, PencilIcon, ShareIcon } from '@/components/Icons';
@@ -12,7 +12,7 @@ import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, ErrorNotice, Notice, Screen } from '@/components/ui';
-import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { colors, fonts, GUTTER, radius, appWidth } from '@/constants/theme';
 import { MONTH_NAMES_SHORT, monthIndexOf, monthYear, yearOf } from '@/lib/months';
 import { fitLines, fitWordSize } from '@/lib/fit';
 import { countryOf } from '@/lib/knownPlaces';
@@ -88,7 +88,7 @@ export default function TripScreen() {
   const nights = trip.stops.reduce((n, s) => n + (s.nights ?? 0), 0);
   // The place's own page (where friends stayed and ate, things to do), when there is one.
   const guide = placeSlugForItem({ slug: null, name: main.name });
-  const screenW = Math.min(Dimensions.get('window').width, 480);
+  const screenW = appWidth();
   const h = screenW * 0.95;
   // Big, but each word on one line and clear of the score stamp (lib/fit.ts).
   const titleSize = fitWordSize(main.name, screenW - GUTTER * 2 - 100, 46, 28);

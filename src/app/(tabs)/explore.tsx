@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, type ComponentRef } from 'react';
-import { ActivityIndicator, Dimensions, ScrollView, View } from 'react-native';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccentTitle } from '@/components/AccentTitle';
@@ -9,7 +9,7 @@ import { CollectionTile } from '@/components/explore';
 import { SearchIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
 import { Chip, Input, Screen, SectionHeader } from '@/components/ui';
-import { colors, GUTTER } from '@/constants/theme';
+import { colors, GUTTER, appWidth } from '@/constants/theme';
 import { collectionTiles, exploreFeed, searchTrips, type FeedItem } from '@/lib/explore';
 import { rows, TASTES, trendingThisMonth } from '@/lib/sample';
 
@@ -63,7 +63,7 @@ export default function Explore() {
   const left = visible.filter((_, i) => i % 2 === 0);
   const right = visible.filter((_, i) => i % 2 === 1);
   const heights = [230, 170, 200, 250, 180];
-  const cardWidth = (Math.min(Dimensions.get('window').width, 480) - GUTTER * 2 - 14) / 2;
+  const cardWidth = (appWidth() - GUTTER * 2 - 14) / 2;
 
   // The search bar and chips stay pinned at the top; picking a chip (or searching) jumps down to the feed.
   const insets = useSafeAreaInsets();

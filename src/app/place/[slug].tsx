@@ -1,6 +1,6 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Dimensions, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { WantToGoButton } from '@/components/lists';
@@ -12,7 +12,7 @@ import { PhotoBadge, Row } from '@/components/cards';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
-import { colors, fonts, GUTTER } from '@/constants/theme';
+import { colors, fonts, GUTTER, appWidth } from '@/constants/theme';
 import { countryOf } from '@/lib/knownPlaces';
 import { placeDetails } from '@/lib/placeDetails';
 import { wouldGoBack } from '@/lib/friendTrips';
@@ -62,7 +62,7 @@ export default function PlaceScreen() {
     .map((e) => ({ ...e, score: personal ? taste.eatScoreFor(e) : e.score, match: null as number | null }))
     .sort((a, b) => (personal ? (b.score ?? 0) - (a.score ?? 0) : 0));
   const moreSaid = (detail?.said ?? []).filter((s) => !said.some((f) => f.who === s.who));
-  const h = Math.min(Dimensions.get('window').width, 480) * 1.0;
+  const h = appWidth() * 1.0;
 
   return (
     <Screen noTopInset>

@@ -1,15 +1,15 @@
 import { Link } from 'expo-router';
-import { Dimensions, View } from 'react-native';
+import { View } from 'react-native';
 
 import { AuthFrame } from '@/components/AuthFrame';
 import { PhotoStamp } from '@/components/Photo';
 import { Text } from '@/components/Text';
 import { Button } from '@/components/ui';
 import { APP_NAME } from '@/constants/brand';
-import { colors, fonts } from '@/constants/theme';
+import { colors, fonts, appWidth } from '@/constants/theme';
 
 export default function Welcome() {
-  const w = Math.min(Dimensions.get('window').width, 480) * 0.7;
+  const w = appWidth() * 0.7;
   return (
     <AuthFrame>
       <View style={{ alignItems: 'center', marginTop: 28 }}>

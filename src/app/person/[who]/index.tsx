@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Dimensions, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { Avatar } from '@/components/Avatar';
@@ -10,7 +10,7 @@ import { FriendTripStamp, ProfileStats, ProfileTop, TasteTags, TripsSection } fr
 import { Text } from '@/components/Text';
 import { TravelMapCard } from '@/components/TravelMap';
 import { BackButton, Button, Screen, SectionHeader } from '@/components/ui';
-import { colors, GUTTER, radius } from '@/constants/theme';
+import { colors, GUTTER, radius, appWidth } from '@/constants/theme';
 import type { FriendTrip } from '@/lib/friendTrips';
 import { countryOf } from '@/lib/knownPlaces';
 import { getPlace } from '@/lib/sample';
@@ -37,7 +37,7 @@ export default function PersonScreen() {
   };
   const been = trips.map((t) => placeOf(t.slug)).filter((p): p is MapPlace => !!p);
   const wish = (boards[0]?.slugs ?? []).map(placeOf).filter((p): p is MapPlace => !!p);
-  const cardWidth = (Math.min(Dimensions.get('window').width, 480) - GUTTER * 2 - 14) / 2;
+  const cardWidth = (appWidth() - GUTTER * 2 - 14) / 2;
   const follows = (tab: 'followers' | 'following') => () => router.push({ pathname: '/person/[who]/follows', params: { who: person.id, tab } });
 
   return (

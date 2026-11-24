@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { Dimensions, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { FeedCard, Row } from '@/components/cards';
@@ -11,7 +11,7 @@ import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { IconCircle, Screen, SectionHeader } from '@/components/ui';
 import { Wordmark } from '@/components/Wordmark';
-import { colors, fonts, GUTTER } from '@/constants/theme';
+import { colors, fonts, GUTTER, appWidth } from '@/constants/theme';
 import { collectionTiles } from '@/lib/explore';
 import { rankValue } from '@/lib/match';
 import { friendsFeed, places, rows } from '@/lib/sample';
@@ -25,7 +25,7 @@ import { fitLines, fitWordSize } from '@/lib/fit';
  * (newest first). Everything else lives in Explore.
  */
 export default function Home() {
-  const width = Math.min(Dimensions.get('window').width, 480);
+  const width = appWidth();
   const t = useTaste();
   const unreadPostcards = useUnreadPostcards();
   const personal = t.profile.evidence > 0;

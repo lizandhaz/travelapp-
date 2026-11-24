@@ -1,21 +1,21 @@
 import { Link, router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Image } from 'expo-image';
-import { ActivityIndicator, Dimensions, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ForkIcon } from '@/components/Icons';
+import { ChevronIcon, ForkIcon, PencilIcon, ShareIcon } from '@/components/Icons';
 import { placeSlugForItem } from '@/components/lists';
 import { MonthPill } from '@/components/MonthPill';
-import { PhotoFill, Shade } from '@/components/Photo';
+import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, ErrorNotice, Notice, Screen } from '@/components/ui';
-import { colors, fonts, GUTTER } from '@/constants/theme';
+import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { MONTH_NAMES_SHORT, monthIndexOf, monthYear, yearOf } from '@/lib/months';
 import { fitLines, fitWordSize } from '@/lib/fit';
 import { countryOf } from '@/lib/knownPlaces';
-import { photoForPlaceName } from '@/lib/sample';
+import { getPlace, photoForPlaceName } from '@/lib/sample';
 import { scoreWord } from '@/lib/score';
 import { shareText, tripShareText } from '@/lib/share';
 import { companionsLabel, deleteTrip, fetchTrip, type Trip } from '@/lib/trips';
@@ -212,19 +212,49 @@ export default function TripScreen() {
           </Section>
         )}
 
+        {/* The place's own page, as a card with its photo. */}
+        {!!guide && (
+          <Pressable
+            onPress={() => router.push(`/place/${guide}`)}
+            accessibilityRole="link"
+            accessibilityLabel={`More about ${main.name}: where friends stayed, ate and what to do`}
+            style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 14, padding: 10, paddingRight: 16, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, opacity: pressed ? 0.88 : 1 })}
+          >
+            <PhotoTile photo={getPlace(guide)?.photo} shade={false} style={{ width: 64, height: 64, borderRadius: radius.md }} />
+            <View style={{ flex: 1 }}>
+              <Text variant="subheading">More about {main.name}</Text>
+              <Text variant="small">Where friends stayed, ate and what to do</Text>
+            </View>
+            <ChevronIcon color={colors.muted} />
+          </Pressable>
+        )}
+
         <View style={{ gap: 12, marginTop: 4 }}>
-          <Button title="Share with a friend" kind="accent" onPress={share} accessibilityHint="Opens your phone’s share sheet with your score, stay, restaurants and tip" />
+          <View style={{ flexDirection: 'row', gap: 12 }}>
+            <Button
+              title="Share"
+              kind="accent"
+              icon={<ShareIcon color={colors.onDark} size={18} />}
+              style={{ flex: 1 }}
+              onPress={share}
+              accessibilityLabel="Share with a friend"
+              accessibilityHint="Opens your phone’s share sheet with your score, stay, restaurants and tip"
+            />
+            <Link href={`/trip/${trip.id}/edit`} asChild>
+              <Button title="Edit" kind="outline" icon={<PencilIcon color={colors.ink} size={17} />} style={{ flex: 1 }} accessibilityLabel="Edit trip" />
+            </Link>
+          </View>
           {!!shareNote && (
             <Text variant="small" style={{ textAlign: 'center' }}>
               {shareNote}
             </Text>
           )}
-          {!!guide && <Button title={`More about ${main.name}`} kind="outline" onPress={() => router.push(`/place/${guide}`)} />}
-          <Link href={`/trip/${trip.id}/edit`} asChild>
-            <Button title="Edit trip" />
-          </Link>
           {!confirming ? (
-            <Button title="Delete trip" kind="outline" onPress={() => setConfirming(true)} />
+            <Pressable onPress={() => setConfirming(true)} accessibilityRole="button" hitSlop={8} style={{ alignSelf: 'center', paddingVertical: 10, paddingHorizontal: 16 }}>
+              <Text variant="small" style={{ color: colors.accentText, fontFamily: fonts.sansSemiBold }}>
+                Delete trip
+              </Text>
+            </Pressable>
           ) : (
             <Notice>
               <Text variant="strong">Delete this trip?</Text>

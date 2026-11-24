@@ -133,12 +133,14 @@ src/
                           I look at, clear viewed places, sign out), opened from You
     place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, On the map, best time, what friends said, where to stay/eat, things to do,
                           culture and top tips, "I've been" (opens Add a trip with the place filled in)
-    trip/[id]/index.tsx   One of your trips (title sized with fitWordSize/fitLines beside the stamp), with Share with a friend, "More about <place>" (when the place has a page) (lib/share.ts tripShareText: place, month, score, who/nights, note, stay,
+    trip/[id]/index.tsx   One of your trips (title sized with fitWordSize/fitLines beside the stamp); at the bottom a "More about <place>" card with
+                          the place photo (when it has a page), then Share (terracotta, share icon) and Edit (outline, pencil) side by side, and a quiet
+                          "Delete trip" text link (owner, Nov 2026: four stacked full-width buttons looked heavy). Share (lib/share.ts tripShareText: place, month, score, who/nights, note, stay,
                           restaurants, tip as plain text; never a location or link), Edit and Delete (confirm first)
     trip/[id]/edit.tsx    Edit a trip (same TripForm, prefilled)
     +not-found.tsx        "Lost in the post"
   components/
-    ui.tsx                Screen, PageTitle, SectionHeader, IconCircle, BackButton, Button (dark/accent/outline),
+    ui.tsx                Screen, PageTitle, SectionHeader, IconCircle, BackButton, Button (dark/accent/outline, optional icon),
                           Input (optional icon), Field, Chip, Segmented, Card (tone: white/blush/sage/sky), Notice, ErrorNotice
     Text.tsx              All text goes through <Text variant="…"> (fonts + colours). A bigger fontSize without a
                           lineHeight gets lineHeight ≈ 1.28× automatically, so big numbers aren't clipped on iPhone

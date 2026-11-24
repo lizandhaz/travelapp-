@@ -110,8 +110,9 @@ export function Button({
   size = 'md',
   style,
   disabled,
+  icon,
   ...props
-}: PressableProps & { title: string; kind?: ButtonKind; size?: 'md' | 'lg' | 'sm'; style?: ViewStyle }) {
+}: PressableProps & { title: string; kind?: ButtonKind; size?: 'md' | 'lg' | 'sm'; style?: ViewStyle; /** Shown before the title (draw it in the button's text colour). */ icon?: React.ReactNode }) {
   const bg = kind === 'dark' ? colors.olive : kind === 'accent' ? colors.accentDeep : colors.card;
   const fg = kind === 'outline' ? colors.ink : colors.onDark;
   const pad = size === 'lg' ? 18 : size === 'sm' ? 9 : 14;
@@ -127,6 +128,9 @@ export function Button({
           paddingVertical: pad,
           paddingHorizontal: size === 'sm' ? 16 : 22,
           alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'row',
+          gap: 8,
           borderWidth: kind === 'outline' ? 1 : 0,
           borderColor: colors.line,
           opacity: disabled ? 0.6 : pressed ? 0.88 : 1,
@@ -135,6 +139,7 @@ export function Button({
       ]}
       {...props}
     >
+      {icon}
       <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: size === 'lg' ? 18 : size === 'sm' ? 14 : 16, color: fg }}>{title}</Text>
     </Pressable>
   );

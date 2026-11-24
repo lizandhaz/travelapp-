@@ -1,10 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSyncExternalStore } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
+
+import { postedAgo } from './friendsFeed';
+import { supabase } from './supabase';
 
 /**
- * Likes, comments and saves on friends' trips. Friends' trips are sample content for now, so this keeps
- * your likes and comments on the phone and starts from sample counts. When friends' real trips
- * arrive (plan Step C), this moves to the database with the same shape.
+ * Likes, comments and saves on trips. Real trips (a uuid id: yours, or a friend's you can see) keep likes
+ * and comments in the database (plan Step H: trip_likes, trip_comments, trip_reactions()), so the trip's
+ * owner sees them in Postcards. Sample friends' trips ("maya-hydra") keep yours on the phone, on top of
+ * sample counts. Saving a friend's trip stays on the phone.
  */
 export type TripComment = { who: string; text: string; when: string; mine?: boolean };
 
@@ -53,6 +57,7 @@ const subscribe = (l: () => void) => {
 };
 
 export function toggleLike(id: string) {
+  if (isReal(id)) return toggleRealLike(id);
   state = { ...state, liked: { ...state.liked, [id]: !state.liked[id] } };
   save();
   emit();
@@ -61,6 +66,7 @@ export function toggleLike(id: string) {
 export function addComment(id: string, text: string) {
   const t = text.trim().slice(0, 500);
   if (!t) return;
+  if (isReal(id)) return addRealComment(id, t);
   state = { ...state, mine: { ...state.mine, [id]: [...(state.mine[id] ?? []), { who: 'You', text: t, when: 'Just now', mine: true }] } };
   save();
   emit();
@@ -84,15 +90,71 @@ export function useSavedTrips(): string[] {
     .map(([id]) => id);
 }
 
-/** Likes and comments for one friend's trip, kept up to date everywhere it's shown. */
+/** Likes and comments for one trip, kept up to date everywhere it's shown. */
 export function useReactions(id: string) {
   const s = useSyncExternalStore(subscribe, () => state);
+  const live = useSyncExternalStore(subscribe, () => liveById[id]);
+  const real = isReal(id);
+  useEffect(() => {
+    if (real && !liveById[id]) loadReal(id);
+  }, [id, real]);
+  if (real) {
+    const l = live ?? { likes: 0, liked: false, likers: [], comments: [] };
+    return { ...l, saved: !!s.saved[id] };
+  }
   const base = SAMPLE[id] ?? { likes: 0, comments: [] };
   const liked = !!s.liked[id];
   return {
     liked,
     likes: base.likes + (liked ? 1 : 0),
     comments: [...base.comments, ...(s.mine[id] ?? [])],
+    likers: [] as string[],
     saved: !!s.saved[id],
   };
+}
+
+// ---------------------------------------------------------------------------
+// Real trips: likes and comments in the database
+// ---------------------------------------------------------------------------
+
+const isReal = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+type Live = { likes: number; liked: boolean; likers: string[]; comments: TripComment[] };
+const liveById: Record<string, Live> = {};
+const setLive = (id: string, l: Live) => {
+  liveById[id] = l;
+  emit();
+};
+
+type ReactionRow = { kind: 'like' | 'comment'; id: string | null; name: string; body: string | null; created_at: string; mine: boolean };
+
+/** Loads a real trip's likes and comments (names only for people you know; others read "Someone"). */
+export async function loadReal(id: string): Promise<void> {
+  const { data, error } = await supabase.rpc('trip_reactions', { p_trip: id });
+  if (error) return; // the database update hasn't run yet, or no access: show none
+  const rows = (data ?? []) as ReactionRow[];
+  const likes = rows.filter((r) => r.kind === 'like');
+  setLive(id, {
+    likes: likes.length,
+    liked: likes.some((r) => r.mine),
+    likers: likes.map((r) => (r.mine ? 'You' : r.name)),
+    comments: rows
+      .filter((r) => r.kind === 'comment')
+      .map((r) => ({ who: r.mine ? 'You' : r.name, text: r.body ?? '', when: postedAgo(r.created_at), mine: r.mine })),
+  });
+}
+
+async function toggleRealLike(id: string) {
+  const before = liveById[id] ?? { likes: 0, liked: false, likers: [], comments: [] };
+  const liked = !before.liked;
+  setLive(id, { ...before, liked, likes: before.likes + (liked ? 1 : -1), likers: liked ? [...before.likers, 'You'] : before.likers.filter((n) => n !== 'You') });
+  const { error } = liked ? await supabase.from('trip_likes').insert({ trip_id: id }) : await supabase.from('trip_likes').delete().eq('trip_id', id);
+  if (error) setLive(id, before);
+}
+
+async function addRealComment(id: string, text: string) {
+  const before = liveById[id] ?? { likes: 0, liked: false, likers: [], comments: [] };
+  setLive(id, { ...before, comments: [...before.comments, { who: 'You', text, when: 'Just now', mine: true }] });
+  const { error } = await supabase.from('trip_comments').insert({ trip_id: id, body: text });
+  if (error) setLive(id, before);
+  else loadReal(id);
 }

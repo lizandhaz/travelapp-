@@ -1661,7 +1661,6 @@ export const TASTES: { label: string; match: (t: TasteItem) => boolean }[] = [
   { label: 'Art first thing', match: (t) => t.kind === 'Do' },
 ];
 
-export const unreadPostcardCount = 2;
 
 export function getPlace(slug: string): SamplePlace | undefined {
   return places.find((p) => p.slug === slug);

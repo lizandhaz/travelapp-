@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronIcon, ForkIcon, PencilIcon, ShareIcon } from '@/components/Icons';
 import { placeSlugForItem } from '@/components/lists';
 import { MonthPill } from '@/components/MonthPill';
+import { TripLikesAndComments } from '@/components/TripActions';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
@@ -205,6 +206,8 @@ export default function TripScreen() {
             </Card>
           </Section>
         )}
+
+        <TripLikesAndComments id={trip.id} />
 
         {!!trip.tip && (
           <Section title="Top tip">

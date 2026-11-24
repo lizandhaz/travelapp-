@@ -1,4 +1,5 @@
-// Sample photos: only the owner's own holiday photos (own-*.jpg, EXIF/GPS stripped). The design prototype's
+// Sample photos: only the owner's own holiday photos (own-*.jpg, EXIF/GPS stripped), plus four the owner licensed
+// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe; owner confirmed bought, Nov 2026). The design prototype's
 // Unsplash photos were removed (owner, Nov 2026); some prototype names (e.g. 'bath-1') point at the owner's photos.
 // Sample content with no photo of the owner's shows a placeholder.
 
@@ -74,6 +75,10 @@ export const photos = {
   'own-tenerife-beach': require('../../assets/photos/own-tenerife-beach.jpg'),
   'own-venice-salute': require('../../assets/photos/own-venice-salute.jpg'),
   'own-singapore-temple': require('../../assets/photos/own-singapore-temple.jpg'),
+  'own-kilimanjaro-giraffe': require('../../assets/photos/own-kilimanjaro-giraffe.jpg'),
+  'own-zanzibar-coast': require('../../assets/photos/own-zanzibar-coast.jpg'),
+  'own-zanzibar-hammock': require('../../assets/photos/own-zanzibar-hammock.jpg'),
+  'own-zanzibar-huts': require('../../assets/photos/own-zanzibar-huts.jpg'),
 } as const;
 
 export type PhotoName = keyof typeof photos;

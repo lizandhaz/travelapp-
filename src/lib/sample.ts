@@ -1696,7 +1696,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   'walt disney world': 'orlando-1', 'disney world': 'orlando-1', 'magic kingdom': 'orlando-1', kissimmee: 'orlando-1', // orlando-1 is the owner's Disney photo
   avoriaz: 'own-skiing',
   'las vegas strip': 'own-las-vegas-strip', 'the strip': 'own-las-vegas-strip', bellagio: 'own-las-vegas-strip',
-  'victoria falls': 'own-victoria-falls', livingstone: 'own-victoria-falls', 'mosi oa tunya': 'own-victoria-falls',
+  'victoria falls': ['own-victoria-falls', 'own-victoria-falls-sunset'], livingstone: ['own-victoria-falls', 'own-victoria-falls-sunset'], 'mosi oa tunya': ['own-victoria-falls', 'own-victoria-falls-sunset'], zimbabwe: ['own-victoria-falls', 'own-victoria-falls-sunset'], zambia: ['own-victoria-falls', 'own-victoria-falls-sunset'], hwange: 'own-victoria-falls-sunset', 'hwange national park': 'own-victoria-falls-sunset',
   rottnest: 'own-rottnest', 'rottnest island': 'own-rottnest',
   'statue of liberty': 'own-new-york-liberty', 'central park': 'own-new-york-central-park', 'marina bay': 'own-singapore-flyer', 'jewel changi': 'own-singapore-jewel',
   zanzibar: ['own-zanzibar-hammock', 'own-zanzibar-huts', 'own-zanzibar-coast'], 'stone town': 'own-zanzibar-coast', nungwi: 'own-zanzibar-huts', paje: 'own-zanzibar-hammock',

@@ -124,7 +124,7 @@ src/
     postcard/[id].tsx     Opened from Postcards (id = the Postcard's id) or the friends feed (id = the friend's trip id). A friend's trip as a postcard, titled "<who>'s <place> trip", the same template for everyone (components/
                           PostcardCard: photo front "Greetings from <place>" with their score as the postage stamp, top right; tap/"Turn over" for the back: the place, region and
                           month and a photo stamp,
-                          then like a real postcard a line down the middle: their quote and top tip on the left; score + word, who
+                          then like a real postcard a line down the middle: their quote and top tip on the left; score, who
                           with, nights, where they slept (+ score), where they ate on the right). No personal messages and no
                           To/From lines (owner, Nov 2026). Anything not filled in is left out and the card rearranges: no words →
                           a big photo on the left (or details full width), no photos → no front: the whole trip (the back) shows
@@ -376,7 +376,7 @@ Warm, short and British English ("holiday", "favourite"). No description lines u
 
 ### Layout
 
-Single column, 20px side padding (`GUTTER`). **Photo headers** (a trip, a friend's trip, a place, a board) stack the back button and the title in normal flow with a `minHeight`, never `position: 'absolute'` at the bottom of a fixed height: a long title then grows the header instead of running into the back button (owner, Nov 2026). The tab bar is **Home, Explore, a raised terracotta + (Add a trip), Saved, You**. Postcards open from Home's paper-plane button, and settings from You. Rows scroll sideways (`Row`). Screens use `<Screen tabBar>` so content clears the tab bar. On web the app is centred at 480px max. Light theme only.
+Single column, 20px side padding (`GUTTER`), at most `MAX_WIDTH` (600) wide and centred, on iPad and the web too (owner tests on an iPad, Nov 2026). Size photos and grids from `appWidth()` (theme.ts), never the raw screen width. **Photo headers** (a trip, a friend's trip, a place, a board) stack the back button and the title in normal flow with a `minHeight`, never `position: 'absolute'` at the bottom of a fixed height: a long title then grows the header instead of running into the back button (owner, Nov 2026). The tab bar is **Home, Explore, a raised terracotta + (Add a trip), Saved, You**. Postcards open from Home's paper-plane button, and settings from You. Rows scroll sideways (`Row`). Screens use `<Screen tabBar>` so content clears the tab bar.  Light theme only.
 
 ## Conventions
 

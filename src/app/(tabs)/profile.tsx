@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router, useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, Dimensions, Pressable, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { Avatar } from '@/components/Avatar';
@@ -15,7 +15,7 @@ import { Row, SavedTripCard } from '@/components/cards';
 import { ListCover } from '@/components/lists';
 import { useSavedTrips } from '@/lib/reactions';
 import { fetchFollows, type Follows } from '@/lib/friends';
-import { colors, GUTTER, radius } from '@/constants/theme';
+import { colors, GUTTER, radius, appWidth } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { useTaste } from '@/lib/taste';
 import { beenPlaces, wishPlaces } from '@/lib/travelPlaces';
@@ -65,7 +65,7 @@ export default function You() {
   const been = useMemo(() => beenPlaces(list), [list]);
   const wish = useMemo(() => wishPlaces(boards.find((x) => x.kind === 'wish')?.items ?? []), [boards]);
 
-  const cardWidth = (Math.min(Dimensions.get('window').width, 480) - GUTTER * 2 - 14) / 2;
+  const cardWidth = (appWidth() - GUTTER * 2 - 14) / 2;
 
   return (
     <Screen tabBar>

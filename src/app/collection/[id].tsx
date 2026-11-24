@@ -1,12 +1,12 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useMemo } from 'react';
-import { Dimensions, View } from 'react-native';
+import { View } from 'react-native';
 
 import { PlaceCard } from '@/components/cards';
 import { ItemCard, useSortedForYou, useSortedItems } from '@/components/explore';
 import { Text } from '@/components/Text';
 import { BackButton, PageTitle, Screen } from '@/components/ui';
-import { GUTTER } from '@/constants/theme';
+import { GUTTER, appWidth } from '@/constants/theme';
 import { itemCollections, placeCollections, placesIn } from '@/lib/explore';
 import NotFound from '../+not-found';
 
@@ -19,7 +19,7 @@ export default function CollectionScreen() {
   const items = useSortedItems(useMemo(() => (itemCol ? itemCol.items() : []), [itemCol]));
   if (!placeCol && !itemCol) return <NotFound />;
 
-  const width = (Math.min(Dimensions.get('window').width, 480) - GUTTER * 2 - 14) / 2;
+  const width = (appWidth() - GUTTER * 2 - 14) / 2;
   const count = placeCol ? places.length : items.length;
   return (
     <Screen>

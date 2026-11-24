@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { ActivityIndicator, Dimensions, Pressable, View } from 'react-native';
+import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/Avatar';
@@ -10,7 +10,7 @@ import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { TripActions } from '@/components/TripActions';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
-import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { colors, fonts, GUTTER, radius, appWidth } from '@/constants/theme';
 import { personHref } from '@/lib/samplePeople';
 import { companionsLabel, photoCount, tripPic, tripPlace } from '@/lib/friendTrips';
 import { useFriendTrip } from '@/lib/friendsFeed';
@@ -27,7 +27,7 @@ export default function FriendTripScreen() {
   const isReal = !!trip.photoUrls;
   const { stay, eats, dos, tips } = trip;
   const hasPhoto = pics.length > 0;
-  const h = Math.min(Dimensions.get('window').width, 480) * (hasPhoto ? 0.95 : 0.7);
+  const h = appWidth() * (hasPhoto ? 0.95 : 0.7);
 
   return (
     <Screen noTopInset>

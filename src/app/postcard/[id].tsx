@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Dimensions, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { PostcardCard } from '@/components/PostcardCard';
@@ -8,7 +8,7 @@ import { Row } from '@/components/cards';
 import { PhotoTile } from '@/components/Photo';
 import { TripActions } from '@/components/TripActions';
 import { BackButton, Button, PageTitle, Screen, SectionHeader } from '@/components/ui';
-import { colors, GUTTER } from '@/constants/theme';
+import { colors, GUTTER, appWidth } from '@/constants/theme';
 import { personHref } from '@/lib/samplePeople';
 import { getPostcard } from '@/lib/postcards';
 import { photoCount, tripPic, tripPlace } from '@/lib/friendTrips';
@@ -28,7 +28,7 @@ export default function PostcardScreen() {
   const trip = fromPostcard ?? loaded.trip;
   if (!trip) return loaded.loading ? <Loading /> : <NotFound />;
   const pics = Array.from({ length: photoCount(trip) }, (_, i) => tripPic(trip, i)!);
-  const width = Math.min(Dimensions.get('window').width, 480) - GUTTER * 2;
+  const width = appWidth() - GUTTER * 2;
 
   return (
     <Screen>

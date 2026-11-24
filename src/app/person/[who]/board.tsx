@@ -1,10 +1,10 @@
 import { useLocalSearchParams } from 'expo-router';
-import { Dimensions, View } from 'react-native';
+import { View } from 'react-native';
 
 import { PlaceCard } from '@/components/cards';
 import { Text } from '@/components/Text';
 import { BackButton, PageTitle, Screen } from '@/components/ui';
-import { GUTTER } from '@/constants/theme';
+import { GUTTER, appWidth } from '@/constants/theme';
 import { getPlace } from '@/lib/sample';
 import { boardsOf, getPerson } from '@/lib/samplePeople';
 import NotFound from '../../+not-found';
@@ -15,7 +15,7 @@ export default function PersonBoard() {
   const person = getPerson(who);
   const board = person ? boardsOf(person)[Number(i) || 0] : null;
   if (!person || !board) return <NotFound />;
-  const width = (Math.min(Dimensions.get('window').width, 480) - GUTTER * 2 - 14) / 2;
+  const width = (appWidth() - GUTTER * 2 - 14) / 2;
 
   return (
     <Screen>

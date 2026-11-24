@@ -1,8 +1,8 @@
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Dimensions, Pressable, ScrollView, View, type ViewStyle } from 'react-native';
+import { Pressable, ScrollView, View, type ViewStyle } from 'react-native';
 
-import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { colors, fonts, GUTTER, radius, appWidth } from '@/constants/theme';
 import type { BoardItem, FeedItem, RowItem, TasteItem } from '@/lib/sample';
 import { useTaste } from '@/lib/taste';
 import { fitLines, fitWordSize } from '@/lib/fit';
@@ -120,7 +120,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
   const hasPhoto = !!(item.photoUri || item.photo);
   const open = () => router.push(`/postcard/${id}`);
   // The place name shrinks so a long word fits beside the score stamp (card ~ screen minus margins, padding and stamp).
-  const feedSize = fitWordSize(item.place, Math.min(Dimensions.get('window').width, 480) - 40 - 36 - 70, 34, 20);
+  const feedSize = fitWordSize(item.place, appWidth() - 40 - 36 - 70, 34, 20);
   const label = `${item.who}'s ${item.place} trip, ${item.month}${item.posted ? `, posted ${item.posted.toLowerCase()}` : ''}. ${item.score.toFixed(1)} out of 10. Open their postcard`;
   return (
     <Pressable onPress={open} accessibilityRole="link" accessibilityLabel={label} style={({ pressed }) => pressed && { opacity: 0.92 }}>

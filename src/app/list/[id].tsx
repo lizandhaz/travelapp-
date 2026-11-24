@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LockIcon, PencilIcon, PlusIcon, ShareIcon } from '@/components/Icons';
@@ -11,7 +11,7 @@ import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { PlacePicker } from '@/components/trip/PlacePicker';
 import { BackButton, Button, Card, ErrorNotice, IconCircle, Notice, Screen } from '@/components/ui';
-import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { colors, fonts, GUTTER, radius, appWidth } from '@/constants/theme';
 import { addToBoard, deleteBoard, fetchBoard, fetchSharedWishes, findOnBoard, placesOn, removeFromBoard, shareBoard, type Board, type BoardItem } from '@/lib/boards';
 import { photos, type PhotoName } from '@/lib/photos';
 import { InviteSheet } from '@/components/InviteSheet';
@@ -136,7 +136,7 @@ export default function ListScreen() {
   const loose = spots.filter((x) => !placeItems.some((pl) => spotsIn(pl).includes(x)));
   const looseGroups = [...new Set(loose.map((x) => x.parentName ?? ''))].map((parent) => ({ parent, items: loose.filter((x) => (x.parentName ?? '') === parent) }));
   const n = placeItems.length;
-  const screenW = Math.min(Dimensions.get('window').width, 480);
+  const screenW = appWidth();
   const tileW = (screenW - GUTTER * 2 - 12) / 2;
 
   return (

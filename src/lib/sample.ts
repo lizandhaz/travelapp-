@@ -206,7 +206,7 @@ export const rows = {
       "score": 8.7,
       "name": "Longleat",
       "sub": "About 2h by car",
-      "photo": "safari-1"
+      "photo": null
     },
     {
       "slug": "stratford",
@@ -658,10 +658,8 @@ export const places: SamplePlace[] = [
     "name": "Longleat",
     "region": "England",
     "score": 8.7,
-    "photo": "safari-1",
-    "photos": [
-      "safari-1"
-    ]
+    "photo": null,
+    "photos": []
   },
   {
     "slug": "madeira",

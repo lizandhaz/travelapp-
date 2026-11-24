@@ -99,6 +99,8 @@ export type Profile = {
   stayTypes: Record<string, number>;
   /** Typical stay price they liked, £ a night. */
   price: number | null;
+  /** How telling each holiday type is (rare types like "ski" count more than "food", which almost everywhere has). */
+  tagWeights: Tags;
   /** How much we know: the sum of signal strengths. */
   evidence: number;
   /** 0–1: how far to trust the profile (rises with evidence). */
@@ -229,7 +231,7 @@ function emptyHalf(): TasteHalf & { warmthSum: number; warmthW: number } {
  * Builds someone's taste from their signals, in two halves (enjoyed / want next).
  * Friends' ratings are used to work out how much each friend agrees with them.
  */
-export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = [], now = new Date()): Profile {
+export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = [], now = new Date(), tagWeights: Tags = {}): Profile {
   const halves = { enjoyed: emptyHalf(), next: emptyHalf() };
   const stayTypes: Record<string, number> = {};
   const companionCount: Partial<Record<Companions, number>> = {};
@@ -283,7 +285,7 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
     const h = halves[half];
     h.evidence += Math.abs(w);
     for (const [t, v] of Object.entries(s.place.tags)) h.tags[t] = (h.tags[t] ?? 0) + w * v;
-    if (w > 0 && s.place.warmth != null) {
+    if (w > 0 && s.place.warmth != null && (s.place.tags.ski ?? 0) < 0.5) {
       h.warmthSum += w * s.place.warmth;
       h.warmthW += w;
     }
@@ -330,6 +332,7 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
 
   const evidence = enjoyed.evidence + next.evidence;
   return {
+    tagWeights,
     enjoyed,
     next,
     tags,
@@ -354,7 +357,11 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
 // ---------------------------------------------------------------------------
 
 const COMPANY_TO_GOOD_FOR: Record<Companions, string> = { solo: 'solo', partner: 'couples', friends: 'friends', family: 'families' };
-const PART_WEIGHTS = { kind: 0.45, near: 0.2, warmth: 0.2, company: 0.15 };
+// The kind of holiday matters most (owner, Nov 2026: a beach lover's picks should be beaches).
+const PART_WEIGHTS = { kind: 0.55, near: 0.15, warmth: 0.15, company: 0.15 };
+
+/** Ski places are judged in winter, so warmth says nothing about them (either way). */
+const skiPlace = (p: PlaceFeatures) => (p.tags.ski ?? 0) >= 0.5;
 
 /** How much "want next" counts against "enjoyed" when both are known: an equal say. */
 export const NEXT_SHARE = 0.5;
@@ -366,8 +373,23 @@ function blend(enjoyed: number | null, next: number | null): number | null {
   return (1 - NEXT_SHARE) * enjoyed + NEXT_SHARE * next;
 }
 
-/** Same kind of holiday, for one half: overlap with likes, minus overlap with dislikes. */
-function kindFit(tags: Tags, place: PlaceFeatures): number | null {
+/**
+ * How telling each holiday type is, from a catalogue of places: a type most places have ("food",
+ * "culture") counts half, one a quarter of places have counts 1, a rare one ("ski", "wildlife") up to 2.
+ */
+export function tagRarity(catalogue: Tags[]): Tags {
+  const df: Record<string, number> = {};
+  for (const tags of catalogue) for (const [t, v] of Object.entries(tags)) if (v >= 0.3) df[t] = (df[t] ?? 0) + 1;
+  const n = catalogue.length;
+  const out: Tags = {};
+  for (const [t, d] of Object.entries(df)) out[t] = clamp(Math.sqrt(n / d / 4), 0.5, 2);
+  return out;
+}
+
+const weighted = (tags: Tags, w: Tags): Tags => Object.fromEntries(Object.entries(tags).map(([t, v]) => [t, v * (w[t] ?? 1)]));
+
+/** Same kind of holiday, for one half: overlap with likes, minus overlap with dislikes (rare types count more). */
+function kindFit(tags: Tags, place: PlaceFeatures, rarity: Tags = {}): number | null {
   const likes: Tags = {};
   const dislikes: Tags = {};
   for (const [t, v] of Object.entries(tags)) {
@@ -376,7 +398,8 @@ function kindFit(tags: Tags, place: PlaceFeatures): number | null {
   }
   if (!Object.keys(likes).length && !Object.keys(dislikes).length) return null;
   if (!Object.keys(place.tags).length) return null;
-  return clamp(0.2 + 0.8 * tagSimilarity(likes, place.tags) - 0.6 * tagSimilarity(dislikes, place.tags), 0, 1);
+  const pt = weighted(place.tags, rarity);
+  return clamp(0.2 + 0.8 * tagSimilarity(weighted(likes, rarity), pt) - 0.6 * tagSimilarity(weighted(dislikes, rarity), pt), 0, 1);
 }
 
 /** Near places in one half (a 1,200 km falloff: the same region, not the same town). */
@@ -394,11 +417,11 @@ function nearFit(anchors: Anchor[], place: PlaceFeatures): number | null {
 
 /** The four parts of fit, each 0–1 (or null when we can't tell). */
 export function fitParts(profile: Profile, place: PlaceFeatures) {
-  const kind = blend(kindFit(profile.enjoyed.tags, place), kindFit(profile.next.tags, place));
+  const kind = blend(kindFit(profile.enjoyed.tags, place, profile.tagWeights), kindFit(profile.next.tags, place, profile.tagWeights));
   const near = blend(nearFit(profile.enjoyed.anchors, place), nearFit(profile.next.anchors, place));
 
   // The warmth they go for (gentle: 7 °C off is still fine).
-  const warmth = profile.warmth != null && place.warmth != null ? Math.exp(-(((place.warmth - profile.warmth) / 7) ** 2)) : null;
+  const warmth = profile.warmth != null && place.warmth != null && !skiPlace(place) ? Math.exp(-(((place.warmth - profile.warmth) / 7) ** 2)) : null;
 
   // Suits who they travel with (from trips) and who the places they want next suit.
   let past: number | null = null;
@@ -474,6 +497,14 @@ export function baseRating(profile: Profile, place: PlaceFeatures, friendRatings
   return { base, baseFrom, friends: mine };
 }
 
+/**
+ * Scores level off above 9 (10 → 9.6), so the very best matches stay in order instead of all
+ * reading 10.0. A 10 is kept for places you rated 10 yourself.
+ */
+export function softTop(s: number): number {
+  return s <= 9 ? s : 9 + 0.9 * (1 - Math.exp(-(s - 9) / 0.9));
+}
+
 /** How far fit moves the score: up to ±1.5 points. */
 const TASTE_SWING = 3;
 
@@ -485,7 +516,7 @@ export function scorePlace(profile: Profile, place: PlaceFeatures, friendRatings
   const parts = fitParts(profile, place);
   const labels: Record<string, string> = { kind: 'The kind of holiday you love', near: 'Near places you loved', warmth: 'The warmth you go for', company: 'Suits who you travel with' };
   return {
-    score: yours ?? round1(clamp(base + tasteNudge, 1, 10)),
+    score: yours ?? round1(softTop(clamp(base + tasteNudge, 1, 10))),
     match: matchPercent(fit),
     fit,
     yours,

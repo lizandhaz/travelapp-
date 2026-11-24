@@ -2965,7 +2965,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £150 a night · A cosy pub with rooms on the Longleat estate.",
         "because": "Because you loved breakfast in the garden at Es Molí",
         "score": null,
-        "photo": "safari-1"
+        "photo": null
       },
       {
         "name": "Woolley Grange",
@@ -2995,7 +2995,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £250 a night · Maya stayed",
         "because": null,
         "score": 8.8,
-        "photo": "safari-1"
+        "photo": null
       }
     ],
     "eats": [

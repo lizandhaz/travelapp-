@@ -38,6 +38,13 @@ test('reads months, seasons and warmth', () => {
   assert.deepEqual(parseTripQuery('sept').months, [8]);
 });
 
+test('reads a nightly budget', () => {
+  assert.equal(parseTripQuery('beach under £200 a night').maxPrice, 200);
+  assert.equal(parseTripQuery('city break up to 150').maxPrice, 150);
+  assert.equal(parseTripQuery('greece').maxPrice, null);
+  assert.deepEqual(parseTripQuery('beach under £200').tags.map((t) => t.tag), ['beach']);
+});
+
 test('reads who, length, flying and budget', () => {
   const q = parseTripQuery('Romantic city break, no flying');
   assert.deepEqual(q.who, ['couples']);

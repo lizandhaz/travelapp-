@@ -24,6 +24,8 @@ export type TripQuery = {
   /** "no flying", "train", "UK". */
   noFly: boolean;
   budget: 'value' | 'luxury' | null;
+  /** "under £200", "up to £150 a night": the most a stay may cost a night (£). */
+  maxPrice: number | null;
   /** Words left over: place names, countries, regions ("greece", "lisbon"). */
   words: string[];
 };
@@ -144,9 +146,16 @@ export function parseTripQuery(text: string): TripQuery {
     short: false,
     noFly: false,
     budget: null,
+    maxPrice: null,
     words: [],
   };
   let s = ` ${plain(text)} `;
+  // A nightly budget: "under £200", "below 150", "up to £300 a night", "max £120".
+  const price = s.match(/\b(?:under|below|less than|up to|max|maximum)\s*£?\s*(\d{2,4})\b(?:\s*(?:a|per)\s*night)?/);
+  if (price) {
+    q.maxPrice = Number(price[1]);
+    s = s.replace(price[0], ' ');
+  }
   for (const [re, fn] of PHRASES) {
     if (re.test(s)) {
       fn(q);
@@ -163,7 +172,7 @@ export function parseTripQuery(text: string): TripQuery {
 
 /** True when the search asked for anything at all. */
 export function hasCriteria(q: TripQuery) {
-  return q.months.length > 0 || q.warm || q.tags.length > 0 || q.who.length > 0 || q.short || q.noFly || q.budget !== null || q.words.length > 0;
+  return q.months.length > 0 || q.warm || q.tags.length > 0 || q.who.length > 0 || q.short || q.noFly || q.budget !== null || q.maxPrice !== null || q.words.length > 0;
 }
 
 /** What we understood, for the line above the results: "Beach · Warm · February · Couples". */
@@ -176,6 +185,7 @@ export function describeQuery(q: TripQuery): string[] {
   if (q.short) out.push('Short break');
   if (q.noFly) out.push('No flying');
   if (q.budget) out.push(q.budget === 'value' ? 'Good value' : 'Luxury');
+  if (q.maxPrice) out.push(`Under £${q.maxPrice} a night`);
   out.push(...q.words.map((w) => `“${w}”`));
   return out;
 }
@@ -247,6 +257,7 @@ export function placeForQuery(q: TripQuery, p: SearchablePlace, thisMonth: numbe
   if (q.short) hit((p.tags.shortbreak ?? 0) >= 0.5 || p.noFly, 'Easy for a short break');
   if (q.noFly) hit(p.noFly, 'No flight needed');
   if (q.budget === 'value') hit(p.priceFrom != null && p.priceFrom <= 150, p.priceFrom != null ? `From £${p.priceFrom} a night` : undefined);
+  if (q.maxPrice) hit(p.priceFrom != null && p.priceFrom <= q.maxPrice, p.priceFrom != null ? `Stays from £${p.priceFrom} a night` : undefined);
   if (q.budget === 'luxury') hit((p.tags.luxury ?? 0) >= 0.5 || (p.priceFrom ?? 0) >= 300, 'A real treat');
 
   if (!asked || !got) return null;

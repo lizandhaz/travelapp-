@@ -39,7 +39,7 @@ function topFriend(slug: string): { who: string; score: number } | null {
 const UK = /England|Scotland|Wales|Cornwall|Cotswolds/;
 
 /** Sample places on the Amalfi Coast (for its collection). */
-const AMALFI = ['positano'];
+const AMALFI = ['positano', 'capri'];
 
 export function placeCollections(): PlaceCollection[] {
   const m = thisMonth();
@@ -142,6 +142,16 @@ function gather(pick: (slug: string, placeName: string, placePhoto: PhotoName | 
   return places.flatMap((p) => pick(p.slug, p.name, p.photo));
 }
 
+/** Every stay whose "from" price a night passes the test, cheapest first. */
+function staysPriced(ok: (price: number) => boolean): ExploreItem[] {
+  return gather((slug, place, photo) =>
+    (placeDetails[slug]?.stays ?? [])
+      .map((s) => ({ s, price: parseStaySub(s.sub).priceFrom }))
+      .filter(({ price }) => price != null && ok(price))
+      .map(({ s }) => ({ key: `${slug}-${s.name}`, slug, place, kind: s.type, scoreKind: 'Stay' as const, name: s.name, what: s.sub, photo: s.photo ?? photo })),
+  ).sort((a, b) => (parseStaySub(a.what).priceFrom ?? 0) - (parseStaySub(b.what).priceFrom ?? 0));
+}
+
 export const itemCollections: ItemCollection[] = [
   {
     // Owner, Nov 2026: where friends stayed, ate and what they did on the Amalfi Coast (Positano for now; more places join as they're added).
@@ -176,6 +186,17 @@ export const itemCollections: ItemCollection[] = [
           .filter((s) => parseStaySub(s.sub).friend)
           .map((s) => ({ key: `${slug}-${s.name}`, slug, place, kind: s.type, scoreKind: 'Stay' as const, name: s.name, what: s.sub, photo: s.photo ?? photo })),
       ),
+  },
+  // Stays by budget (owner, Nov 2026: filter where to stay by price). Each opens the stay's own page.
+  {
+    id: 'stays-value',
+    title: 'Stays under £150',
+    items: () => staysPriced((p) => p < 150),
+  },
+  {
+    id: 'stays-splurge',
+    title: 'Worth the splurge',
+    items: () => staysPriced((p) => p >= 500),
   },
   {
     id: 'eats',

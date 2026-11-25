@@ -11,12 +11,13 @@ import { formatScore } from '@/lib/score';
 import { getTrip, tripId } from '@/lib/friendTrips';
 import { personHref } from '@/lib/samplePeople';
 import { photoForActivity } from '@/lib/sample';
+import { parseStaySub } from '@/lib/placeFeatures';
 import { PhotoTile } from './Photo';
 import { Avatar } from './Avatar';
 import { Row } from './cards';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { Card, Input, SectionHeader } from './ui';
+import { Card, Chip, Input, SectionHeader } from './ui';
 import { AreaMap } from './AreaMap';
 import { BedIcon, BookmarkIcon, ForkIcon } from './Icons';
 
@@ -209,28 +210,66 @@ export function SaidList({ items, slug }: { items: PlaceDetail['said']; slug: st
 }
 
 /** Where to stay: photo cards with the type and your score out of 10. */
+/** Price bands for "Where to stay" (owner, Nov 2026: filter stays by budget). */
+export const PRICE_BANDS = [
+  { id: 'any', label: 'Any price', fits: () => true },
+  { id: 'low', label: 'Under £150', fits: (p: number | null) => p != null && p < 150 },
+  { id: 'mid', label: '£150–£300', fits: (p: number | null) => p != null && p >= 150 && p <= 300 },
+  { id: 'high', label: 'Over £300', fits: (p: number | null) => p != null && p > 300 },
+] as const;
+
+/**
+ * Where to stay: price chips, then the stays as cards that scroll sideways.
+ * Tap a card for its own page (app/stay/[slug].tsx) with prices and links out.
+ */
 export function StayRow({ stays, at }: { stays: PlaceDetail['stays']; at?: SpotPlace }) {
+  const [band, setBand] = useState<string>('any');
+  const prices = stays.map((s) => parseStaySub(s.sub).priceFrom);
+  const chosen = PRICE_BANDS.find((b) => b.id === band) ?? PRICE_BANDS[0];
+  const shown = stays.filter((s, i) => chosen.fits(prices[i]));
   return (
     <View style={{ marginTop: 28 }}>
       <SectionHeader>Where to stay</SectionHeader>
-      <Pinboard
-        items={stays.map((s, i) => (
-          <WithSave key={s.name} at={at} name={s.name} kind="stay">
-            <SpotCard
-              tone={PIN_TONES[i % PIN_TONES.length]}
-              icon={<BedIcon color={colors.olive} size={18} />}
-              kind={s.type}
-              name={s.name}
-              lines={[s.sub, s.because]}
-              score={s.score}
-              scoreTone="olive"
-              featured={s.featured}
-              tall={i % 3 === 0}
-              a11y={[s.name, s.type, s.sub, s.because, s.score != null ? `${formatScore(s.score)} out of 10` : null].filter(Boolean).join(', ')}
-            />
-          </WithSave>
-        ))}
-      />
+      {prices.some((p) => p != null) && (
+        <View accessibilityRole="tablist" accessibilityLabel="Price a night" style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: GUTTER, marginBottom: 14 }}>
+          {PRICE_BANDS.map((b) => (
+            <Chip key={b.id} label={b.label} selected={band === b.id} onPress={() => setBand(b.id)} accessibilityLabel={`Show stays: ${b.label}`} />
+          ))}
+        </View>
+      )}
+      {shown.length === 0 ? (
+        <Text variant="bodySoft" style={{ paddingHorizontal: GUTTER }}>
+          No stays {chosen.label.toLowerCase()} here yet.
+        </Text>
+      ) : (
+        <Pinboard
+          items={shown.map((s, i) => (
+            <WithSave key={s.name} at={at} name={s.name} kind="stay">
+              <Pressable
+                disabled={!at}
+                onPress={() => at && router.push({ pathname: '/stay/[slug]', params: { slug: at.slug, name: s.name } })}
+                accessibilityRole="link"
+                accessibilityHint="Opens its page with prices and a link to book"
+                style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
+              >
+                <SpotCard
+                  tone={PIN_TONES[i % PIN_TONES.length]}
+                  icon={<BedIcon color={colors.olive} size={18} />}
+                  kind={s.type}
+                  name={s.name}
+                  lines={[s.sub, s.because]}
+                  score={s.score}
+                  scoreTone="olive"
+                  featured={s.featured}
+                  tall={i % 3 === 0}
+                  footer="Prices & details →"
+                  a11y={[s.name, s.type, s.sub, s.because, s.score != null ? `${formatScore(s.score)} out of 10` : null].filter(Boolean).join(', ')}
+                />
+              </Pressable>
+            </WithSave>
+          ))}
+        />
+      )}
     </View>
   );
 }

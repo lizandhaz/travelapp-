@@ -177,8 +177,9 @@ src/
                           row that scrolls sideways, with icon, type/price, a one-line "✦ We think you'd like it" pill above the name when featured (never beside the stamp, owner Nov 2026), name, why, a one-line friend's pick, score stamp, save bookmark), DoRow, MoreAbout
     AreaMap.tsx           The real map of a place (Apple Maps, mutedStandard; numbered pins with name labels; `preview` = still, tap to
                           open). AreaMap.web.tsx shows the drawn map instead, as react-native-maps doesn't run on the web
-    TripActions.tsx       Like (heart + count), Comment (sheet: the box to write in sits at the top under the heading, so the keyboard
-                          never covers it (owner, Nov 2026); comments below) and Save (a sheet: "Save <place>"
+    TripActions.tsx       Like (heart + count), Comment (sheet: comments, then the box to write in along the bottom (owner's preference, Nov 2026),
+                          lifted above the keyboard by useKeyboardOverlap (measures the sheet against the keyboard's top; KeyboardAvoidingView
+                          doesn't work in an iOS page sheet)) and Save (a sheet: "Save <place>"
                           → save.tsx, or "Save <who>'s trip" → Saved → Friends' trips; the bookmark fills when the trip is saved) for a
                           friend's trip; on feed cards and the friend's trip page
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)

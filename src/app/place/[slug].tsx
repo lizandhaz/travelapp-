@@ -155,7 +155,6 @@ export default function PlaceScreen() {
                   <Text variant="small" style={{ flex: 1 }}>
                     Stayed at <Text variant="strong">{s.stayName}</Text> ({s.stayType})
                   </Text>
-                  {s.stayScore != null && <ScoreStamp score={s.stayScore} size="sm" tone="olive" label={s.stayType} />}
                 </View>
                 <FriendTripLink who={s.who} slug={slug} />
               </Card>

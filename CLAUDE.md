@@ -89,7 +89,7 @@ src/
     (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score, sideways;
                           no text under them); "Dip into collections" (Explore's collection tiles); "From your friends" (FeedCard: big photo
                           with who, when they posted, month, place and score, or for a post without photos a mini postcard on cream (owner's pick, Nov 2026: "Greetings from" + the place in italic
-                          with their score as a tilted stamp, then their words left of a middle line and the stay on the right), then Like / Comment / Save; opens as a postcard (postcard/[id] with the friend's trip id), owner Nov 2026. Real trips from people
+                          with their score as a tilted stamp, then their words left of a middle line and the stay on the right), then Like / Comment / Save. Feed cards and place pages' "What friends said" show only the trip's score, never the stay's (owner Nov 2026: two ratings were confusing; the stay score shows on the postcard back and the friend's trip page); opens as a postcard (postcard/[id] with the friend's trip id), owner Nov 2026. Real trips from people
                           you follow (lib/friendsFeed) replace the sample feed once there are any; the sample feed mixes photos/no photos on purpose). A thin line sits above "From your friends"
     (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
                           jumps down to it), "Find your next trip" collection tiles (24, each opens its collection, no counts),

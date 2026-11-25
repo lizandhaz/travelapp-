@@ -36,7 +36,7 @@ export function ItemCard({ item, width = 210 }: { item: ExploreItem; width?: num
   const { score, note } = taste.forItem({ slug: item.slug, kind: item.scoreKind, name: item.name, friends: '' });
   return (
     <Pressable
-      onPress={() => router.push(`/place/${item.slug}`)}
+      onPress={() => (item.scoreKind === 'Stay' ? router.push({ pathname: '/stay/[slug]', params: { slug: item.slug, name: item.name } }) : router.push(`/place/${item.slug}`))}
       accessibilityRole="link"
       accessibilityLabel={`${item.kind}: ${item.name}, ${item.place}. ${score.toFixed(1)} out of 10. ${note}`}
       style={{ width }}

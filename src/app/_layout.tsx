@@ -67,6 +67,7 @@ function Navigator() {
           <Stack.Protected guard={signedIn} redirectTo="/welcome">
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="place/[slug]" />
+            <Stack.Screen name="stay/[slug]" />
             <Stack.Screen name="postcards" />
             <Stack.Screen name="settings" />
             <Stack.Screen name="trip/[id]/index" />

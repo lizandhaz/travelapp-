@@ -1,10 +1,10 @@
 import { countryOf } from './knownPlaces';
 import { currentMonth } from './months';
 import type { PhotoName } from './photos';
-import { placeDetails } from './placeDetails';
+import { placeDetails, type PlaceDetail } from './placeDetails';
 import { featuresForSlug, parseStaySub } from './placeFeatures';
 import { board, friendsFeed, getPlace, photoForActivity, places, type BoardItem, type RowItem } from './sample';
-import { describeQuery, hasCriteria, parseTripQuery, searchPlaces, type SearchablePlace } from './tripQuery';
+import { describeQuery, hasCriteria, parseTripQuery, searchPlaces, thingMatches, topicById, type PageThing, type SearchablePlace } from './tripQuery';
 
 /**
  * Explore's collections, worked out from each sample place's details (holiday types,
@@ -318,21 +318,49 @@ const GOLF = new Set(['algarve', 'mallorca', 'tenerife', 'dubai', 'cyprus', 'cos
 // …and well-known wine places ("wine tasting" put Heidelberg first).
 const WINE = new Set(['tuscany', 'southafrica', 'madeira', 'santorini', 'sicily']);
 
+/** What's on a place's page, for search topics: things to do, restaurants, culture, stays and tips. */
+function pageThings(d: PlaceDetail | undefined): PageThing[] {
+  return [
+    ...(d?.dos ?? []).map((x) => ({ name: x.name, text: `${x.tag} ${x.what ?? ''}`, kind: 'do' as const })),
+    ...(d?.eats ?? []).map((x) => ({ name: x.name, text: `restaurant ${x.what ?? ''}`, kind: 'eat' as const })),
+    ...(d?.culture ?? []).map((x) => ({ name: x.name, text: `${x.tag} ${x.what ?? ''}`, kind: 'culture' as const })),
+    ...(d?.stays ?? []).map((x) => ({ name: '', text: `${x.name} ${x.sub ?? ''}`, kind: 'stay' as const })),
+    ...(d?.tips ?? []).map((x) => ({ name: '', text: x.tip, kind: 'tip' as const })),
+    { name: '', text: d?.kicker ?? '', kind: 'about' as const },
+  ];
+}
+
+/** One thing on a place's page that fits what you searched for. */
+export type TopicPick = { kind: 'do' | 'eat' | 'culture' | 'stay' | 'tip'; label: string; name: string; what: string | null };
+
+/**
+ * A place page tailored to a search (owner, Nov 2026: search "golf" and each place shows its golf). The things on the
+ * page that fit the topic: things to do and culture first, then where to stay, eat, and tips.
+ * Null when the topic is unknown or the place has nothing for it.
+ */
+export function topicPicks(slug: string, topicId: string | undefined): { label: string; picks: TopicPick[]; stayNames: string[] } | null {
+  const topic = topicById(topicId);
+  const d = placeDetails[slug];
+  if (!topic || !d) return null;
+  const fits = (kind: PageThing['kind'], name: string, text: string) => thingMatches(topic, { kind, name, text });
+  const picks: TopicPick[] = [
+    ...d.dos.filter((x) => fits('do', x.name, `${x.tag} ${x.what ?? ''}`)).map((x) => ({ kind: 'do' as const, label: x.tag, name: x.name, what: x.what })),
+    ...d.culture.filter((x) => fits('culture', x.name, `${x.tag} ${x.what ?? ''}`)).map((x) => ({ kind: 'culture' as const, label: x.tag, name: x.name, what: x.what })),
+    ...d.stays.filter((x) => fits('stay', '', `${x.name} ${x.sub ?? ''}`)).map((x) => ({ kind: 'stay' as const, label: x.type, name: x.name, what: x.sub })),
+    ...d.eats.filter((x) => fits('eat', x.name, `restaurant ${x.what ?? ''}`)).map((x) => ({ kind: 'eat' as const, label: x.price ? `Eat · ${x.price}` : 'Eat', name: x.name, what: x.what })),
+    ...d.tips.filter((x) => fits('tip', '', x.tip)).map((x) => ({ kind: 'tip' as const, label: 'Top tip', name: x.tip, what: x.from ? `From ${x.from}` : null })),
+  ];
+  if (!picks.length) return null;
+  return { label: topic.label, picks, stayNames: picks.filter((p) => p.kind === 'stay').map((p) => p.name) };
+}
+
 function searchablePlaces(): SearchablePlace[] {
   searchable ??= places.map((p) => {
     const f = featuresForSlug(p.slug);
     const d = placeDetails[p.slug];
     // What's on the page, for search topics: things to do, restaurants, culture, stays and tips.
-    const things = [
-      ...(d?.dos ?? []).map((x) => ({ name: x.name, text: `${x.tag} ${x.what ?? ''}`, kind: 'do' as const })),
-      ...(d?.eats ?? []).map((x) => ({ name: x.name, text: `restaurant ${x.what ?? ''}`, kind: 'eat' as const })),
-      ...(d?.culture ?? []).map((x) => ({ name: x.name, text: `${x.tag} ${x.what ?? ''}`, kind: 'culture' as const })),
-      ...(d?.stays ?? []).map((x) => ({ name: '', text: `${x.name} ${x.sub ?? ''}`, kind: 'stay' as const })),
-      ...(d?.tips ?? []).map((x) => ({ name: '', text: x.tip, kind: 'tip' as const })),
-      { name: '', text: d?.kicker ?? '', kind: 'about' as const },
-    ];
     return {
-      things,
+      things: pageThings(d),
       slug: p.slug,
       name: p.name,
       where: `${p.region} ${countryOf({ name: p.name, country: p.region.split(', ').pop() ?? '' })}`,
@@ -356,11 +384,13 @@ export function searchTrips(text: string): { understood: string[]; places: RowIt
   const q = parseTripQuery(text);
   if (!hasCriteria(q)) return null;
   const found = searchPlaces(q, searchablePlaces(), thisMonth());
+  // Searching for a topic ("golf trips") opens each place tailored to it.
+  const topic = q.topics[0]?.id;
   return {
     understood: describeQuery(q),
     places: found.map((r) => {
       const p = getPlace(r.slug)!;
-      return { slug: p.slug, name: p.name, sub: r.reasons.slice(0, 3).join(' · ') || p.region, photo: p.photo, score: p.score ?? undefined };
+      return { slug: p.slug, name: p.name, sub: r.reasons.slice(0, 3).join(' · ') || p.region, photo: p.photo, score: p.score ?? undefined, topic: topic && topicPicks(p.slug, topic) ? topic : undefined };
     }),
   };
 }

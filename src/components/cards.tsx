@@ -17,7 +17,7 @@ import { friendTripId, tripPic, tripPlace } from '@/lib/friendTrips';
 import { personHref } from '@/lib/samplePeople';
 import { useFriendTrip } from '@/lib/friendsFeed';
 
-const openPlace = (slug: string | null) => slug && router.push(`/place/${slug}`);
+const openPlace = (slug: string | null, topic?: string) => slug && router.push(topic ? { pathname: '/place/[slug]', params: { slug, topic } } : `/place/${slug}`);
 
 /** Your personal score for a sample place (falls back to the card's own score). */
 function usePersonalScore(slug: string | null, fallback: number | undefined) {
@@ -70,7 +70,7 @@ export function TrendCard({ item, width = 150, height = 190 }: { item: RowItem; 
 export function PlaceCard({ item, width = 200, height = 220 }: { item: RowItem; width?: number; height?: number }) {
   const { score } = usePersonalScore(item.slug, item.score);
   return (
-    <Pressable onPress={() => openPlace(item.slug)} accessibilityRole="link" accessibilityLabel={`${item.name}, ${item.sub}`} style={{ width }}>
+    <Pressable onPress={() => openPlace(item.slug, item.topic)} accessibilityRole="link" accessibilityLabel={`${item.name}, ${item.sub}`} style={{ width }}>
       <PhotoTile photo={item.photo} style={{ width, height }} shade={false}>
         {score != null && (
           <View style={{ position: 'absolute', top: 8, right: 8 }}>

@@ -13,10 +13,11 @@ import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
 import { APP_NAME } from '@/constants/brand';
-import { colors, fonts, GUTTER, appWidth } from '@/constants/theme';
+import { colors, fonts, GUTTER, appWidth, radius } from '@/constants/theme';
 import { countryOf } from '@/lib/knownPlaces';
 import { placeDetails } from '@/lib/placeDetails';
 import { wouldGoBack } from '@/lib/friendTrips';
+import { topicPicks, type TopicPick } from '@/lib/explore';
 import { aboutPlace, getPlace } from '@/lib/sample';
 import { stayKind } from '@/lib/placeFeatures';
 import { tasteNote, useTaste } from '@/lib/taste';
@@ -26,7 +27,7 @@ import NotFound from '../+not-found';
 
 /** A place page (sample content from the prototype for now; real place pages come in plan Step E). */
 export default function PlaceScreen() {
-  const { slug } = useLocalSearchParams<{ slug: string }>();
+  const { slug, topic } = useLocalSearchParams<{ slug: string; topic?: string }>();
   const insets = useSafeAreaInsets();
   const place = getPlace(slug);
   const country = place ? countryOf({ name: place.name, country: place.region.split(', ').pop() ?? '' }) : '';
@@ -46,6 +47,8 @@ export default function PlaceScreen() {
   );
   if (!place) return <NotFound />;
   const detail = placeDetails[slug] ?? null;
+  // Opened from a search for a topic ("golf trips"): the page leads with that (owner, Nov 2026).
+  const tailored = topicPicks(slug, topic);
   const { said, ideas } = aboutPlace(slug);
   const result = taste.forSlug(slug);
   const personal = taste.profile.evidence > 0;
@@ -53,7 +56,9 @@ export default function PlaceScreen() {
   // and its "Because…" is only shown when it's true for you.
   const stays = (detail?.stays ?? [])
     .map((s) => ({ ...s, score: personal ? taste.stayScoreFor(s) : s.score, match: null as number | null, because: null as string | null, featured: false }))
-    .sort((a, b) => (personal ? (b.score ?? 0) - (a.score ?? 0) : 0));
+    .sort((a, b) => (personal ? (b.score ?? 0) - (a.score ?? 0) : 0))
+    // Stays that fit the search come first.
+    .sort((a, b) => Number(!!tailored?.stayNames.includes(b.name)) - Number(!!tailored?.stayNames.includes(a.name)));
   if (stays.length) {
     stays[0].featured = true;
     const kind = stayKind(stays[0].type);
@@ -117,6 +122,8 @@ export default function PlaceScreen() {
           {wish.error}
         </Text>
       )}
+
+      {tailored && <TopicSection slug={slug} place={place.name} label={tailored.label} picks={tailored.picks} />}
 
       {detail && (
         <View style={{ marginTop: 20 }}>
@@ -218,5 +225,52 @@ export default function PlaceScreen() {
         Sample content for now.{detail?.credits ? ` ${detail.credits}` : ''}
       </Text>
     </Screen>
+  );
+}
+
+/**
+ * "Golf in the Algarve": what on this page fits the search you came from, at the top (owner, Nov 2026). Stays open
+ * their own page. The × shows the page as normal; the rest of the page is still below either way.
+ */
+function TopicSection({ slug, place, label, picks }: { slug: string; place: string; label: string; picks: TopicPick[] }) {
+  return (
+    <View style={{ marginTop: 22, marginHorizontal: GUTTER, backgroundColor: colors.sageSoft, borderRadius: radius.lg, padding: 16, gap: 12 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+        <View style={{ flex: 1, gap: 2 }}>
+          <Text variant="label">From your search</Text>
+          <Text variant="heading" accessibilityRole="header">
+            {label} in {place}
+          </Text>
+        </View>
+        <Pressable onPress={() => router.setParams({ topic: '' })} accessibilityRole="button" accessibilityLabel={`Stop showing ${label.toLowerCase()} first`} hitSlop={12}>
+          <Text style={{ fontSize: 22, lineHeight: 26, color: colors.muted }}>×</Text>
+        </Pressable>
+      </View>
+      {picks.slice(0, 8).map((p) => {
+        const card = (
+          <View style={{ backgroundColor: colors.card, borderRadius: radius.md, borderWidth: 1, borderColor: colors.line, padding: 12, gap: 3 }}>
+            <Text variant="label" style={{ color: colors.olive }}>
+              {p.label}
+            </Text>
+            <Text variant={p.kind === 'tip' ? 'body' : 'strong'}>{p.name}</Text>
+            {!!p.what && <Text variant="small">{p.what}</Text>}
+            {p.kind === 'stay' && (
+              <Text variant="small" style={{ color: colors.accentText }}>
+                See the stay →
+              </Text>
+            )}
+          </View>
+        );
+        return p.kind === 'stay' ? (
+          <Pressable key={`${p.kind}-${p.name}`} onPress={() => router.push({ pathname: '/stay/[slug]', params: { slug, name: p.name } })} accessibilityRole="link" accessibilityLabel={`${p.name}, ${p.label}. Open the stay`}>
+            {card}
+          </Pressable>
+        ) : (
+          <View key={`${p.kind}-${p.name}`} accessible accessibilityLabel={[p.label, p.name, p.what].filter(Boolean).join(', ')}>
+            {card}
+          </View>
+        );
+      })}
+    </View>
   );
 }

@@ -244,7 +244,12 @@ src/
                           no-fly/budget/maxPrice/place words, plus **topics** (TOPICS: food, golf, museums, sightseeing, history, walking, wine,
                           nightlife, snorkelling, shopping; owner Nov 2026) found inside each place's page (`things`: its stays, restaurants,
                           things to do, culture and tips) with the thing's name as the reason ("Musée d'Orsay"), or a tag ("Known for golf":
-                          GOLF / WINE sets in explore.ts); other words are looked for on the page too; searchPlaces() ranks places (more than half of what was asked; reasons like
+                          GOLF / WINE sets in explore.ts); other words are looked for on the page too. Tapping a result of a topic search
+                          opens the place tailored to it (`/place/<slug>?topic=golf`; owner Nov 2026): a sage "From your search · Golf in
+                          Mauritius" section under the buttons lists what fits (explore.ts `topicPicks()`, same `thingMatches()` as search;
+                          stays open stay/[slug] and go first in Where to stay), with × to hide it. Real golf courses, wineries and
+                          snorkel spots were added as things to do (tag Golf / Wine / Snorkel, no friend) for the golf, wine and beach places
+                          (tests/topicPages.test.mjs); searchPlaces() ranks places (more than half of what was asked; reasons like
                           "27° in February"). explore.ts searchTrips() feeds it the sample places; Explore shows "Best matches" + "Looking for …"
     explore.ts            Explore's collections (worked out from place details: "Sunshine in <month>" from monthly temps,
                           Island escapes, Holiday without flying, Good value…), things gathered from every place, exploreFeed()

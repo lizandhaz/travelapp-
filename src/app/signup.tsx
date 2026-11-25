@@ -65,6 +65,13 @@ export default function SignUp() {
         <DateOfBirth value={dob} onChange={setDob} />
         <ErrorNotice error={error} />
         <Button title={busy ? 'Sending…' : 'Send my code'} size="lg" onPress={submit} disabled={busy} />
+        <Link href="/privacy" asChild>
+          <Pressable accessibilityRole="link" hitSlop={6} style={{ alignSelf: 'center' }}>
+            <Text variant="tiny">
+              By joining you agree to our <Text variant="tiny" style={{ textDecorationLine: 'underline' }}>privacy policy</Text>.
+            </Text>
+          </Pressable>
+        </Link>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 24, gap: 6 }}>
         <Text variant="small">Already joined?</Text>

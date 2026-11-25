@@ -90,6 +90,8 @@ function Navigator() {
             <Stack.Screen name="signup" />
             <Stack.Screen name="login" />
           </Stack.Protected>
+          {/* Readable signed in or out (linked from Join and Settings). */}
+          <Stack.Screen name="privacy" />
         </Stack>
       </View>
     </View>

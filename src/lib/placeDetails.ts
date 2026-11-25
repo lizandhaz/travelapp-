@@ -13168,5 +13168,515 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "madrid": {
+    "kicker": "City · Food",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "April to June, or September to October",
+    "staysFrom": "from £140 a night",
+    "goodFor": [
+      "Friends",
+      "Couples"
+    ],
+    "temps": [
+      10,
+      12,
+      16,
+      18,
+      23,
+      29,
+      33,
+      32,
+      27,
+      20,
+      14,
+      10
+    ],
+    "bestMonths": [
+      3,
+      4,
+      5,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      1,
+      2
+    ],
+    "said": [
+      {
+        "who": "Priya",
+        "month": "Apr 2025",
+        "quote": "Museums by day, late dinners, and nobody goes to bed.",
+        "score": 8.7,
+        "face": null
+      },
+      {
+        "who": "Sam",
+        "month": "Oct 2024",
+        "quote": "The Prado alone is worth the trip.",
+        "score": 8.4,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Mandarin Oriental Ritz, Madrid",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £600 a night · The grand old Ritz, restored, next to the Prado.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Only YOU Boutique Hotel",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £200 a night · Priya stayed",
+        "because": null,
+        "score": 8.9,
+        "photo": null
+      },
+      {
+        "name": "Room Mate Óscar",
+        "type": "Hotel",
+        "match": 82,
+        "featured": false,
+        "sub": "from £140 a night · Sam stayed",
+        "because": null,
+        "score": 8.2,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Casa Lucio",
+        "price": "££",
+        "what": "Huevos rotos in La Latina",
+        "score": 8.8,
+        "from": "Priya",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Sobrino de Botín",
+        "price": "££",
+        "what": "The world's oldest restaurant, famous for roast suckling pig",
+        "score": 8.7,
+        "from": "Sam",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Mercado de San Miguel",
+        "price": "££",
+        "what": "Tapas stalls in an iron-and-glass market",
+        "score": 8.4,
+        "from": null,
+        "match": 82,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Culture",
+        "name": "Museo del Prado",
+        "what": "Velázquez and Goya. Entry is free for the last two hours.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "El Retiro park",
+        "what": "Row a boat on the lake and find the Crystal Palace.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Royal Palace of Madrid",
+        "what": "One of Europe's biggest palaces, still used for state events.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Templo de Debod at sunset",
+        "what": "A real Egyptian temple, with a view over the city.",
+        "from": "Priya",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "Museo Reina Sofía",
+        "what": "Home to Picasso's Guernica.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Dinner starts at 9 or 10pm. Have a late lunch and do as the locals do.",
+        "from": "Priya"
+      }
+    ],
+    "credits": null
+  },
+  "rome": {
+    "kicker": "City · Culture",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "April, May, September or October",
+    "staysFrom": "from £180 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      12,
+      14,
+      17,
+      20,
+      24,
+      29,
+      32,
+      32,
+      28,
+      22,
+      17,
+      13
+    ],
+    "bestMonths": [
+      3,
+      4,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      2
+    ],
+    "said": [
+      {
+        "who": "Maya",
+        "month": "May 2025",
+        "quote": "Every corner is a postcard. Eat cacio e pepe twice a day.",
+        "score": 9.2,
+        "face": null
+      },
+      {
+        "who": "Tom",
+        "month": "Sep 2024",
+        "quote": "Book the Vatican early. Worth every minute.",
+        "score": 8.7,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Hotel de Russie",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £700 a night · A garden hotel between Piazza del Popolo and the Spanish Steps.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hotel Vilòn",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £350 a night · Maya stayed",
+        "because": null,
+        "score": 9.3,
+        "photo": null
+      },
+      {
+        "name": "The Hoxton, Rome",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £180 a night · Tom stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Roscioli Salumeria con Cucina",
+        "price": "££",
+        "what": "Carbonara and a deli counter near Campo de’ Fiori",
+        "score": 9.2,
+        "from": "Maya",
+        "match": 89,
+        "photo": null
+      },
+      {
+        "name": "Da Enzo al 29",
+        "price": "££",
+        "what": "A tiny Trastevere trattoria. Queue before it opens",
+        "score": 8.9,
+        "from": "Tom",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Pizzarium Bonci",
+        "price": "£",
+        "what": "Pizza by the slice near the Vatican",
+        "score": 8.7,
+        "from": null,
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Culture",
+        "name": "The Vatican Museums and Sistine Chapel",
+        "what": "Book the first entry of the day, before the crowds.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "The Colosseum and Roman Forum",
+        "what": "Get a combined ticket and give it half a day.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "Trastevere at dusk",
+        "what": "Cobbled lanes, ivy and an aperitivo.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "The Aventine Keyhole",
+        "what": "Peek through a garden door for a perfect view of St Peter's dome.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Sight",
+        "when": null,
+        "name": "The Pantheon",
+        "what": "Nearly 2,000 years old, with an open hole in its dome.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Drink from the nasoni, the free water fountains all over the city.",
+        "from": "Maya"
+      }
+    ],
+    "credits": null
+  },
+  "grancanaria": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "November to March for winter sun",
+    "staysFrom": "from £120 a night",
+    "goodFor": [
+      "Families",
+      "Couples"
+    ],
+    "temps": [
+      21,
+      21,
+      22,
+      22,
+      23,
+      24,
+      26,
+      27,
+      27,
+      26,
+      24,
+      22
+    ],
+    "bestMonths": [
+      0,
+      1,
+      2,
+      10,
+      11
+    ],
+    "crowds": [
+      2,
+      2,
+      2,
+      2,
+      1,
+      1,
+      2,
+      3,
+      2,
+      2,
+      2,
+      3
+    ],
+    "said": [
+      {
+        "who": "Sam",
+        "month": "Jan 2025",
+        "quote": "Proper winter sun, and the mountains are a lovely surprise.",
+        "score": 8.3,
+        "face": null
+      },
+      {
+        "who": "Sophie",
+        "month": "Mar 2024",
+        "quote": "Maspalomas dunes at sunrise, then a hike to Roque Nublo.",
+        "score": 8.6,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Seaside Grand Hotel Residencia",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £350 a night · A quiet garden hotel by the Maspalomas dunes.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Lopesan Costa Meloneras",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £180 a night · Sam stayed",
+        "because": null,
+        "score": 8.2,
+        "photo": null
+      },
+      {
+        "name": "Hotel Rural Las Calas",
+        "type": "B&B",
+        "match": 86,
+        "featured": false,
+        "sub": "from £120 a night · Sophie stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Poemas by Hermanos Padrón",
+        "price": "£££",
+        "what": "Michelin-starred Canarian cooking in Las Palmas",
+        "score": 8.9,
+        "from": "Sophie",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Mercado del Puerto",
+        "price": "£",
+        "what": "Food stalls in an old iron market in Las Palmas",
+        "score": 8.5,
+        "from": "Sam",
+        "match": 84,
+        "photo": null
+      },
+      {
+        "name": "Bodegón Vandama",
+        "price": "££",
+        "what": "Canarian dishes next to a volcanic crater",
+        "score": 8.6,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Nature",
+        "name": "Maspalomas dunes",
+        "what": "Walk out over the sand at sunrise.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "Roque Nublo",
+        "what": "An easy hike to a giant rock pinnacle near the island's top.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Beach",
+        "name": "Las Canteras, Las Palmas",
+        "what": "A city beach with a reef that keeps it calm for a swim.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Nature",
+        "name": "Presa de las Niñas",
+        "what": "A blue reservoir in the pine forest, with picnic spots.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Tejeda",
+        "what": "A pretty mountain village with views of Roque Nublo.",
+        "from": "Sam",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Sight",
+        "when": null,
+        "name": "Vegueta, Las Palmas",
+        "what": "The old town where Columbus stopped on his way across the Atlantic.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "The north is often cloudy when the south is sunny, so stay in the south for the beach.",
+        "from": "Sam"
+      }
+    ],
+    "credits": null
   }
 };

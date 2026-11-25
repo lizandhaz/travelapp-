@@ -8,7 +8,7 @@ import type { PhotoName } from './photos';
  */
 
 export type SamplePlace = { slug: string; name: string; region: string; score: number | null; photo: PhotoName | null; photos: PhotoName[] };
-export type RowItem = { slug: string; name: string; sub: string; photo: PhotoName | null; score?: number; rank?: string };
+export type RowItem = { slug: string; name: string; sub: string; photo: PhotoName | null; score?: number; rank?: string; /** Open the place page tailored to a search topic, e.g. golf. */ topic?: string };
 export type TasteItem = { slug: string; kind: string; match: string; name: string; where: string; because: string; friends: string; photo: PhotoName | null };
 export type BoardItem = { slug: string | null; kind: string; name: string; sub: string; photo: PhotoName | null; score?: number };
 export type FeedItem = {

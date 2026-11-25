@@ -71,6 +71,12 @@ export const TOPICS: { id: string; label: string; words: string; match: RegExp; 
   { id: 'snorkel', label: 'Snorkelling and diving', words: 'snorkel snorkelling snorkeling diving dive scuba reef reefs', match: /\b(snorkel\w*|div(e|es|ing)|scuba|reef|turtles?)\b/i },
   { id: 'shopping', label: 'Shopping', words: 'shopping shops boutiques markets souks', match: /\b(shop\w*|markets?|boutiques?|souks?|bazaar)\b/i },
 ];
+export type Topic = (typeof TOPICS)[number];
+export type PageThing = NonNullable<SearchablePlace['things']>[number];
+export const topicById = (id: string | undefined | null): Topic | null => TOPICS.find((t) => t.id === id) ?? null;
+/** Is this thing on a place's page about the topic? (Search and the place page's "Golf in …" section agree.) */
+export const thingMatches = (topic: Topic, t: PageThing) => (!topic.from || topic.from.includes(t.kind)) && topic.match.test(`${t.name} ${t.text}`);
+
 const TOPIC_BY_WORD = new Map<string, (typeof TOPICS)[number]>();
 for (const t of TOPICS) for (const w of t.words.split(' ')) TOPIC_BY_WORD.set(w, t);
 
@@ -294,7 +300,7 @@ export function placeForQuery(q: TripQuery, p: SearchablePlace, thisMonth: numbe
   if (q.budget === 'value') hit(p.priceFrom != null && p.priceFrom <= 150, p.priceFrom != null ? `From £${p.priceFrom} a night` : undefined);
   for (const qt of q.topics) {
     const topic = TOPICS.find((t) => t.id === qt.id)!;
-    const found = (p.things ?? []).filter((t) => (!topic.from || topic.from.includes(t.kind)) && topic.match.test(`${t.name} ${t.text}`));
+    const found = (p.things ?? []).filter((t) => thingMatches(topic, t));
     // Each named thing once ("Palace of Knossos" can be both a thing to do and culture).
     const named = found.filter((t, i) => !!t.name && found.findIndex((x) => x.name.toLowerCase() === t.name.toLowerCase()) === i);
     const tagged = topic.tag ? (p.tags[topic.tag] ?? 0) : 0;

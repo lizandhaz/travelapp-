@@ -353,6 +353,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "Old WW2 cannons and the best view of the lagoon.",
         "from": "Priya",
         "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Coral Garden",
+        "what": "Shallow lagoon coral full of fish, by boat or kayak.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -543,7 +550,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · One night",
     "scoreNote": "From 6 friends and people with your taste.",
     "bestTime": "May, June or a crisp December",
-    "staysFrom": "from \u00a3200 a night",
+    "staysFrom": "from £200 a night",
     "goodFor": [
       "Couples",
       "Friends"
@@ -3241,6 +3248,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "Above the clouds before breakfast. Bring a warm layer.",
         "from": "Jonah",
         "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "Blandy’s Wine Lodge",
+        "what": "Old cellars in Funchal: taste Madeira wine straight from the cask.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -3419,6 +3433,20 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "name": "Sunset dolphin cruise",
         "what": "Spinner dolphins jump alongside the dhoni.",
         "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Banana Reef",
+        "what": "One of the Maldives’ first dive sites, with caves and big shoals of fish.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Hanifaru Bay",
+        "what": "Snorkel with manta rays in Baa Atoll, June to November.",
+        "from": null,
         "gem": false
       }
     ],
@@ -3784,6 +3812,34 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "A day of swimming, snorkelling and a barbecue on board.",
         "from": "Sam",
         "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Île aux Cerfs Golf Club",
+        "what": "Bernhard Langer’s course takes up most of its own island: you go by boat.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Anahita",
+        "what": "An Ernie Els course beside the east coast lagoon.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Heritage Golf Club, Bel Ombre",
+        "what": "On the wild south coast, between the mountains and the sea.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Blue Bay Marine Park",
+        "what": "Clear, shallow water and coral right by the beach.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -3810,6 +3866,10 @@ export const placeDetails: Record<string, PlaceDetail> = {
       {
         "tip": "Hire a driver for a day. It's cheap and the roads are busy.",
         "from": "Sam"
+      },
+      {
+        "tip": "The boat to Île aux Cerfs Golf Club is part of the fun: go early before the day-trippers.",
+        "from": null
       }
     ],
     "credits": null
@@ -4889,6 +4949,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "Vallée de Mai's giant coco de mer palms, a UNESCO forest.",
         "from": "Tom",
         "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Coco Island",
+        "what": "Snorkel round granite boulders off La Digue, on a boat trip.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -5046,6 +5113,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "Twenty minutes up the hill. The gold mosaics are unreal.",
         "from": "Maya",
         "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "Cantine Florio, Marsala",
+        "what": "Marsala wine in vast old cellars, a day trip from Palermo.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -5083,7 +5157,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Ski · Après",
     "scoreNote": "From 4 friends and people with your taste.",
     "bestTime": "January to March",
-    "staysFrom": "from \u00a3260 a night",
+    "staysFrom": "from £260 a night",
     "goodFor": [
       "Friends"
     ],
@@ -5403,7 +5477,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Town · One night",
     "scoreNote": "From 4 friends and people with your taste.",
     "bestTime": "Spring and summer, when the riverside is busy",
-    "staysFrom": "from \u00a3160 a night",
+    "staysFrom": "from £160 a night",
     "goodFor": [
       "Couples",
       "Friends"
@@ -5699,6 +5773,20 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "name": "Kayak the mangroves",
         "what": "Paddle through calm channels full of baby sharks and turtles.",
         "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Provo Golf Club",
+        "what": "The islands’ only 18-hole course, a few minutes from Grace Bay.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Bight Reef (Coral Gardens)",
+        "what": "Snorkel from the beach to turtles and rays.",
+        "from": null,
         "gem": false
       }
     ],
@@ -6523,6 +6611,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "A strip of sand in the middle of the sea, with lunch grilled on the beach.",
         "from": "Jonah",
         "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Chumbe Island Coral Park",
+        "what": "A protected reef with some of the best coral in East Africa.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -6890,6 +6985,27 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "Fish and chips on the harbour wall, with seals waiting for scraps.",
         "from": "Priya",
         "gem": true
+      },
+      {
+        "tag": "Wine",
+        "name": "Babylonstoren",
+        "what": "A Cape Dutch farm with a huge garden, wine tastings and lunch.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "Groot Constantia",
+        "what": "South Africa’s oldest wine estate, half an hour from Cape Town.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "Franschhoek Wine Tram",
+        "what": "Hop on and off between Franschhoek’s vineyards.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -6928,7 +7044,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Island · Beach",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, June or September",
-    "staysFrom": "from \u00a3320 a night",
+    "staysFrom": "from £320 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -7094,7 +7210,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Island · Beach",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, June or October",
-    "staysFrom": "from \u00a3170 a night",
+    "staysFrom": "from £170 a night",
     "goodFor": [
       "Families",
       "Friends"
@@ -7230,6 +7346,34 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "A cool, narrow gorge walk near Paphos. Go early.",
         "from": "Harriet",
         "gem": true
+      },
+      {
+        "tag": "Golf",
+        "name": "Aphrodite Hills",
+        "what": "Its famous 7th hole plays over a ravine, near Aphrodite’s Rock.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Minthis",
+        "what": "Up in the hills above Paphos, cooler and quieter than the coast.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Elea Estate",
+        "what": "A Nick Faldo course, a few minutes from Paphos.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "The Zenobia wreck",
+        "what": "One of the world’s best wreck dives, off Larnaca.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -7260,7 +7404,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Island · Beach",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, June or September",
-    "staysFrom": "from \u00a3280 a night",
+    "staysFrom": "from £280 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -7396,6 +7540,34 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "A wooden train from Palma through the mountains, then the old tram to the sea.",
         "from": "Priya",
         "gem": true
+      },
+      {
+        "tag": "Golf",
+        "name": "Golf Alcanada",
+        "what": "On the bay of Alcúdia, with a lighthouse island beside the course.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Son Gual",
+        "what": "A well-kept parkland course just outside Palma.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Golf Santa Ponsa",
+        "what": "Long, wide fairways in the southwest, near the beaches.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "José L. Ferrer, Binissalem",
+        "what": "Tastings at one of Mallorca’s oldest wineries.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -7426,7 +7598,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Island · Beach",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "All year (warmest May to October)",
-    "staysFrom": "from \u00a3180 a night",
+    "staysFrom": "from £180 a night",
     "goodFor": [
       "Families",
       "Couples"
@@ -7564,6 +7736,27 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "One of the best night skies in Europe. Take a coat.",
         "from": "Jonah",
         "gem": true
+      },
+      {
+        "tag": "Golf",
+        "name": "Abama Golf",
+        "what": "Above the sea on the west coast, with views across to La Gomera.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Buenavista Golf",
+        "what": "Designed by Seve Ballesteros, right on the north coast cliffs.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Golf Costa Adeje",
+        "what": "Old banana terraces turned into fairways, looking out to sea.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -7586,6 +7779,10 @@ export const placeDetails: Record<string, PlaceDetail> = {
       {
         "tip": "The south is sunnier, the north greener. Stay south, explore north.",
         "from": "Jonah"
+      },
+      {
+        "tip": "The south coast courses are sunny all winter; Buenavista in the north is greener and windier.",
+        "from": null
       }
     ],
     "credits": null
@@ -7722,6 +7919,27 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "A tiny fishing cove near Begur with one bar.",
         "from": "Tom",
         "gem": true
+      },
+      {
+        "tag": "Golf",
+        "name": "PGA Catalunya",
+        "what": "The Stadium course is one of Europe’s top-rated, among pines near Girona.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Empordà Golf",
+        "what": "Links and forest courses near the medieval villages inland.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Golf Platja de Pals",
+        "what": "Old umbrella pines right by the beach at Pals.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -7752,7 +7970,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Beach · Coast",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, June or September",
-    "staysFrom": "from \u00a3250 a night",
+    "staysFrom": "from £250 a night",
     "goodFor": [
       "Families",
       "Couples"
@@ -7889,6 +8107,34 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "Ferry from Olhão to Culatra for empty sand.",
         "from": "Sam",
         "gem": true
+      },
+      {
+        "tag": "Golf",
+        "name": "Monte Rei",
+        "what": "A Jack Nicklaus course in the hills of the eastern Algarve, often called Portugal’s best.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Quinta do Lago South",
+        "what": "Pines, lakes and a long-time host of the Portuguese Open.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Vale do Lobo Royal",
+        "what": "Famous for the 16th, played over the cliffs above the beach.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Palmares, Lagos",
+        "what": "Links holes by the dunes, with views over Lagos bay.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -7911,6 +8157,10 @@ export const placeDetails: Record<string, PlaceDetail> = {
       {
         "tip": "West of Lagos is wilder; east of Faro has the calm, warm lagoon water.",
         "from": "Sophie"
+      },
+      {
+        "tip": "Quinta do Lago and Vale do Lobo book up in spring and autumn, so get tee times early.",
+        "from": null
       }
     ],
     "credits": null
@@ -7919,7 +8169,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Culture",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "April, May or October",
-    "staysFrom": "from \u00a3300 a night",
+    "staysFrom": "from £300 a night",
     "goodFor": [
       "Couples"
     ],
@@ -8084,7 +8334,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Countryside · Food",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, June or September",
-    "staysFrom": "from \u00a3350 a night",
+    "staysFrom": "from £350 a night",
     "goodFor": [
       "Couples",
       "Friends"
@@ -8221,6 +8471,20 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "Free hot springs in the woods.",
         "from": "Sophie",
         "gem": true
+      },
+      {
+        "tag": "Wine",
+        "name": "Castello di Ama",
+        "what": "Chianti tastings with modern art among the vines.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "Antinori nel Chianti Classico",
+        "what": "A winery built into the hillside, with tours and tastings.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -8569,7 +8833,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Lakes",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "June to September, or December for the markets",
-    "staysFrom": "from \u00a3180 a night",
+    "staysFrom": "from £180 a night",
     "goodFor": [
       "Solo",
       "Couples"
@@ -8730,7 +8994,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Ski · Mountains · Après",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "January to March",
-    "staysFrom": "from \u00a3250 a night",
+    "staysFrom": "from £250 a night",
     "goodFor": [
       "Friends",
       "Couples"
@@ -9181,7 +9445,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Beach",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "November to March",
-    "staysFrom": "from \u00a3120 a night",
+    "staysFrom": "from £120 a night",
     "goodFor": [
       "Families",
       "Couples"
@@ -9319,6 +9583,27 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "Old wooden boats to the gold and spice souks, for pennies.",
         "from": "Maya",
         "gem": true
+      },
+      {
+        "tag": "Golf",
+        "name": "Emirates Golf Club",
+        "what": "The Majlis course, home of the Dubai Desert Classic, with skyline views.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Jumeirah Golf Estates",
+        "what": "The Earth course hosts the golf season’s big finale each November.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Dubai Creek Golf & Yacht Club",
+        "what": "The clubhouse is shaped like dhow sails, right on the Creek.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -9341,6 +9626,10 @@ export const placeDetails: Record<string, PlaceDetail> = {
       {
         "tip": "Go between November and March; the summer heat is too much for most.",
         "from": "Maya"
+      },
+      {
+        "tip": "For golf, come November to March, or tee off at first light in summer.",
+        "from": null
       }
     ],
     "credits": null
@@ -9349,7 +9638,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Safari · Hiking",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "April to July for the falls; August to November for safari",
-    "staysFrom": "from \u00a3350 a night",
+    "staysFrom": "from £350 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -9507,7 +9796,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Safari",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "June to October (calving in February)",
-    "staysFrom": "from \u00a3350 a night",
+    "staysFrom": "from £350 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -9652,7 +9941,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Food",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "February to April",
-    "staysFrom": "from \u00a3250 a night",
+    "staysFrom": "from £250 a night",
     "goodFor": [
       "Families",
       "Solo"
@@ -9818,7 +10107,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Beach · Culture",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "December to April (south and west coast)",
-    "staysFrom": "from \u00a3150 a night",
+    "staysFrom": "from £150 a night",
     "goodFor": [
       "Couples",
       "Friends"
@@ -9986,7 +10275,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Culture",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, September or December",
-    "staysFrom": "from \u00a3250 a night",
+    "staysFrom": "from £250 a night",
     "goodFor": [
       "Friends",
       "Couples"
@@ -10154,7 +10443,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Weekend",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "March to May, or October and November",
-    "staysFrom": "from \u00a3180 a night",
+    "staysFrom": "from £180 a night",
     "goodFor": [
       "Friends"
     ],
@@ -10314,7 +10603,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Food",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "September or October",
-    "staysFrom": "from \u00a3250 a night",
+    "staysFrom": "from £250 a night",
     "goodFor": [
       "Couples",
       "Solo"
@@ -10472,7 +10761,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Lakes · Mountains · Hiking",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "July to September, or January for skiing",
-    "staysFrom": "from \u00a3350 a night",
+    "staysFrom": "from £350 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -10631,7 +10920,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Islands · Beach",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "June to October",
-    "staysFrom": "from \u00a3180 a night",
+    "staysFrom": "from £180 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -10734,6 +11023,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "Swirling sand and sea from above, best at low tide.",
         "from": null,
         "gem": true
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Reefworld, Hardy Reef",
+        "what": "A pontoon on the outer Great Barrier Reef, for a day of snorkelling.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -10888,6 +11184,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "A steep walk to the island's top for sunrise.",
         "from": null,
         "gem": true
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Reefworld, Hardy Reef",
+        "what": "A day on the outer Great Barrier Reef by boat from the island.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -10911,7 +11214,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Island · Beach",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "October to April",
-    "staysFrom": "from \u00a3180 a night",
+    "staysFrom": "from £180 a night",
     "goodFor": [
       "Families",
       "Friends"
@@ -11033,6 +11336,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "A snorkel trail with plaques under the water.",
         "from": null,
         "gem": true
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Parker Point snorkel trail",
+        "what": "Underwater signs point out the reef as you swim.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -11199,6 +11509,20 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "A hilltop village with sunset views and no crowds.",
         "from": "Maya",
         "gem": true
+      },
+      {
+        "tag": "Wine",
+        "name": "Santo Wines",
+        "what": "Tastings on a terrace over the caldera, best at sunset.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "Domaine Sigalas",
+        "what": "Assyrtiko among the low, basket-shaped vines near Oia.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -11666,6 +11990,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "Huge white cliffs and arches at the south-west tip.",
         "from": "Tom",
         "gem": true
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Keri Caves",
+        "what": "Swim and snorkel into sea caves by boat.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [
@@ -11986,6 +12317,13 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "what": "The best free view over the city, at sunset.",
         "from": "Tom",
         "gem": true
+      },
+      {
+        "tag": "Wine",
+        "name": "Codorníu, Sant Sadurní",
+        "what": "Cava cellars in Penedès, about an hour from Barcelona.",
+        "from": null,
+        "gem": false
       }
     ],
     "culture": [

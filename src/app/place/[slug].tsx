@@ -166,8 +166,6 @@ export default function PlaceScreen() {
       )}
 
       {stays.length > 0 && <StayRow stays={stays} at={{ name: place.name, country, slug }} />}
-      {eats.length > 0 && <EatRow eats={eats} at={{ name: place.name, country, slug }} />}
-      {!!detail?.dos.length && <DoRow dos={detail.dos} at={{ name: place.name, country, slug }} />}
 
       {!detail && ideas.length > 0 && (
         <View style={{ marginTop: 28 }}>
@@ -188,7 +186,14 @@ export default function PlaceScreen() {
         </View>
       )}
 
-      {detail && <MoreAbout name={place.name} detail={detail} />}
+      {detail && (
+        <MoreAbout
+          name={place.name}
+          detail={detail}
+          eat={eats.length > 0 ? <EatRow eats={eats} at={{ name: place.name, country, slug }} /> : undefined}
+          todo={detail.dos.length ? <DoRow dos={detail.dos} at={{ name: place.name, country, slug }} /> : undefined}
+        />
+      )}
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 28, flexDirection: 'row', gap: 12 }}>
         <WantToGoButton variant="block" saved={wish.saved} busy={wish.busy || !wish.ready} onPress={wish.toggle} style={{ flex: 1 }} />

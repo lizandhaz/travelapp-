@@ -964,8 +964,9 @@ export const places: SamplePlace[] = [
     "name": "Mallorca",
     "region": "Spain",
     "score": 8.8,
-    "photo": "own-mallorca",
+    "photo": "own-mallorca-soller",
     "photos": [
+      "own-mallorca-soller",
       "own-mallorca",
       "own-mallorca-villa",
       "own-mallorca-pergola"
@@ -976,8 +977,9 @@ export const places: SamplePlace[] = [
     "name": "Tenerife",
     "region": "Canary Islands, Spain",
     "score": 8.4,
-    "photo": "own-tenerife",
+    "photo": "own-tenerife-anaga",
     "photos": [
+      "own-tenerife-anaga",
       "own-tenerife",
       "own-tenerife-beach"
     ]
@@ -1306,6 +1308,16 @@ export const places: SamplePlace[] = [
     "photo": "own-menorca-cala",
     "photos": [
       "own-menorca-cala"
+    ]
+  },
+  {
+    "slug": "porto",
+    "name": "Porto",
+    "region": "Portugal",
+    "score": 8.6,
+    "photo": "own-porto-ribeira",
+    "photos": [
+      "own-porto-ribeira"
     ]
   }
 ] as SamplePlace[];
@@ -2075,14 +2087,14 @@ export function getPlace(slug: string): SamplePlace | undefined {
 const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   corfu: 'own-corfu', kerkyra: 'own-corfu', kassiopi: 'own-corfu', paleokastritsa: 'own-corfu',
   dubai: 'own-dubai', 'united arab emirates': 'own-dubai',
-  tenerife: ['own-tenerife', 'own-tenerife-beach'], 'santa cruz de tenerife': ['own-tenerife', 'own-tenerife-beach'], 'puerto de la cruz': ['own-tenerife', 'own-tenerife-beach'], adeje: ['own-tenerife', 'own-tenerife-beach'], 'costa adeje': ['own-tenerife', 'own-tenerife-beach'], 'playa de las americas': ['own-tenerife', 'own-tenerife-beach'], 'los cristianos': ['own-tenerife', 'own-tenerife-beach'],
+  tenerife: ['own-tenerife-anaga', 'own-tenerife', 'own-tenerife-beach'], 'santa cruz de tenerife': ['own-tenerife-anaga', 'own-tenerife', 'own-tenerife-beach'], 'puerto de la cruz': ['own-tenerife-anaga', 'own-tenerife', 'own-tenerife-beach'], adeje: ['own-tenerife-anaga', 'own-tenerife', 'own-tenerife-beach'], 'costa adeje': ['own-tenerife-anaga', 'own-tenerife', 'own-tenerife-beach'], 'playa de las americas': ['own-tenerife-anaga', 'own-tenerife', 'own-tenerife-beach'], 'los cristianos': ['own-tenerife-anaga', 'own-tenerife', 'own-tenerife-beach'],
   venice: ['own-venice-salute', 'lemon-1'], venezia: ['own-venice-salute', 'lemon-1'], // lemon-1 is the owner's Venice palazzo photo
   singapore: ['own-singapore', 'own-singapore-flyer', 'own-singapore-jewel', 'own-singapore-temple'],
   'new york': ['own-new-york', 'own-new-york-sunset', 'own-new-york-central-park', 'own-new-york-rooftop', 'own-new-york-pier', 'own-new-york-liberty'], 'new york city': ['own-new-york', 'own-new-york-sunset', 'own-new-york-central-park', 'own-new-york-rooftop', 'own-new-york-pier', 'own-new-york-liberty'], nyc: ['own-new-york', 'own-new-york-sunset', 'own-new-york-central-park', 'own-new-york-rooftop', 'own-new-york-pier', 'own-new-york-liberty'], manhattan: ['own-new-york', 'own-new-york-sunset', 'own-new-york-central-park', 'own-new-york-rooftop', 'own-new-york-pier', 'own-new-york-liberty'],
   milan: ['own-milan', 'own-milan-galleria'], milano: ['own-milan', 'own-milan-galleria'],
   zurich: 'own-zurich', 'lake zurich': 'own-zurich',
   tuscany: 'own-tuscany', chianti: 'own-tuscany', 'val d orcia': 'own-tuscany', siena: 'own-tuscany',
-  mallorca: ['own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'], majorca: ['own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'], palma: ['own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'], 'palma de mallorca': ['own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'],
+  mallorca: ['own-mallorca-soller', 'own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'], majorca: ['own-mallorca-soller', 'own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'], palma: ['own-mallorca-soller', 'own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'], 'palma de mallorca': ['own-mallorca-soller', 'own-mallorca', 'own-mallorca-villa', 'own-mallorca-pergola'],
   algarve: ['own-algarve', 'own-algarve-pool', 'own-algarve-path'], faro: ['own-algarve', 'own-algarve-pool', 'own-algarve-path'], 'vale do lobo': ['own-algarve', 'own-algarve-pool', 'own-algarve-path'], 'quinta do lago': ['own-algarve', 'own-algarve-pool', 'own-algarve-path'],
   cyprus: 'own-cyprus-bridge', 'ayia napa': 'own-cyprus-bridge', protaras: 'own-cyprus-bridge', paphos: 'own-cyprus-bridge', limassol: 'own-cyprus-bridge',
   'costa brava': 'own-costa-brava', begur: 'own-costa-brava', 'tossa de mar': 'own-costa-brava',
@@ -2109,7 +2121,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   palermo: 'own-palermo-cathedral', sicily: 'own-palermo-cathedral',
   capri: 'own-capri-faraglioni', anacapri: 'own-capri-faraglioni', 'amalfi coast': ['own-positano-town', 'own-capri-faraglioni'], amalfi: 'own-positano-town', ravello: 'own-positano-town', sorrento: 'own-capri-faraglioni', positano: 'own-positano-town', 'polignano a mare': 'own-polignano-cove', polignano: 'own-polignano-cove', puglia: 'own-polignano-cove', bari: 'own-polignano-cove', monopoli: 'own-polignano-cove',
   comporta: 'own-comporta-boardwalk', carvalhal: 'own-comporta-boardwalk', melides: 'own-comporta-boardwalk', alentejo: 'own-comporta-boardwalk',
-  madeira: 'own-madeira-cliffs', funchal: 'own-madeira-cliffs', 'ponta de sao lourenco': 'own-madeira-cliffs', zermatt: 'own-zermatt-matterhorn', verbier: 'own-verbier-village', seville: 'own-seville-plaza', sevilla: 'own-seville-plaza', marbella: 'own-marbella-marina', 'puerto banus': 'own-marbella-marina', menorca: 'own-menorca-cala', minorca: 'own-menorca-cala', ciutadella: 'own-menorca-cala', mahon: 'own-menorca-cala', 'four valleys': 'own-verbier-village', matterhorn: 'own-zermatt-matterhorn', lisbon: 'own-lisbon-sunset', lisboa: 'own-lisbon-sunset', cotswolds: 'own-cotswolds-castle-combe', 'the cotswolds': 'own-cotswolds-castle-combe', 'castle combe': 'own-cotswolds-castle-combe', bibury: 'own-cotswolds-castle-combe', santorini: 'own-santorini-oia', oia: 'own-santorini-oia', fira: 'own-santorini-oia', imerovigli: 'own-santorini-oia', thira: 'own-santorini-oia',
+  madeira: 'own-madeira-cliffs', funchal: 'own-madeira-cliffs', 'ponta de sao lourenco': 'own-madeira-cliffs', zermatt: 'own-zermatt-matterhorn', verbier: 'own-verbier-village', soller: 'own-mallorca-soller', 'port de soller': 'own-mallorca-soller', taganana: 'own-tenerife-anaga', anaga: 'own-tenerife-anaga', porto: 'own-porto-ribeira', oporto: 'own-porto-ribeira', 'vila nova de gaia': 'own-porto-ribeira', seville: 'own-seville-plaza', sevilla: 'own-seville-plaza', marbella: 'own-marbella-marina', 'puerto banus': 'own-marbella-marina', menorca: 'own-menorca-cala', minorca: 'own-menorca-cala', ciutadella: 'own-menorca-cala', mahon: 'own-menorca-cala', 'four valleys': 'own-verbier-village', matterhorn: 'own-zermatt-matterhorn', lisbon: 'own-lisbon-sunset', lisboa: 'own-lisbon-sunset', cotswolds: 'own-cotswolds-castle-combe', 'the cotswolds': 'own-cotswolds-castle-combe', 'castle combe': 'own-cotswolds-castle-combe', bibury: 'own-cotswolds-castle-combe', santorini: 'own-santorini-oia', oia: 'own-santorini-oia', fira: 'own-santorini-oia', imerovigli: 'own-santorini-oia', thira: 'own-santorini-oia',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

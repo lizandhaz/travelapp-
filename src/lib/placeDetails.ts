@@ -12834,5 +12834,171 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "porto": {
+    "kicker": "City · Food",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £150 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      14,
+      15,
+      18,
+      19,
+      21,
+      24,
+      26,
+      26,
+      25,
+      21,
+      17,
+      14
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Tom",
+        "month": "May 2025",
+        "quote": "Port tasting across the river, then a francesinha. The perfect weekend.",
+        "score": 8.8,
+        "face": null
+      },
+      {
+        "who": "Sophie",
+        "month": "Oct 2024",
+        "quote": "The Ribeira at sunset is as pretty as everyone says.",
+        "score": 8.5,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "The Yeatman",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £350 a night · A wine hotel in Gaia with the whole city in view.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Torel Avantgarde",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £220 a night · Tom stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Pestana Vintage Porto",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £150 a night · Sophie stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Cantinho do Avillez",
+        "price": "££",
+        "what": "Relaxed Portuguese cooking from chef José Avillez",
+        "score": 8.9,
+        "from": "Sophie",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Café Santiago",
+        "price": "£",
+        "what": "The classic francesinha, worth the queue",
+        "score": 8.8,
+        "from": "Tom",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Taberna dos Mercadores",
+        "price": "££",
+        "what": "A tiny Ribeira tavern for octopus and bacalhau",
+        "score": 8.7,
+        "from": null,
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Wine",
+        "name": "Port cellars in Vila Nova de Gaia",
+        "what": "Cross the Dom Luís I bridge and taste at Graham's or Taylor's.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Livraria Lello",
+        "what": "The ornate old bookshop. Book a timed ticket.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "The Douro Valley",
+        "what": "A day of terraced vineyards and quintas up the river.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Jardim do Morro at sunset",
+        "what": "Watch the sun go down over the Ribeira.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Sight",
+        "when": null,
+        "name": "São Bento station",
+        "what": "Its great hall is covered in blue-and-white tiles.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Wear comfy shoes: Porto is steep, and the cobbles are slippery when wet.",
+        "from": "Sophie"
+      }
+    ],
+    "credits": null
   }
 };

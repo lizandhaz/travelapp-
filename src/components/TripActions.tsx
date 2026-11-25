@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { Modal, Pressable, ScrollView, View } from 'react-native';
+import { useEffect, useRef, useState, type ComponentRef } from 'react';
+import { Keyboard, LayoutAnimation, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
 
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { sampleCountry } from '@/lib/placeFeatures';
@@ -72,40 +72,7 @@ export function TripActions({ id, who, place, slug, country }: { id: string; who
       </Modal>
 
       <Modal visible={open} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setOpen(false)}>
-        {/* The box to write in sits at the top, under the heading, so the keyboard can never cover it (owner, Nov 2026). */}
-        <View style={{ flex: 1, backgroundColor: colors.bg }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: GUTTER, paddingTop: 18, paddingBottom: 10 }}>
-            <Text variant="heading">Comments</Text>
-            <Pressable onPress={() => setOpen(false)} accessibilityRole="button" accessibilityLabel="Close comments" hitSlop={10}>
-              <Text variant="link">Done</Text>
-            </Pressable>
-          </View>
-          <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', paddingHorizontal: GUTTER, paddingBottom: 14, marginBottom: 6, borderBottomWidth: 1, borderBottomColor: colors.line }}>
-            <View style={{ flex: 1 }}>
-              <Input value={draft} onChangeText={setDraft} placeholder={`Comment on ${who}’s trip`} accessibilityLabel="Write a comment" returnKeyType="send" onSubmitEditing={send} maxLength={500} />
-            </View>
-            <Button title="Send" kind="dark" size="sm" disabled={!draft.trim()} onPress={send} />
-          </View>
-          <ScrollView contentContainerStyle={{ paddingHorizontal: GUTTER, gap: 16, paddingBottom: 20 }} keyboardShouldPersistTaps="handled">
-            {r.comments.length === 0 && <Text variant="bodySoft">No comments yet. Say something nice to {who}.</Text>}
-            {r.comments.map((c, i) => (
-              <View key={i} style={{ flexDirection: 'row', gap: 10 }}>
-                <Avatar name={c.who} size={34} />
-                <View style={{ flex: 1 }}>
-                  <Text variant="small">
-                    <Text variant="strong" style={{ fontSize: 14 }}>
-                      {c.who}
-                    </Text>{' '}
-                    <Text variant="tiny">{c.when}</Text>
-                  </Text>
-                  <Text variant="body" style={{ fontSize: 15 }}>
-                    {c.text}
-                  </Text>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
+        <CommentSheet who={who} comments={r.comments} draft={draft} setDraft={setDraft} send={send} onClose={() => setOpen(false)} />
       </Modal>
     </>
   );
@@ -196,3 +163,93 @@ export function TripLikesAndComments({ id }: { id: string }) {
   );
 }
 
+
+/**
+ * How far the keyboard covers this view, so the box to write in can sit at the bottom and rise above the keyboard
+ * (owner, Nov 2026: "comments down the bottom, but it mustn't get blocked"). KeyboardAvoidingView doesn't work inside an
+ * iOS page sheet, so this measures where the view ends on screen and where the keyboard starts (also right on iPad,
+ * where the sheet floats in the middle).
+ */
+function useKeyboardOverlap(ref: React.RefObject<ComponentRef<typeof View> | null>) {
+  const [overlap, setOverlap] = useState(0);
+  useEffect(() => {
+    const ios = Platform.OS === 'ios';
+    const show = Keyboard.addListener(ios ? 'keyboardWillChangeFrame' : 'keyboardDidShow', (e) => {
+      ref.current?.measureInWindow((_x, y, _w, h) => {
+        if (ios) LayoutAnimation.configureNext(LayoutAnimation.create(e.duration || 250, 'keyboard', 'opacity'));
+        setOverlap(Math.max(0, y + h - e.endCoordinates.screenY));
+      });
+    });
+    const hide = Keyboard.addListener(ios ? 'keyboardWillHide' : 'keyboardDidHide', (e) => {
+      if (ios) LayoutAnimation.configureNext(LayoutAnimation.create(e.duration || 250, 'keyboard', 'opacity'));
+      setOverlap(0);
+    });
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, [ref]);
+  return overlap;
+}
+
+/** The comments sheet: comments, newest at the bottom, and the box to write in along the bottom edge. */
+function CommentSheet({
+  who,
+  comments,
+  draft,
+  setDraft,
+  send,
+  onClose,
+}: {
+  who: string;
+  comments: { who: string; when: string; text: string }[];
+  draft: string;
+  setDraft: (s: string) => void;
+  send: () => void;
+  onClose: () => void;
+}) {
+  const root = useRef<ComponentRef<typeof View>>(null);
+  const list = useRef<ComponentRef<typeof ScrollView>>(null);
+  const overlap = useKeyboardOverlap(root);
+  return (
+    <View ref={root} style={{ flex: 1, backgroundColor: colors.bg }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: GUTTER, paddingTop: 18, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: colors.line }}>
+        <Text variant="heading">Comments</Text>
+        <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="Close comments" hitSlop={10}>
+          <Text variant="link">Done</Text>
+        </Pressable>
+      </View>
+      <ScrollView
+        ref={list}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingHorizontal: GUTTER, paddingTop: 16, gap: 16, paddingBottom: 20 }}
+        keyboardShouldPersistTaps="handled"
+        onContentSizeChange={() => list.current?.scrollToEnd({ animated: false })}
+      >
+        {comments.length === 0 && <Text variant="bodySoft">No comments yet. Say something nice to {who}.</Text>}
+        {comments.map((c, i) => (
+          <View key={i} style={{ flexDirection: 'row', gap: 10 }}>
+            <Avatar name={c.who} size={34} />
+            <View style={{ flex: 1 }}>
+              <Text variant="small">
+                <Text variant="strong" style={{ fontSize: 14 }}>
+                  {c.who}
+                </Text>{' '}
+                <Text variant="tiny">{c.when}</Text>
+              </Text>
+              <Text variant="body" style={{ fontSize: 15 }}>
+                {c.text}
+              </Text>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+      <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', paddingHorizontal: GUTTER, paddingTop: 12, paddingBottom: overlap > 0 ? overlap + 10 : 34, borderTopWidth: 1, borderTopColor: colors.line, backgroundColor: colors.bg }}>
+        <View style={{ flex: 1 }}>
+          <Input value={draft} onChangeText={setDraft} placeholder={`Comment on ${who}’s trip`} accessibilityLabel="Write a comment" returnKeyType="send" onSubmitEditing={send} maxLength={500} />
+        </View>
+        <Button title="Send" kind="dark" size="sm" disabled={!draft.trim()} onPress={send} />
+      </View>
+    </View>
+  );
+}

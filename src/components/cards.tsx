@@ -151,8 +151,9 @@ export function FeedCard({ item }: { item: FeedItem }) {
             </View>
           </View>
         ) : (
-          // No photos: a soft blush top with who and when, then the place in big type beside the score.
-          <View style={{ backgroundColor: colors.champagneSoft, padding: 16, gap: 14 }}>
+          // No photos: a mini postcard (owner's pick, Nov 2026): "Greetings from" the place in italic with their score
+          // as the stamp, then like the back of a postcard their words left of the middle line and the stay on the right.
+          <View style={{ backgroundColor: colors.cream, padding: 16, gap: 14 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Pressable disabled={!personHref(item.who)} onPress={() => router.push(personHref(item.who) as never)} accessibilityRole="link" accessibilityLabel={`${item.who}. Open their profile`} hitSlop={6}>
                 <Avatar face={item.face} uri={item.faceUri} name={item.who} size={36} />
@@ -163,22 +164,55 @@ export function FeedCard({ item }: { item: FeedItem }) {
               </Text>
               <MonthPill month={item.month} />
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
               <View style={{ flex: 1 }}>
-                <Text {...fitLines(item.place)} style={{ fontFamily: fonts.displayBold, fontSize: feedSize, lineHeight: Math.round(feedSize * 1.12), color: colors.ink }}>{item.place}</Text>
+                <Text variant="kicker" style={{ letterSpacing: 3 }}>
+                  Greetings from
+                </Text>
+                <Text {...fitLines(item.place)} style={{ fontFamily: fonts.displayItalic, fontSize: feedSize + 4, lineHeight: Math.round((feedSize + 4) * 1.1), color: colors.ink }}>
+                  {item.place}
+                </Text>
                 <Text variant="label" style={{ marginTop: 2 }}>
                   {item.region}
                 </Text>
               </View>
-              <ScoreStamp score={item.score} size="md" label="Destination" />
+              <View style={{ transform: [{ rotate: '4deg' }], marginTop: 4 }}>
+                <ScoreStamp score={item.score} size="md" label="Destination" />
+              </View>
             </View>
+            {(!!item.quote || !!item.stayName) && (
+              <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: colors.line, paddingTop: 14 }}>
+                {!!item.quote && (
+                  <Text style={{ flex: 1.1, fontFamily: fonts.displayItalic, fontSize: 17, lineHeight: 24, color: colors.ink, paddingRight: item.stayName ? 14 : 0 }}>
+                    “{item.quote.replace(/^[“"]+|[”"]+$/g, '')}”
+                  </Text>
+                )}
+                {!!item.quote && !!item.stayName && <View style={{ width: 1, backgroundColor: colors.line }} />}
+                {!!item.stayName && (
+                  <View style={{ flex: 1, paddingLeft: item.quote ? 14 : 0, gap: 3 }}>
+                    <Text variant="label" style={{ fontSize: 10 }}>
+                      Stayed at
+                    </Text>
+                    <Text variant="strong" style={{ fontSize: 14.5, lineHeight: 19 }}>
+                      {item.stayName}
+                    </Text>
+                    <Text variant="tiny">{[item.stayType, item.stayScore != null ? item.stayScore.toFixed(1) : null].filter(Boolean).join(' · ')}</Text>
+                    <Text variant="small" style={{ color: colors.accentText, marginTop: 6 }}>
+                      Their trip →
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
+            <TripActions id={id} who={item.who} place={item.place} slug={item.slug} country={item.country} />
           </View>
         )}
+        {hasPhoto && (
         <View style={{ padding: 16, gap: 14 }}>
           {!!item.quote && <Text variant="quote">{item.quote}</Text>}
           {!!item.stayName && (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.sageSoft, borderRadius: radius.md, padding: 10 }}>
-            {item.stayScore != null && <ScoreStamp score={item.stayScore} size="sm" tone="olive" label={item.stayType} />}
+            {item.stayScore != null && <ScoreStamp score={item.stayScore} size="sm" label={item.stayType} />}
             <View style={{ flex: 1 }}>
               <Text variant="label" style={{ fontSize: 10 }}>
                 Stayed at · {item.stayType}
@@ -194,6 +228,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
           )}
           <TripActions id={id} who={item.who} place={item.place} slug={item.slug} country={item.country} />
         </View>
+        )}
       </Card>
     </Pressable>
   );

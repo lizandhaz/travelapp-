@@ -146,7 +146,8 @@ src/
     stay/[slug].tsx       One hotel, villa or Airbnb (?name=, from a place page's Where to stay card; owner Nov 2026): a sage band with type, name and
                           its place; your score (cream card); price from / type; the description; the friend who stayed (score, would stay again → their
                           profile); "See prices": Booking.com search (Airbnb search for Airbnbs/apartments) and "Find their own website" (a web search),
-                          opened with Linking (no dates or booking in the app: rule 6); its pin on the map + "Near here"; Save to a board
+                          opened with Linking (no dates or booking in the app: rule 6); "Where it is" was removed (owner, Nov 2026); Save to a board.
+                          Prices are rough sample "from" figures (shown as "from about £X"), not live; each place's staysFrom = its cheapest stay
     trip/[id]/index.tsx   One of your trips (title sized with fitWordSize/fitLines beside the stamp); "Likes and comments" (TripLikesAndComments:
                           who liked it, comments, reply box; hidden until there are some); at the bottom a "More about <place>" card with
                           the place photo (when it has a page), then Share (terracotta, share icon) and Edit (outline, pencil) side by side, and a quiet
@@ -177,7 +178,7 @@ src/
                           key with your score for each spot, tap for why; tap the map or "Full screen" for the big real map (zoom from the street to the world) +
                           "Where are you staying?" (typing only; picks the stay once one name matches) → "Near <stay>": the rest
                           nearest first, Right nearby / A short way / Further out. The drawn maps are no longer shown on phones
-                          (owner, Nov 2026); they're only the web stand-in), BestTimeChart, SaidList, StayRow (price chips Any / Under £150 / £150–£300 / Over £300, PRICE_BANDS, "No stays under £150 here yet" when none; each card opens stay/[slug]; Explore also has "Stays under £150" and "Worth the splurge" (£500+) collections, whose stays open stay/[slug] too), EatRow (Pinterest-style: no photos until friends add their own, owner Nov 2026; soft sage/blush/sky/champagne cards in a
+                          (owner, Nov 2026); they're only the web stand-in), BestTimeChart, SaidList, StayRow (price chips Any / Under £150 / £150–£300 / Over £300, PRICE_BANDS: only the bands that place has stays in, and only when there are two or more (owner Nov 2026); each card opens stay/[slug]; Explore also has "Stays under £150" and "Worth the splurge" (£500+) collections, whose stays open stay/[slug] too), EatRow (Pinterest-style: no photos until friends add their own, owner Nov 2026; soft sage/blush/sky/champagne cards in a
                           row that scrolls sideways, with icon, type/price, a one-line "✦ We think you'd like it" pill above the name when featured (never beside the stamp, owner Nov 2026), name, why, a one-line friend's pick, score stamp, save bookmark), DoRow, MoreAbout
     AreaMap.tsx           The real map of a place (Apple Maps, mutedStandard; numbered pins with name labels; `preview` = still, tap to
                           open). AreaMap.web.tsx shows the drawn map instead, as react-native-maps doesn't run on the web

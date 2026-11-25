@@ -543,7 +543,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · One night",
     "scoreNote": "From 6 friends and people with your taste.",
     "bestTime": "May, June or a crisp December",
-    "staysFrom": "from £210 a night",
+    "staysFrom": "from \u00a3200 a night",
     "goodFor": [
       "Couples",
       "Friends"
@@ -5083,7 +5083,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Ski · Après",
     "scoreNote": "From 4 friends and people with your taste.",
     "bestTime": "January to March",
-    "staysFrom": "from £300 a night",
+    "staysFrom": "from \u00a3260 a night",
     "goodFor": [
       "Friends"
     ],
@@ -5403,7 +5403,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Town · One night",
     "scoreNote": "From 4 friends and people with your taste.",
     "bestTime": "Spring and summer, when the riverside is busy",
-    "staysFrom": "from £170 a night",
+    "staysFrom": "from \u00a3160 a night",
     "goodFor": [
       "Couples",
       "Friends"
@@ -6928,7 +6928,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Island · Beach",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, June or September",
-    "staysFrom": "from £180 a night",
+    "staysFrom": "from \u00a3320 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -7094,7 +7094,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Island · Beach",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, June or October",
-    "staysFrom": "from £150 a night",
+    "staysFrom": "from \u00a3170 a night",
     "goodFor": [
       "Families",
       "Friends"
@@ -7260,7 +7260,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Island · Beach",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, June or September",
-    "staysFrom": "from £200 a night",
+    "staysFrom": "from \u00a3280 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -7426,7 +7426,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Island · Beach",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "All year (warmest May to October)",
-    "staysFrom": "from £150 a night",
+    "staysFrom": "from \u00a3180 a night",
     "goodFor": [
       "Families",
       "Couples"
@@ -7752,7 +7752,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Beach · Coast",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, June or September",
-    "staysFrom": "from £180 a night",
+    "staysFrom": "from \u00a3250 a night",
     "goodFor": [
       "Families",
       "Couples"
@@ -7919,7 +7919,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Culture",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "April, May or October",
-    "staysFrom": "from £250 a night",
+    "staysFrom": "from \u00a3300 a night",
     "goodFor": [
       "Couples"
     ],
@@ -8084,7 +8084,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Countryside · Food",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, June or September",
-    "staysFrom": "from £220 a night",
+    "staysFrom": "from \u00a3350 a night",
     "goodFor": [
       "Couples",
       "Friends"
@@ -8569,7 +8569,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Lakes",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "June to September, or December for the markets",
-    "staysFrom": "from £250 a night",
+    "staysFrom": "from \u00a3180 a night",
     "goodFor": [
       "Solo",
       "Couples"
@@ -8730,7 +8730,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Ski · Mountains · Après",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "January to March",
-    "staysFrom": "from £300 a night",
+    "staysFrom": "from \u00a3250 a night",
     "goodFor": [
       "Friends",
       "Couples"
@@ -9181,7 +9181,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Beach",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "November to March",
-    "staysFrom": "from £180 a night",
+    "staysFrom": "from \u00a3120 a night",
     "goodFor": [
       "Families",
       "Couples"
@@ -9349,7 +9349,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Safari · Hiking",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "April to July for the falls; August to November for safari",
-    "staysFrom": "from £250 a night",
+    "staysFrom": "from \u00a3350 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -9507,7 +9507,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Safari",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "June to October (calving in February)",
-    "staysFrom": "from £400 a night",
+    "staysFrom": "from \u00a3350 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -9652,7 +9652,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Food",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "February to April",
-    "staysFrom": "from £200 a night",
+    "staysFrom": "from \u00a3250 a night",
     "goodFor": [
       "Families",
       "Solo"
@@ -9818,7 +9818,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Beach · Culture",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "December to April (south and west coast)",
-    "staysFrom": "from £120 a night",
+    "staysFrom": "from \u00a3150 a night",
     "goodFor": [
       "Couples",
       "Friends"
@@ -9986,7 +9986,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Culture",
     "scoreNote": "From 2 friends and people with your taste.",
     "bestTime": "May, September or December",
-    "staysFrom": "from £280 a night",
+    "staysFrom": "from \u00a3250 a night",
     "goodFor": [
       "Friends",
       "Couples"
@@ -10154,7 +10154,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Weekend",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "March to May, or October and November",
-    "staysFrom": "from £120 a night",
+    "staysFrom": "from \u00a3180 a night",
     "goodFor": [
       "Friends"
     ],
@@ -10314,7 +10314,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "City · Food",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "September or October",
-    "staysFrom": "from £220 a night",
+    "staysFrom": "from \u00a3250 a night",
     "goodFor": [
       "Couples",
       "Solo"
@@ -10472,7 +10472,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Lakes · Mountains · Hiking",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "July to September, or January for skiing",
-    "staysFrom": "from £300 a night",
+    "staysFrom": "from \u00a3350 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -10631,7 +10631,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Islands · Beach",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "June to October",
-    "staysFrom": "from £250 a night",
+    "staysFrom": "from \u00a3180 a night",
     "goodFor": [
       "Couples",
       "Families"
@@ -10911,7 +10911,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Island · Beach",
     "scoreNote": "From 1 friend and people with your taste.",
     "bestTime": "October to April",
-    "staysFrom": "from £150 a night",
+    "staysFrom": "from \u00a3180 a night",
     "goodFor": [
       "Families",
       "Friends"

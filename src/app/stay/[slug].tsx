@@ -1,16 +1,14 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { Linking, Pressable, View } from 'react-native';
 
-import { AreaMap } from '@/components/AreaMap';
 import { BedIcon, ChevronIcon } from '@/components/Icons';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
-import { appWidth, colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { sampleWouldReturn } from '@/lib/friendTrips';
 import { placeDetails } from '@/lib/placeDetails';
 import { parseStaySub, sampleCountry } from '@/lib/placeFeatures';
-import { mapDistance, placeMaps, pinPosition } from '@/lib/placeMaps';
 import { getPlace } from '@/lib/sample';
 import { personHref } from '@/lib/samplePeople';
 import { useTaste } from '@/lib/taste';
@@ -18,7 +16,7 @@ import NotFound from '../+not-found';
 
 /**
  * One hotel, villa or Airbnb (owner, Nov 2026): what it's like, the typical price a night, your score and the friend who
- * stayed, where it is and what's near it, then links out to see prices and book on the hotel's own site, Booking.com
+ * stayed, then links out to see prices and book on the hotel's own site, Booking.com
  * or Airbnb. The app never takes bookings or asks for dates (product rule 6): it hands you over to the site.
  */
 export default function StayPage() {
@@ -36,22 +34,6 @@ export default function StayPage() {
   const yours = taste.forItem({ slug, kind: 'Stay', name: stay.name, friends: '' });
   const friendScore = friend ? stay.score : null;
   const wouldReturn = friendScore != null ? sampleWouldReturn(friendScore) : null;
-
-  // On the map: this stay's pin, and the places to eat and things to do nearest it.
-  const pins = placeMaps[slug]?.pins ?? [];
-  const pin = pins.find((p) => p.name === stay.name);
-  const here = pin ? pinPosition(slug, pin) : null;
-  const near = here
-    ? pins
-        .filter((p) => p.kind !== 'Stay')
-        .map((p) => ({ ...p, pos: pinPosition(slug, p) }))
-        .filter((p) => p.pos)
-        .map((p) => ({ ...p, dist: mapDistance(slug, p.pos!, here) }))
-        .sort((a, b) => a.dist - b.dist)
-        .slice(0, 4)
-    : [];
-  const howFar = (d: number) => (d < 50 ? 'Right nearby' : d < 110 ? 'A short way' : 'Further out');
-  const width = appWidth() - GUTTER * 2;
 
   // Links out. Search links, so they always land on the right hotel without us storing addresses.
   const isHome = /airbnb|apartment/i.test(stay.type);
@@ -97,7 +79,7 @@ export default function StayPage() {
       {/* The facts: price, who stayed, what it's like. */}
       <View style={{ paddingHorizontal: GUTTER, marginTop: 22, gap: 16 }}>
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <Fact label="Price" value={priceFrom != null ? `from £${priceFrom} a night` : 'Varies'} />
+          <Fact label="Price" value={priceFrom != null ? `from about £${priceFrom} a night` : 'Varies'} />
           <Fact label="Type" value={stay.type} />
         </View>
         {!!description && <Text variant="quote">{description}</Text>}
@@ -132,33 +114,9 @@ export default function StayPage() {
         )}
         <Button title="Find their own website" kind="outline" onPress={() => open(siteUrl)} accessibilityLabel={`Find ${stay.name}'s own website. Opens a web search`} />
         <Text variant="tiny" style={{ textAlign: 'center' }}>
-          Prices, dates and booking are on their site.
+          Our prices are a rough guide. The real price for your dates, and booking, are on their site.
         </Text>
       </View>
-
-      {!!pin && here && (
-        <View style={{ marginTop: 30 }}>
-          <SectionHeader>Where it is</SectionHeader>
-          <View style={{ marginHorizontal: GUTTER, borderRadius: radius.lg, overflow: 'hidden' }}>
-            <AreaMap slug={slug} name={stay.name} width={width} height={200} pins={[pin]} picked={null} stay={pin.n} focus={{ n: pin.n, key: 1 }} onPin={() => {}} preview />
-          </View>
-          {near.length > 0 && (
-            <View style={{ paddingHorizontal: GUTTER, marginTop: 14, gap: 2 }}>
-              <Text variant="label" style={{ marginBottom: 4 }}>
-                Near here
-              </Text>
-              {near.map((p) => (
-                <View key={p.n} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: colors.line }}>
-                  <Text variant="body" style={{ flex: 1 }}>
-                    {p.name}
-                  </Text>
-                  <Text variant="tiny">{howFar(p.dist)}</Text>
-                </View>
-              ))}
-            </View>
-          )}
-        </View>
-      )}
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 30, marginBottom: 20 }}>
         <Button

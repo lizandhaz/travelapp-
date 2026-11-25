@@ -219,29 +219,28 @@ export const PRICE_BANDS = [
 ] as const;
 
 /**
- * Where to stay: price chips, then the stays as cards that scroll sideways.
+ * Where to stay: price chips (the bands this place has), then the stays as cards that scroll sideways.
  * Tap a card for its own page (app/stay/[slug].tsx) with prices and links out.
  */
 export function StayRow({ stays, at }: { stays: PlaceDetail['stays']; at?: SpotPlace }) {
   const [band, setBand] = useState<string>('any');
   const prices = stays.map((s) => parseStaySub(s.sub).priceFrom);
+  // Only the price bands this place has stays in (owner, Nov 2026: no "Under £150" when nothing is), and only
+  // when there's a choice to make (two or more bands).
+  const bands = PRICE_BANDS.filter((b) => b.id !== 'any' && prices.some((p) => b.fits(p)));
   const chosen = PRICE_BANDS.find((b) => b.id === band) ?? PRICE_BANDS[0];
   const shown = stays.filter((s, i) => chosen.fits(prices[i]));
   return (
     <View style={{ marginTop: 28 }}>
       <SectionHeader>Where to stay</SectionHeader>
-      {prices.some((p) => p != null) && (
+      {bands.length >= 2 && (
         <View accessibilityRole="tablist" accessibilityLabel="Price a night" style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: GUTTER, marginBottom: 14 }}>
-          {PRICE_BANDS.map((b) => (
+          {[PRICE_BANDS[0], ...bands].map((b) => (
             <Chip key={b.id} label={b.label} selected={band === b.id} onPress={() => setBand(b.id)} accessibilityLabel={`Show stays: ${b.label}`} />
           ))}
         </View>
       )}
-      {shown.length === 0 ? (
-        <Text variant="bodySoft" style={{ paddingHorizontal: GUTTER }}>
-          No stays {chosen.label.toLowerCase()} here yet.
-        </Text>
-      ) : (
+      {shown.length === 0 ? null : (
         <Pinboard
           items={shown.map((s, i) => (
             <WithSave key={s.name} at={at} name={s.name} kind="stay">

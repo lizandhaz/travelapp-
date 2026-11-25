@@ -13678,5 +13678,178 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "ibiza": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £300 a night",
+    "goodFor": [
+      "Friends",
+      "Couples"
+    ],
+    "temps": [
+      15,
+      16,
+      18,
+      20,
+      24,
+      28,
+      31,
+      31,
+      28,
+      24,
+      19,
+      16
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Tom",
+        "month": "Jun 2025",
+        "quote": "Not just parties: quiet coves, the old town and amazing food.",
+        "score": 8.7,
+        "face": null
+      },
+      {
+        "who": "Sophie",
+        "month": "Sep 2024",
+        "quote": "Sunset at Cala d'Hort, looking at Es Vedrà, is unforgettable.",
+        "score": 9.0,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Six Senses Ibiza",
+        "type": "Hotel",
+        "match": 87,
+        "featured": true,
+        "sub": "from £700 a night · A clifftop eco-resort on the quiet north coast.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hacienda Na Xamena",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £400 a night · Sophie stayed",
+        "because": null,
+        "score": 9.1,
+        "photo": null
+      },
+      {
+        "name": "Hotel Mirador de Dalt Vila",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £300 a night · Tom stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Es Boldado",
+        "price": "££",
+        "what": "Fish and paella looking out at Es Vedrà",
+        "score": 8.9,
+        "from": "Sophie",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "La Paloma",
+        "price": "££",
+        "what": "A garden restaurant in the countryside near Sant Llorenç",
+        "score": 8.8,
+        "from": "Tom",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Es Torrent",
+        "price": "£££",
+        "what": "Fresh fish on a little beach cove",
+        "score": 8.6,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Culture",
+        "name": "Dalt Vila",
+        "what": "The walled old town, a UNESCO site, best at sunset.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Beach",
+        "name": "Cala Comte",
+        "what": "Clear water and one of the best sunset beaches on the island.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Nightlife",
+        "name": "Pacha",
+        "what": "The island's classic club, open since 1973.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Market",
+        "name": "Las Dalias market",
+        "what": "The old hippy market in Sant Carles, on Saturdays.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Cala d'Hort at sunset",
+        "what": "Watch the sun drop behind Es Vedrà.",
+        "from": "Sophie",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Sight",
+        "when": null,
+        "name": "Es Vedrà",
+        "what": "The island rock off the west coast, wrapped in legends.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "For a quieter trip, stay in the north or the old town. San Antonio and Playa d’en Bossa are the party ends.",
+        "from": "Tom"
+      }
+    ],
+    "credits": null
   }
 };

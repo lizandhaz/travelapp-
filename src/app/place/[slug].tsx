@@ -93,17 +93,14 @@ export default function PlaceScreen() {
         <WantToGoButton variant="block" saved={wish.saved} busy={wish.busy || !wish.ready} onPress={wish.toggle} style={{ flex: 1 }} />
         <Button title="I’ve been" kind="accent" style={{ flex: 1 }} onPress={() => router.navigate({ pathname: '/add', params: { place: place.name, country } })} />
       </View>
-      {/* Once it's on Want to go: invite people you'd go with. */}
-      {/* The space is always kept (hidden until it's on Want to go), so the page never shifts under your finger when you tap Want to go. */}
-      {wish.ready && (
+      {/* Once it's on Want to go: invite people you'd go with. Only shown then (owner Nov 2026: the hidden line left a gap);
+          it appears below the buttons, so the button you tapped never moves. */}
+      {wish.ready && wish.saved && !!wish.itemId && (
         <Pressable
-          disabled={!(wish.saved && !!wish.itemId)}
           onPress={() => setInviting(true)}
           accessibilityRole="button"
-          accessibilityElementsHidden={!(wish.saved && !!wish.itemId)}
-          importantForAccessibility={wish.saved && !!wish.itemId ? 'auto' : 'no-hide-descendants'}
           accessibilityLabel={`Invite people to go to ${place.name} with you`}
-          style={{ paddingHorizontal: GUTTER, marginTop: 8, opacity: wish.saved && !!wish.itemId ? 1 : 0 }}
+          style={{ paddingHorizontal: GUTTER, marginTop: 8 }}
         >
           <Text variant="small" style={{ color: colors.accentText }}>
             On your Want to go. Going with someone? <Text variant="small" style={{ color: colors.accentText, fontFamily: fonts.sansSemiBold }}>Invite them →</Text>
@@ -118,7 +115,7 @@ export default function PlaceScreen() {
       )}
 
       {detail && (
-        <View style={{ marginTop: 12 }}>
+        <View style={{ marginTop: 20 }}>
           <PlaceFacts detail={detail} />
         </View>
       )}

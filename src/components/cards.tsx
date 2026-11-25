@@ -152,7 +152,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
             </View>
           </View>
         ) : (
-          // No photos: a mini postcard (owner's pick, Nov 2026): "Greetings from" the place in italic with their score
+          // No photos: a mini postcard (owner's pick, Nov 2026; no "Greetings from", too cheesy): the place in italic with their score
           // as the stamp, then like the back of a postcard their words left of the middle line and the stay on the right.
           <View style={{ backgroundColor: colors.cream, padding: 16, gap: 14 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
@@ -168,9 +168,6 @@ export function FeedCard({ item }: { item: FeedItem }) {
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
               <View style={{ flex: 1 }}>
-                <Text variant="kicker" style={{ letterSpacing: 3 }}>
-                  Greetings from
-                </Text>
                 <Text {...fitLines(item.place)} style={{ fontFamily: fonts.displayItalic, fontSize: feedSize + 4, lineHeight: Math.round((feedSize + 4) * 1.1), color: colors.ink }}>
                   {item.place}
                 </Text>

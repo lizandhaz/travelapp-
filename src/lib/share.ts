@@ -27,7 +27,7 @@ export async function shareText(title: string, message: string): Promise<'shared
 /**
  * One of your trips as a message for a friend: the place and month, your score, who with and how
  * long, where you stayed, your best restaurants, top tip and note. Only what you filled in. Never a
- * location or a link (product rule 2).
+ * location or a link (privacy default).
  */
 export function tripShareText(trip: Trip): string {
   const [main, ...more] = trip.stops;

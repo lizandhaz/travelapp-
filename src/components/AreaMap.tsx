@@ -13,7 +13,7 @@ const PIN: Record<string, string> = { Stay: colors.olive, Eat: colors.accent, Do
  * The real map of a place (Apple Maps on iPhone, in its dark, muted style; Google on Android; both
  * come with Expo Go, no key needed), dressed like the drawn close-up: numbered pins in the app's colours
  * with white name labels. Zoom from the street out to the country and the world. Pins are placed roughly
- * (from the drawing) until real place data arrives. Never shows your own location (product rule 2).
+ * (from the drawing) until real place data arrives. Never shows your own location (privacy default).
  */
 export function AreaMap({
   slug,

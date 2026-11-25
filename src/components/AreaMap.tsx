@@ -3,7 +3,7 @@ import { Platform, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 import { colors, fonts } from '@/constants/theme';
-import { pinLatLng, placeCentres, type MapPin } from '@/lib/placeMaps';
+import { pinPosition, placeCentres, type MapPin } from '@/lib/placeMaps';
 import { Text } from './Text';
 
 /** Pin colours, matching the drawn maps and the key. */
@@ -44,7 +44,7 @@ export function AreaMap({
 }) {
   const centre = placeCentres[slug];
   const map = useRef<ComponentRef<typeof MapView>>(null);
-  const spots = pins.map((p) => ({ ...p, pos: p.at ? pinLatLng(slug, p.at) : null }));
+  const spots = pins.map((p) => ({ ...p, pos: pinPosition(slug, p) }));
   const ratio = width / height;
   const home = centre ? { latitude: centre.at[0], longitude: centre.at[1], latitudeDelta: centre.span * 0.4, longitudeDelta: centre.span * 0.4 * ratio } : null;
 
@@ -54,7 +54,7 @@ export function AreaMap({
   useEffect(() => {
     if (focusKey == null || !centre) return;
     const pin = pins.find((p) => p.n === focusN);
-    const pos = pin?.at ? pinLatLng(slug, pin.at) : null;
+    const pos = pin ? pinPosition(slug, pin) : null;
     const d = centre.span * 0.4;
     const region = pos
       ? { latitude: pos[0], longitude: pos[1], latitudeDelta: d / 2.5, longitudeDelta: (d / 2.5) * ratio }

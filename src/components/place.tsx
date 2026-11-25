@@ -5,7 +5,7 @@ import { Dimensions, Modal, Pressable, ScrollView, View } from 'react-native';
 import { colors, fonts, GUTTER, radius, MAX_WIDTH } from '@/constants/theme';
 import type { PlaceResult } from '@/lib/match';
 import { placeDetails, type PlaceDetail } from '@/lib/placeDetails';
-import { placeCentres, placeMaps } from '@/lib/placeMaps';
+import { placeCentres, placeMaps, pinPosition, mapDistance } from '@/lib/placeMaps';
 import { useTaste } from '@/lib/taste';
 import { formatScore } from '@/lib/score';
 import { getTrip, tripId } from '@/lib/friendTrips';
@@ -592,10 +592,12 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
   const top = [...spots].sort((a, b) => b.score - a.score)[0]?.n;
 
   // Everything else on the map, nearest your stay first.
-  const nearby = stayPin?.at
+  const stayPos = stayPin ? pinPosition(slug, stayPin) : null;
+  const nearby = stayPos
     ? spots
-        .filter((s) => s.kind !== 'Stay' && s.at)
-        .map((s) => ({ ...s, dist: Math.hypot(s.at![0] - stayPin.at![0], s.at![1] - stayPin.at![1]) }))
+        .map((s) => ({ ...s, pos: pinPosition(slug, s) }))
+        .filter((s) => s.kind !== 'Stay' && s.pos)
+        .map((s) => ({ ...s, dist: mapDistance(slug, s.pos!, stayPos) }))
         .sort((a, b) => a.dist - b.dist)
     : [];
   const howFar = (dist: number) => (dist < 50 ? 'Right nearby' : dist < 110 ? 'A short way' : 'Further out');

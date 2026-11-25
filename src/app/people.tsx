@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, View } from 'react-native';
 import { AccentTitle } from '@/components/AccentTitle';
 import { Avatar } from '@/components/Avatar';
 import { SearchIcon } from '@/components/Icons';
+import { SafetySheet } from '@/components/SafetySheet';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, Input, PageTitle, Screen, Segmented } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
@@ -55,6 +56,8 @@ export default function People() {
   const searchingFor = query.trim().replace(/^@/, '').length >= 2;
   const iFollow = (id: string) => (follows?.following.some((f) => f.userId === id) ? 'following' : follows?.sent.some((f) => f.userId === id) ? 'requested' : 'none');
   const followsMe = (id: string) => !!follows?.followers.some((f) => f.userId === id);
+
+  const [safety, setSafety] = useState<{ userId: string; name: string } | null>(null);
 
   async function act(key: string, job: () => Promise<unknown>) {
     setBusy(key);
@@ -122,7 +125,7 @@ export default function People() {
               </Text>
             )}
             {results?.map((p) => (
-              <PersonRow key={p.id} name={p.name} handle={p.handle} sub={p.followsYou ? 'Follows you' : undefined} busy={busy === p.id}>
+              <PersonRow key={p.id} onMore={() => setSafety({ userId: p.id, name: p.name })} name={p.name} handle={p.handle} sub={p.followsYou ? 'Follows you' : undefined} busy={busy === p.id}>
                 {followButton(p.id, p.name, p.status, p.followsYou)}
               </PersonRow>
             ))}
@@ -146,7 +149,7 @@ export default function People() {
                 <Text variant="bodySoft">No followers yet. Invite friends below.</Text>
               ) : (
                 follows.followers.map((f) => (
-                  <PersonRow key={f.userId} name={f.name} handle={f.handle} busy={busy === f.userId}>
+                  <PersonRow key={f.userId} onMore={() => setSafety({ userId: f.userId, name: f.name })} name={f.name} handle={f.handle} busy={busy === f.userId}>
                     <View style={{ alignItems: 'flex-end', gap: 6 }}>
                       {iFollow(f.userId) === 'none' ? followButton(f.userId, f.name, 'none', true) : null}
                       <Confirm label="Remove" confirm="Remove follower" a11y={`Remove ${f.name} as a follower`} onConfirm={() => act(f.userId, () => removeFollower(f.userId, me))} quiet />
@@ -159,7 +162,7 @@ export default function People() {
                 <Text variant="bodySoft">You’re not following anyone yet. Search for people above.</Text>
               ) : (
                 follows.following.map((f) => (
-                  <PersonRow key={f.userId} name={f.name} handle={f.handle} sub={followsMe(f.userId) ? 'Follows you' : undefined} busy={busy === f.userId}>
+                  <PersonRow key={f.userId} onMore={() => setSafety({ userId: f.userId, name: f.name })} name={f.name} handle={f.handle} sub={followsMe(f.userId) ? 'Follows you' : undefined} busy={busy === f.userId}>
                     {followButton(f.userId, f.name, 'following', followsMe(f.userId))}
                   </PersonRow>
                 ))
@@ -168,7 +171,7 @@ export default function People() {
               <View style={{ gap: 10 }}>
                 {follows.requests.length === 0 && follows.sent.length === 0 && <Text variant="bodySoft">No requests right now.</Text>}
                 {follows.requests.map((f) => (
-                  <PersonRow key={f.userId} name={f.name} handle={f.handle} sub="Wants to follow you" busy={busy === f.userId}>
+                  <PersonRow key={f.userId} onMore={() => setSafety({ userId: f.userId, name: f.name })} name={f.name} handle={f.handle} sub="Wants to follow you" busy={busy === f.userId}>
                     <View style={{ alignItems: 'flex-end', gap: 6 }}>
                       <Pill label="Accept" filled onPress={() => act(f.userId, () => acceptFollower(f.userId))} a11y={`Let ${f.name} follow you`} />
                       <Pressable onPress={() => act(f.userId, () => removeFollower(f.userId, me))} accessibilityRole="button" accessibilityLabel={`Decline ${f.name}`} hitSlop={6}>
@@ -185,7 +188,7 @@ export default function People() {
                   </Text>
                 )}
                 {follows.sent.map((f) => (
-                  <PersonRow key={f.userId} name={f.name} handle={f.handle} busy={busy === f.userId}>
+                  <PersonRow key={f.userId} onMore={() => setSafety({ userId: f.userId, name: f.name })} name={f.name} handle={f.handle} busy={busy === f.userId}>
                     {followButton(f.userId, f.name, 'requested', followsMe(f.userId))}
                   </PersonRow>
                 ))}
@@ -209,12 +212,23 @@ export default function People() {
           {!!invited && <Text variant="tiny">{invited}</Text>}
         </Card>
       </View>
+      {!!safety && (
+        <SafetySheet
+          target={{ userId: safety.userId, name: safety.name }}
+          visible
+          onClose={() => setSafety(null)}
+          onBlocked={() => {
+            fetchFollows().then(setFollows).catch(() => {});
+            setResults((r) => r?.filter((x) => x.id !== safety.userId) ?? r);
+          }}
+        />
+      )}
     </Screen>
   );
 }
 
 /** One person: picture, name, @handle, an optional line ("Follows you") and their buttons. */
-function PersonRow({ name, handle, sub, busy, children }: { name: string; handle: string; sub?: string; busy: boolean; children: React.ReactNode }) {
+function PersonRow({ name, handle, sub, busy, children, onMore }: { name: string; handle: string; sub?: string; busy: boolean; children: React.ReactNode; onMore?: () => void }) {
   return (
     <Card style={{ padding: 12, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
       <Avatar name={name} size={44} />
@@ -228,6 +242,11 @@ function PersonRow({ name, handle, sub, busy, children }: { name: string; handle
         </Text>
       </View>
       {busy ? <ActivityIndicator color={colors.accent} /> : children}
+      {!!onMore && (
+        <Pressable onPress={onMore} accessibilityRole="button" accessibilityLabel={`Report or block ${name}`} hitSlop={10} style={{ paddingHorizontal: 2 }}>
+          <Text style={{ fontSize: 18, color: colors.muted, letterSpacing: 1 }}>•••</Text>
+        </Pressable>
+      )}
     </Card>
   );
 }

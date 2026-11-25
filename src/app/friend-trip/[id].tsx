@@ -1,4 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -6,6 +7,7 @@ import { Avatar } from '@/components/Avatar';
 import { PhotoBadge, Row } from '@/components/cards';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
+import { SafetySheet } from '@/components/SafetySheet';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { TripActions } from '@/components/TripActions';
@@ -22,6 +24,7 @@ export default function FriendTripScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { trip, loading } = useFriendTrip(id);
+  const [safety, setSafety] = useState(false);
   if (!trip) return loading ? <Screen><ActivityIndicator color={colors.accent} style={{ marginTop: 120 }} /></Screen> : <NotFound />;
   const pics = Array.from({ length: photoCount(trip) }, (_, i) => tripPic(trip, i)!);
   const isReal = !!trip.photoUrls;
@@ -178,6 +181,16 @@ export default function FriendTripScreen() {
         {!!trip.slug && <Button title={`More about ${trip.place}`} kind="outline" onPress={() => router.push(`/place/${trip.slug}`)} />}
         {!!personHref(trip.who) && <Button title={`See ${trip.who}’s profile`} kind="outline" style={{ marginTop: 12 }} onPress={() => router.push(personHref(trip.who) as never)} />}
       </View>
+      {isReal && 'ownerId' in trip && (
+        <Pressable onPress={() => setSafety(true)} accessibilityRole="button" hitSlop={8} style={{ alignSelf: 'center', marginTop: 22 }}>
+          <Text variant="small" style={{ color: colors.muted, textDecorationLine: 'underline' }}>
+            Report this trip or block {trip.who}
+          </Text>
+        </Pressable>
+      )}
+      {isReal && 'ownerId' in trip && (
+        <SafetySheet target={{ userId: String(trip.ownerId), tripId: trip.id, name: trip.who }} visible={safety} onClose={() => setSafety(false)} onBlocked={() => router.back()} />
+      )}
       {!isReal && (
         <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 14 }}>
           Sample trip for now. Your friends’ real trips arrive with friends.

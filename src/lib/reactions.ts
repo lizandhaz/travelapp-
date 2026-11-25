@@ -10,7 +10,7 @@ import { supabase } from './supabase';
  * owner sees them in Postcards. Sample friends' trips ("maya-hydra") keep yours on the phone, on top of
  * sample counts. Saving a friend's trip stays on the phone.
  */
-export type TripComment = { who: string; text: string; when: string; mine?: boolean };
+export type TripComment = { who: string; text: string; when: string; mine?: boolean; /** Real comments only (for reporting). */ id?: string };
 
 // Sample likes and comments, by trip id ("maya-hydra").
 const SAMPLE: Record<string, { likes: number; comments: TripComment[] }> = {
@@ -139,7 +139,7 @@ export async function loadReal(id: string): Promise<void> {
     likers: likes.map((r) => (r.mine ? 'You' : r.name)),
     comments: rows
       .filter((r) => r.kind === 'comment')
-      .map((r) => ({ who: r.mine ? 'You' : r.name, text: r.body ?? '', when: postedAgo(r.created_at), mine: r.mine })),
+      .map((r) => ({ who: r.mine ? 'You' : r.name, text: r.body ?? '', when: postedAgo(r.created_at), mine: r.mine, id: r.id ?? undefined })),
   });
 }
 

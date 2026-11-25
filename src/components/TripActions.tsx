@@ -6,6 +6,7 @@ import { colors, fonts, GUTTER } from '@/constants/theme';
 import { sampleCountry } from '@/lib/placeFeatures';
 import { addComment, toggleLike, toggleSavedTrip, useReactions } from '@/lib/reactions';
 import { Avatar } from './Avatar';
+import { SafetySheet } from './SafetySheet';
 import { BookmarkIcon, CommentIcon, HeartIcon } from './Icons';
 import { Text } from './Text';
 import { Button, Input } from './ui';
@@ -202,7 +203,7 @@ function CommentSheet({
   onClose,
 }: {
   who: string;
-  comments: { who: string; when: string; text: string }[];
+  comments: { who: string; when: string; text: string; mine?: boolean; id?: string }[];
   draft: string;
   setDraft: (s: string) => void;
   send: () => void;
@@ -211,6 +212,7 @@ function CommentSheet({
   const root = useRef<ComponentRef<typeof View>>(null);
   const list = useRef<ComponentRef<typeof ScrollView>>(null);
   const overlap = useKeyboardOverlap(root);
+  const [reporting, setReporting] = useState<{ id: string; who: string } | null>(null);
   return (
     <View ref={root} style={{ flex: 1, backgroundColor: colors.bg }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: GUTTER, paddingTop: 18, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: colors.line }}>
@@ -240,6 +242,13 @@ function CommentSheet({
               <Text variant="body" style={{ fontSize: 15 }}>
                 {c.text}
               </Text>
+              {!c.mine && !!c.id && (
+                <Pressable onPress={() => setReporting({ id: c.id!, who: c.who })} accessibilityRole="button" accessibilityLabel={`Report ${c.who}'s comment`} hitSlop={6} style={{ alignSelf: 'flex-start', marginTop: 2 }}>
+                  <Text variant="tiny" style={{ color: colors.muted }}>
+                    Report
+                  </Text>
+                </Pressable>
+              )}
             </View>
           </View>
         ))}
@@ -250,6 +259,7 @@ function CommentSheet({
         </View>
         <Button title="Send" kind="dark" size="sm" disabled={!draft.trim()} onPress={send} />
       </View>
+      {!!reporting && <SafetySheet target={{ commentId: reporting.id, name: reporting.who }} visible onClose={() => setReporting(null)} />}
     </View>
   );
 }

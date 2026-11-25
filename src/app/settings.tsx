@@ -1,4 +1,5 @@
-import { Switch, View } from 'react-native';
+import { router } from 'expo-router';
+import { Pressable, Switch, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { Text } from '@/components/Text';
@@ -10,18 +11,43 @@ import { setProfilePicture } from '@/lib/trips';
 import { useEffect, useState } from 'react';
 import { clearPlaceViews, setViewsEnabled, viewsEnabled } from '@/lib/views';
 import { DEFAULT_MATCH_SETTINGS, getMatchSettings, setMatchSetting, type MatchSettings } from '@/lib/matchSettings';
+import { deleteMyAccount, fetchBlocks, unblockUser, type Blocked } from '@/lib/safety';
 
-/** Settings. Privacy switches, blocking, data download and deleting your account come in plan Step J. */
+/** Settings: what your scores use, blocked people, privacy policy, sign out and deleting your account (plan Step J). */
 export default function Settings() {
   const { profile, session, signOut, refreshProfile } = useAuth();
   const [removing, setRemoving] = useState(false);
   const [useViews, setUseViews] = useState(true);
   const [cleared, setCleared] = useState<string | null>(null);
   const [uses, setUses] = useState<MatchSettings>(DEFAULT_MATCH_SETTINGS);
+  const [blocked, setBlocked] = useState<Blocked[] | null>(null);
+  const [deleting, setDeleting] = useState<'idle' | 'asking' | 'busy'>('idle');
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   useEffect(() => {
     viewsEnabled().then(setUseViews);
     getMatchSettings().then(setUses);
+    fetchBlocks().then(setBlocked);
   }, []);
+
+  async function unblock(b: Blocked) {
+    try {
+      await unblockUser(b.userId);
+      setBlocked((list) => list?.filter((x) => x.userId !== b.userId) ?? list);
+    } catch {
+      // Leave them in the list to try again.
+    }
+  }
+
+  async function deleteAccount() {
+    setDeleting('busy');
+    setDeleteError(null);
+    try {
+      await deleteMyAccount();
+    } catch (e) {
+      setDeleteError(e instanceof Error ? e.message : 'Something went wrong.');
+      setDeleting('asking');
+    }
+  }
   const toggle = (key: keyof MatchSettings) => (on: boolean) => {
     setUses((u) => ({ ...u, [key]: on }));
     setMatchSetting(key, on);
@@ -86,10 +112,60 @@ export default function Settings() {
             </View>
           </Section>
         )}
+        <Section label="Blocked people">
+          <View style={{ padding: 16, gap: 12 }}>
+            {!blocked ? (
+              <Text variant="small">Loading…</Text>
+            ) : blocked.length === 0 ? (
+              <Text variant="small">You haven’t blocked anyone. To block someone, tap ••• next to them on People, or “Report” on a trip or comment.</Text>
+            ) : (
+              blocked.map((b) => (
+                <View key={b.userId} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text variant="strong">{b.name}</Text>
+                    <Text variant="tiny">@{b.handle}</Text>
+                  </View>
+                  <Button title="Unblock" kind="outline" size="sm" onPress={() => unblock(b)} accessibilityLabel={`Unblock ${b.name}`} />
+                </View>
+              ))
+            )}
+          </View>
+        </Section>
+        <Section label="Privacy">
+          <Pressable onPress={() => router.push('/privacy')} accessibilityRole="link" style={{ padding: 16, flexDirection: 'row', alignItems: 'center' }}>
+            <Text variant="strong" style={{ flex: 1 }}>
+              Privacy policy
+            </Text>
+            <Text variant="link">Read →</Text>
+          </Pressable>
+        </Section>
         <Section label="Signed in as">
           <View style={{ padding: 16, gap: 14 }}>
             <Text variant="strong">{session?.user.email}</Text>
             <Button title="Sign out" kind="outline" onPress={signOut} />
+          </View>
+        </Section>
+        <Section label="Delete account">
+          <View style={{ padding: 16, gap: 12 }}>
+            {deleting === 'idle' ? (
+              <>
+                <Text variant="small">Deletes your account and everything in it: trips, photos, boards, followers, likes and comments. This can’t be undone.</Text>
+                <Button title="Delete my account" kind="outline" onPress={() => setDeleting('asking')} />
+              </>
+            ) : (
+              <>
+                <Text variant="strong">Are you sure? Everything will be deleted for good, straight away.</Text>
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <Button title="Keep my account" kind="outline" style={{ flex: 1 }} disabled={deleting === 'busy'} onPress={() => setDeleting('idle')} />
+                  <Button title={deleting === 'busy' ? 'Deleting…' : 'Yes, delete it'} kind="accent" style={{ flex: 1 }} disabled={deleting === 'busy'} onPress={deleteAccount} />
+                </View>
+                {!!deleteError && (
+                  <Text variant="small" style={{ color: colors.accentText }}>
+                    {deleteError}
+                  </Text>
+                )}
+              </>
+            )}
           </View>
         </Section>
         <Text variant="tiny">Place names and map positions include data from GeoNames (geonames.org), CC BY 4.0.</Text>

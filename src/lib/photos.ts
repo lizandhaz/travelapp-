@@ -1,5 +1,5 @@
 // Sample photos: only the owner's own holiday photos (own-*.jpg, EXIF/GPS stripped), plus four the owner licensed
-// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach, own-kyoto-blossom/-pagoda/-river, own-marrakech-koutoubia/-rooftops, own-srilanka-sigiriya/-turtles/-bay, own-mauritius-aerial/-palms, own-ladigue-rocks, own-palermo-cathedral, own-polignano-cove, own-capri-faraglioni, own-positano-town, own-maldives-boardwalk, own-comporta-boardwalk, own-madeira-cliffs, own-zermatt-matterhorn, own-lisbon-sunset, own-cotswolds-castle-combe, own-santorini-oia, own-mykonos-harbour; owner confirmed bought, Nov 2026). The design prototype's
+// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach, own-kyoto-blossom/-pagoda/-river, own-marrakech-koutoubia/-rooftops, own-srilanka-sigiriya/-turtles/-bay, own-mauritius-aerial/-palms, own-ladigue-rocks, own-palermo-cathedral, own-polignano-cove, own-capri-faraglioni, own-positano-town, own-maldives-boardwalk, own-comporta-boardwalk, own-madeira-cliffs, own-zermatt-matterhorn, own-lisbon-sunset, own-cotswolds-castle-combe, own-santorini-oia, own-mykonos-harbour, own-rhodes-lindos; owner confirmed bought, Nov 2026). The design prototype's
 // Unsplash photos were removed (owner, Nov 2026); some prototype names (e.g. 'bath-1') point at the owner's photos.
 // Sample content with no photo of the owner's shows a placeholder.
 
@@ -110,6 +110,7 @@ export const photos = {
   'own-cotswolds-castle-combe': require('../../assets/photos/own-cotswolds-castle-combe.jpg'),
   'own-santorini-oia': require('../../assets/photos/own-santorini-oia.jpg'),
   'own-mykonos-harbour': require('../../assets/photos/own-mykonos-harbour.jpg'),
+  'own-rhodes-lindos': require('../../assets/photos/own-rhodes-lindos.jpg'),
 } as const;
 
 export type PhotoName = keyof typeof photos;

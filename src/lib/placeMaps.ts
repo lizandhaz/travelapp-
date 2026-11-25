@@ -84,6 +84,8 @@ export const placeMaps: Record<string, PlaceMap> = {
   "santorini": { pins: [{ n: 1, name: "Canaves Oia", kind: "Stay", ll: [36.4615, 25.3755] }, { n: 2, name: "Grace Hotel Santorini", kind: "Stay", ll: [36.4325, 25.4235] }, { n: 3, name: "Astra Suites", kind: "Stay", ll: [36.4337, 25.4248] }, { n: 4, name: "Metaxi Mas", kind: "Eat", ll: [36.385, 25.47] }, { n: 5, name: "Ammoudi Fish Tavern", kind: "Eat", ll: [36.4587, 25.3709] }, { n: 6, name: "Lucky's Souvlakis", kind: "Eat", ll: [36.4166, 25.4317] }, { n: 7, name: "Fira to Oia clifftop walk", kind: "Do", ll: [36.44, 25.42] }, { n: 8, name: "Volcano and hot springs boat", kind: "Do", ll: [36.404, 25.396] }, { n: 9, name: "Pyrgos", kind: "Hidden gem", ll: [36.3836, 25.449] }] },
   // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
   "mykonos": { pins: [{ n: 1, name: "Cavo Tagoo", kind: "Stay", ll: [37.4535, 25.3285] }, { n: 2, name: "Bill & Coo Suites", kind: "Stay", ll: [37.4498, 25.3312] }, { n: 3, name: "Semeli Hotel", kind: "Stay", ll: [37.4462, 25.3302] }, { n: 4, name: "Kiki's Tavern", kind: "Eat", ll: [37.4878, 25.3685] }, { n: 5, name: "Nammos", kind: "Eat", ll: [37.4135, 25.3445] }, { n: 6, name: "Niko's Taverna", kind: "Eat", ll: [37.4462, 25.3264] }, { n: 7, name: "Little Venice at sunset", kind: "Do", ll: [37.4455, 25.3249] }, { n: 8, name: "Day trip to Delos", kind: "Do", ll: [37.3963, 25.2687] }, { n: 9, name: "Agios Sostis beach", kind: "Hidden gem", ll: [37.4875, 25.369] }] },
+  // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
+  "rhodes": { pins: [{ n: 1, name: "Lindos Blu", kind: "Stay", ll: [36.0975, 28.0825] }, { n: 2, name: "Melenos Lindos", kind: "Stay", ll: [36.0915, 28.088] }, { n: 3, name: "Lindos Imperial", kind: "Stay", ll: [36.14, 28.06] }, { n: 4, name: "Mavrikos", kind: "Eat", ll: [36.0918, 28.0862] }, { n: 5, name: "Marco Polo Café", kind: "Eat", ll: [36.4436, 28.2265] }, { n: 6, name: "Kalypso", kind: "Eat", ll: [36.0912, 28.0868] }, { n: 7, name: "Acropolis of Lindos", kind: "Do", ll: [36.0909, 28.0889] }, { n: 8, name: "Rhodes Old Town", kind: "Do", ll: [36.4446, 28.2268] }, { n: 9, name: "St Paul's Bay", kind: "Hidden gem", ll: [36.0855, 28.0855] }] },
 };
 
 /**
@@ -160,6 +162,7 @@ export const placeCentres: Record<string, { at: [number, number]; span: number }
   rottnest: { at: [-32.0, 115.52], span: 0.25 },
   santorini: { at: [36.42, 25.43], span: 0.3 },
   mykonos: { at: [37.445, 25.33], span: 0.3 },
+  rhodes: { at: [36.27, 28.1], span: 0.8 },
 };
 
 /**

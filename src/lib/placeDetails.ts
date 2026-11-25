@@ -11375,5 +11375,165 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "rhodes": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June, September or October",
+    "staysFrom": "from £200 a night",
+    "goodFor": [
+      "Families",
+      "Couples"
+    ],
+    "temps": [
+      15,
+      15,
+      17,
+      20,
+      24,
+      28,
+      31,
+      31,
+      28,
+      24,
+      20,
+      16
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Harriet",
+        "month": "Jun 2025",
+        "quote": "The acropolis at Lindos in the morning, St Paul's Bay all afternoon.",
+        "score": 8.9,
+        "face": null
+      },
+      {
+        "who": "Sam",
+        "month": "Aug 2024",
+        "quote": "Easy with the kids, and Rhodes Old Town at night.",
+        "score": 8.3,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Lindos Blu",
+        "type": "Hotel",
+        "match": 89,
+        "featured": true,
+        "sub": "from £400 a night · Adults only, looking over Lindos bay.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Melenos Lindos",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £350 a night · Harriet stayed",
+        "because": null,
+        "score": 9.1,
+        "photo": null
+      },
+      {
+        "name": "Lindos Imperial",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £200 a night · Sam stayed",
+        "because": null,
+        "score": 8.2,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Mavrikos",
+        "price": "££",
+        "what": "Family-run in Lindos for generations",
+        "score": 9.0,
+        "from": "Harriet",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Marco Polo Café",
+        "price": "££",
+        "what": "Dinner in the courtyard of an old mansion",
+        "score": 8.8,
+        "from": null,
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Kalypso",
+        "price": "££",
+        "what": "On the roof of an old captain's house",
+        "score": 8.5,
+        "from": "Sam",
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "History",
+        "name": "Acropolis of Lindos",
+        "what": "Go at opening, before the heat and the crowds.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "Rhodes Old Town",
+        "what": "The medieval walled town of the Knights. Lovely at night.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "St Paul's Bay",
+        "what": "A tiny round bay below Lindos, perfect for a swim.",
+        "from": "Harriet",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Palace of the Grand Master",
+        "what": "The Knights' castle at the top of the Street of the Knights.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Stay near Lindos for beaches and evenings; it's about an hour from the airport.",
+        "from": "Harriet"
+      }
+    ],
+    "credits": null
   }
 };

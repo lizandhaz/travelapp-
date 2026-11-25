@@ -138,7 +138,8 @@ src/
                           (FriendName), friend-trip and postcard pages ("See <who>'s profile"). Place pages also show "See <who>'s trip →"
                           (FriendTripLink) under each friend's quote
     friend-trip/[id].tsx  A friend's trip (sample id "maya-hydra", or a real trip's id via useFriendTrip): their score, who with, nights, quote, photos,
-                          where they stayed, where they ate, what they did, their tips, "More about <place>"
+                          then "<who>'s picks": one cream card of matching rows (icon or small photo, name, line, score stamp) under small labels
+                          (Where they stayed (→ stay page when it has one), Where they ate, What they did, Top tips; owner Nov 2026: the old mix looked clunky), "More about <place>"
     settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places
                           I look at, clear viewed places, Blocked people, Privacy policy, sign out, Delete account), opened from You
     privacy.tsx           The privacy policy (plain-English draft; readable signed in or out)

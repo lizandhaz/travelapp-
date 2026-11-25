@@ -86,6 +86,8 @@ export const placeMaps: Record<string, PlaceMap> = {
   "mykonos": { pins: [{ n: 1, name: "Cavo Tagoo", kind: "Stay", ll: [37.4535, 25.3285] }, { n: 2, name: "Bill & Coo Suites", kind: "Stay", ll: [37.4498, 25.3312] }, { n: 3, name: "Semeli Hotel", kind: "Stay", ll: [37.4462, 25.3302] }, { n: 4, name: "Kiki's Tavern", kind: "Eat", ll: [37.4878, 25.3685] }, { n: 5, name: "Nammos", kind: "Eat", ll: [37.4135, 25.3445] }, { n: 6, name: "Niko's Taverna", kind: "Eat", ll: [37.4462, 25.3264] }, { n: 7, name: "Little Venice at sunset", kind: "Do", ll: [37.4455, 25.3249] }, { n: 8, name: "Day trip to Delos", kind: "Do", ll: [37.3963, 25.2687] }, { n: 9, name: "Agios Sostis beach", kind: "Hidden gem", ll: [37.4875, 25.369] }] },
   // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
   "rhodes": { pins: [{ n: 1, name: "Lindos Blu", kind: "Stay", ll: [36.0975, 28.0825] }, { n: 2, name: "Melenos Lindos", kind: "Stay", ll: [36.0915, 28.088] }, { n: 3, name: "Lindos Imperial", kind: "Stay", ll: [36.14, 28.06] }, { n: 4, name: "Mavrikos", kind: "Eat", ll: [36.0918, 28.0862] }, { n: 5, name: "Marco Polo Café", kind: "Eat", ll: [36.4436, 28.2265] }, { n: 6, name: "Kalypso", kind: "Eat", ll: [36.0912, 28.0868] }, { n: 7, name: "Acropolis of Lindos", kind: "Do", ll: [36.0909, 28.0889] }, { n: 8, name: "Rhodes Old Town", kind: "Do", ll: [36.4446, 28.2268] }, { n: 9, name: "St Paul's Bay", kind: "Hidden gem", ll: [36.0855, 28.0855] }] },
+  // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
+  "zakynthos": { pins: [{ n: 1, name: "Porto Zante Villas", kind: "Stay", ll: [37.8555, 20.8875] }, { n: 2, name: "Lesante Blu", kind: "Stay", ll: [37.731, 20.871] }, { n: 3, name: "Olea All Suite Hotel", kind: "Stay", ll: [37.818, 20.855] }, { n: 4, name: "Taverna Porto Limnionas", kind: "Eat", ll: [37.721, 20.678] }, { n: 5, name: "Prosilio", kind: "Eat", ll: [37.7835, 20.8975] }, { n: 6, name: "Shipwreck Beach (Navagio)", kind: "Do", ll: [37.8595, 20.6245] }, { n: 7, name: "Turtle spotting in Laganas Bay", kind: "Do", ll: [37.715, 20.86] }, { n: 8, name: "Keri cliffs at sunset", kind: "Hidden gem", ll: [37.6545, 20.8095] }] },
 };
 
 /**
@@ -163,6 +165,7 @@ export const placeCentres: Record<string, { at: [number, number]; span: number }
   santorini: { at: [36.42, 25.43], span: 0.3 },
   mykonos: { at: [37.445, 25.33], span: 0.3 },
   rhodes: { at: [36.27, 28.1], span: 0.8 },
+  zakynthos: { at: [37.78, 20.8], span: 0.6 },
 };
 
 /**

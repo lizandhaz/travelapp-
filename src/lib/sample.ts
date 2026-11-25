@@ -1246,6 +1246,16 @@ export const places: SamplePlace[] = [
     "photos": [
       "own-rhodes-lindos"
     ]
+  },
+  {
+    "slug": "zakynthos",
+    "name": "Zakynthos",
+    "region": "Greece",
+    "score": 8.6,
+    "photo": "own-zakynthos-cliffs",
+    "photos": [
+      "own-zakynthos-cliffs"
+    ]
   }
 ] as SamplePlace[];
 

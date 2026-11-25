@@ -11535,5 +11535,154 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "zakynthos": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "June or September",
+    "staysFrom": "from £300 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      14,
+      14,
+      16,
+      19,
+      23,
+      27,
+      30,
+      31,
+      27,
+      23,
+      19,
+      15
+    ],
+    "bestMonths": [
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Tom",
+        "month": "Aug 2025",
+        "quote": "A boat round the cliffs to Shipwreck Beach and the Blue Caves.",
+        "score": 8.7,
+        "face": null
+      },
+      {
+        "who": "Priya",
+        "month": "Jun 2024",
+        "quote": "Turtles in Laganas Bay before breakfast.",
+        "score": 8.5,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Porto Zante Villas",
+        "type": "Villa",
+        "match": 89,
+        "featured": true,
+        "sub": "from £700 a night · Villas on a private beach near Tragaki.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Lesante Blu",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £350 a night · Tom stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": null
+      },
+      {
+        "name": "Olea All Suite Hotel",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £300 a night · Priya stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Taverna Porto Limnionas",
+        "price": "££",
+        "what": "Fish on the rocks, with a swim first",
+        "score": 9.0,
+        "from": "Tom",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Prosilio",
+        "price": "££",
+        "what": "Modern Greek in Zakynthos Town",
+        "score": 8.9,
+        "from": "Priya",
+        "match": 86,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Boat",
+        "name": "Shipwreck Beach (Navagio)",
+        "what": "See it by boat from below, or from the clifftop viewpoint (check it is open).",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Animals",
+        "name": "Turtle spotting in Laganas Bay",
+        "what": "Loggerhead turtles: go with a licensed boat and keep your distance.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Keri cliffs at sunset",
+        "what": "Huge white cliffs and arches at the south-west tip.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Bochali",
+        "what": "The old hilltop quarter above Zakynthos Town, with a Venetian castle.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Hire a small boat for the day: you don't need a licence for the little ones.",
+        "from": "Tom"
+      }
+    ],
+    "credits": null
   }
 };

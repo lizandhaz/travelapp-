@@ -313,15 +313,30 @@ const noFlyTest = (slug: string) => UK.test(region(slug)) || slug === 'paris';
 
 let searchable: SearchablePlace[] | null = null;
 /** Every sample place in the search's terms (worked out once). */
+// Well-known golf holiday spots among the sample places (owner, Nov 2026: "golf holidays" found nothing).
+const GOLF = new Set(['algarve', 'mallorca', 'tenerife', 'dubai', 'cyprus', 'costabrava', 'mauritius', 'turks']);
+// …and well-known wine places ("wine tasting" put Heidelberg first).
+const WINE = new Set(['tuscany', 'southafrica', 'madeira', 'santorini', 'sicily']);
+
 function searchablePlaces(): SearchablePlace[] {
   searchable ??= places.map((p) => {
     const f = featuresForSlug(p.slug);
     const d = placeDetails[p.slug];
+    // What's on the page, for search topics: things to do, restaurants, culture, stays and tips.
+    const things = [
+      ...(d?.dos ?? []).map((x) => ({ name: x.name, text: `${x.tag} ${x.what ?? ''}`, kind: 'do' as const })),
+      ...(d?.eats ?? []).map((x) => ({ name: x.name, text: `restaurant ${x.what ?? ''}`, kind: 'eat' as const })),
+      ...(d?.culture ?? []).map((x) => ({ name: x.name, text: `${x.tag} ${x.what ?? ''}`, kind: 'culture' as const })),
+      ...(d?.stays ?? []).map((x) => ({ name: '', text: `${x.name} ${x.sub ?? ''}`, kind: 'stay' as const })),
+      ...(d?.tips ?? []).map((x) => ({ name: '', text: x.tip, kind: 'tip' as const })),
+      { name: '', text: d?.kicker ?? '', kind: 'about' as const },
+    ];
     return {
+      things,
       slug: p.slug,
       name: p.name,
       where: `${p.region} ${countryOf({ name: p.name, country: p.region.split(', ').pop() ?? '' })}`,
-      tags: f?.tags ?? {},
+      tags: { ...(f?.tags ?? {}), ...(GOLF.has(p.slug) ? { golf: 1 } : {}), ...(WINE.has(p.slug) ? { wine: 1 } : {}) },
       temps: d?.temps ?? null,
       bestMonths: d?.bestMonths ?? [],
       goodFor: d?.goodFor ?? [],

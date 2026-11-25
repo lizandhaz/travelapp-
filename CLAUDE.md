@@ -93,7 +93,7 @@ src/
                           you follow (lib/friendsFeed) replace the sample feed once there are any; the sample feed mixes photos/no photos on purpose). A thin line sits above "From your friends"
     (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
                           jumps down to it), "Find your next trip" collection tiles (24, each opens its collection, no counts),
-                          Trending this month, "Made for your taste" (chips + things to eat/do/stay, on a sage band; moved from Home),
+                          Trending this month ("Made for your taste" was removed for now, owner Nov 2026; TasteCard/rows.taste stay),
                           and "Just for you": a long two-column photo feed (60 at a time, more as you scroll)
     (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
     (tabs)/saved.tsx      Saved ("Your boards"; lists are called **boards** in the UI, owner Nov 2026, though the code and database still
@@ -241,7 +241,10 @@ src/
     worldPlaces.ts        Generated: ~10,400 towns/cities with positions (GeoNames, CC BY 4.0; credited in Settings)
     tripQuery.ts          Explore's search (pure, tested in tests/tripQuery.test.mjs): parseTripQuery() reads "beach in February",
                           "romantic weekend", "winter sun", "no flying", "cheap", "under £200 a night", "Greece" into months/warmth/holiday types/who/short/
-                          no-fly/budget/maxPrice/place words; searchPlaces() ranks places (more than half of what was asked; reasons like
+                          no-fly/budget/maxPrice/place words, plus **topics** (TOPICS: food, golf, museums, sightseeing, history, walking, wine,
+                          nightlife, snorkelling, shopping; owner Nov 2026) found inside each place's page (`things`: its stays, restaurants,
+                          things to do, culture and tips) with the thing's name as the reason ("Musée d'Orsay"), or a tag ("Known for golf":
+                          GOLF / WINE sets in explore.ts); other words are looked for on the page too; searchPlaces() ranks places (more than half of what was asked; reasons like
                           "27° in February"). explore.ts searchTrips() feeds it the sample places; Explore shows "Best matches" + "Looking for …"
     explore.ts            Explore's collections (worked out from place details: "Sunshine in <month>" from monthly temps,
                           Island escapes, Holiday without flying, Good value…), things gathered from every place, exploreFeed()
@@ -375,7 +378,7 @@ From the owner's palette (Nov 2026; toned down slightly later that month: accent
 | `gold` | `#b9975b` | Hidden-gem pins on place maps |
 | `onDark` | `#faf7f0` | Text on photos and dark buttons |
 
-Trips without photos use soft blush (`blushSoft`) with dark text (saved-trip tiles, a friend's trip page; feed posts are a cream mini postcard); never the olive-to-terracotta gradient (owner disliked it). **Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, segmented switches and the tab bar's + and active tab are terracotta; dark buttons are olive; Explore's "Made for your taste" sits on a sage band; friends' feed cards are white with the stay on a sage strip; Trending rank badges (`PhotoBadge accent`) and the line under trend cards are terracotta; You's stats are three tiles (Trips cream, Countries sage, world sky) (Trips, Countries, % "Of the world" = countries / 195; no average score, owner Nov 2026); avatars without a photo use olive/terracotta/sky; place score card cream (not pink, owner Nov 2026), place facts sky/blush; Saved's Want to go card cream. The owner tried and didn't want fully tinted feed cards or a band behind Explore's Trending (too much), nor all-plain (too little): keep this middle ground. Collection tiles show no count.
+Trips without photos use soft blush (`blushSoft`) with dark text (saved-trip tiles, a friend's trip page; feed posts are a cream mini postcard); never the olive-to-terracotta gradient (owner disliked it). **Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, segmented switches and the tab bar's + and active tab are terracotta; dark buttons are olive; friends' feed cards are white with the stay on a sage strip; Trending rank badges (`PhotoBadge accent`) and the line under trend cards are terracotta; You's stats are three tiles (Trips cream, Countries sage, world sky) (Trips, Countries, % "Of the world" = countries / 195; no average score, owner Nov 2026); avatars without a photo use olive/terracotta/sky; place score card cream (not pink, owner Nov 2026), place facts sky/blush; Saved's Want to go card cream. The owner tried and didn't want fully tinted feed cards or a band behind Explore's Trending (too much), nor all-plain (too little): keep this middle ground. Collection tiles show no count.
 
 **Example content is labelled** (owner, Nov 2026): sample friends' feed posts and their hotel stays carry an EXAMPLE tag (`ExampleTag` in ui.tsx), sample profiles say "Example profile", place pages say "Example page: friends, scores and prices are made up while COVA is in testing". Home with no friends shows a "Your friends' trips show here" card (Find friends) above "Meanwhile, some example trips". Until we know your taste, place pages say "Traveller score · Popular with travellers" and Home says "Popular picks" instead of "Top picks for you".
 

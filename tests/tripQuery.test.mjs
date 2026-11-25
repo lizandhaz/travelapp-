@@ -94,3 +94,28 @@ test('good value uses the cheapest stay', () => {
   assert.ok(r.reasons.includes('From £90 a night'));
   assert.equal(placeForQuery(parseTripQuery('cheap'), places[0], 10), null);
 });
+
+// Topics (owner Nov 2026: "food, golf holidays, sightseeing, museum trips" weren't good): found inside each place's page.
+const withThings = [
+  P('paris', { name: 'Paris', where: 'France', tags: { city: 1, culture: 1 }, things: [{ name: "Musée d'Orsay", text: 'Impressionists in an old station', kind: 'culture' }] }),
+  P('algarve', { name: 'The Algarve', where: 'Portugal', tags: { beach: 1, golf: 1 } }),
+  P('tuscany', { name: 'Tuscany', where: 'Italy', tags: { food: 1 }, things: [{ name: 'Brunello tasting', text: 'Wine in Montalcino', kind: 'do' }] }),
+  P('ibiza', { name: 'Ibiza', where: 'Spain', tags: { beach: 1, nightlife: 1 }, things: [{ name: 'Golf buggy tour', text: 'Round the island', kind: 'do' }] }),
+];
+
+test('reads topics like golf, museums, sightseeing and food', () => {
+  assert.deepEqual(parseTripQuery('golf holidays').topics.map((t) => t.id), ['golf']);
+  assert.deepEqual(parseTripQuery('museum trips').topics.map((t) => t.id), ['museums']);
+  assert.deepEqual(parseTripQuery('sightseeing').topics.map((t) => t.id), ['sights']);
+  assert.deepEqual(parseTripQuery('food').topics.map((t) => t.id), ['food']);
+  assert.ok(hasCriteria(parseTripQuery('wine tasting')));
+});
+
+test('topics find places by what is on their page, with named reasons', () => {
+  const museums = searchPlaces(parseTripQuery('museums'), withThings, 10);
+  assert.equal(museums[0].slug, 'paris');
+  assert.ok(museums[0].reasons.some((r) => r.includes("Musée d'Orsay")));
+  const golf = searchPlaces(parseTripQuery('golf holidays'), withThings, 10).map((r) => r.slug);
+  assert.deepEqual(golf, ['algarve']); // a golf buggy tour isn't golf
+  assert.equal(searchPlaces(parseTripQuery('wine tasting'), withThings, 10)[0].slug, 'tuscany');
+});

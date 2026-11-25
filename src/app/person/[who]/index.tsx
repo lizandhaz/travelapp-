@@ -49,7 +49,7 @@ export default function PersonScreen() {
       <ProfileTop
         picture={<Avatar face={person.face} name={person.name} size={76} />}
         name={person.name}
-        line={`@${person.handle} · ${person.home}`}
+        line={`@${person.handle} · ${person.home} · Example profile`}
         counts={[
           { label: 'Followers', n: person.followers.length, onPress: follows('followers') },
           { label: 'Following', n: person.following.length, onPress: follows('following') },

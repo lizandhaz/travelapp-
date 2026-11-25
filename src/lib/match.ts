@@ -55,6 +55,8 @@ export type Signal =
       stay?: { type: string; score: number } | null;
       /** An extra stop on a trip already counted (shapes taste, but isn't a separate trip). */
       extraStop?: boolean;
+      /** A place ticked as "been" in first-time setup: shapes taste, but has no score of yours to show. */
+      told?: boolean;
     }
   /** A place on a list: Want to go (wish) or one of your own lists. savedAt is an ISO date. */
   | { kind: 'save'; place: PlaceFeatures; wish: boolean; savedAt?: string | null }
@@ -72,6 +74,8 @@ export type Anchor = {
   weight: number;
   score?: number;
   place: PlaceFeatures;
+  /** From first-time setup ("I've been"), with no score of yours. */
+  told?: boolean;
 };
 
 /**
@@ -257,11 +261,11 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
       half = 'enjoyed';
       w = tripWeight(s.score, s.month, s.nights, now);
       if (!s.extraStop) counts.trips++;
-      // Several trips to one place: keep the best score as "yours".
-      been[s.place.key] = Math.max(been[s.place.key] ?? 0, s.score);
+      // Several trips to one place: keep the best score as "yours" (not for places only ticked in setup).
+      if (!s.told) been[s.place.key] = Math.max(been[s.place.key] ?? 0, s.score);
       if (s.companions) companionCount[s.companions] = (companionCount[s.companions] ?? 0) + 1;
       if (s.stay) stayTypes[s.stay.type] = (stayTypes[s.stay.type] ?? 0) + clamp((s.stay.score - 6.5) / 3, -1, 1);
-      halves.enjoyed.anchors.push({ name: s.place.name, kind: 'trip', weight: w, score: s.score, place: s.place });
+      halves.enjoyed.anchors.push({ name: s.place.name, kind: 'trip', weight: w, score: s.score, place: s.place, told: s.told });
     } else if (s.kind === 'save') {
       half = 'next';
       w = saveWeight(s.wish, s.savedAt, now);
@@ -552,7 +556,9 @@ export function reasonsFor(profile: Profile, place: PlaceFeatures, friends: Frie
     const { a } = best;
     const text =
       a.kind === 'trip'
-        ? `Like ${a.name}, which you gave ${a.score!.toFixed(1)}`
+        ? a.told
+          ? `Like ${a.name}, where you’ve been`
+          : `Like ${a.name}, which you gave ${a.score!.toFixed(1)}`
         : a.kind === 'wish'
           ? `Like ${a.name} on your Want to go list`
           : a.kind === 'list'

@@ -12,6 +12,7 @@ import { PhotoBadge, Row } from '@/components/cards';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
+import { APP_NAME } from '@/constants/brand';
 import { colors, fonts, GUTTER, appWidth } from '@/constants/theme';
 import { countryOf } from '@/lib/knownPlaces';
 import { placeDetails } from '@/lib/placeDetails';
@@ -87,7 +88,10 @@ export default function PlaceScreen() {
         </View>
       </View>
 
-      {!!result && <YourScore result={result} note={tasteNote(taste.profile, taste.usingFriends)} />}
+      {!!result && <YourScore result={result} note={tasteNote(taste.profile, taste.usingFriends)} known={personal} />}
+      <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 8 }}>
+        Example page: friends, scores and prices are made up while {APP_NAME} is in testing.
+      </Text>
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 12, flexDirection: 'row', gap: 10 }}>
         <WantToGoButton variant="block" saved={wish.saved} busy={wish.busy || !wish.ready} onPress={wish.toggle} style={{ flex: 1 }} />

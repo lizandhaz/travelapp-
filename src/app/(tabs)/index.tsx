@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
@@ -9,7 +9,7 @@ import { AddPersonIcon, SendIcon } from '@/components/Icons';
 import { PhotoStamp } from '@/components/Photo';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
-import { IconCircle, Screen, SectionHeader } from '@/components/ui';
+import { Button, Card, ExampleTag, IconCircle, Screen, SectionHeader } from '@/components/ui';
 import { Wordmark } from '@/components/Wordmark';
 import { colors, fonts, GUTTER, appWidth } from '@/constants/theme';
 import { collectionTiles } from '@/lib/explore';
@@ -19,6 +19,7 @@ import { refreshUnread, useUnreadPostcards } from '@/lib/postcardsLive';
 import { useTaste } from '@/lib/taste';
 import { feedItemFor, fetchFriendsTrips, type RealFriendTrip } from '@/lib/friendsFeed';
 import { fitLines, fitWordSize } from '@/lib/fit';
+import { getStartTaste } from '@/lib/startTaste';
 
 /**
  * Home: top picks for you, collections to dip into, then what your friends rated
@@ -61,6 +62,17 @@ export default function Home() {
 
   const collections = useMemo(() => collectionTiles(), []);
 
+  // New here with nothing to go on? Ask what they love first (app/setup.tsx), once.
+  const ready = t.ready;
+  useEffect(() => {
+    if (!ready || personal) return;
+    let live = true;
+    getStartTaste().then((s) => live && !s.done && router.push('/setup'));
+    return () => {
+      live = false;
+    };
+  }, [ready, personal]);
+
 
   const cardW = Math.round((width - GUTTER * 2) * 0.78);
   const cardH = Math.round(cardW * 1.22);
@@ -82,7 +94,7 @@ export default function Home() {
       {/* Top picks for you */}
       <View style={{ marginTop: 26 }}>
         <SectionHeader action="Explore" onAction={() => router.navigate('/explore')}>
-          <AccentTitle before="Top picks for" accent="you" variant="heading" />
+          {personal ? <AccentTitle before="Top picks for" accent="you" variant="heading" /> : <AccentTitle before="Popular" accent="picks" variant="heading" />}
         </SectionHeader>
         <Row gap={14}>
           {picks.map((p) => {
@@ -129,24 +141,40 @@ export default function Home() {
 
       {/* A line across, then what friends rated, newest first */}
       <View style={{ height: 1, backgroundColor: colors.line, marginHorizontal: GUTTER, marginTop: 34 }} />
-      <View style={{ marginTop: 28 }}>
-        <SectionHeader action="Find friends" onAction={() => router.push('/people')}>
-          <AccentTitle before="From your" accent="friends" variant="heading" />
-        </SectionHeader>
-        <View style={{ paddingHorizontal: GUTTER, gap: 22 }}>
-          {/* Real trips from people you follow, newest first; the sample feed until there are some. */}
-          {realFeed && realFeed.length > 0 ? (
-            realFeed.map((t) => <FeedCard key={t.id} item={feedItemFor(t)} />)
-          ) : (
-            <>
-              {friendsFeed.map((f) => (
-                <FeedCard key={`${f.who}-${f.place}`} item={f} />
-              ))}
-              <Text variant="tiny">Preview: these are sample trips. When people you follow add trips for their followers, they show here instead.</Text>
-            </>
-          )}
+      {realFeed && realFeed.length > 0 ? (
+        <View style={{ marginTop: 28 }}>
+          <SectionHeader action="Find friends" onAction={() => router.push('/people')}>
+            <AccentTitle before="From your" accent="friends" variant="heading" />
+          </SectionHeader>
+          {/* Real trips from people you follow, newest first. */}
+          <View style={{ paddingHorizontal: GUTTER, gap: 22 }}>
+            {realFeed.map((t) => (
+              <FeedCard key={t.id} item={feedItemFor(t)} />
+            ))}
+          </View>
         </View>
-      </View>
+      ) : (
+        // No friends yet (owner, Nov 2026): say so and help them find some, then example trips clearly marked as examples.
+        <View style={{ marginTop: 28 }}>
+          <SectionHeader>
+            <AccentTitle before="From your" accent="friends" variant="heading" />
+          </SectionHeader>
+          <View style={{ paddingHorizontal: GUTTER, gap: 22 }}>
+            <Card tone="cream" style={{ padding: 18, gap: 12 }}>
+              <Text variant="subheading">Your friends’ trips show here</Text>
+              <Text variant="small">Follow friends to see where they loved staying. Your scores work without them too.</Text>
+              <Button title="Find friends" kind="accent" onPress={() => router.push('/people')} />
+            </Card>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 6 }}>
+              <Text variant="label">Meanwhile, some example trips</Text>
+              <ExampleTag />
+            </View>
+            {friendsFeed.map((f) => (
+              <FeedCard key={`${f.who}-${f.place}`} item={f} />
+            ))}
+          </View>
+        </View>
+      )}
     </Screen>
   );
 }

@@ -142,6 +142,11 @@ src/
     settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places
                           I look at, clear viewed places, Blocked people, Privacy policy, sign out, Delete account), opened from You
     privacy.tsx           The privacy policy (plain-English draft; readable signed in or out)
+    setup.tsx             First-time setup (Step I, owner Nov 2026): 3 tap-only steps (holidays you love, who you go with, tap places once for Been
+                          / twice for Want to go), "Skip for now". Home opens it once for anyone with nothing to go on (lib/startTaste.ts, kept on
+                          the phone; retake from Settings → Your taste). Answers feed taste.tsx: an `interest` signal for the types, and "been"
+                          places as trip signals with `told: true` (shape taste, never shown as "yours"; reason "Like X, where you've been");
+                          Want to go places are saved to the real board
     place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, On the map, best time, what friends said, where to stay,
                           then "More about <place>" (tap to open: where to eat, things to do and top tips; owner Nov 2026: keep the page short; the Culture section was removed, its data stays for matching), "I've been" (opens Add a trip with the place filled in)
     stay/[slug].tsx       One hotel, villa or Airbnb (?name=, from a place page's Where to stay card; owner Nov 2026): a sage band with type, name and

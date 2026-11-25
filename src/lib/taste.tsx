@@ -7,6 +7,7 @@ import { buildProfile, itemScore, tagRarity, scorePlace, stayScore, topTastes, t
 import { featuresForPlace, featuresForSlug, parseStaySub, sampleFriendRatings, stayKind, tagsForListName, tasteItemInfo } from './placeFeatures';
 import { places } from './sample';
 import { onTasteChanged } from './tasteEvents';
+import { getStartTaste } from './startTaste';
 import { fetchMyTrips, type Place } from './trips';
 import { fetchPlaceViews } from './views';
 import { DEFAULT_MATCH_SETTINGS, getMatchSettings, type MatchSettings } from './matchSettings';
@@ -90,6 +91,14 @@ async function loadSignals(): Promise<{ signals: Signal[]; settings: MatchSettin
     const hint = b.kind === 'list' ? tagsForListName(b.name) : {};
     if (Object.keys(hint).length) next.push({ kind: 'interest', tags: hint, label: b.name });
   }
+  // What you told us in first-time setup (app/setup.tsx): the holidays you love, and places you've been.
+  const start = await getStartTaste();
+  if (start.types.length) next.push({ kind: 'interest', tags: Object.fromEntries(start.types.map((t) => [t, 1])), label: 'The holidays you love' });
+  const aYearAgo = new Date(Date.now() - 365 * 864e5).toISOString().slice(0, 7);
+  start.been.forEach((slug, i) => {
+    const place = featuresForSlug(slug);
+    if (place) next.push({ kind: 'trip', place, score: 8.5, month: aYearAgo, nights: null, companions: i === 0 ? start.who : null, told: true });
+  });
   // Views come after saves, so a view of somewhere already saved counts for little.
   for (const v of views) {
     const place = featuresForSlug(v.slug) ?? featuresForPlace({ name: v.name, country: v.country });

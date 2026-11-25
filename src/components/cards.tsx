@@ -11,7 +11,7 @@ import { MonthPill } from './MonthPill';
 import { PhotoFill, PhotoTile, Shade } from './Photo';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { Card } from './ui';
+import { Card, ExampleTag } from './ui';
 import { TripActions } from './TripActions';
 import { friendTripId, tripPic, tripPlace } from '@/lib/friendTrips';
 import { personHref } from '@/lib/samplePeople';
@@ -138,6 +138,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
                 {item.who}
                 {!!item.posted && <Text style={{ fontFamily: fonts.sans, fontSize: 13, color: colors.onDark }}> · {item.posted}</Text>}
               </Text>
+              {!item.id && <ExampleTag onPhoto />}
               <MonthPill month={item.month} onPhoto />
             </View>
             <View style={{ position: 'absolute', left: 18, right: 18, bottom: 18, flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
@@ -162,6 +163,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
                 {item.who}
                 {!!item.posted && <Text style={{ fontFamily: fonts.sans, fontSize: 13, color: colors.muted }}> · {item.posted}</Text>}
               </Text>
+              {!item.id && <ExampleTag />}
               <MonthPill month={item.month} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>

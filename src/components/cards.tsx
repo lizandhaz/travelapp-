@@ -196,7 +196,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
                     <Text variant="strong" style={{ fontSize: 14.5, lineHeight: 19 }}>
                       {item.stayName}
                     </Text>
-                    <Text variant="tiny">{[item.stayType, item.stayScore != null ? item.stayScore.toFixed(1) : null].filter(Boolean).join(' · ')}</Text>
+                    {!!item.stayType && <Text variant="tiny">{item.stayType}</Text>}
                     <Text variant="small" style={{ color: colors.accentText, marginTop: 6 }}>
                       Their trip →
                     </Text>
@@ -212,7 +212,6 @@ export function FeedCard({ item }: { item: FeedItem }) {
           {!!item.quote && <Text variant="quote">{item.quote}</Text>}
           {!!item.stayName && (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.sageSoft, borderRadius: radius.md, padding: 10 }}>
-            {item.stayScore != null && <ScoreStamp score={item.stayScore} size="sm" label={item.stayType} />}
             <View style={{ flex: 1 }}>
               <Text variant="label" style={{ fontSize: 10 }}>
                 Stayed at · {item.stayType}

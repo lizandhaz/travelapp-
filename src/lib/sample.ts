@@ -1226,6 +1226,16 @@ export const places: SamplePlace[] = [
     "photos": [
       "own-santorini-oia"
     ]
+  },
+  {
+    "slug": "mykonos",
+    "name": "Mykonos",
+    "region": "Greece",
+    "score": 8.5,
+    "photo": "own-mykonos-harbour",
+    "photos": [
+      "own-mykonos-harbour"
+    ]
   }
 ] as SamplePlace[];
 

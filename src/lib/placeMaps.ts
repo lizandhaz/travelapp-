@@ -82,6 +82,8 @@ export const placeMaps: Record<string, PlaceMap> = {
   "rottnest": { pins: [{ n: 1, name: "Discovery Rottnest Island", kind: "Stay", ll: [-31.9975, 115.548] }, { n: 2, name: "Samphire Rottnest", kind: "Stay", ll: [-31.9963, 115.5418] }, { n: 3, name: "Hotel Rottnest", kind: "Eat", ll: [-31.9966, 115.5404] }, { n: 4, name: "Rottnest Bakery", kind: "Eat", ll: [-31.9975, 115.542] }, { n: 5, name: "Cycle the island", kind: "Do", ll: [-31.9985, 115.539] }, { n: 6, name: "The Basin", kind: "Do", ll: [-31.9923, 115.5427] }, { n: 7, name: "Little Salmon Bay", kind: "Hidden gem", ll: [-32.0225, 115.52] }] },
   // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
   "santorini": { pins: [{ n: 1, name: "Canaves Oia", kind: "Stay", ll: [36.4615, 25.3755] }, { n: 2, name: "Grace Hotel Santorini", kind: "Stay", ll: [36.4325, 25.4235] }, { n: 3, name: "Astra Suites", kind: "Stay", ll: [36.4337, 25.4248] }, { n: 4, name: "Metaxi Mas", kind: "Eat", ll: [36.385, 25.47] }, { n: 5, name: "Ammoudi Fish Tavern", kind: "Eat", ll: [36.4587, 25.3709] }, { n: 6, name: "Lucky's Souvlakis", kind: "Eat", ll: [36.4166, 25.4317] }, { n: 7, name: "Fira to Oia clifftop walk", kind: "Do", ll: [36.44, 25.42] }, { n: 8, name: "Volcano and hot springs boat", kind: "Do", ll: [36.404, 25.396] }, { n: 9, name: "Pyrgos", kind: "Hidden gem", ll: [36.3836, 25.449] }] },
+  // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
+  "mykonos": { pins: [{ n: 1, name: "Cavo Tagoo", kind: "Stay", ll: [37.4535, 25.3285] }, { n: 2, name: "Bill & Coo Suites", kind: "Stay", ll: [37.4498, 25.3312] }, { n: 3, name: "Semeli Hotel", kind: "Stay", ll: [37.4462, 25.3302] }, { n: 4, name: "Kiki's Tavern", kind: "Eat", ll: [37.4878, 25.3685] }, { n: 5, name: "Nammos", kind: "Eat", ll: [37.4135, 25.3445] }, { n: 6, name: "Niko's Taverna", kind: "Eat", ll: [37.4462, 25.3264] }, { n: 7, name: "Little Venice at sunset", kind: "Do", ll: [37.4455, 25.3249] }, { n: 8, name: "Day trip to Delos", kind: "Do", ll: [37.3963, 25.2687] }, { n: 9, name: "Agios Sostis beach", kind: "Hidden gem", ll: [37.4875, 25.369] }] },
 };
 
 /**
@@ -157,6 +159,7 @@ export const placeCentres: Record<string, { at: [number, number]; span: number }
   hamiltonisland: { at: [-20.35, 148.95], span: 0.12 },
   rottnest: { at: [-32.0, 115.52], span: 0.25 },
   santorini: { at: [36.42, 25.43], span: 0.3 },
+  mykonos: { at: [37.445, 25.33], span: 0.3 },
 };
 
 /**

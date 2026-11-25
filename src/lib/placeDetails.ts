@@ -11217,5 +11217,163 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "mykonos": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "June or September",
+    "staysFrom": "from £300 a night",
+    "goodFor": [
+      "Friends",
+      "Couples"
+    ],
+    "temps": [
+      14,
+      14,
+      16,
+      19,
+      23,
+      27,
+      28,
+      28,
+      25,
+      22,
+      18,
+      15
+    ],
+    "bestMonths": [
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Jonah",
+        "month": "Jul 2025",
+        "quote": "Little Venice at sunset, then dancing till late.",
+        "score": 8.4,
+        "face": null
+      },
+      {
+        "who": "Sophie",
+        "month": "Sep 2024",
+        "quote": "Quieter in September, and the sea is still warm.",
+        "score": 8.7,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Cavo Tagoo",
+        "type": "Hotel",
+        "match": 89,
+        "featured": true,
+        "sub": "from £600 a night · Cave-style rooms and an infinity pool over the sea.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Bill & Coo Suites",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £450 a night · Sophie stayed",
+        "because": null,
+        "score": 8.9,
+        "photo": null
+      },
+      {
+        "name": "Semeli Hotel",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £300 a night · Jonah stayed",
+        "because": null,
+        "score": 8.3,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Kiki's Tavern",
+        "price": "££",
+        "what": "Grilled meat above a beach, no sign, no bookings",
+        "score": 9.0,
+        "from": "Sophie",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Nammos",
+        "price": "£££",
+        "what": "The famous beach club at Psarou",
+        "score": 8.1,
+        "from": "Jonah",
+        "match": 80,
+        "photo": null
+      },
+      {
+        "name": "Niko's Taverna",
+        "price": "££",
+        "what": "An Old Town classic",
+        "score": 8.4,
+        "from": null,
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "Little Venice at sunset",
+        "what": "Drinks on the water, then up to the windmills.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Boat",
+        "name": "Day trip to Delos",
+        "what": "The sacred island of ancient Greece, half an hour by boat. Closed Mondays.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Agios Sostis beach",
+        "what": "No sunbeds, no music, and Kiki's for lunch.",
+        "from": "Sophie",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Kato Mili windmills",
+        "what": "Sixteenth-century windmills above Little Venice.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Go in June or September: July and August are packed and pricey.",
+        "from": "Sophie"
+      }
+    ],
+    "credits": null
   }
 };

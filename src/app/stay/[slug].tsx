@@ -79,7 +79,7 @@ export default function StayPage() {
       {/* The facts: price, who stayed, what it's like. */}
       <View style={{ paddingHorizontal: GUTTER, marginTop: 22, gap: 16 }}>
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <Fact label="Price" value={priceFrom != null ? `from about £${priceFrom} a night` : 'Varies'} />
+          <Fact label="Price per night" value={priceFrom != null ? `From about £${priceFrom}` : 'Varies'} />
           <Fact label="Type" value={stay.type} />
         </View>
         {!!description && <Text variant="quote">{description}</Text>}

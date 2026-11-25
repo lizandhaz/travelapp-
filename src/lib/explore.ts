@@ -190,7 +190,7 @@ export const itemCollections: ItemCollection[] = [
   // Stays by budget (owner, Nov 2026: filter where to stay by price). Each opens the stay's own page.
   {
     id: 'stays-value',
-    title: 'Stays under £150',
+    title: 'Stays under £150 a night',
     items: () => staysPriced((p) => p < 150),
   },
   {

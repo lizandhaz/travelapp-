@@ -6,8 +6,8 @@ import { Dimensions } from 'react-native';
  * the accents are 20% less saturated and the soft fills sit 35% closer to the oat-milk background.
  */
 export const colors = {
-  bg: '#f2ede2', // page background: oat milk
-  card: '#ffffff', // cards, inputs, stamp frames
+  bg: '#ffffff', // page background: white (owner, Nov 2026; was oat milk #f2ede2)
+  card: '#faf5eb', // cards, inputs, stamp frames, buttons: off-white cream on the white page (owner, Nov 2026)
   line: '#e2dacb', // borders, dividers
   sand: '#e6dccb', // quiet fills, placeholders
   mapLand: '#b9c3ad', // dotted land on the travel map: light sage
@@ -25,7 +25,7 @@ export const colors = {
   blushSoft: '#f5e5de', // soft blush fill for cards and bands
   sageSoft: '#e8eadd', // soft sage fill for cards and bands
   skySoft: '#e7eaeb', // soft misty-sky fill for cards and bands
-  cream: '#fcf8ef', // the "Your score" card on place pages (owner Nov 2026: cream, not pink)
+  cream: '#faf5eb', // the "Your score" card on place pages (owner Nov 2026: cream, not pink)
   champagneSoft: '#f3ecde', // soft champagne: the fourth card colour for place pages' hotels and restaurants
   skyDeep: '#5b7389', // misty sky, deep enough for white initials
   gold: '#b9975b', // hidden-gem pins on place maps

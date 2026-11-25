@@ -79,9 +79,6 @@ export function PostcardCard({ trip, width, flipped, onFlip }: { trip: FriendTri
           <ScoreStamp score={trip.score} size="lg" label={`${trip.who}'s score`} />
         </View>
         <View style={{ position: 'absolute', left: 26, right: 26, bottom: 30 }}>
-          <Text variant="label" style={{ color: colors.onDark, letterSpacing: 3 }}>
-            Greetings from
-          </Text>
           <Text {...fitLines(trip.place)} style={{ fontFamily: fonts.displayItalic, fontSize: nameSize, lineHeight: Math.round(nameSize * 1.13), color: colors.onDark }}>
             {trip.place}
           </Text>

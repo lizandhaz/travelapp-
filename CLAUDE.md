@@ -88,7 +88,7 @@ src/
     (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
     (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score, sideways;
                           no text under them); "Dip into collections" (Explore's collection tiles); "From your friends" (FeedCard: big photo
-                          with who, when they posted, month, place and score, or for a post without photos a mini postcard on cream (owner's pick, Nov 2026: "Greetings from" + the place in italic
+                          with who, when they posted, month, place and score, or for a post without photos a mini postcard on cream (owner's pick, Nov 2026: the place in italic, no "Greetings from" (owner: too cheesy)
                           with their score as a tilted stamp, then their words left of a middle line and the stay on the right), then Like / Comment / Save. Feed cards and place pages' "What friends said" show only the trip's score, never the stay's (owner Nov 2026: two ratings were confusing; the stay score shows on the postcard back and the friend's trip page); opens as a postcard (postcard/[id] with the friend's trip id), owner Nov 2026. Real trips from people
                           you follow (lib/friendsFeed) replace the sample feed once there are any; the sample feed mixes photos/no photos on purpose). A thin line sits above "From your friends"
     (tabs)/explore.tsx    Explore (prototype layout): pinned search + filter chips (picking one, or searching, filters the feed and
@@ -122,7 +122,7 @@ src/
                           Requested / Following; tabs Followers / Following / Requests (?tab=); remove a follower, unfollow, accept or
                           decline (each asks once); Invite friends (share sheet with your @username)
     postcard/[id].tsx     Opened from Postcards (id = the Postcard's id) or the friends feed (id = the friend's trip id). A friend's trip as a postcard, titled "<who>'s <place> trip", the same template for everyone (components/
-                          PostcardCard: photo front "Greetings from <place>" with their score as the postage stamp, top right; tap/"Turn over" for the back: the place, region and
+                          PostcardCard: photo front with the place name in italic (no "Greetings from", owner Nov 2026) and their score as the postage stamp, top right; tap/"Turn over" for the back: the place, region and
                           month and a photo stamp,
                           then like a real postcard a line down the middle: their quote and top tip on the left; score, who
                           with, nights, where they slept (+ score), where they ate on the right). No personal messages and no
@@ -242,7 +242,7 @@ src/
     tripQuery.ts          Explore's search (pure, tested in tests/tripQuery.test.mjs): parseTripQuery() reads "beach in February",
                           "romantic weekend", "winter sun", "no flying", "cheap", "under £200 a night", "Greece" into months/warmth/holiday types/who/short/
                           no-fly/budget/maxPrice/place words, plus **topics** (TOPICS: food, golf, museums, sightseeing, history, walking, wine,
-                          nightlife, snorkelling, shopping; owner Nov 2026) found inside each place's page (`things`: its stays, restaurants,
+                          nightlife, snorkelling, skiing, spa and wellness, shopping; owner Nov 2026) found inside each place's page (`things`: its stays, restaurants,
                           things to do, culture and tips) with the thing's name as the reason ("Musée d'Orsay"), or a tag ("Known for golf":
                           GOLF / WINE sets in explore.ts); other words are looked for on the page too. Tapping a result of a topic search
                           opens the place tailored to it (`/place/<slug>?topic=golf`; owner Nov 2026): a sage "From your search · Golf in

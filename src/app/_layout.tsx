@@ -82,6 +82,7 @@ function Navigator() {
             <Stack.Screen name="friend-trip/[id]" />
             <Stack.Screen name="postcard/[id]" />
             <Stack.Screen name="people" />
+            <Stack.Screen name="user/[id]" />
             <Stack.Screen name="person/[who]/index" />
             <Stack.Screen name="person/[who]/follows" />
             <Stack.Screen name="person/[who]/board" />

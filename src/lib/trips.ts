@@ -121,6 +121,13 @@ export async function fetchMyTrips(): Promise<Trip[]> {
   return (data as unknown as TripRow[]).map(fromRow);
 }
 
+/** Someone else's trips you're allowed to see, newest first (the database only returns those). */
+export async function fetchTripsOf(userId: string): Promise<Trip[]> {
+  const { data, error } = await supabase.from('trips').select(TRIP_SELECT).eq('owner_id', userId).order('trip_month', { ascending: false }).limit(200);
+  if (error) return [];
+  return (data as unknown as TripRow[]).map(fromRow);
+}
+
 export async function fetchTrip(id: string): Promise<Trip | null> {
   const { data, error } = await supabase.from('trips').select(TRIP_SELECT).eq('id', id).maybeSingle();
   if (error) throw new Error(friendlyError(error));

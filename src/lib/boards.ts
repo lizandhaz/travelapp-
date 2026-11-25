@@ -91,6 +91,13 @@ function fromRow(r: Row): Board {
 }
 
 /** Your lists: "Want to go" first, then the most recently changed. */
+/** Someone else's boards you're allowed to see (their followers', or everyone's on a public profile). */
+export async function fetchBoardsOf(userId: string): Promise<Board[]> {
+  const { data, error } = await supabase.from('boards').select(SELECT).eq('owner_id', userId).order('updated_at', { ascending: false });
+  if (error) return [];
+  return (data as unknown as Row[]).map(fromRow);
+}
+
 export async function fetchBoards(): Promise<Board[]> {
   const me = await myUserId();
   if (!me) return [];

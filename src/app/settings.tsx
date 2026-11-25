@@ -3,7 +3,7 @@ import { Pressable, Switch, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { Text } from '@/components/Text';
-import { BackButton, Button, Card, PageTitle, Screen } from '@/components/ui';
+import { BackButton, Button, Card, PageTitle, Screen, Segmented } from '@/components/ui';
 import { APP_NAME } from '@/constants/brand';
 import { colors, GUTTER } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { clearPlaceViews, setViewsEnabled, viewsEnabled } from '@/lib/views';
 import { DEFAULT_MATCH_SETTINGS, getMatchSettings, setMatchSetting, type MatchSettings } from '@/lib/matchSettings';
 import { deleteMyAccount, fetchBlocks, unblockUser, type Blocked } from '@/lib/safety';
+import { updatePrivacy, type PrivacyChange } from '@/lib/profiles';
 
 /** Settings: what your scores use, blocked people, privacy policy, sign out and deleting your account (plan Step J). */
 export default function Settings() {
@@ -28,6 +29,17 @@ export default function Settings() {
     getMatchSettings().then(setUses);
     fetchBlocks().then(setBlocked);
   }, []);
+
+  const [privacyError, setPrivacyError] = useState<string | null>(null);
+  async function changePrivacy(change: PrivacyChange) {
+    setPrivacyError(null);
+    try {
+      await updatePrivacy(change);
+      await refreshProfile();
+    } catch (e) {
+      setPrivacyError(e instanceof Error ? e.message : 'Something went wrong.');
+    }
+  }
 
   async function unblock(b: Blocked) {
     try {
@@ -81,10 +93,53 @@ export default function Settings() {
       </PageTitle>
       <View style={{ paddingHorizontal: GUTTER, gap: 22 }}>
         <Section label="Privacy">
-          <Row title="Public profile" sub={`Let anyone on ${APP_NAME} see your trips, not just friends.`} value={profile?.isPublic ? 'On' : 'Off'} />
-          <Text variant="tiny" style={{ paddingHorizontal: 16, paddingBottom: 14 }}>
-            {profile?.canGoPublic ? 'Public profiles are coming soon.' : 'Public profiles are for over-18s. Until then, your profile is just for friends.'}
-          </Text>
+          {profile?.canGoPublic ? (
+            <View style={{ padding: 16, gap: 16 }}>
+              <SwitchRow
+                title="Public profile"
+                sub={profile.isPublic ? `Anyone on ${APP_NAME} can follow you without asking, and see what you choose below.` : 'Private: only followers you accept see what you share.'}
+                value={profile.isPublic}
+                onChange={(on) => changePrivacy({ is_public: on })}
+              />
+              {profile.isPublic && (
+                <>
+                  <Text variant="small">Who can see each part of your profile? Trips set to “Just me” are only ever seen by you.</Text>
+                  {(
+                    [
+                      ['share_trips', 'Your trips', profile.shareTrips],
+                      ['share_boards', 'Your boards', profile.shareBoards],
+                      ['share_stats', 'Your stats and travel map', profile.shareStats],
+                    ] as const
+                  ).map(([key, title, value]) => (
+                    <View key={key} style={{ gap: 8 }}>
+                      <Text variant="strong">{title}</Text>
+                      <Segmented
+                        label={`Who can see ${title.toLowerCase()}`}
+                        options={[
+                          ['everyone', 'Everyone'],
+                          ['followers', 'Followers only'],
+                        ]}
+                        value={value}
+                        onChange={(v) => changePrivacy({ [key]: v })}
+                      />
+                    </View>
+                  ))}
+                </>
+              )}
+              {!!privacyError && (
+                <Text variant="small" style={{ color: colors.accentText }}>
+                  {privacyError}
+                </Text>
+              )}
+            </View>
+          ) : (
+            <>
+              <Row title="Public profile" sub={`Let anyone on ${APP_NAME} see your trips, not just friends.`} value="Off" />
+              <Text variant="tiny" style={{ paddingHorizontal: 16, paddingBottom: 14 }}>
+                Public profiles are for over-18s. Until then, your profile is just for friends.
+              </Text>
+            </>
+          )}
         </Section>
         <Section label="Your scores">
           <View style={{ padding: 16, gap: 16 }}>

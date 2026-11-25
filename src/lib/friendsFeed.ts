@@ -5,7 +5,7 @@ import { countryOf } from './knownPlaces';
 import { monthYear } from './months';
 import { places, type FeedItem } from './sample';
 import { myUserId, supabase } from './supabase';
-import { fetchTrip, fromRow, TRIP_SELECT, tripPhotoUrl, type Trip, type TripRow } from './trips';
+import { fetchTrip, fetchTripsOf, fromRow, TRIP_SELECT, tripPhotoUrl, type Trip, type TripRow } from './trips';
 
 /**
  * Real trips from the people you follow (plan Step C): their "Followers" trips, newest first, for
@@ -103,6 +103,13 @@ export async function fetchFriendsTrips(limit = 30): Promise<RealFriendTrip[]> {
   );
   // The feed only needs the cover; the postcard signs the rest when it opens.
   return Promise.all(trips.map(async (t) => toFriendTrip(t, byId.get(t.ownerId), await signAll(t.photoPaths.slice(0, 1)), faces.get(t.ownerId) ?? null)));
+}
+
+/** One person's trips that you're allowed to see (their followers', or everyone's on a public profile), as cards. */
+export async function fetchTripsOfPerson(person: Person): Promise<RealFriendTrip[]> {
+  const trips = await fetchTripsOf(person.userId);
+  const face = person.avatarPath ? await tripPhotoUrl(person.avatarPath).catch(() => null) : null;
+  return Promise.all(trips.map(async (t) => toFriendTrip(t, person, await signAll(t.photoPaths.slice(0, 1)), face)));
 }
 
 /** A real trip as a Home feed card. */

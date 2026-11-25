@@ -4,7 +4,8 @@ import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/Avatar';
-import { PhotoBadge, Row } from '@/components/cards';
+import { Row } from '@/components/cards';
+import { BedIcon, BulbIcon, ChevronIcon, CompassIcon, ForkIcon } from '@/components/Icons';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
 import { SafetySheet } from '@/components/SafetySheet';
@@ -13,6 +14,7 @@ import { Text } from '@/components/Text';
 import { TripActions } from '@/components/TripActions';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
 import { colors, fonts, GUTTER, radius, appWidth } from '@/constants/theme';
+import { placeDetails } from '@/lib/placeDetails';
 import { personHref } from '@/lib/samplePeople';
 import { companionsLabel, photoCount, tripPic, tripPlace } from '@/lib/friendTrips';
 import { useFriendTrip } from '@/lib/friendsFeed';
@@ -92,88 +94,77 @@ export default function FriendTripScreen() {
         </View>
       )}
 
-      {stay && (
-      <View style={{ marginTop: 26 }}>
-        <SectionHeader>Where they stayed</SectionHeader>
-        <Card style={{ marginHorizontal: GUTTER, overflow: 'hidden' }}>
-          {stay.photo && (
-            <PhotoTile photo={stay.photo} style={{ height: 170, borderRadius: 0 }} shade={false}>
-              <PhotoBadge text={stay.type} style={{ position: 'absolute', top: 10, left: 10 }} />
-            </PhotoTile>
-          )}
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14 }}>
-            <View style={{ flex: 1 }}>
-              <Text variant="subheading">{stay.name}</Text>
-              <Text variant="tiny">{[stay.type, stay.sub].filter(Boolean).join(' · ')}</Text>
-              {stay.wouldReturn != null && (
-                <Text variant="tiny" style={{ marginTop: 2, color: colors.olive }}>
-                  {stay.wouldReturn ? `${trip.who} would stay again` : `${trip.who} wouldn’t stay again`}
-                </Text>
-              )}
-            </View>
-            {stay.score != null && <ScoreStamp score={stay.score} size="sm" tone="olive" label={`${trip.who}'s score for ${stay.name}`} />}
-          </View>
-        </Card>
-      </View>
-      )}
-
-      {eats.length > 0 && (
-        <View style={{ marginTop: 26 }}>
-          <SectionHeader>Where they ate</SectionHeader>
-          <Row gap={12}>
-            {eats.map((e) => (
-              <View key={e.name} style={{ width: 200, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line }}>
-                {e.photo ? <PhotoTile photo={e.photo} style={{ height: 130, borderRadius: 0 }} shade={false} /> : <View style={{ height: 8, backgroundColor: colors.sageSoft }} />}
-                <View style={{ padding: 12, gap: 4 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
-                    <Text variant="strong" style={{ flex: 1 }}>
-                      {e.name}
-                    </Text>
-                    {e.score != null && <ScoreStamp score={e.score} size="sm" label={`${trip.who}'s score for ${e.name}`} />}
-                  </View>
-                  {!!e.what && (
-                    <Text variant="tiny" numberOfLines={3}>
-                      {e.what}
-                    </Text>
-                  )}
-                  {!!e.price && <Text variant="tiny" style={{ color: colors.accentText }}>{e.price}</Text>}
+      {/* Their picks as one tidy guide (owner, Nov 2026: the mix of big cards, coloured blocks and headings looked clunky):
+          every hotel, restaurant, thing to do and tip is the same kind of row, grouped under small labels. */}
+      {(!!stay || eats.length > 0 || dos.length > 0 || tips.length > 0) && (
+        <View style={{ marginTop: 28 }}>
+          <SectionHeader>{`${trip.who}’s picks`}</SectionHeader>
+          <Card tone="cream" style={{ marginHorizontal: GUTTER, paddingHorizontal: 16, paddingVertical: 4 }}>
+            {[
+              stay && {
+                label: 'Where they stayed',
+                rows: [
+                  {
+                    key: stay.name,
+                    icon: <BedIcon color={colors.olive} size={18} />,
+                    photo: stay.photo,
+                    name: stay.name,
+                    sub: [stay.type, stay.sub?.split(' · ').filter((x) => !/ stayed$/.test(x)).join(' · ')].filter(Boolean).join(' · '),
+                    note: stay.wouldReturn == null ? null : stay.wouldReturn ? 'Would stay again' : 'Wouldn’t stay again',
+                    score: stay.score,
+                    href: trip.slug && placeDetails[trip.slug]?.stays.some((x) => x.name === stay.name) ? { pathname: '/stay/[slug]', params: { slug: trip.slug, name: stay.name } } : null,
+                  },
+                ],
+              },
+              eats.length > 0 && {
+                label: 'Where they ate',
+                rows: eats.map((e) => ({ key: e.name, icon: <ForkIcon color={colors.olive} size={18} />, photo: e.photo, name: e.name, sub: [e.what, e.price].filter(Boolean).join(' · '), note: null, score: e.score, href: null })),
+              },
+              dos.length > 0 && {
+                label: 'What they did',
+                rows: dos.map((d) => ({ key: d.name, icon: <CompassIcon color={colors.olive} size={18} />, photo: null, name: d.name, sub: d.what ?? '', note: d.gem ? '✦ Hidden gem' : null, score: null, href: null })),
+              },
+              tips.length > 0 && {
+                label: 'Top tips',
+                rows: tips.map((x) => ({ key: x.tip, icon: <BulbIcon color={colors.olive} size={18} />, photo: null, name: null, sub: x.tip, note: null, score: null, href: null })),
+              },
+            ]
+              .filter((g) => !!g)
+              .map((g, gi) => (
+                <View key={g.label} style={{ paddingVertical: 12, borderTopWidth: gi ? 1 : 0, borderTopColor: colors.line, gap: 12 }}>
+                  <Text variant="label">{g.label}</Text>
+                  {g.rows.map((r) => {
+                    const row = (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                        {r.photo ? (
+                          <PhotoTile photo={r.photo} style={{ width: 44, height: 44, borderRadius: radius.md }} shade={false} />
+                        ) : (
+                          <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: colors.sageSoft, alignItems: 'center', justifyContent: 'center', alignSelf: r.name ? 'center' : 'flex-start' }}>{r.icon}</View>
+                        )}
+                        <View style={{ flex: 1, gap: 2 }}>
+                          {!!r.name && <Text variant="strong">{r.name}</Text>}
+                          {!!r.sub && <Text variant={r.name ? 'small' : 'body'}>{r.sub}</Text>}
+                          {!!r.note && (
+                            <Text variant="small" style={{ color: colors.olive, fontFamily: fonts.sansSemiBold }}>
+                              {r.note}
+                            </Text>
+                          )}
+                        </View>
+                        {r.score != null && <ScoreStamp score={r.score} size="sm" label={`${trip.who}'s score for ${r.name}`} />}
+                        {!!r.href && <ChevronIcon color={colors.muted} />}
+                      </View>
+                    );
+                    return r.href ? (
+                      <Pressable key={r.key} onPress={() => router.push(r.href as never)} accessibilityRole="link" accessibilityLabel={`${r.name}. Open the stay`}>
+                        {row}
+                      </Pressable>
+                    ) : (
+                      <View key={r.key}>{row}</View>
+                    );
+                  })}
                 </View>
-              </View>
-            ))}
-          </Row>
-        </View>
-      )}
-
-      {dos.length > 0 && (
-        <View style={{ marginTop: 26 }}>
-          <SectionHeader>What they did</SectionHeader>
-          <View style={{ paddingHorizontal: GUTTER, gap: 10 }}>
-            {dos.map((d, i) => (
-              <Card key={d.name} tone={(['sage', 'sky', 'blush'] as const)[i % 3]} style={{ padding: 14, gap: 4 }}>
-                <Text variant="label" style={{ color: colors.ink }}>
-                  {d.gem ? 'Hidden gem' : d.tag}
-                </Text>
-                <Text variant="strong">{d.name}</Text>
-                {!!d.what && <Text variant="small">{d.what}</Text>}
-              </Card>
-            ))}
-          </View>
-        </View>
-      )}
-
-      {tips.length > 0 && (
-        <View style={{ marginTop: 26 }}>
-          <SectionHeader>{`${trip.who}’s top tips`}</SectionHeader>
-          <View style={{ paddingHorizontal: GUTTER, gap: 10 }}>
-            {tips.map((t) => (
-              <View key={t.tip} style={{ flexDirection: 'row', gap: 10 }}>
-                <Text style={{ fontFamily: fonts.display, fontSize: 18, color: colors.accent }}>✦</Text>
-                <Text variant="body" style={{ flex: 1 }}>
-                  {t.tip}
-                </Text>
-              </View>
-            ))}
-          </View>
+              ))}
+          </Card>
         </View>
       )}
 

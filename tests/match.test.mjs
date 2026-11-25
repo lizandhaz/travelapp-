@@ -230,3 +230,22 @@ test('things and stays get a score out of 10: friends first, nudged by your tast
   assert.ok(stayScore(villaFan, { type: 'Villa', priceFrom: null, friendScore: 8.5 }) > stayScore(villaFan, { type: 'Hotel', priceFrom: null, friendScore: 8.5 }) - 0.001);
   assert.equal(stayScore(buildProfile([], [], NOW), { type: 'B&B', priceFrom: null, friendScore: 8.8 }), 8.8);
 });
+
+// "Like X" must be a realistic comparison (owner, Nov 2026: "Tenerife is not like the Maldives").
+test('likeness: near and alike compares; far and different does not', async () => {
+  const { likeness } = await import('../src/lib/match.ts');
+  const F = (tags, pos, priceFrom, warmth) => ({ key: '', name: '', tags, pos, priceFrom, warmth, goodFor: [], baseScore: null });
+  const tenerife = F({ beach: 1, island: 1 }, [28.3, -16.6], 180, 22);
+  const corfu = F({ beach: 1, island: 1 }, [39.6, 19.9], 320, 27);
+  const maldives = F({ beach: 1, island: 1, luxury: 1 }, [3.2, 73.2], 420, 31);
+  const mauritius = F({ beach: 1, island: 1, luxury: 1 }, [-20.3, 57.6], 260, 27);
+  const madrid = F({ city: 1, food: 1, culture: 1 }, [40.4, -3.7], 140, 23);
+  const kyoto = F({ city: 1, food: 1, culture: 1 }, [35.0, 135.8], 160, 19);
+  const barcelona = F({ city: 1, food: 1, beach: 0.5 }, [41.4, 2.2], 180, 24);
+  assert.equal(likeness(tenerife, maldives), 0);
+  assert.ok(likeness(tenerife, corfu) > 0.2);
+  assert.ok(likeness(mauritius, maldives) > 0.2);
+  assert.equal(likeness(mauritius, corfu), 0);
+  assert.equal(likeness(madrid, kyoto), 0);
+  assert.ok(likeness(madrid, barcelona) > 0.2);
+});

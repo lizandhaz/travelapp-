@@ -537,20 +537,42 @@ export function scorePlace(profile: Profile, place: PlaceFeatures, friendRatings
   };
 }
 
+/**
+ * How fair it is to say one place is "like" another, 0–1 (owner, Nov 2026: "Tenerife is not like the Maldives").
+ * The same kind of holiday isn't enough: nearby places with the same feel compare easily, but places far apart
+ * (over 3,500 km) only when they're very alike in kind, price and weather, and never for cities. 0 means don't compare them.
+ */
+export function likeness(a: PlaceFeatures, b: PlaceFeatures): number {
+  const kind = tagSimilarity(a.tags, b.tags);
+  if (kind < 0.4) return 0;
+  const km = a.pos && b.pos ? distanceKm(a.pos, b.pos) : null;
+  const priceRatio = a.priceFrom && b.priceFrom ? Math.min(a.priceFrom, b.priceFrom) / Math.max(a.priceFrom, b.priceFrom) : null;
+  const warmGap = a.warmth != null && b.warmth != null ? Math.abs(a.warmth - b.warmth) : null;
+  if (km == null || km > 3500) {
+    // A city is its own culture: never "like" a city on the other side of the world (Madrid isn't like Kyoto).
+    if ((a.tags.city ?? 0) >= 0.5 || (b.tags.city ?? 0) >= 0.5) return 0;
+    // …and a tropical island isn't like a Mediterranean one (Mauritius isn't like Corfu).
+    const tropical = (pos: [number, number] | null) => !!pos && Math.abs(pos[0]) < 23.5;
+    if (tropical(a.pos) !== tropical(b.pos)) return 0;
+    if (kind < 0.85 || priceRatio == null || priceRatio < 0.5 || warmGap == null || warmGap > 5) return 0;
+  }
+  const near = km == null ? 0 : Math.exp(-km / 1500);
+  const price = priceRatio == null ? 0.8 : 0.5 + 0.5 * priceRatio;
+  const warm = warmGap == null ? 0.8 : Math.max(0, 1 - warmGap / 15);
+  return kind * (0.5 + 0.5 * near) * price * warm;
+}
+
 /** Up to three short reasons, most telling first. */
 export function reasonsFor(profile: Profile, place: PlaceFeatures, friends: FriendRating[]): string[] {
   const out: { text: string; strength: number }[] = [];
   if (profile.been[place.key] != null) out.push({ text: `You gave it ${profile.been[place.key].toFixed(1)}`, strength: 10 });
 
-  // The place in their history most like this one.
+  // The place in their history most like this one (only a realistic comparison: see likeness).
   let best: { a: Anchor; sim: number } | null = null;
   for (const a of profile.anchors) {
     if (a.weight <= 0 || a.place.key === place.key) continue;
-    const kind = tagSimilarity(a.place.tags, place.tags);
-    if (kind < 0.25) continue; // "Like X" only when it's the same kind of holiday, not just nearby
-    const near = a.place.pos && place.pos ? Math.exp(-distanceKm(a.place.pos, place.pos) / 1200) : 0;
-    const sim = (0.7 * kind + 0.3 * near) * a.weight;
-    if (!best || sim > best.sim) best = { a, sim };
+    const sim = likeness(a.place, place) * a.weight;
+    if (sim > 0 && (!best || sim > best.sim)) best = { a, sim };
   }
   if (best && best.sim > 0.18) {
     const { a } = best;

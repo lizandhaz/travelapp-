@@ -3,15 +3,14 @@ import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccentTitle } from '@/components/AccentTitle';
-import { BoardTile, PlaceCard, Row, TasteCard, TrendCard } from '@/components/cards';
-import { useTaste } from '@/lib/taste';
+import { BoardTile, PlaceCard, Row, TrendCard } from '@/components/cards';
 import { CollectionTile } from '@/components/explore';
 import { SearchIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
 import { Chip, Input, Screen, SectionHeader } from '@/components/ui';
 import { colors, GUTTER, appWidth } from '@/constants/theme';
 import { collectionTiles, exploreFeed, searchTrips, type FeedItem } from '@/lib/explore';
-import { rows, TASTES, trendingThisMonth } from '@/lib/sample';
+import { trendingThisMonth } from '@/lib/sample';
 
 const STAYS = ['Riad', 'Villa', 'Ryokan', 'Hotel', 'B&B', 'Airbnb', 'Other'];
 
@@ -43,12 +42,6 @@ export default function Explore() {
   const [limit, setLimit] = useState(PAGE);
 
   const feed = useMemo(() => exploreFeed(), []);
-  const taste = useTaste();
-  const [tasteFilter, setTasteFilter] = useState(0);
-  const tasteItems = rows.taste
-    .filter((i) => !!i.photo)
-    .filter(TASTES[tasteFilter].match)
-    .sort((a, b) => (taste.profile.evidence > 0 ? taste.forItem(b).score - taste.forItem(a).score : 0));
   const collections = useMemo(() => collectionTiles(), []);
 
 
@@ -135,24 +128,6 @@ export default function Explore() {
             {/* Places without a photo are left out, so number what's shown 1, 2, 3… (owner Nov 2026: #2 was missing). */}
             {trendingThisMonth.filter((t) => !!t.photo).map((t, i) => (
               <TrendCard key={t.slug} item={{ ...t, rank: t.rank ? t.rank.replace(/^#\d+/, `#${i + 1}`) : t.rank }} width={170} height={180} />
-            ))}
-          </Row>
-        </View>
-
-        {/* Made for your taste: things to eat, do and stay, scored for you (moved from Home). */}
-        <View style={{ marginTop: 30, backgroundColor: colors.sageSoft, paddingVertical: 24 }}>
-          <SectionHeader>
-            <AccentTitle before="Made for your" accent="taste" variant="heading" />
-          </SectionHeader>
-          <Row gap={8}>
-            {TASTES.map((x, i) => (
-              <Chip key={x.label} label={x.label} selected={tasteFilter === i} onPress={() => setTasteFilter(i)} />
-            ))}
-          </Row>
-          <View style={{ height: 14 }} />
-          <Row gap={14}>
-            {tasteItems.map((i) => (
-              <TasteCard key={`${i.slug}-${i.name}`} item={i} />
             ))}
           </Row>
         </View>

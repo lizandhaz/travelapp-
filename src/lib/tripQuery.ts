@@ -26,6 +26,8 @@ export type TripQuery = {
   budget: 'value' | 'luxury' | null;
   /** "under £200", "up to £150 a night": the most a stay may cost a night (£). */
   maxPrice: number | null;
+  /** Things to do or have there ("golf", "museums", "food"), matched against what's on each place's page. */
+  topics: { id: string; label: string }[];
   /** Words left over: place names, countries, regions ("greece", "lisbon"). */
   words: string[];
 };
@@ -46,7 +48,31 @@ export type SearchablePlace = {
   noFly: boolean;
   /** Friends' / base rating out of 10, to break ties. */
   rating: number | null;
+  /** What's on the place's page (restaurants, things to do, stays, tips), for topics. `name` is shown as the reason. */
+  things?: { name: string; text: string; kind: 'do' | 'eat' | 'culture' | 'stay' | 'tip' | 'about' }[];
 };
+
+/**
+ * Topics (owner, Nov 2026: "food", "golf holidays", "sightseeing", "museum trips" gave poor results). Each is found
+ * in the words people type, then matched against what's actually on a place's page, so results say what they found
+ * ("Louvre · Musée d'Orsay") and places with more of it come first. `tag` (a holiday type) also counts.
+ */
+type Kind = 'do' | 'eat' | 'culture' | 'stay' | 'tip' | 'about';
+const SIGHTS: Kind[] = ['do', 'culture', 'about'];
+export const TOPICS: { id: string; label: string; words: string; match: RegExp; tag?: string; from?: Kind[] }[] = [
+  { id: 'food', label: 'Food', words: 'food foodie foodies eat eating restaurant restaurants cuisine gastronomy gourmet tapas', match: /\b(restaurant|taverna|trattoria|osteria|tapas|market|seafood|fish|street food|hawker|kaiseki|mezze|bakery|pastr\w*|cooking|dinner|lunch|tasting menu|michelin|food|pizza|pasta|curry|crab|paella)\b/i, tag: 'food', from: ['eat', 'do', 'culture', 'about'] },
+  { id: 'golf', label: 'Golf', words: 'golf golfing golfer golfers', match: /\bgolf(?! bugg)/i, tag: 'golf' },
+  { id: 'museums', label: 'Museums and art', words: 'museum museums gallery galleries art arts exhibition exhibitions', match: /\b(museums?|galler(y|ies)|art|louvre|orsay|uffizi|guggenheim|exhibition|paintings?|frescoe?s|kunsthaus)\b/i, from: SIGHTS },
+  { id: 'sights', label: 'Sightseeing', words: 'sightseeing sights sight landmark landmarks monument monuments', match: /\b(cathedral|basilica|palace|castle|acropolis|temple|shrine|ruins?|fort|old town|historic|tower|museums?|church|abbey|walls|duomo|colosseum|parthenon|sagrada|statue|bridge|pagoda|monastery|roman|medieval|unesco)\b/i, tag: 'culture', from: SIGHTS },
+  { id: 'history', label: 'History', words: 'history historic historical castle castles ruins ancient', match: /\b(castle|ruins?|ancient|roman|medieval|historic|palace|fort|acropolis|temple|tombs?|abbey|cathedral)\b/i, tag: 'history', from: SIGHTS },
+  { id: 'walking', label: 'Walking', words: 'hike hikes hiking walk walks walking trek trekking trail trails ramble rambling', match: /\b(hikes?|hiking|walks?|walking|trails?|treks?|gorge|ridge|path|climb)\b/i, tag: 'hiking', from: ['do', 'culture', 'tip', 'about'] },
+  { id: 'wine', label: 'Wine', words: 'wine wines vineyard vineyards winery wineries tasting tastings', match: /\b(wine|vineyards?|winer(y|ies)|brunello|chianti|cava|champagne|cellar|sommelier)\b/i, tag: 'wine' },
+  { id: 'nightlife', label: 'Nightlife', words: 'nightlife party parties clubs clubbing bars dancing', match: /\b(bar|bars|club|clubs|party|dancing|nightlife|apr[eè]s|rooftop|cocktails?|beach club)\b/i, tag: 'nightlife' },
+  { id: 'snorkel', label: 'Snorkelling and diving', words: 'snorkel snorkelling snorkeling diving dive scuba reef reefs', match: /\b(snorkel\w*|div(e|es|ing)|scuba|reef|turtles?)\b/i },
+  { id: 'shopping', label: 'Shopping', words: 'shopping shops boutiques markets souks', match: /\b(shop\w*|markets?|boutiques?|souks?|bazaar)\b/i },
+];
+const TOPIC_BY_WORD = new Map<string, (typeof TOPICS)[number]>();
+for (const t of TOPICS) for (const w of t.words.split(' ')) TOPIC_BY_WORD.set(w, t);
 
 /** fit: the share of what was asked that it has (0–1); strength breaks ties (how strongly it has it). */
 export type QueryResult = {
@@ -99,16 +125,13 @@ on('island islands', (q) => addTag(q, 'island', 'Islands'));
 on('coast coastal sea', (q) => addTag(q, 'coast', 'Coast'));
 on('ski skiing snow slopes snowboard snowboarding apres', (q) => addTag(q, 'ski', 'Ski'));
 on('city cities urban', (q) => addTag(q, 'city', 'City'));
-on('culture museum museums art galleries gallery', (q) => addTag(q, 'culture', 'Culture'));
-on('history historic castle castles ruins', (q) => addTag(q, 'history', 'History'));
-on('food foodie eat eating restaurants restaurant wine', (q) => addTag(q, 'food', 'Food'));
-on('hike hikes hiking walk walks walking trek trekking outdoors nature', (q) => addTag(q, 'hiking', 'Walking'));
+on('culture cultural', (q) => addTag(q, 'culture', 'Culture'));
+on('outdoors nature', (q) => addTag(q, 'hiking', 'Outdoors'));
 on('lake lakes', (q) => addTag(q, 'lakes', 'Lakes'));
 on('mountain mountains alps', (q) => addTag(q, 'mountains', 'Mountains'));
 on('safari wildlife animals', (q) => addTag(q, 'wildlife', 'Wildlife'));
 on('spa wellness relax relaxing retreat', (q) => addTag(q, 'wellness', 'Spa and slow'));
 on('slow quiet peaceful chilled', (q) => addTag(q, 'slow', 'Slow'));
-on('party nightlife clubs clubbing', (q) => addTag(q, 'nightlife', 'Nightlife'));
 on('countryside cottage cottages rural', (q) => addTag(q, 'countryside', 'Countryside'));
 on('disney', (q) => addTag(q, 'themeparks', 'Theme parks'));
 on('romantic romance couple couples honeymoon anniversary babymoon', (q) => addWho(q, 'couples'));
@@ -147,6 +170,7 @@ export function parseTripQuery(text: string): TripQuery {
     noFly: false,
     budget: null,
     maxPrice: null,
+    topics: [],
     words: [],
   };
   let s = ` ${plain(text)} `;
@@ -163,7 +187,10 @@ export function parseTripQuery(text: string): TripQuery {
     }
   }
   for (const w of s.split(/\s+/).filter(Boolean)) {
-    if (MONTH_WORDS[w]) q.months = add(q.months, MONTH_WORDS[w]);
+    const topic = TOPIC_BY_WORD.get(w);
+    if (topic) {
+      if (!q.topics.some((t) => t.id === topic.id)) q.topics.push({ id: topic.id, label: topic.label });
+    } else if (MONTH_WORDS[w]) q.months = add(q.months, MONTH_WORDS[w]);
     else if (WORDS[w]) WORDS[w](q);
     else if (w.length > 2 && !STOP.has(w) && !/^\d+$/.test(w)) q.words.push(w.replace(/s$/, ''));
   }
@@ -172,13 +199,14 @@ export function parseTripQuery(text: string): TripQuery {
 
 /** True when the search asked for anything at all. */
 export function hasCriteria(q: TripQuery) {
-  return q.months.length > 0 || q.warm || q.tags.length > 0 || q.who.length > 0 || q.short || q.noFly || q.budget !== null || q.maxPrice !== null || q.words.length > 0;
+  return q.months.length > 0 || q.warm || q.tags.length > 0 || q.who.length > 0 || q.short || q.noFly || q.budget !== null || q.maxPrice !== null || q.topics.length > 0 || q.words.length > 0;
 }
 
 /** What we understood, for the line above the results: "Beach · Warm · February · Couples". */
 export function describeQuery(q: TripQuery): string[] {
   const out: string[] = [];
   if (q.warm) out.push('Warm');
+  out.push(...q.topics.map((t) => t.label));
   out.push(...q.tags.map((t) => t.label));
   if (q.months.length) out.push(monthsLabel(q.months));
   out.push(...q.who.map((w) => w[0].toUpperCase() + w.slice(1)));
@@ -225,9 +253,16 @@ export function placeForQuery(q: TripQuery, p: SearchablePlace, thisMonth: numbe
   if (q.words.length) {
     const hay = ` ${plain(`${p.name} ${p.where} ${p.slug}`)} `;
     const found = q.words.filter((w) => hay.includes(` ${w}`));
-    if (!found.length) return null;
-    hit(true, undefined, 2 * found.length);
-    asked += 2 * (q.words.length - found.length);
+    // Words that aren't the place's name can still be on its page ("turtles", "cable car", "gelato").
+    const page = (p.things ?? []).map((t) => ({ t, text: ` ${plain(`${t.name} ${t.text}`)} ` }));
+    const onPage = q.words.filter((w) => !found.includes(w)).map((w) => ({ w, t: page.find((x) => x.text.includes(` ${w}`))?.t })).filter((x) => !!x.t);
+    if (!found.length && !onPage.length) return null;
+    if (found.length) hit(true, undefined, 2 * found.length);
+    for (const x of onPage) {
+      hit(true, x.t!.name || undefined, 1.5);
+      strength += 0.5;
+    }
+    asked += 2 * (q.words.length - found.length - onPage.length);
   }
 
   // Months: warm then (if asked), else one of its best months.
@@ -257,6 +292,16 @@ export function placeForQuery(q: TripQuery, p: SearchablePlace, thisMonth: numbe
   if (q.short) hit((p.tags.shortbreak ?? 0) >= 0.5 || p.noFly, 'Easy for a short break');
   if (q.noFly) hit(p.noFly, 'No flight needed');
   if (q.budget === 'value') hit(p.priceFrom != null && p.priceFrom <= 150, p.priceFrom != null ? `From £${p.priceFrom} a night` : undefined);
+  for (const qt of q.topics) {
+    const topic = TOPICS.find((t) => t.id === qt.id)!;
+    const found = (p.things ?? []).filter((t) => (!topic.from || topic.from.includes(t.kind)) && topic.match.test(`${t.name} ${t.text}`));
+    // Each named thing once ("Palace of Knossos" can be both a thing to do and culture).
+    const named = found.filter((t, i) => !!t.name && found.findIndex((x) => x.name.toLowerCase() === t.name.toLowerCase()) === i);
+    const tagged = topic.tag ? (p.tags[topic.tag] ?? 0) : 0;
+    const ok = found.length > 0 || tagged >= 0.5;
+    const why = named.length ? named.slice(0, 2).map((t) => t.name).join(' · ') : tagged >= 0.5 ? `Known for ${topic.label.toLowerCase()}` : topic.label;
+    if (hit(ok, why, 1.5)) strength += Math.min(named.length, 4) * 0.5 + Math.min(found.length, 6) * 0.15 + 1.5 * tagged;
+  }
   if (q.maxPrice) hit(p.priceFrom != null && p.priceFrom <= q.maxPrice, p.priceFrom != null ? `Stays from £${p.priceFrom} a night` : undefined);
   if (q.budget === 'luxury') hit((p.tags.luxury ?? 0) >= 0.5 || (p.priceFrom ?? 0) >= 300, 'A real treat');
 

@@ -132,8 +132,9 @@ export default function Explore() {
         <View style={{ marginTop: 28 }}>
           <SectionHeader>Trending this month</SectionHeader>
           <Row>
-            {trendingThisMonth.filter((t) => !!t.photo).map((t) => (
-              <TrendCard key={t.slug} item={t} width={170} height={180} />
+            {/* Places without a photo are left out, so number what's shown 1, 2, 3… (owner Nov 2026: #2 was missing). */}
+            {trendingThisMonth.filter((t) => !!t.photo).map((t, i) => (
+              <TrendCard key={t.slug} item={{ ...t, rank: t.rank ? t.rank.replace(/^#\d+/, `#${i + 1}`) : t.rank }} width={170} height={180} />
             ))}
           </Row>
         </View>

@@ -449,8 +449,9 @@ export function DoRow({ dos, at }: { dos: PlaceDetail['dos']; at?: SpotPlace }) 
 /** "More about …": culture and top tips, folded away until tapped. */
 export function MoreAbout({ name, detail, eat, todo }: { name: string; detail: PlaceDetail; eat?: React.ReactNode; todo?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
-  // Where to eat and things to do live in here too (owner, Nov 2026: keep the place page short).
-  const parts = [eat ? 'Where to eat' : null, todo ? 'things to do' : null, detail.culture.length ? 'culture' : null, detail.tips.length ? 'top tips' : null].filter(Boolean) as string[];
+  // Where to eat and things to do live in here too (owner, Nov 2026: keep the place page short). The culture
+  // section was taken out to keep things simple (owner, Nov 2026); the data stays in placeDetails for matching.
+  const parts = [eat ? 'Where to eat' : null, todo ? 'things to do' : null, detail.tips.length ? 'top tips' : null].filter(Boolean) as string[];
   if (!parts.length) return null;
   const summary = parts.join(', ').replace(/, ([^,]*)$/, ' and $1');
   const label = summary[0].toUpperCase() + summary.slice(1);
@@ -473,39 +474,6 @@ export function MoreAbout({ name, detail, eat, todo }: { name: string; detail: P
         <View>
           {eat}
           {todo}
-          {detail.culture.length > 0 && (
-            <View style={{ marginTop: 22 }}>
-              <SectionHeader>Culture</SectionHeader>
-              <Row gap={12}>
-                {detail.culture.map((c) => (
-                  <View
-                    key={c.name}
-                    accessible
-                    accessibilityLabel={[c.tag, c.when, c.name, c.what, c.from ? `from ${c.from}` : null].filter(Boolean).join(', ')}
-                    style={{ width: 240, borderRadius: radius.lg, padding: 16, backgroundColor: tint(colors.sand, 0.6), borderWidth: 1, borderColor: colors.line }}
-                  >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                      <Pill text={c.tag} bg={colors.card} color={colors.olive} />
-                      {!!c.when && <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, color: colors.accentText }}>{c.when}</Text>}
-                    </View>
-                    <Text variant="subheading" style={{ marginTop: 10 }}>
-                      {c.name}
-                    </Text>
-                    {!!c.what && (
-                      <Text variant="small" style={{ marginTop: 4, flex: 1 }}>
-                        {c.what}
-                      </Text>
-                    )}
-                    {!!c.from && (
-                      <Text variant="tiny" style={{ marginTop: 12 }}>
-                        from {c.from}
-                      </Text>
-                    )}
-                  </View>
-                ))}
-              </Row>
-            </View>
-          )}
           {detail.tips.length > 0 && (
             <View style={{ marginTop: 22 }}>
               <SectionHeader>Top tips</SectionHeader>

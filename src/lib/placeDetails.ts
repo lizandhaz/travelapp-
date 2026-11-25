@@ -13000,5 +13000,173 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "lanzarote": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "March to June, or September to November",
+    "staysFrom": "from £140 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      28,
+      29,
+      28,
+      27,
+      24,
+      22
+    ],
+    "bestMonths": [
+      2,
+      3,
+      4,
+      9,
+      10
+    ],
+    "crowds": [
+      2,
+      2,
+      2,
+      2,
+      1,
+      2,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2
+    ],
+    "said": [
+      {
+        "who": "Jonah",
+        "month": "Feb 2025",
+        "quote": "Winter sun, black lava and the bluest water.",
+        "score": 8.6,
+        "face": null
+      },
+      {
+        "who": "Harriet",
+        "month": "Oct 2024",
+        "quote": "César Manrique's touch is everywhere, and it's all beautiful.",
+        "score": 8.8,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Princesa Yaiza Suite Hotel Resort",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £220 a night · A big, family-friendly resort on the seafront at Playa Blanca.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Finca de Arrieta",
+        "type": "Villa",
+        "match": 87,
+        "featured": false,
+        "sub": "from £150 a night · Harriet stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Hotel Volcán Lanzarote",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £140 a night · Jonah stayed",
+        "because": null,
+        "score": 8.3,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "El Risco",
+        "price": "££",
+        "what": "Fresh fish looking out over Famara beach",
+        "score": 8.9,
+        "from": "Harriet",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "La Tegala",
+        "price": "£££",
+        "what": "Modern Canarian cooking in a glass-walled house in the hills",
+        "score": 8.8,
+        "from": "Jonah",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Bodega La Geria",
+        "price": "£",
+        "what": "Malvasía wine and tapas among vines in black ash",
+        "score": 8.6,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Nature",
+        "name": "Timanfaya National Park",
+        "what": "The Fire Mountains: take the coach route through the lava fields.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Jameos del Agua",
+        "what": "César Manrique's pool and concert hall in a lava tube.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "La Geria wine region",
+        "what": "Vines grown in hollows of black volcanic ash, with tastings.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Caletón Blanco",
+        "what": "White sand and calm lava pools near Órzola for a swim.",
+        "from": "Jonah",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "Fundación César Manrique",
+        "what": "The artist's home, built into five lava bubbles.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Hire a car: the island is small, but the best spots are spread out.",
+        "from": "Jonah"
+      }
+    ],
+    "credits": null
   }
 };

@@ -98,6 +98,8 @@ export const placeMaps: Record<string, PlaceMap> = {
   "menorca": { pins: [{ n: 1, name: "Torralbenc", kind: "Stay", ll: [39.9005, 4.159] }, { n: 2, name: "Faustino Gran Relais & Château", kind: "Stay", ll: [40.001, 3.8395] }, { n: 3, name: "Menorca Experimental", kind: "Stay", ll: [39.934, 4.22] }, { n: 4, name: "Es Cranc", kind: "Eat", ll: [40.056, 4.1315] }, { n: 5, name: "Smoix", kind: "Eat", ll: [40.002, 3.838] }, { n: 6, name: "Sa Foganya", kind: "Eat", ll: [40.001, 3.842] }, { n: 7, name: "Cala Mitjana", kind: "Do", ll: [39.931, 3.969] }, { n: 8, name: "Camí de Cavalls", kind: "Do", ll: [39.933, 3.98] }, { n: 9, name: "Cala Macarella", kind: "Do", ll: [39.937, 3.938] }, { n: 10, name: "Cova d'en Xoroi", kind: "Hidden gem", ll: [39.908, 4.111] }] },
   // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
   "porto": { pins: [{ n: 1, name: "The Yeatman", kind: "Stay", ll: [41.135, -8.613] }, { n: 2, name: "Torel Avantgarde", kind: "Stay", ll: [41.144, -8.618] }, { n: 3, name: "Pestana Vintage Porto", kind: "Stay", ll: [41.1408, -8.6135] }, { n: 4, name: "Cantinho do Avillez", kind: "Eat", ll: [41.1429, -8.6136] }, { n: 5, name: "Café Santiago", kind: "Eat", ll: [41.1468, -8.6066] }, { n: 6, name: "Taberna dos Mercadores", kind: "Eat", ll: [41.1415, -8.614] }, { n: 7, name: "Port cellars in Vila Nova de Gaia", kind: "Do", ll: [41.1375, -8.611] }, { n: 8, name: "Livraria Lello", kind: "Do", ll: [41.1469, -8.6149] }, { n: 9, name: "The Douro Valley", kind: "Do", ll: [41.16, -7.79] }, { n: 10, name: "Jardim do Morro at sunset", kind: "Hidden gem", ll: [41.1372, -8.609] }] },
+  // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
+  "lanzarote": { pins: [{ n: 1, name: "Princesa Yaiza Suite Hotel Resort", kind: "Stay", ll: [28.86, -13.824] }, { n: 2, name: "Finca de Arrieta", kind: "Stay", ll: [29.127, -13.47] }, { n: 3, name: "Hotel Volcán Lanzarote", kind: "Stay", ll: [28.859, -13.815] }, { n: 4, name: "El Risco", kind: "Eat", ll: [29.1155, -13.5655] }, { n: 5, name: "La Tegala", kind: "Eat", ll: [28.948, -13.7] }, { n: 6, name: "Bodega La Geria", kind: "Eat", ll: [28.963, -13.73] }, { n: 7, name: "Timanfaya National Park", kind: "Do", ll: [29.005, -13.76] }, { n: 8, name: "Jameos del Agua", kind: "Do", ll: [29.157, -13.432] }, { n: 9, name: "La Geria wine region", kind: "Do", ll: [28.96, -13.72] }, { n: 10, name: "Caletón Blanco", kind: "Hidden gem", ll: [29.219, -13.456] }] },
 };
 
 /**
@@ -182,6 +184,7 @@ export const placeCentres: Record<string, { at: [number, number]; span: number }
   marbella: { at: [36.505, -4.9], span: 0.16 },
   menorca: { at: [39.95, 4.05], span: 0.75 },
   porto: { at: [41.142, -8.612], span: 0.04 },
+  lanzarote: { at: [29.04, -13.63], span: 0.7 },
 };
 
 /**

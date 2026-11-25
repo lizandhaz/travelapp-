@@ -88,6 +88,8 @@ export const placeMaps: Record<string, PlaceMap> = {
   "rhodes": { pins: [{ n: 1, name: "Lindos Blu", kind: "Stay", ll: [36.0975, 28.0825] }, { n: 2, name: "Melenos Lindos", kind: "Stay", ll: [36.0915, 28.088] }, { n: 3, name: "Lindos Imperial", kind: "Stay", ll: [36.14, 28.06] }, { n: 4, name: "Mavrikos", kind: "Eat", ll: [36.0918, 28.0862] }, { n: 5, name: "Marco Polo Café", kind: "Eat", ll: [36.4436, 28.2265] }, { n: 6, name: "Kalypso", kind: "Eat", ll: [36.0912, 28.0868] }, { n: 7, name: "Acropolis of Lindos", kind: "Do", ll: [36.0909, 28.0889] }, { n: 8, name: "Rhodes Old Town", kind: "Do", ll: [36.4446, 28.2268] }, { n: 9, name: "St Paul's Bay", kind: "Hidden gem", ll: [36.0855, 28.0855] }] },
   // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
   "zakynthos": { pins: [{ n: 1, name: "Porto Zante Villas", kind: "Stay", ll: [37.8555, 20.8875] }, { n: 2, name: "Lesante Blu", kind: "Stay", ll: [37.731, 20.871] }, { n: 3, name: "Olea All Suite Hotel", kind: "Stay", ll: [37.818, 20.855] }, { n: 4, name: "Taverna Porto Limnionas", kind: "Eat", ll: [37.721, 20.678] }, { n: 5, name: "Prosilio", kind: "Eat", ll: [37.7835, 20.8975] }, { n: 6, name: "Shipwreck Beach (Navagio)", kind: "Do", ll: [37.8595, 20.6245] }, { n: 7, name: "Turtle spotting in Laganas Bay", kind: "Do", ll: [37.715, 20.86] }, { n: 8, name: "Keri cliffs at sunset", kind: "Hidden gem", ll: [37.6545, 20.8095] }] },
+  // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
+  "athens": { pins: [{ n: 1, name: "Hotel Grande Bretagne", kind: "Stay", ll: [37.9762, 23.7348] }, { n: 2, name: "The Zillers Athens", kind: "Stay", ll: [37.9758, 23.7275] }, { n: 3, name: "Electra Metropolis", kind: "Stay", ll: [37.9748, 23.7305] }, { n: 4, name: "Diporto", kind: "Eat", ll: [37.9805, 23.7253] }, { n: 5, name: "Kuzina", kind: "Eat", ll: [37.9762, 23.7225] }, { n: 6, name: "Ta Karamanlidika tou Fani", kind: "Eat", ll: [37.9795, 23.7262] }, { n: 7, name: "The Acropolis", kind: "Do", ll: [37.9715, 23.7257] }, { n: 8, name: "Acropolis Museum", kind: "Do", ll: [37.9684, 23.7285] }, { n: 9, name: "Anafiotika", kind: "Hidden gem", ll: [37.9727, 23.7295] }] },
 };
 
 /**
@@ -166,6 +168,7 @@ export const placeCentres: Record<string, { at: [number, number]; span: number }
   mykonos: { at: [37.445, 25.33], span: 0.3 },
   rhodes: { at: [36.27, 28.1], span: 0.8 },
   zakynthos: { at: [37.78, 20.8], span: 0.6 },
+  athens: { at: [37.975, 23.73], span: 0.12 },
 };
 
 /**

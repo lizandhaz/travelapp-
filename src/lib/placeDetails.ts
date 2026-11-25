@@ -11684,5 +11684,165 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "athens": {
+    "kicker": "City · Culture",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "April, May, October or November",
+    "staysFrom": "from £200 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      13,
+      14,
+      17,
+      20,
+      25,
+      30,
+      33,
+      33,
+      29,
+      24,
+      19,
+      15
+    ],
+    "bestMonths": [
+      3,
+      4,
+      9,
+      10
+    ],
+    "crowds": [
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Sophie",
+        "month": "Apr 2025",
+        "quote": "The Acropolis at opening, then mezze in Plaka.",
+        "score": 8.6,
+        "face": null
+      },
+      {
+        "who": "Jonah",
+        "month": "Oct 2024",
+        "quote": "Rooftop bars with the Parthenon lit up.",
+        "score": 8.3,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Hotel Grande Bretagne",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £450 a night · The grand old hotel on Syntagma Square.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "The Zillers Athens",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £250 a night · Sophie stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": null
+      },
+      {
+        "name": "Electra Metropolis",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £200 a night · Jonah stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Diporto",
+        "price": "£",
+        "what": "A basement taverna with no menu",
+        "score": 9.0,
+        "from": "Sophie",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Kuzina",
+        "price": "££",
+        "what": "Modern Greek with an Acropolis view",
+        "score": 8.7,
+        "from": "Jonah",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Ta Karamanlidika tou Fani",
+        "price": "££",
+        "what": "Cured meats and cheeses in Psyrri",
+        "score": 8.8,
+        "from": null,
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "History",
+        "name": "The Acropolis",
+        "what": "Go at 8am opening or late afternoon, with a timed ticket.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Acropolis Museum",
+        "what": "Glass floors show the ancient city underneath.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Anafiotika",
+        "what": "A tiny island-style village of white houses under the Acropolis.",
+        "from": "Jonah",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Ancient Agora",
+        "what": "The old marketplace, with one of the best-kept temples in Greece.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Buy the combined ticket: it covers the Acropolis and six other sites.",
+        "from": "Sophie"
+      }
+    ],
+    "credits": null
   }
 };

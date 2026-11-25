@@ -1256,6 +1256,16 @@ export const places: SamplePlace[] = [
     "photos": [
       "own-zakynthos-cliffs"
     ]
+  },
+  {
+    "slug": "athens",
+    "name": "Athens",
+    "region": "Greece",
+    "score": 8.4,
+    "photo": "own-athens-acropolis",
+    "photos": [
+      "own-athens-acropolis"
+    ]
   }
 ] as SamplePlace[];
 

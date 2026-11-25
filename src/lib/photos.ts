@@ -1,5 +1,5 @@
 // Sample photos: only the owner's own holiday photos (own-*.jpg, EXIF/GPS stripped), plus four the owner licensed
-// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach, own-kyoto-blossom/-pagoda/-river, own-marrakech-koutoubia/-rooftops, own-srilanka-sigiriya/-turtles/-bay, own-mauritius-aerial/-palms, own-ladigue-rocks, own-palermo-cathedral, own-polignano-cove, own-capri-faraglioni, own-positano-town, own-maldives-boardwalk, own-comporta-boardwalk, own-madeira-cliffs, own-zermatt-matterhorn, own-lisbon-sunset, own-cotswolds-castle-combe, own-santorini-oia, own-mykonos-beach, own-rhodes-lindos, own-zakynthos-cliffs, own-athens-acropolis, own-barcelona-sagrada, own-verbier-village, own-seville-plaza, own-marbella-marina, own-menorca-cala, own-mallorca-soller, own-tenerife-anaga, own-porto-ribeira, own-lanzarote-beach; owner confirmed bought, Nov 2026). The design prototype's
+// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach, own-kyoto-blossom/-pagoda/-river, own-marrakech-koutoubia/-rooftops, own-srilanka-sigiriya/-turtles/-bay, own-mauritius-aerial/-palms, own-ladigue-rocks, own-palermo-cathedral, own-polignano-cove, own-capri-faraglioni, own-positano-town, own-maldives-boardwalk, own-comporta-boardwalk, own-madeira-cliffs, own-zermatt-matterhorn, own-lisbon-sunset, own-cotswolds-castle-combe, own-santorini-oia, own-mykonos-beach, own-rhodes-lindos, own-zakynthos-cliffs, own-athens-acropolis, own-barcelona-sagrada, own-verbier-village, own-seville-plaza, own-marbella-marina, own-menorca-cala, own-mallorca-soller, own-tenerife-anaga, own-porto-ribeira, own-lanzarote-beach, own-madrid-cibeles, own-rome-stpeters, own-grancanaria-pines; owner confirmed bought, Nov 2026). The design prototype's
 // Unsplash photos were removed (owner, Nov 2026); some prototype names (e.g. 'bath-1') point at the owner's photos.
 // Sample content with no photo of the owner's shows a placeholder.
 
@@ -120,6 +120,9 @@ export const photos = {
   'own-tenerife-anaga': require('../../assets/photos/own-tenerife-anaga.jpg'),
   'own-porto-ribeira': require('../../assets/photos/own-porto-ribeira.jpg'),
   'own-lanzarote-beach': require('../../assets/photos/own-lanzarote-beach.jpg'),
+  'own-madrid-cibeles': require('../../assets/photos/own-madrid-cibeles.jpg'),
+  'own-rome-stpeters': require('../../assets/photos/own-rome-stpeters.jpg'),
+  'own-grancanaria-pines': require('../../assets/photos/own-grancanaria-pines.jpg'),
   'own-athens-acropolis': require('../../assets/photos/own-athens-acropolis.jpg'),
   'own-barcelona-sagrada': require('../../assets/photos/own-barcelona-sagrada.jpg'),
 } as const;

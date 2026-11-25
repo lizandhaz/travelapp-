@@ -316,7 +316,7 @@ let searchable: SearchablePlace[] | null = null;
 // Well-known golf holiday spots among the sample places (owner, Nov 2026: "golf holidays" found nothing).
 const GOLF = new Set(['algarve', 'mallorca', 'tenerife', 'dubai', 'cyprus', 'costabrava', 'mauritius', 'turks', 'marbella']);
 // …and well-known wine places ("wine tasting" put Heidelberg first).
-const WINE = new Set(['tuscany', 'southafrica', 'madeira', 'santorini', 'sicily', 'porto']);
+const WINE = new Set(['tuscany', 'southafrica', 'madeira', 'santorini', 'sicily', 'porto', 'lanzarote']);
 
 /** What's on a place's page, for search topics: things to do, restaurants, culture, stays and tips. */
 function pageThings(d: PlaceDetail | undefined): PageThing[] {

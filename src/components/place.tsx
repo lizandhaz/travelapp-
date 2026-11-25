@@ -447,26 +447,32 @@ export function DoRow({ dos, at }: { dos: PlaceDetail['dos']; at?: SpotPlace }) 
 }
 
 /** "More about …": culture and top tips, folded away until tapped. */
-export function MoreAbout({ name, detail }: { name: string; detail: PlaceDetail }) {
+export function MoreAbout({ name, detail, eat, todo }: { name: string; detail: PlaceDetail; eat?: React.ReactNode; todo?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
-  if (!detail.culture.length && !detail.tips.length) return null;
+  // Where to eat and things to do live in here too (owner, Nov 2026: keep the place page short).
+  const parts = [eat ? 'Where to eat' : null, todo ? 'things to do' : null, detail.culture.length ? 'culture' : null, detail.tips.length ? 'top tips' : null].filter(Boolean) as string[];
+  if (!parts.length) return null;
+  const summary = parts.join(', ').replace(/, ([^,]*)$/, ' and $1');
+  const label = summary[0].toUpperCase() + summary.slice(1);
   return (
     <View style={{ marginTop: 28 }}>
       <Pressable
         onPress={() => setOpen((o) => !o)}
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
-        accessibilityLabel={`More about ${name}: culture and top tips`}
+        accessibilityLabel={`More about ${name}: ${summary}`}
         style={{ marginHorizontal: GUTTER, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, paddingHorizontal: 18, paddingVertical: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }}
       >
         <View style={{ flex: 1 }}>
           <Text variant="subheading">More about {name}</Text>
-          <Text variant="small">Culture and top tips</Text>
+          <Text variant="small">{label}</Text>
         </View>
         <Text style={{ fontFamily: fonts.sans, fontSize: 26, color: colors.accent, transform: [{ rotate: open ? '45deg' : '0deg' }] }}>+</Text>
       </Pressable>
       {open && (
         <View>
+          {eat}
+          {todo}
           {detail.culture.length > 0 && (
             <View style={{ marginTop: 22 }}>
               <SectionHeader>Culture</SectionHeader>

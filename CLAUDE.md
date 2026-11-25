@@ -141,8 +141,8 @@ src/
                           where they stayed, where they ate, what they did, their tips, "More about <place>"
     settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places
                           I look at, clear viewed places, sign out), opened from You
-    place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, On the map, best time, what friends said, where to stay/eat, things to do,
-                          culture and top tips, "I've been" (opens Add a trip with the place filled in)
+    place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, On the map, best time, what friends said, where to stay,
+                          then "More about <place>" (tap to open: where to eat, things to do, culture and top tips; owner Nov 2026: keep the page short), "I've been" (opens Add a trip with the place filled in)
     stay/[slug].tsx       One hotel, villa or Airbnb (?name=, from a place page's Where to stay card; owner Nov 2026): a sage band with type, name and
                           its place; your score (cream card); price from / type; the description; the friend who stayed (score, would stay again → their
                           profile); "See prices": Booking.com search (Airbnb search for Airbnbs/apartments) and "Find their own website" (a web search),

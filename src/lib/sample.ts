@@ -69,7 +69,7 @@ export const rows = {
       "score": 9.4,
       "name": "The Maldives",
       "sub": "Indian Ocean",
-      "photo": "maldives-1"
+      "photo": "own-maldives-kayak"
     },
     {
       "slug": "borabora",
@@ -688,8 +688,9 @@ export const places: SamplePlace[] = [
     "name": "The Maldives",
     "region": "Indian Ocean",
     "score": 9.4,
-    "photo": "maldives-1",
+    "photo": "own-maldives-kayak",
     "photos": [
+      "own-maldives-kayak",
       "maldives-1",
       "own-maldives-sunset",
       "own-maldives-hammock",
@@ -1410,7 +1411,7 @@ export const trendingThisMonth: RowItem[] = [
 
 export const board: BoardItem[] = [
   {
-    "photo": "maldives-1",
+    "photo": "own-maldives-kayak",
     "kind": "place",
     "score": 9.4,
     "name": "The Maldives, Indian Ocean",
@@ -2032,7 +2033,7 @@ export const samplePostcards: SamplePostcard[] = [
     "who": "Maya",
     "text": "rated the Maldives 9.4. It's on your Want to go board ★",
     "when": "Wed",
-    "photo": "maldives-1",
+    "photo": "own-maldives-kayak",
     "slug": "maldives"
   },
   {

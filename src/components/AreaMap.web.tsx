@@ -32,7 +32,7 @@ export function AreaMap({
   const map = placeMaps[slug];
   const body = (
     <View style={{ width, height, backgroundColor: colors.sand, alignItems: 'center', justifyContent: 'center' }} accessibilityLabel={`Map of ${name}`}>
-      {map ? (
+      {map?.image ? (
         <Image source={map.image} style={{ width, height: Math.min(height, (width * 250) / 400) }} contentFit="cover" />
       ) : (
         <Text variant="tiny">Map of {name}</Text>

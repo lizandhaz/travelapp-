@@ -929,6 +929,289 @@ export const places: SamplePlace[] = [
       "own-safari-cheetahs",
       "own-safari-balloons"
     ]
+  },
+  {
+    "slug": "corfu",
+    "name": "Corfu",
+    "region": "Greece",
+    "score": 8.9,
+    "photo": "own-corfu",
+    "photos": [
+      "own-corfu",
+      "own-corfu-villa",
+      "own-corfu-table"
+    ]
+  },
+  {
+    "slug": "cyprus",
+    "name": "Cyprus",
+    "region": "Ayia Napa & Paphos, Cyprus",
+    "score": 8.5,
+    "photo": "own-cyprus-bridge",
+    "photos": [
+      "own-cyprus-bridge",
+      "own-cyprus-beach",
+      "own-cyprus-beach-bar"
+    ]
+  },
+  {
+    "slug": "mallorca",
+    "name": "Mallorca",
+    "region": "Spain",
+    "score": 8.8,
+    "photo": "own-mallorca",
+    "photos": [
+      "own-mallorca",
+      "own-mallorca-villa",
+      "own-mallorca-pergola"
+    ]
+  },
+  {
+    "slug": "tenerife",
+    "name": "Tenerife",
+    "region": "Canary Islands, Spain",
+    "score": 8.4,
+    "photo": "own-tenerife",
+    "photos": [
+      "own-tenerife",
+      "own-tenerife-beach"
+    ]
+  },
+  {
+    "slug": "costabrava",
+    "name": "Costa Brava",
+    "region": "Catalonia, Spain",
+    "score": 8.5,
+    "photo": "own-costa-brava",
+    "photos": [
+      "own-costa-brava"
+    ]
+  },
+  {
+    "slug": "algarve",
+    "name": "The Algarve",
+    "region": "Portugal",
+    "score": 8.7,
+    "photo": "own-algarve",
+    "photos": [
+      "own-algarve",
+      "own-algarve-pool",
+      "own-algarve-path"
+    ]
+  },
+  {
+    "slug": "venice",
+    "name": "Venice",
+    "region": "Italy",
+    "score": 8.9,
+    "photo": "own-venice-salute",
+    "photos": [
+      "own-venice-salute",
+      "own-venice-palazzo",
+      "own-venice-dinner"
+    ]
+  },
+  {
+    "slug": "tuscany",
+    "name": "Tuscany",
+    "region": "Italy",
+    "score": 9.0,
+    "photo": "own-tuscany",
+    "photos": [
+      "own-tuscany"
+    ]
+  },
+  {
+    "slug": "capri",
+    "name": "Capri",
+    "region": "Italy",
+    "score": 8.8,
+    "photo": "own-capri-faraglioni",
+    "photos": [
+      "own-capri-faraglioni"
+    ]
+  },
+  {
+    "slug": "milan",
+    "name": "Milan",
+    "region": "Italy",
+    "score": 8.3,
+    "photo": "own-milan",
+    "photos": [
+      "own-milan",
+      "own-milan-galleria"
+    ]
+  },
+  {
+    "slug": "zurich",
+    "name": "Zurich",
+    "region": "Switzerland",
+    "score": 8.1,
+    "photo": "own-zurich",
+    "photos": [
+      "own-zurich"
+    ]
+  },
+  {
+    "slug": "valdisere",
+    "name": "Val d'Isère",
+    "region": "French Alps",
+    "score": 8.9,
+    "photo": "own-val-disere",
+    "photos": [
+      "own-val-disere"
+    ]
+  },
+  {
+    "slug": "avoriaz",
+    "name": "Avoriaz",
+    "region": "French Alps",
+    "score": 8.4,
+    "photo": "own-skiing",
+    "photos": [
+      "own-skiing"
+    ]
+  },
+  {
+    "slug": "kitzbuhel",
+    "name": "Kitzbühel",
+    "region": "Austria",
+    "score": 8.6,
+    "photo": "own-kitzbuehel",
+    "photos": [
+      "own-kitzbuehel"
+    ]
+  },
+  {
+    "slug": "dubai",
+    "name": "Dubai",
+    "region": "United Arab Emirates",
+    "score": 8.2,
+    "photo": "own-dubai",
+    "photos": [
+      "own-dubai"
+    ]
+  },
+  {
+    "slug": "victoriafalls",
+    "name": "Victoria Falls",
+    "region": "Zimbabwe",
+    "score": 9.1,
+    "photo": "own-victoria-falls",
+    "photos": [
+      "own-victoria-falls",
+      "own-victoria-falls-sunset"
+    ]
+  },
+  {
+    "slug": "tanzania",
+    "name": "Tanzania",
+    "region": "Serengeti & Kilimanjaro, Tanzania",
+    "score": 9.3,
+    "photo": "own-kilimanjaro-giraffe",
+    "photos": [
+      "own-kilimanjaro-giraffe"
+    ]
+  },
+  {
+    "slug": "singapore",
+    "name": "Singapore",
+    "region": "Singapore",
+    "score": 8.6,
+    "photo": "own-singapore",
+    "photos": [
+      "own-singapore",
+      "own-singapore-flyer",
+      "own-singapore-jewel",
+      "own-singapore-temple"
+    ]
+  },
+  {
+    "slug": "srilanka",
+    "name": "Sri Lanka",
+    "region": "Sri Lanka",
+    "score": 9.0,
+    "photo": "own-srilanka-bay",
+    "photos": [
+      "own-srilanka-bay",
+      "own-srilanka-sigiriya"
+    ]
+  },
+  {
+    "slug": "newyork",
+    "name": "New York",
+    "region": "USA",
+    "score": 8.7,
+    "photo": "own-new-york",
+    "photos": [
+      "own-new-york",
+      "own-new-york-sunset",
+      "own-new-york-central-park",
+      "own-new-york-rooftop",
+      "own-new-york-pier",
+      "own-new-york-liberty"
+    ]
+  },
+  {
+    "slug": "lasvegas",
+    "name": "Las Vegas",
+    "region": "USA",
+    "score": 7.9,
+    "photo": "own-las-vegas",
+    "photos": [
+      "own-las-vegas",
+      "own-las-vegas-strip"
+    ]
+  },
+  {
+    "slug": "sanfrancisco",
+    "name": "San Francisco",
+    "region": "California, USA",
+    "score": 8.4,
+    "photo": "own-san-francisco",
+    "photos": [
+      "own-san-francisco"
+    ]
+  },
+  {
+    "slug": "lakelouise",
+    "name": "Lake Louise",
+    "region": "Banff, Canada",
+    "score": 9.0,
+    "photo": "own-canada",
+    "photos": [
+      "own-canada"
+    ]
+  },
+  {
+    "slug": "whitsundays",
+    "name": "The Whitsundays",
+    "region": "Queensland, Australia",
+    "score": 9.2,
+    "photo": "own-whitsundays",
+    "photos": [
+      "own-whitsundays"
+    ]
+  },
+  {
+    "slug": "hamiltonisland",
+    "name": "Hamilton Island",
+    "region": "Queensland, Australia",
+    "score": 8.7,
+    "photo": "own-hamilton-island",
+    "photos": [
+      "own-hamilton-island"
+    ]
+  },
+  {
+    "slug": "rottnest",
+    "name": "Rottnest Island",
+    "region": "Perth, Australia",
+    "score": 8.6,
+    "photo": "own-rottnest",
+    "photos": [
+      "own-rottnest"
+    ]
   }
 ] as SamplePlace[];
 

@@ -2,7 +2,7 @@
 
 Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations** and **where they stayed** (hotel, Airbnb, villa and so on) out of 10, and add photos, food picks and top tips.
 
-**Status:** an **Expo (React Native)** app. **Followers see each other's "Followers" trips** (Step C, Nov 2026), and Home's friends feed shows them. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **Lists are real too:** Saved holds your "Want to go" list and lists you make, and You has a travel map of where you've been and want to go. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips and lists (Home's picks and Friends feed, Explore, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts` (40 places, each with details; 39 have a map, South Africa doesn't yet). The roadmap is in `docs/plan.md`.
+**Status:** an **Expo (React Native)** app. **Followers see each other's "Followers" trips** (Step C, Nov 2026), and Home's friends feed shows them. It switched from a Next.js website in Nov 2026, and the website is still in git history before that change. Real accounts work through Supabase (6-digit email code + age check). **Trips are real:** "Add a trip" (the **+** in the tab bar) saves to Supabase, and You and the trip page show your own trips with edit and delete. **Lists are real too:** Saved holds your "Want to go" list and lists you make, and You has a travel map of where you've been and want to go. **The look and layout follow the owner's design prototype** (Claude artifact "XYZX without planning", https://claude.ai/artifact/3BfDhqqSC7Dp16yq5iR8vc) and the build plan made from it ("XYZX: build plan from the preview", https://claude.ai/artifact/PyyNwD1ztjQaUSEZhujhgQ). Everything except your own trips and lists (Home's picks and Friends feed, Explore, place pages, Postcards) is **sample content from that prototype** in `src/lib/sample.ts` (66 places, each with details: the prototype's 40, and 26 more added for the owner's "photo ready" places on 25 Nov 2026; all but South Africa have a map). The roadmap is in `docs/plan.md`.
 
 **App name:** **COVA** (owner, 23 Nov 2026; before that ATLO, and the placeholder XYZX). It lives in **one place**, `src/constants/brand.json` (`appName`). Code uses `APP_NAME` from `src/constants/brand.ts`, and `app.config.ts` reads the same JSON for the name under the icon. Never type the app's name anywhere else. (The project was originally called "Postcard"; that's still the Expo `slug` and the repo's history, and the notifications feature is still called "Postcards".)
 
@@ -203,11 +203,14 @@ src/
   lib/
     sample.ts             Sample content from the prototype: hero, rows, places, feed, board, boards, postcards
     photos.ts             Sample photo names → files
-    placeMaps.ts          Each sample place's map picture and its numbered pins (stay / eat / do / hidden gem), each with `at`:
+    placeMaps.ts          Each sample place's numbered pins (stay / eat / do / hidden gem). The prototype's 40 have a drawn map picture and pins with `at`:
                           where its tip sits on the 400 × 250 picture (taken from the prototype's drawing); placeCentres: each
                           place's real latitude/longitude and how much area the real map shows first; pinLatLng(): a pin's ROUGH
                           real position from the drawing (owner chose rough over looking up ~340 places, Nov 2026; replace with
-                          real coordinates in Step E)
+                          real coordinates in Step E). Newer places have no picture: their pins carry `ll`, a rough real latitude/longitude
+                          (pinPosition() reads either; mapDistance() keeps "Right nearby" the same scale). Add new place pages this way: an entry in
+                          sample.ts `places`, placeDetails.ts, and placeMaps.ts (pins with `ll` + a placeCentres entry). The owner's to-do list of places
+                          to add is the "Places to add" artifact (https://claude.ai/artifact/VLioSvYUbpoRAjHaoUPvw2)
     placeDetails.ts       Sample place details from the prototype (stays, food, things to do, best time, tips)
     score.ts              formatScore, clampScore, scoreWord
     fit.ts                fitWordSize(): a font size that keeps a place name's longest word on one line (Fraunces is wide,

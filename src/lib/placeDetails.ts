@@ -6923,5 +6923,4140 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "corfu": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £180 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      14,
+      15,
+      17,
+      20,
+      24,
+      29,
+      32,
+      32,
+      28,
+      23,
+      19,
+      15
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Sophie",
+        "month": "Jun 2025",
+        "quote": "Olive groves down to the sea, and swimming before breakfast.",
+        "score": 8.9,
+        "face": null
+      },
+      {
+        "who": "Jonah",
+        "month": "Sep 2024",
+        "quote": "Paleokastritsa's coves by boat were the highlight.",
+        "score": 8.6,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Domes Miramare",
+        "type": "Hotel",
+        "match": 93,
+        "featured": true,
+        "sub": "from £350 a night · A 1960s seaside estate, adults only.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Ikos Dassia",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £380 a night · Sophie stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Grecotel Corfu Imperial",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £320 a night · Jonah stayed",
+        "because": null,
+        "score": 8.7,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "The Venetian Well",
+        "price": "££",
+        "what": "Modern Greek in a hidden square",
+        "score": 9.1,
+        "from": "Sophie",
+        "match": 90,
+        "photo": null
+      },
+      {
+        "name": "Taverna Agni",
+        "price": "££",
+        "what": "Grilled fish on a tiny bay",
+        "score": 9.0,
+        "from": "Jonah",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Rex",
+        "price": "££",
+        "what": "Old Town classics since 1932",
+        "score": 8.5,
+        "from": null,
+        "match": 82,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "Corfu Old Town",
+        "what": "Venetian lanes, the Liston arcades and the old fortress.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Boat",
+        "name": "Boat to the Paleokastritsa caves",
+        "what": "Little boats leave the beach for the sea caves all morning.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Kalami Bay",
+        "what": "The Durrells' White House sits on this quiet bay. Swim, then lunch on the water.",
+        "from": "Jonah",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Achilleion Palace",
+        "what": "Empress Sisi's summer palace, with gardens over the sea.",
+        "from": null
+      },
+      {
+        "tag": "Custom",
+        "when": "Easter Saturday",
+        "name": "Easter pot throwing",
+        "what": "At 11am people throw clay pots from Old Town balconies to welcome spring.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Hire a small car: the north-east coast roads are narrow and the best coves are down steep lanes.",
+        "from": "Sophie"
+      }
+    ],
+    "credits": null
+  },
+  "cyprus": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or October",
+    "staysFrom": "from £150 a night",
+    "goodFor": [
+      "Families",
+      "Friends"
+    ],
+    "temps": [
+      17,
+      17,
+      19,
+      23,
+      27,
+      31,
+      34,
+      34,
+      31,
+      28,
+      23,
+      19
+    ],
+    "bestMonths": [
+      4,
+      5,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Sam",
+        "month": "Aug 2025",
+        "quote": "Nissi Beach is as clear as the Maldives, honestly.",
+        "score": 8.4,
+        "face": null
+      },
+      {
+        "who": "Harriet",
+        "month": "Oct 2024",
+        "quote": "Paphos harbour at sunset and halloumi with everything.",
+        "score": 8.7,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Anassa",
+        "type": "Hotel",
+        "match": 92,
+        "featured": true,
+        "sub": "from £450 a night · A whitewashed village above a quiet beach.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Nissi Beach Resort",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £170 a night · Sam stayed",
+        "because": null,
+        "score": 8.3,
+        "photo": null
+      },
+      {
+        "name": "Almyra",
+        "type": "Hotel",
+        "match": 86,
+        "featured": false,
+        "sub": "from £230 a night · Harriet stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Seven St Georges Tavern",
+        "price": "££",
+        "what": "Meze from the family garden",
+        "score": 9.2,
+        "from": "Harriet",
+        "match": 90,
+        "photo": null
+      },
+      {
+        "name": "Militzis",
+        "price": "££",
+        "what": "Kleftiko from clay ovens",
+        "score": 8.6,
+        "from": "Sam",
+        "match": 84,
+        "photo": null
+      },
+      {
+        "name": "Bunch of Grapes",
+        "price": "££",
+        "what": "An old village inn with a courtyard",
+        "score": 8.7,
+        "from": null,
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Beach",
+        "name": "Nissi Beach",
+        "what": "Shallow, clear water that stays knee-deep a long way out.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Boat",
+        "name": "Cape Greco sea caves",
+        "what": "Swim and jump off the rocks round the sea caves and the Love Bridge.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Avakas Gorge",
+        "what": "A cool, narrow gorge walk near Paphos. Go early.",
+        "from": "Harriet",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Tombs of the Kings",
+        "what": "Rock-cut tombs by the sea in Paphos, over 2,000 years old.",
+        "from": "Harriet"
+      },
+      {
+        "tag": "Food",
+        "when": null,
+        "name": "Halloumi and commandaria",
+        "what": "Grilled halloumi everywhere, and commandaria, the island's sweet dessert wine.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Distances are bigger than they look: Ayia Napa to Paphos is two hours, so pick one end.",
+        "from": "Sam"
+      }
+    ],
+    "credits": null
+  },
+  "mallorca": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £200 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      15,
+      15,
+      18,
+      20,
+      24,
+      28,
+      31,
+      31,
+      28,
+      24,
+      19,
+      16
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Priya",
+        "month": "Sep 2025",
+        "quote": "Palma for the old town, Deià for the views, Caló des Moro for a swim.",
+        "score": 8.9,
+        "face": null
+      },
+      {
+        "who": "Tom",
+        "month": "Jun 2024",
+        "quote": "Cycled the Tramuntana. Brutal and brilliant.",
+        "score": 8.6,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Cap Rocat",
+        "type": "Hotel",
+        "match": 92,
+        "featured": true,
+        "sub": "from £500 a night · A sea fort turned hotel near Palma.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Can Ferrereta",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £320 a night · Priya stayed",
+        "because": null,
+        "score": 9.1,
+        "photo": null
+      },
+      {
+        "name": "Son Brull",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £280 a night · Tom stayed",
+        "because": null,
+        "score": 8.7,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Ca'n Joan de s'Aigo",
+        "price": "£",
+        "what": "Ensaïmadas and hot chocolate since 1700",
+        "score": 8.9,
+        "from": "Priya",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Marc Fosh",
+        "price": "£££",
+        "what": "Michelin-starred tasting menu in Palma",
+        "score": 9.2,
+        "from": "Tom",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Sa Foradada",
+        "price": "££",
+        "what": "Paella cooked over wood, reached on foot",
+        "score": 9.0,
+        "from": "Priya",
+        "match": 89,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Beach",
+        "name": "Caló des Moro",
+        "what": "A tiny turquoise cove. Get there by 9am.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Outdoors",
+        "name": "Cycle the Tramuntana",
+        "what": "Sa Calobra's hairpins are the famous climb.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Vintage train to Sóller",
+        "what": "A wooden train from Palma through the mountains, then the old tram to the sea.",
+        "from": "Priya",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Palma Cathedral",
+        "what": "The Gothic cathedral on the seafront, with a ceiling by Gaudí.",
+        "from": null
+      },
+      {
+        "tag": "Custom",
+        "when": null,
+        "name": "Village markets",
+        "what": "Every town has a weekly market; Sineu's on Wednesday is the oldest.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Rent a car, but park outside Palma's old town and walk in.",
+        "from": "Priya"
+      }
+    ],
+    "credits": null
+  },
+  "tenerife": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "All year (warmest May to October)",
+    "staysFrom": "from £150 a night",
+    "goodFor": [
+      "Families",
+      "Couples"
+    ],
+    "temps": [
+      21,
+      21,
+      22,
+      23,
+      24,
+      26,
+      28,
+      29,
+      28,
+      26,
+      24,
+      22
+    ],
+    "bestMonths": [
+      0,
+      1,
+      2,
+      10,
+      11
+    ],
+    "crowds": [
+      3,
+      3,
+      2,
+      2,
+      1,
+      2,
+      3,
+      3,
+      2,
+      2,
+      2,
+      3
+    ],
+    "said": [
+      {
+        "who": "Jonah",
+        "month": "Feb 2025",
+        "quote": "Winter sun four hours from home, and Teide above the clouds.",
+        "score": 8.5,
+        "face": null
+      },
+      {
+        "who": "Maya",
+        "month": "Nov 2024",
+        "quote": "The Masca walk, then fish in Los Gigantes.",
+        "score": 8.3,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "The Ritz-Carlton, Abama",
+        "type": "Hotel",
+        "match": 91,
+        "featured": true,
+        "sub": "from £350 a night · On the cliffs, with its own lift down to the beach.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Bahía del Duque",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £300 a night · Jonah stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": null
+      },
+      {
+        "name": "Hotel Botánico",
+        "type": "Hotel",
+        "match": 82,
+        "featured": false,
+        "sub": "from £180 a night · Maya stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "El Rincón de Juan Carlos",
+        "price": "£££",
+        "what": "Tasting menu in Los Gigantes",
+        "score": 9.1,
+        "from": "Maya",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "A guachinche",
+        "price": "£",
+        "what": "Family wine-cellar kitchens up in the hills. Cash only",
+        "score": 8.8,
+        "from": "Jonah",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "San Sebastián 57",
+        "price": "££",
+        "what": "Creative Canarian in Puerto de la Cruz",
+        "score": 8.6,
+        "from": null,
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Outdoors",
+        "name": "Teide by cable car",
+        "what": "Go up for sunset, or get a permit to reach the very top.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Hike",
+        "name": "Masca gorge",
+        "what": "A steep walk down to the sea. Check it is open first.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Stargazing on Teide",
+        "what": "One of the best night skies in Europe. Take a coat.",
+        "from": "Jonah",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Festival",
+        "when": "February",
+        "name": "Carnival of Santa Cruz",
+        "what": "One of the biggest carnivals in the world: two weeks of parades.",
+        "from": null
+      },
+      {
+        "tag": "Food",
+        "when": null,
+        "name": "Papas arrugadas",
+        "what": "Wrinkly salted potatoes with red and green mojo come with almost everything.",
+        "from": "Maya"
+      }
+    ],
+    "tips": [
+      {
+        "tip": "The south is sunnier, the north greener. Stay south, explore north.",
+        "from": "Jonah"
+      }
+    ],
+    "credits": null
+  },
+  "costabrava": {
+    "kicker": "Coast · Food",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "June or September",
+    "staysFrom": "from £170 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      13,
+      14,
+      16,
+      18,
+      22,
+      26,
+      29,
+      29,
+      26,
+      22,
+      17,
+      14
+    ],
+    "bestMonths": [
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Tom",
+        "month": "Sep 2025",
+        "quote": "Coves you can only reach on foot, and the best seafood rice.",
+        "score": 8.7,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Mas de Torrent",
+        "type": "Hotel",
+        "match": 90,
+        "featured": true,
+        "sub": "from £350 a night · A farmhouse hotel among the fields near Pals.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hotel Aigua Blava",
+        "type": "Hotel",
+        "match": 86,
+        "featured": false,
+        "sub": "from £200 a night · Tom stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      },
+      {
+        "name": "Hotel Llevant",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £170 a night · On the beach in Llafranc.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "El Celler de Can Roca",
+        "price": "£££",
+        "what": "Book months ahead for one of the best in the world",
+        "score": 9.6,
+        "from": null,
+        "match": 90,
+        "photo": null
+      },
+      {
+        "name": "Toc al Mar",
+        "price": "££",
+        "what": "Grilled fish on the beach at Aiguablava",
+        "score": 9.0,
+        "from": "Tom",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Compartir",
+        "price": "££",
+        "what": "Sharing plates in Cadaqués",
+        "score": 8.9,
+        "from": null,
+        "match": 86,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "Camí de Ronda",
+        "what": "The old coastal path between coves. Llafranc to Tamariu is lovely.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Art",
+        "name": "Dalí's house, Portlligat",
+        "what": "Small groups only, so book ahead.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Sa Tuna",
+        "what": "A tiny fishing cove near Begur with one bar.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "Dalí Theatre-Museum, Figueres",
+        "what": "Dalí's own museum, as strange as you'd hope.",
+        "from": null
+      },
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Pals",
+        "what": "A medieval village of stone lanes and a tower above the rice fields.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "In August, park early: the coves fill up by 11.",
+        "from": "Tom"
+      }
+    ],
+    "credits": null
+  },
+  "algarve": {
+    "kicker": "Beach · Coast",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £180 a night",
+    "goodFor": [
+      "Families",
+      "Couples"
+    ],
+    "temps": [
+      16,
+      17,
+      19,
+      21,
+      24,
+      27,
+      29,
+      29,
+      27,
+      24,
+      19,
+      17
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Sophie",
+        "month": "Jun 2025",
+        "quote": "Golden cliffs, kayaking into Benagil, sardines every night.",
+        "score": 8.8,
+        "face": null
+      },
+      {
+        "who": "Sam",
+        "month": "Aug 2024",
+        "quote": "Perfect for a big family group in a villa.",
+        "score": 8.5,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Vila Vita Parc",
+        "type": "Hotel",
+        "match": 91,
+        "featured": true,
+        "sub": "from £400 a night · Clifftop gardens and a private beach.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Pine Cliffs",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £250 a night · Sophie stayed",
+        "because": null,
+        "score": 8.9,
+        "photo": null
+      },
+      {
+        "name": "A villa in Quinta do Lago",
+        "type": "Villa",
+        "match": 85,
+        "featured": false,
+        "sub": "from £350 a night · Sam stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Vila Joya",
+        "price": "£££",
+        "what": "Two-star cooking on the cliffs",
+        "score": 9.4,
+        "from": null,
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "O Leão de Porches",
+        "price": "££",
+        "what": "An old farmhouse kitchen",
+        "score": 8.8,
+        "from": "Sophie",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Vai e Volta",
+        "price": "£",
+        "what": "All-you-can-eat grilled fish. Cash only",
+        "score": 8.7,
+        "from": "Sam",
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Boat",
+        "name": "Kayak to Benagil cave",
+        "what": "Go early, by kayak, not on the big boats.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "Seven Hanging Valleys trail",
+        "what": "A clifftop path from Marinha beach.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "The Ria Formosa islands",
+        "what": "Ferry from Olhão to Culatra for empty sand.",
+        "from": "Sam",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Lagos old town",
+        "what": "Old walls, tiled churches and a fort over the harbour.",
+        "from": null
+      },
+      {
+        "tag": "Food",
+        "when": null,
+        "name": "Cataplana",
+        "what": "Seafood stew cooked in a copper clam-shaped pan. Order it for two.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "West of Lagos is wilder; east of Faro has the calm, warm lagoon water.",
+        "from": "Sophie"
+      }
+    ],
+    "credits": null
+  },
+  "venice": {
+    "kicker": "City · Culture",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "April, May or October",
+    "staysFrom": "from £250 a night",
+    "goodFor": [
+      "Couples"
+    ],
+    "temps": [
+      7,
+      9,
+      13,
+      17,
+      22,
+      26,
+      28,
+      28,
+      24,
+      18,
+      12,
+      8
+    ],
+    "bestMonths": [
+      3,
+      4,
+      9
+    ],
+    "crowds": [
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      2
+    ],
+    "said": [
+      {
+        "who": "Maya",
+        "month": "Oct 2025",
+        "quote": "Get lost after 6pm, when the day-trippers have gone.",
+        "score": 9.2,
+        "face": null
+      },
+      {
+        "who": "Harriet",
+        "month": "Apr 2024",
+        "quote": "A cicchetti crawl, then a Bellini at Harry's.",
+        "score": 8.7,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Aman Venice",
+        "type": "Hotel",
+        "match": 90,
+        "featured": true,
+        "sub": "from £1200 a night · A palazzo on the Grand Canal.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Ca' Maria Adele",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £300 a night · Maya stayed",
+        "because": null,
+        "score": 9.1,
+        "photo": null
+      },
+      {
+        "name": "Hotel Danieli",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £500 a night · Harriet stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Cantina Do Spade",
+        "price": "££",
+        "what": "Cicchetti and spritz since 1475",
+        "score": 8.9,
+        "from": "Maya",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Harry's Bar",
+        "price": "£££",
+        "what": "Where the Bellini began",
+        "score": 8.2,
+        "from": "Harriet",
+        "match": 80,
+        "photo": null
+      },
+      {
+        "name": "Trattoria Al Gatto Nero",
+        "price": "££",
+        "what": "Risotto on Burano",
+        "score": 9.1,
+        "from": null,
+        "match": 87,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Boat",
+        "name": "Vaporetto line 1 at dusk",
+        "what": "The slow boat down the Grand Canal is the cheapest tour there is.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Art",
+        "name": "Peggy Guggenheim Collection",
+        "what": "Modern art in a palazzo, with a garden.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Torcello",
+        "what": "The quiet island where Venice began.",
+        "from": "Maya",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "St Mark's Basilica",
+        "what": "Book a timed slot to skip the queue, and go up to see the horses.",
+        "from": null
+      },
+      {
+        "tag": "Festival",
+        "when": "Third weekend in July",
+        "name": "Festa del Redentore",
+        "what": "Fireworks over the lagoon, watched from boats.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Get the 72-hour vaporetto pass; it pays for itself in two days.",
+        "from": "Maya"
+      }
+    ],
+    "credits": null
+  },
+  "tuscany": {
+    "kicker": "Countryside · Food",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £220 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      11,
+      13,
+      16,
+      19,
+      24,
+      28,
+      32,
+      32,
+      27,
+      21,
+      15,
+      11
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Harriet",
+        "month": "Sep 2025",
+        "quote": "Cypress roads, Brunello and long lunches.",
+        "score": 9.3,
+        "face": null
+      },
+      {
+        "who": "Sophie",
+        "month": "May 2024",
+        "quote": "A farmhouse with friends near Montalcino.",
+        "score": 8.9,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Castello di Casole",
+        "type": "Hotel",
+        "match": 92,
+        "featured": true,
+        "sub": "from £600 a night · A castle estate between Siena and Volterra.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Borgo Pignano",
+        "type": "Hotel",
+        "match": 90,
+        "featured": false,
+        "sub": "from £350 a night · Harriet stayed",
+        "because": null,
+        "score": 9.2,
+        "photo": null
+      },
+      {
+        "name": "Castiglion del Bosco",
+        "type": "Hotel",
+        "match": 86,
+        "featured": false,
+        "sub": "from £700 a night · Sophie stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Osteria Le Logge",
+        "price": "££",
+        "what": "Pici and Tuscan classics in Siena",
+        "score": 8.9,
+        "from": "Harriet",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Antica Macelleria Cecchini",
+        "price": "££",
+        "what": "A famous butcher's table in Panzano",
+        "score": 9.1,
+        "from": "Sophie",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Trattoria Sostanza",
+        "price": "££",
+        "what": "Florentine classics since 1869",
+        "score": 8.8,
+        "from": null,
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Food",
+        "name": "Brunello tasting in Montalcino",
+        "what": "Book a small family winery rather than the big names.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Views",
+        "name": "Drive the Val d’Orcia",
+        "what": "Pienza, Montepulciano and the cypress bend near San Quirico.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Bagni San Filippo",
+        "what": "Free hot springs in the woods.",
+        "from": "Sophie",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Piazza del Campo, Siena",
+        "what": "The shell-shaped square, best with a coffee in the morning.",
+        "from": null
+      },
+      {
+        "tag": "Festival",
+        "when": "2 July and 16 August",
+        "name": "Palio di Siena",
+        "what": "A bareback horse race round the square.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Base yourself in one village and do day trips; the roads are slow and winding.",
+        "from": "Harriet"
+      }
+    ],
+    "credits": null
+  },
+  "capri": {
+    "kicker": "Island · Coast",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £350 a night",
+    "goodFor": [
+      "Couples"
+    ],
+    "temps": [
+      14,
+      14,
+      16,
+      19,
+      23,
+      27,
+      30,
+      30,
+      27,
+      23,
+      18,
+      15
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Priya",
+        "month": "Jun 2025",
+        "quote": "Stay the night: once the ferries leave, it's magic.",
+        "score": 9.1,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "J.K. Place Capri",
+        "type": "Hotel",
+        "match": 90,
+        "featured": true,
+        "sub": "from £900 a night · A white villa above Marina Grande.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hotel Caesar Augustus",
+        "type": "Hotel",
+        "match": 91,
+        "featured": false,
+        "sub": "from £600 a night · Priya stayed",
+        "because": null,
+        "score": 9.3,
+        "photo": null
+      },
+      {
+        "name": "Hotel La Minerva",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £350 a night · Terraces of bougainvillea near the Piazzetta.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Da Paolino",
+        "price": "£££",
+        "what": "Dinner under the lemon trees",
+        "score": 9.0,
+        "from": "Priya",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "La Fontelina",
+        "price": "£££",
+        "what": "Beach club lunch by the Faraglioni",
+        "score": 8.9,
+        "from": null,
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Pulalli",
+        "price": "££",
+        "what": "A wine bar on the clock tower terrace",
+        "score": 8.7,
+        "from": "Priya",
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Boat",
+        "name": "Boat round the island",
+        "what": "Two hours, sea caves and a swim at the Faraglioni.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "Via Krupp",
+        "what": "The hairpin path down to Marina Piccola (check it is open).",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Villa Lysis",
+        "what": "A quiet villa with sea views, far from the crowds.",
+        "from": "Priya",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Villa Jovis",
+        "what": "Emperor Tiberius' palace ruins at the top of the island.",
+        "from": null
+      },
+      {
+        "tag": "Food",
+        "when": null,
+        "name": "Caprese and torta caprese",
+        "what": "Both were born here: tomato and mozzarella, and a flourless chocolate almond cake.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Take the first ferry and do the Blue Grotto early, before the queues.",
+        "from": "Priya"
+      }
+    ],
+    "credits": null
+  },
+  "milan": {
+    "kicker": "City · Food",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "April, May, September or October",
+    "staysFrom": "from £220 a night",
+    "goodFor": [
+      "Solo",
+      "Friends"
+    ],
+    "temps": [
+      7,
+      10,
+      15,
+      18,
+      23,
+      27,
+      30,
+      29,
+      25,
+      18,
+      12,
+      7
+    ],
+    "bestMonths": [
+      3,
+      4,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      1,
+      3,
+      2,
+      2,
+      2
+    ],
+    "said": [
+      {
+        "who": "Tom",
+        "month": "Mar 2025",
+        "quote": "The best aperitivo in Italy, and the Duomo roof.",
+        "score": 8.4,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Portrait Milano",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £700 a night · An old seminary turned hotel off Corso Venezia.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Room Mate Giulia",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £220 a night · Tom stayed",
+        "because": null,
+        "score": 8.3,
+        "photo": null
+      },
+      {
+        "name": "Palazzo Parigi",
+        "type": "Hotel",
+        "match": 82,
+        "featured": false,
+        "sub": "from £600 a night · Grand and calm, near the shops.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Trattoria Milanese",
+        "price": "££",
+        "what": "Saffron risotto and cotoletta",
+        "score": 8.8,
+        "from": "Tom",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Pasticceria Marchesi",
+        "price": "£",
+        "what": "Pastries in an 1824 café",
+        "score": 8.9,
+        "from": null,
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Ratanà",
+        "price": "££",
+        "what": "Modern Milanese in an old railway house",
+        "score": 8.7,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Views",
+        "name": "The Duomo roof",
+        "what": "Walk among the spires; go late afternoon.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Art",
+        "name": "The Last Supper",
+        "what": "Book weeks ahead: 15-minute slots.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Villa Necchi Campiglio",
+        "what": "A 1930s villa and garden, just as it was.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Evening",
+        "when": null,
+        "name": "Aperitivo in the Navigli",
+        "what": "Drinks along the canals come with snacks from 6pm.",
+        "from": null
+      },
+      {
+        "tag": "Theatre",
+        "when": null,
+        "name": "La Scala",
+        "what": "Cheap standing tickets go on sale on the day.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Lake Como is an hour by train, so add a day trip.",
+        "from": "Tom"
+      }
+    ],
+    "credits": null
+  },
+  "zurich": {
+    "kicker": "City · Lakes",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "June to September, or December for the markets",
+    "staysFrom": "from £250 a night",
+    "goodFor": [
+      "Solo",
+      "Couples"
+    ],
+    "temps": [
+      3,
+      5,
+      10,
+      14,
+      19,
+      22,
+      24,
+      24,
+      19,
+      14,
+      8,
+      4
+    ],
+    "bestMonths": [
+      5,
+      6,
+      7,
+      8,
+      11
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      2,
+      2,
+      1,
+      2
+    ],
+    "said": [
+      {
+        "who": "Harriet",
+        "month": "Jul 2025",
+        "quote": "Swimming in the river in the middle of the city.",
+        "score": 8.3,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Baur au Lac",
+        "type": "Hotel",
+        "match": 87,
+        "featured": true,
+        "sub": "from £800 a night · Gardens on the lake at the end of Bahnhofstrasse.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Widder Hotel",
+        "type": "Hotel",
+        "match": 86,
+        "featured": false,
+        "sub": "from £450 a night · Harriet stayed",
+        "because": null,
+        "score": 8.7,
+        "photo": null
+      },
+      {
+        "name": "25hours Hotel Langstrasse",
+        "type": "Hotel",
+        "match": 82,
+        "featured": false,
+        "sub": "from £180 a night · Playful and central.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Kronenhalle",
+        "price": "£££",
+        "what": "Swiss classics among Picassos and Chagalls",
+        "score": 9.0,
+        "from": "Harriet",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Zeughauskeller",
+        "price": "££",
+        "what": "Sausages and rösti in an old armoury",
+        "score": 8.4,
+        "from": null,
+        "match": 82,
+        "photo": null
+      },
+      {
+        "name": "Sprüngli",
+        "price": "£",
+        "what": "Luxemburgerli and hot chocolate",
+        "score": 8.8,
+        "from": "Harriet",
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Outdoors",
+        "name": "River swim at Oberer Letten",
+        "what": "Float down the Limmat in summer, like the locals.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Views",
+        "name": "Uetliberg",
+        "what": "Take the train up the city's own mountain for lake and Alps views.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Lindenhof",
+        "what": "A quiet tree-lined square above the old town.",
+        "from": null,
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "Kunsthaus Zürich",
+        "what": "Switzerland's big art museum, from Monet to Giacometti.",
+        "from": null
+      },
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Grossmünster",
+        "what": "Climb one of the twin towers for the view.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Get a ZürichCard: trams, boats and the Uetliberg train are included.",
+        "from": "Harriet"
+      }
+    ],
+    "credits": null
+  },
+  "valdisere": {
+    "kicker": "Ski · Mountains · Après",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "January to March",
+    "staysFrom": "from £300 a night",
+    "goodFor": [
+      "Friends",
+      "Couples"
+    ],
+    "temps": [
+      -2,
+      -1,
+      3,
+      7,
+      12,
+      16,
+      19,
+      19,
+      15,
+      10,
+      4,
+      -1
+    ],
+    "bestMonths": [
+      0,
+      1,
+      2
+    ],
+    "crowds": [
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      1,
+      3
+    ],
+    "said": [
+      {
+        "who": "Jonah",
+        "month": "Feb 2025",
+        "quote": "A huge ski area with Tignes, and La Folie Douce at 3pm.",
+        "score": 9.0,
+        "face": null
+      },
+      {
+        "who": "Tom",
+        "month": "Jan 2024",
+        "quote": "The Face de Bellevarde is properly steep.",
+        "score": 8.8,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Le Blizzard",
+        "type": "Hotel",
+        "match": 89,
+        "featured": true,
+        "sub": "from £400 a night · Central, with an outdoor pool.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hotel Avancher",
+        "type": "Hotel",
+        "match": 86,
+        "featured": false,
+        "sub": "from £250 a night · Jonah stayed",
+        "because": null,
+        "score": 8.7,
+        "photo": null
+      },
+      {
+        "name": "Le Yule",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £600 a night · Tom stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "La Folie Douce",
+        "price": "££",
+        "what": "Dancing on the tables in ski boots",
+        "score": 8.9,
+        "from": "Jonah",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "L'Edelweiss",
+        "price": "££",
+        "what": "Mountain lunch on the slopes. Book ahead",
+        "score": 9.0,
+        "from": "Tom",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "La Fruitière",
+        "price": "££",
+        "what": "Dairy-themed lunches up the mountain",
+        "score": 8.8,
+        "from": null,
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Ski",
+        "name": "Face de Bellevarde",
+        "what": "The 1992 Olympic downhill. Black, long, unforgiving.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Ski",
+        "name": "Ski across to Tignes",
+        "what": "The lifts link the two resorts; a pass covers both.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Le Fornet",
+        "what": "The quiet end of the valley, with the best snow on busy days.",
+        "from": "Jonah",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Custom",
+        "when": null,
+        "name": "Après-ski",
+        "what": "Drinks and music on the mountain from 3pm, then dinner in the village.",
+        "from": null
+      },
+      {
+        "tag": "History",
+        "when": null,
+        "name": "The old village church",
+        "what": "A 17th-century church at the heart of the old village.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Buy the full Tignes–Val d’Isère pass, not the local one.",
+        "from": "Jonah"
+      }
+    ],
+    "credits": null
+  },
+  "avoriaz": {
+    "kicker": "Ski · Family",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "January to March",
+    "staysFrom": "from £180 a night",
+    "goodFor": [
+      "Families",
+      "Friends"
+    ],
+    "temps": [
+      -2,
+      -1,
+      3,
+      7,
+      12,
+      16,
+      19,
+      19,
+      15,
+      10,
+      4,
+      -1
+    ],
+    "bestMonths": [
+      0,
+      1,
+      2
+    ],
+    "crowds": [
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      1,
+      3
+    ],
+    "said": [
+      {
+        "who": "Sam",
+        "month": "Feb 2025",
+        "quote": "Car-free, ski to the door, and the kids loved the snow park.",
+        "score": 8.5,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Hôtel des Dromonts",
+        "type": "Hotel",
+        "match": 87,
+        "featured": true,
+        "sub": "from £350 a night · The 1960s icon of the resort.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Amara",
+        "type": "Apartment",
+        "match": 84,
+        "featured": false,
+        "sub": "from £180 a night · Sam stayed",
+        "because": null,
+        "score": 8.2,
+        "photo": null
+      },
+      {
+        "name": "MiL8",
+        "type": "Apartment",
+        "match": 82,
+        "featured": false,
+        "sub": "from £500 a night · Ski-in apartments with a spa.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Les Lindarets",
+        "price": "££",
+        "what": "A hamlet of mountain restaurants (and goats) for lunch",
+        "score": 8.6,
+        "from": "Sam",
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Ski",
+        "name": "The Portes du Soleil",
+        "what": "Ski over to Switzerland and back in a day.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Family",
+        "name": "Aquariaz",
+        "what": "A tropical indoor water park for tired legs.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Sleigh rides",
+        "what": "The village is car-free: horse-drawn sleighs are the taxis.",
+        "from": null,
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Custom",
+        "when": null,
+        "name": "The wooden towers",
+        "what": "The whole resort was built in the 1960s to look like the cliffs it sits on.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Book ski school by December for February half-term.",
+        "from": "Sam"
+      }
+    ],
+    "credits": null
+  },
+  "kitzbuhel": {
+    "kicker": "Ski · Old town · Après",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "January to March, or July for walking",
+    "staysFrom": "from £250 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      1,
+      3,
+      7,
+      12,
+      17,
+      20,
+      22,
+      22,
+      18,
+      13,
+      6,
+      2
+    ],
+    "bestMonths": [
+      0,
+      1,
+      2,
+      6
+    ],
+    "crowds": [
+      3,
+      3,
+      2,
+      1,
+      1,
+      2,
+      2,
+      2,
+      1,
+      1,
+      1,
+      3
+    ],
+    "said": [
+      {
+        "who": "Sophie",
+        "month": "Jan 2025",
+        "quote": "A proper medieval town, not just a resort. And the Streif!",
+        "score": 8.7,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Schloss Lebenberg",
+        "type": "Hotel",
+        "match": 87,
+        "featured": true,
+        "sub": "from £250 a night · A castle hotel above the town.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "A-ROSA Kitzbühel",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £300 a night · Sophie stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      },
+      {
+        "name": "Hotel Tennerhof",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £350 a night · A gourmet chalet hotel.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Rosi's Sonnbergstuben",
+        "price": "££",
+        "what": "Schnitzel and singing",
+        "score": 8.6,
+        "from": "Sophie",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Café Praxmair",
+        "price": "£",
+        "what": "Florentines and coffee in the old town",
+        "score": 8.7,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Ski",
+        "name": "Ski the Streif",
+        "what": "The world's scariest downhill, open to the public (most of it).",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Outdoors",
+        "name": "Schwarzsee",
+        "what": "A warm lake for summer swims and winter walks.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Bichlalm",
+        "what": "Quiet slopes and huts on the edge of the area.",
+        "from": null,
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Festival",
+        "when": "Late January",
+        "name": "Hahnenkamm race weekend",
+        "what": "The famous downhill race; the town parties for days.",
+        "from": null
+      },
+      {
+        "tag": "History",
+        "when": null,
+        "name": "The medieval old town",
+        "what": "Painted houses along the Vorderstadt.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Avoid race weekend unless you want the party: prices triple.",
+        "from": "Sophie"
+      }
+    ],
+    "credits": null
+  },
+  "dubai": {
+    "kicker": "City · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "November to March",
+    "staysFrom": "from £180 a night",
+    "goodFor": [
+      "Families",
+      "Couples"
+    ],
+    "temps": [
+      24,
+      25,
+      28,
+      33,
+      38,
+      40,
+      41,
+      41,
+      39,
+      35,
+      30,
+      26
+    ],
+    "bestMonths": [
+      0,
+      1,
+      2,
+      10,
+      11
+    ],
+    "crowds": [
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3
+    ],
+    "said": [
+      {
+        "who": "Maya",
+        "month": "Dec 2024",
+        "quote": "The desert at sunrise, then brunch, then the beach.",
+        "score": 8.3,
+        "face": null
+      },
+      {
+        "who": "Jonah",
+        "month": "Feb 2025",
+        "quote": "The view from the top of the Burj is unreal.",
+        "score": 8.1,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "One&Only The Palm",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £800 a night · Calm and green on the Palm.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Jumeirah Al Qasr",
+        "type": "Hotel",
+        "match": 86,
+        "featured": false,
+        "sub": "from £450 a night · Maya stayed",
+        "because": null,
+        "score": 8.7,
+        "photo": null
+      },
+      {
+        "name": "Rove Downtown",
+        "type": "Hotel",
+        "match": 80,
+        "featured": false,
+        "sub": "from £120 a night · Jonah stayed",
+        "because": null,
+        "score": 8.0,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Al Ustad Special Kebab",
+        "price": "£",
+        "what": "Old-school kebabs since 1978",
+        "score": 8.8,
+        "from": "Jonah",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Pierchic",
+        "price": "£££",
+        "what": "Seafood at the end of a pier",
+        "score": 8.7,
+        "from": "Maya",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Arabian Tea House",
+        "price": "£",
+        "what": "Breakfast in a courtyard in Al Fahidi",
+        "score": 8.5,
+        "from": null,
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Views",
+        "name": "At the Top, Burj Khalifa",
+        "what": "Book a sunset slot.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Outdoors",
+        "name": "The desert at sunrise",
+        "what": "Dunes, camels and quiet before the heat.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "An abra across the Creek",
+        "what": "Old wooden boats to the gold and spice souks, for pennies.",
+        "from": "Maya",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Al Fahidi",
+        "what": "Wind towers and lanes from old Dubai.",
+        "from": null
+      },
+      {
+        "tag": "Custom",
+        "when": null,
+        "name": "Friday brunch",
+        "what": "A Dubai ritual: long, lavish and loud.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Go between November and March; the summer heat is too much for most.",
+        "from": "Maya"
+      }
+    ],
+    "credits": null
+  },
+  "victoriafalls": {
+    "kicker": "Safari · Hiking",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "April to July for the falls; August to November for safari",
+    "staysFrom": "from £250 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      29,
+      29,
+      29,
+      28,
+      26,
+      23,
+      24,
+      27,
+      31,
+      33,
+      32,
+      30
+    ],
+    "bestMonths": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Sophie",
+        "month": "Jun 2025",
+        "quote": "You hear it before you see it. Get soaked and love it.",
+        "score": 9.4,
+        "face": null
+      },
+      {
+        "who": "Harriet",
+        "month": "Sep 2024",
+        "quote": "A sunset cruise on the Zambezi, with hippos.",
+        "score": 9.0,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "The Victoria Falls Hotel",
+        "type": "Hotel",
+        "match": 90,
+        "featured": true,
+        "sub": "from £350 a night · Edwardian grandeur facing the gorge.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Matetsi Victoria Falls",
+        "type": "Lodge",
+        "match": 89,
+        "featured": false,
+        "sub": "from £700 a night · Sophie stayed",
+        "because": null,
+        "score": 9.3,
+        "photo": null
+      },
+      {
+        "name": "Tongabezi",
+        "type": "Lodge",
+        "match": 87,
+        "featured": false,
+        "sub": "from £450 a night · Harriet stayed",
+        "because": null,
+        "score": 9.1,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "The Lookout Café",
+        "price": "££",
+        "what": "Lunch over the gorge, with zip-liners passing",
+        "score": 8.6,
+        "from": "Harriet",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Stanley's Terrace",
+        "price": "££",
+        "what": "High tea at the Victoria Falls Hotel",
+        "score": 8.9,
+        "from": "Sophie",
+        "match": 87,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "The rainforest walk",
+        "what": "Every viewpoint along the falls. Take a raincoat.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Boat",
+        "name": "Zambezi sunset cruise",
+        "what": "Hippos, elephants and a gin and tonic.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Devil's Pool",
+        "what": "Swim at the very edge, from the Zambian side, August to January only.",
+        "from": "Sophie",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Custom",
+        "when": null,
+        "name": "Mosi-oa-Tunya",
+        "what": "'The smoke that thunders': the falls' local name.",
+        "from": null
+      },
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Victoria Falls Bridge",
+        "what": "A 1905 bridge between two countries; walk out to the middle.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Get the KAZA visa to cross between Zimbabwe and Zambia as often as you like.",
+        "from": "Sophie"
+      }
+    ],
+    "credits": null
+  },
+  "tanzania": {
+    "kicker": "Safari",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "June to October (calving in February)",
+    "staysFrom": "from £400 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      27,
+      28,
+      28,
+      26,
+      26,
+      26,
+      26,
+      27,
+      28,
+      29,
+      28,
+      27
+    ],
+    "bestMonths": [
+      0,
+      1,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "crowds": [
+      2,
+      2,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      2
+    ],
+    "said": [
+      {
+        "who": "Jonah",
+        "month": "Aug 2025",
+        "quote": "Saw a river crossing. I didn't speak for an hour.",
+        "score": 9.6,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Four Seasons Safari Lodge",
+        "type": "Lodge",
+        "match": 90,
+        "featured": true,
+        "sub": "from £1200 a night · A waterhole in front of the pool.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Sayari Camp",
+        "type": "Camp",
+        "match": 91,
+        "featured": false,
+        "sub": "from £900 a night · Jonah stayed",
+        "because": null,
+        "score": 9.5,
+        "photo": null
+      },
+      {
+        "name": "Serengeti Serena Safari Lodge",
+        "type": "Lodge",
+        "match": 84,
+        "featured": false,
+        "sub": "from £350 a night · Views over the plains.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "A bush breakfast",
+        "price": null,
+        "what": "Breakfast laid out under an acacia on a game drive",
+        "score": 9.2,
+        "from": "Jonah",
+        "match": 88,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Animals",
+        "name": "The Great Migration",
+        "what": "River crossings on the Mara River, July to September. Patience pays.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Outdoors",
+        "name": "Hot-air balloon safari",
+        "what": "A sunrise flight, then breakfast in the bush.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Ngorongoro Crater",
+        "what": "A day in a giant crater full of animals, on the way in or out.",
+        "from": null,
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Culture",
+        "when": null,
+        "name": "Maasai villages",
+        "what": "Visit with a guide who knows the community.",
+        "from": null
+      },
+      {
+        "tag": "Custom",
+        "when": null,
+        "name": "Sundowners",
+        "what": "Drinks at sunset to end every game drive.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Fly between camps in light aircraft; the roads take all day. Kilimanjaro is best seen from Arusha or Amboseli at dawn.",
+        "from": "Jonah"
+      }
+    ],
+    "credits": null
+  },
+  "singapore": {
+    "kicker": "City · Food",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "February to April",
+    "staysFrom": "from £200 a night",
+    "goodFor": [
+      "Families",
+      "Solo"
+    ],
+    "temps": [
+      30,
+      31,
+      32,
+      32,
+      32,
+      31,
+      31,
+      31,
+      31,
+      31,
+      31,
+      30
+    ],
+    "bestMonths": [
+      1,
+      2,
+      3
+    ],
+    "crowds": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3
+    ],
+    "said": [
+      {
+        "who": "Priya",
+        "month": "Mar 2025",
+        "quote": "Hawker centres for every meal, Gardens by the Bay at night.",
+        "score": 8.9,
+        "face": null
+      },
+      {
+        "who": "Sam",
+        "month": "Dec 2024",
+        "quote": "The perfect stopover with kids. So clean and easy.",
+        "score": 8.4,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Raffles Hotel",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £700 a night · The colonial original, with the Long Bar.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "The Warehouse Hotel",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £250 a night · Priya stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Marina Bay Sands",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £450 a night · Sam stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Maxwell Food Centre",
+        "price": "£",
+        "what": "Tian Tian chicken rice",
+        "score": 9.0,
+        "from": "Priya",
+        "match": 89,
+        "photo": null
+      },
+      {
+        "name": "Lau Pa Sat",
+        "price": "£",
+        "what": "Satay Street at night",
+        "score": 8.6,
+        "from": "Sam",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Burnt Ends",
+        "price": "£££",
+        "what": "Wood-fired cooking. Hard to book",
+        "score": 9.2,
+        "from": null,
+        "match": 87,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Outdoors",
+        "name": "Gardens by the Bay",
+        "what": "The Supertree light show at 7.45pm and 8.45pm.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Outdoors",
+        "name": "Jewel Changi",
+        "what": "The indoor waterfall at the airport. Go before your flight.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Pulau Ubin",
+        "what": "A bumboat to an old-style island of bikes and mangroves.",
+        "from": "Priya",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Culture",
+        "when": null,
+        "name": "Chinatown and Little India",
+        "what": "Temples, spice shops and hawker stalls side by side.",
+        "from": null
+      },
+      {
+        "tag": "Food",
+        "when": null,
+        "name": "Kaya toast breakfast",
+        "what": "Coconut jam toast, soft eggs and kopi.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "The MRT goes everywhere and is air-conditioned. Contactless cards work.",
+        "from": "Priya"
+      }
+    ],
+    "credits": null
+  },
+  "srilanka": {
+    "kicker": "Beach · Culture",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "December to April (south and west coast)",
+    "staysFrom": "from £120 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      30,
+      31,
+      31,
+      31,
+      30,
+      29,
+      29,
+      29,
+      29,
+      29,
+      29,
+      29
+    ],
+    "bestMonths": [
+      0,
+      1,
+      2,
+      3,
+      11
+    ],
+    "crowds": [
+      3,
+      3,
+      2,
+      2,
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      1,
+      3
+    ],
+    "said": [
+      {
+        "who": "Maya",
+        "month": "Feb 2025",
+        "quote": "Sigiriya at dawn, tea country by train, then the south coast.",
+        "score": 9.2,
+        "face": null
+      },
+      {
+        "who": "Sophie",
+        "month": "Jan 2024",
+        "quote": "Watched turtles feeding at Hiriketiya.",
+        "score": 8.9,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Cape Weligama",
+        "type": "Hotel",
+        "match": 91,
+        "featured": true,
+        "sub": "from £450 a night · Clifftop villas over the bay.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Amangalla",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £600 a night · Maya stayed",
+        "because": null,
+        "score": 9.3,
+        "photo": null
+      },
+      {
+        "name": "98 Acres Resort",
+        "type": "Hotel",
+        "match": 86,
+        "featured": false,
+        "sub": "from £150 a night · Sophie stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Ministry of Crab",
+        "price": "£££",
+        "what": "Giant lagoon crabs in Colombo",
+        "score": 9.0,
+        "from": "Maya",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Rice and curry",
+        "price": "£",
+        "what": "Lunch in any local café: a dozen little curries",
+        "score": 8.9,
+        "from": "Sophie",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Pedlar's Inn Café",
+        "price": "£",
+        "what": "Coffee and snacks inside Galle Fort",
+        "score": 8.5,
+        "from": null,
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Hike",
+        "name": "Sigiriya Lion Rock",
+        "what": "Climb at 7am, before the heat.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Outdoors",
+        "name": "The Kandy to Ella train",
+        "what": "Tea plantations all the way. Book an observation seat.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Turtle spotting at Hiriketiya",
+        "what": "Green turtles feed on the rocks at high tide. Watch, never touch.",
+        "from": "Sophie",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Temple of the Tooth, Kandy",
+        "what": "Go for the evening ceremony with drums.",
+        "from": null
+      },
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Galle Fort",
+        "what": "Walk the ramparts at sunset.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Hire a driver for the inland part; it is affordable and the roads are slow.",
+        "from": "Maya"
+      }
+    ],
+    "credits": null
+  },
+  "newyork": {
+    "kicker": "City · Culture",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, September or December",
+    "staysFrom": "from £280 a night",
+    "goodFor": [
+      "Friends",
+      "Couples"
+    ],
+    "temps": [
+      4,
+      6,
+      10,
+      17,
+      22,
+      27,
+      29,
+      29,
+      25,
+      19,
+      12,
+      7
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8,
+      9,
+      11
+    ],
+    "crowds": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      2,
+      3,
+      3
+    ],
+    "said": [
+      {
+        "who": "Tom",
+        "month": "Dec 2024",
+        "quote": "Skating in Central Park, the tree, a slice at 2am.",
+        "score": 8.9,
+        "face": null
+      },
+      {
+        "who": "Harriet",
+        "month": "May 2025",
+        "quote": "Walk the High Line and eat your way round the West Village.",
+        "score": 8.6,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "The Greenwich Hotel",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £800 a night · Tribeca calm, with a candlelit pool.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "The Whitby",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £600 a night · Harriet stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Ace Hotel Brooklyn",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £250 a night · Tom stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Katz's Delicatessen",
+        "price": "££",
+        "what": "Pastrami on rye, as in the films",
+        "score": 8.8,
+        "from": "Tom",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Via Carota",
+        "price": "££",
+        "what": "West Village Italian. Walk in early",
+        "score": 9.1,
+        "from": "Harriet",
+        "match": 89,
+        "photo": null
+      },
+      {
+        "name": "Joe's Pizza",
+        "price": "£",
+        "what": "The classic folded slice",
+        "score": 8.6,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "The High Line",
+        "what": "An old railway turned into a garden walk.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Views",
+        "name": "Top of the Rock",
+        "what": "Better than the Empire State, because you can see the Empire State.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "The Staten Island Ferry",
+        "what": "Free, with the Statue of Liberty on the way.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "The Met",
+        "what": "Pick two or three rooms; you could spend a week.",
+        "from": null
+      },
+      {
+        "tag": "Theatre",
+        "when": null,
+        "name": "A Broadway show",
+        "what": "The TKTS booth in Times Square has same-day deals.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Walk everywhere you can and use the subway for the rest; taxis crawl in traffic.",
+        "from": "Tom"
+      }
+    ],
+    "credits": null
+  },
+  "lasvegas": {
+    "kicker": "City · Weekend",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "March to May, or October and November",
+    "staysFrom": "from £120 a night",
+    "goodFor": [
+      "Friends"
+    ],
+    "temps": [
+      14,
+      17,
+      21,
+      26,
+      32,
+      38,
+      41,
+      40,
+      35,
+      27,
+      19,
+      14
+    ],
+    "bestMonths": [
+      2,
+      3,
+      4,
+      9,
+      10
+    ],
+    "crowds": [
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2,
+      3,
+      2,
+      2
+    ],
+    "said": [
+      {
+        "who": "Sam",
+        "month": "Oct 2024",
+        "quote": "A show every night and a helicopter to the Grand Canyon.",
+        "score": 8.0,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Bellagio",
+        "type": "Hotel",
+        "match": 85,
+        "featured": true,
+        "sub": "from £180 a night · The fountains outside your window.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "The Cosmopolitan",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £200 a night · Sam stayed",
+        "because": null,
+        "score": 8.3,
+        "photo": null
+      },
+      {
+        "name": "Wynn Las Vegas",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £250 a night · Calm, green and grown-up.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Bacchanal Buffet",
+        "price": "££",
+        "what": "The famous Caesars buffet",
+        "score": 8.2,
+        "from": "Sam",
+        "match": 82,
+        "photo": null
+      },
+      {
+        "name": "Lotus of Siam",
+        "price": "££",
+        "what": "Northern Thai, a local favourite",
+        "score": 8.9,
+        "from": null,
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Hash House A Go Go",
+        "price": "£",
+        "what": "Giant brunch plates",
+        "score": 8.0,
+        "from": "Sam",
+        "match": 80,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Show",
+        "name": "A Cirque du Soleil show",
+        "what": "\"O\" at the Bellagio is the one in water.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Outdoors",
+        "name": "Grand Canyon by helicopter",
+        "what": "Expensive and unforgettable.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Red Rock Canyon",
+        "what": "Red cliffs and walks 30 minutes from the Strip.",
+        "from": null,
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Evening",
+        "when": null,
+        "name": "Fremont Street",
+        "what": "Old Vegas downtown, under a giant light canopy.",
+        "from": null
+      },
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "The Neon Museum",
+        "what": "A yard of old casino signs. Go at night.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Walking the Strip takes far longer than it looks: it's four miles.",
+        "from": "Sam"
+      }
+    ],
+    "credits": null
+  },
+  "sanfrancisco": {
+    "kicker": "City · Food",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "September or October",
+    "staysFrom": "from £220 a night",
+    "goodFor": [
+      "Couples",
+      "Solo"
+    ],
+    "temps": [
+      14,
+      16,
+      17,
+      18,
+      19,
+      21,
+      21,
+      22,
+      23,
+      22,
+      18,
+      14
+    ],
+    "bestMonths": [
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Harriet",
+        "month": "Sep 2025",
+        "quote": "Cycled the Golden Gate to Sausalito and took the ferry back.",
+        "score": 8.6,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Fairmont San Francisco",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £300 a night · Nob Hill grandeur, cable cars outside.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hotel Vitale",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £250 a night · Harriet stayed",
+        "because": null,
+        "score": 8.5,
+        "photo": null
+      },
+      {
+        "name": "The Ritz-Carlton, San Francisco",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £400 a night · Calm, on Nob Hill.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Tartine Bakery",
+        "price": "£",
+        "what": "Morning buns and country loaves",
+        "score": 8.9,
+        "from": "Harriet",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Zuni Café",
+        "price": "££",
+        "what": "Roast chicken for two",
+        "score": 8.8,
+        "from": null,
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Swan Oyster Depot",
+        "price": "££",
+        "what": "Oysters at a marble counter",
+        "score": 8.9,
+        "from": "Harriet",
+        "match": 86,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Outdoors",
+        "name": "Cycle the Golden Gate Bridge",
+        "what": "On to Sausalito, then the ferry back.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "History",
+        "name": "Alcatraz",
+        "what": "Book weeks ahead. The night tour is best.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Lands End trail",
+        "what": "A coastal path with bridge views and old baths.",
+        "from": null,
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Food",
+        "when": null,
+        "name": "Ferry Building Marketplace",
+        "what": "Saturday's farmers' market is the one to see.",
+        "from": null
+      },
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "Mission murals",
+        "what": "The painted walls of Balmy Alley.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Bring layers: the summer fog makes it cold even in July.",
+        "from": "Harriet"
+      }
+    ],
+    "credits": null
+  },
+  "lakelouise": {
+    "kicker": "Lakes · Mountains · Hiking",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "July to September, or January for skiing",
+    "staysFrom": "from £300 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      -6,
+      -3,
+      1,
+      7,
+      12,
+      16,
+      20,
+      19,
+      14,
+      7,
+      -2,
+      -6
+    ],
+    "bestMonths": [
+      6,
+      7,
+      8
+    ],
+    "crowds": [
+      2,
+      2,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      2
+    ],
+    "said": [
+      {
+        "who": "Priya",
+        "month": "Aug 2024",
+        "quote": "The colour of the water doesn't look real. Canoe at 7am.",
+        "score": 9.3,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Fairmont Chateau Lake Louise",
+        "type": "Hotel",
+        "match": 89,
+        "featured": true,
+        "sub": "from £500 a night · Right on the lake shore.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Moraine Lake Lodge",
+        "type": "Lodge",
+        "match": 90,
+        "featured": false,
+        "sub": "from £600 a night · Priya stayed",
+        "because": null,
+        "score": 9.2,
+        "photo": null
+      },
+      {
+        "name": "Post Hotel",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £350 a night · A riverside lodge with a famous wine cellar.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Lake Agnes Tea House",
+        "price": "£",
+        "what": "Tea at the end of a lake walk",
+        "score": 9.0,
+        "from": "Priya",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Fairview",
+        "price": "£££",
+        "what": "Dinner looking at the glacier",
+        "score": 8.5,
+        "from": null,
+        "match": 83,
+        "photo": null
+      },
+      {
+        "name": "Laggan's Mountain Bakery",
+        "price": "£",
+        "what": "Pastries for the trail",
+        "score": 8.4,
+        "from": "Priya",
+        "match": 82,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Boat",
+        "name": "Canoe on Lake Louise",
+        "what": "Go at opening, before the crowds.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Hike",
+        "name": "Plain of Six Glaciers",
+        "what": "Walk up to the glacier and another tea house.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Moraine Lake at sunrise",
+        "what": "Shuttle only, so book the first one.",
+        "from": "Priya",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Custom",
+        "when": null,
+        "name": "Bears",
+        "what": "Carry bear spray on trails and keep your distance.",
+        "from": null
+      },
+      {
+        "tag": "Spa",
+        "when": null,
+        "name": "Banff Upper Hot Springs",
+        "what": "Hot pools with a mountain view, open since the 1880s.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "You can't drive to Moraine Lake: book the Parks Canada shuttle.",
+        "from": "Priya"
+      }
+    ],
+    "credits": null
+  },
+  "whitsundays": {
+    "kicker": "Islands · Beach",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "June to October",
+    "staysFrom": "from £250 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      31,
+      31,
+      30,
+      28,
+      26,
+      24,
+      23,
+      24,
+      26,
+      28,
+      30,
+      31
+    ],
+    "bestMonths": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "crowds": [
+      3,
+      2,
+      2,
+      2,
+      1,
+      2,
+      3,
+      3,
+      2,
+      2,
+      2,
+      3
+    ],
+    "said": [
+      {
+        "who": "Sam",
+        "month": "Jul 2025",
+        "quote": "The sand at Whitehaven squeaks. We sailed for three days.",
+        "score": 9.3,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "InterContinental Hayman Island",
+        "type": "Hotel",
+        "match": 90,
+        "featured": true,
+        "sub": "from £600 a night · A private island resort on the reef.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Coral Sea Marina Resort",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £180 a night · Sam stayed",
+        "because": null,
+        "score": 8.5,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Fish D'vine",
+        "price": "££",
+        "what": "A fish and rum bar in Airlie Beach",
+        "score": 8.4,
+        "from": "Sam",
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Boat",
+        "name": "Sail the islands",
+        "what": "Two or three nights on a yacht is the way to see them.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Beach",
+        "name": "Whitehaven Beach",
+        "what": "Seven kilometres of pure white sand.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Hill Inlet lookout",
+        "what": "Swirling sand and sea from above, best at low tide.",
+        "from": null,
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Custom",
+        "when": null,
+        "name": "Stinger suits",
+        "what": "Wear one to swim from November to May: it is jellyfish season.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Fly into Hamilton Island, or Proserpine for Airlie Beach.",
+        "from": "Sam"
+      }
+    ],
+    "credits": null
+  },
+  "hamiltonisland": {
+    "kicker": "Island · Beach · Family",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "June to October",
+    "staysFrom": "from £250 a night",
+    "goodFor": [
+      "Families",
+      "Couples"
+    ],
+    "temps": [
+      31,
+      31,
+      30,
+      28,
+      26,
+      24,
+      23,
+      24,
+      26,
+      28,
+      30,
+      31
+    ],
+    "bestMonths": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "crowds": [
+      3,
+      2,
+      2,
+      2,
+      1,
+      2,
+      3,
+      3,
+      2,
+      2,
+      2,
+      3
+    ],
+    "said": [
+      {
+        "who": "Harriet",
+        "month": "Aug 2025",
+        "quote": "Golf buggies, koalas and a day trip to Whitehaven.",
+        "score": 8.8,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "qualia",
+        "type": "Hotel",
+        "match": 89,
+        "featured": true,
+        "sub": "from £900 a night · Adults-only pavilions on the island's tip.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Beach Club",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £400 a night · Harriet stayed",
+        "because": null,
+        "score": 8.9,
+        "photo": null
+      },
+      {
+        "name": "Reef View Hotel",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £250 a night · Big and family-friendly, by the beach.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Bommie",
+        "price": "£££",
+        "what": "Fine dining over the marina",
+        "score": 8.7,
+        "from": "Harriet",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Romano's",
+        "price": "££",
+        "what": "Italian over the water",
+        "score": 8.4,
+        "from": null,
+        "match": 82,
+        "photo": null
+      },
+      {
+        "name": "Manta Ray Café",
+        "price": "£",
+        "what": "Wood-fired pizza in the marina",
+        "score": 8.3,
+        "from": null,
+        "match": 81,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Family",
+        "name": "Wild Life Hamilton Island",
+        "what": "Breakfast with the koalas.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Beach",
+        "name": "Catseye Beach",
+        "what": "Calm water, with paddleboards and snorkels to borrow.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Passage Peak",
+        "what": "A steep walk to the island's top for sunrise.",
+        "from": null,
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Custom",
+        "when": null,
+        "name": "Golf buggies",
+        "what": "There are no cars: everyone gets about by buggy.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Book a Whitehaven day trip from the marina.",
+        "from": "Harriet"
+      }
+    ],
+    "credits": null
+  },
+  "rottnest": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 1 friend and people with your taste.",
+    "bestTime": "October to April",
+    "staysFrom": "from £150 a night",
+    "goodFor": [
+      "Families",
+      "Friends"
+    ],
+    "temps": [
+      30,
+      30,
+      28,
+      25,
+      22,
+      19,
+      18,
+      19,
+      20,
+      23,
+      26,
+      28
+    ],
+    "bestMonths": [
+      0,
+      1,
+      2,
+      10,
+      11
+    ],
+    "crowds": [
+      3,
+      3,
+      2,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      3
+    ],
+    "said": [
+      {
+        "who": "Tom",
+        "month": "Jan 2025",
+        "quote": "Cycled the whole island and got a quokka selfie.",
+        "score": 8.7,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Discovery Rottnest Island",
+        "type": "Other",
+        "match": 87,
+        "featured": true,
+        "sub": "from £200 a night · Safari tents behind Pinky Beach.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hotel Rottnest",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £180 a night · Tom stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      },
+      {
+        "name": "Samphire Rottnest",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £220 a night · Rooms on the beach at Thomson Bay.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Hotel Rottnest",
+        "price": "££",
+        "what": "Sunset drinks on the lawn",
+        "score": 8.5,
+        "from": "Tom",
+        "match": 84,
+        "photo": null
+      },
+      {
+        "name": "Rottnest Bakery",
+        "price": "£",
+        "what": "Famous for its doughnuts",
+        "score": 8.6,
+        "from": null,
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Outdoors",
+        "name": "Cycle the island",
+        "what": "A 22 km loop with no cars. Hire bikes at the jetty.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "The Basin",
+        "what": "A shallow reef pool, good for first snorkels.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Little Salmon Bay",
+        "what": "A snorkel trail with plaques under the water.",
+        "from": null,
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Animals",
+        "when": null,
+        "name": "Quokkas",
+        "what": "Friendly, but never feed or touch them.",
+        "from": "Tom"
+      },
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Wadjemup Lighthouse",
+        "what": "Climb it for views over the whole island.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Book the ferry and bike hire together from Fremantle; it is cheaper.",
+        "from": "Tom"
+      }
+    ],
+    "credits": null
   }
 };

@@ -178,7 +178,7 @@ src/
                           key with your score for each spot, tap for why; tap the map or "Full screen" for the big real map (zoom from the street to the world) +
                           "Where are you staying?" (typing only; picks the stay once one name matches) → "Near <stay>": the rest
                           nearest first, Right nearby / A short way / Further out. The drawn maps are no longer shown on phones
-                          (owner, Nov 2026); they're only the web stand-in), BestTimeChart, SaidList, StayRow (price chips Any / Under £150 / £150–£300 / Over £300, PRICE_BANDS: only the bands that place has stays in, and only when there are two or more (owner Nov 2026); each card opens stay/[slug]; Explore also has "Stays under £150" and "Worth the splurge" (£500+) collections, whose stays open stay/[slug] too), EatRow (Pinterest-style: no photos until friends add their own, owner Nov 2026; soft sage/blush/sky/champagne cards in a
+                          (owner, Nov 2026); they're only the web stand-in), BestTimeChart, SaidList, StayRow ("Price per night, from" label + price chips Any / Under £150 / £150–£300 / Over £300, PRICE_BANDS: only the bands that place has stays in, and only when there are two or more (owner Nov 2026); each card opens stay/[slug]; Explore also has "Stays under £150 a night" and "Worth the splurge" (£500+) collections, whose stays open stay/[slug] too), EatRow (Pinterest-style: no photos until friends add their own, owner Nov 2026; soft sage/blush/sky/champagne cards in a
                           row that scrolls sideways, with icon, type/price, a one-line "✦ We think you'd like it" pill above the name when featured (never beside the stamp, owner Nov 2026), name, why, a one-line friend's pick, score stamp, save bookmark), DoRow, MoreAbout
     AreaMap.tsx           The real map of a place (Apple Maps, mutedStandard; numbered pins with name labels; `preview` = still, tap to
                           open). AreaMap.web.tsx shows the drawn map instead, as react-native-maps doesn't run on the web
@@ -329,7 +329,7 @@ docs/plan.md              Step-by-step plan
 
 ## Brand rules
 
-The look follows the owner's prototype: **clean, warm and photo-led**. A warm oat-milk background, white rounded cards with thin borders, olive and terracotta pill buttons, big serif headings with one italic accent word, and photos framed like postage stamps. No airmail stripes or round postmarks any more.
+The look follows the owner's prototype: **clean, warm and photo-led**. A white background (owner, Nov 2026; was oat milk), off-white cream rounded cards with thin borders, olive and terracotta pill buttons, big serif headings with one italic accent word, and photos framed like postage stamps. No airmail stripes or round postmarks any more.
 
 ### Colours (`src/constants/theme.ts` → `colors.*`)
 
@@ -337,8 +337,8 @@ From the owner's palette (Nov 2026; toned down slightly later that month: accent
 
 | Token | Hex | Use |
 |---|---|---|
-| `bg` | `#f2ede2` | Page background (Oat Milk) |
-| `card` | `#ffffff` | Cards, inputs, stamp frames |
+| `bg` | `#ffffff` | Page background: white (owner, Nov 2026; was Oat Milk `#f2ede2`) |
+| `card` | `#faf5eb` | Every box on the white page: cards, inputs, stamp frames, outline buttons, chips (off-white cream, owner Nov 2026) |
 | `line` | `#e2dacb` | Borders, dividers |
 | `sand` | `#e6dccb` | Quiet fills, photo placeholders |
 | `mapLand` | `#b9c3ad` | Dotted land on the travel map (light sage) |
@@ -353,7 +353,7 @@ From the owner's palette (Nov 2026; toned down slightly later that month: accent
 | `accentText` | `#905640` | Small terracotta text: links, taglines, kickers |
 | `olive` | `#636b51` | Olive Grove, a shade deeper so small text passes: stay pins, Want to go / saved |
 | `blushSoft` / `sageSoft` / `skySoft` | `#f5e5de` / `#e8eadd` / `#e7eaeb` | Soft fills for cards and bands (`<Card tone="blush">`, `toneFill()`, `TONES` cycle) |
-| `cream` | `#fcf8ef` | `<Card tone="cream">` (keeps its thin border): place pages' Your score, Add a trip's "How was it?", You's Trips tile, Saved's Want to go card, follow requests (owner Nov 2026: cream, not pink) |
+| `cream` | `#faf5eb` (same as `card`) | `<Card tone="cream">` (keeps its thin border): place pages' Your score, Add a trip's "How was it?", You's Trips tile, Saved's Want to go card, follow requests (owner Nov 2026: cream, not pink) |
 | `champagneSoft` | `#f3ecde` | Fourth soft card colour (place pages' hotel/restaurant cards) |
 | `skyDeep` | `#5b7389` | Misty sky deep enough for white initials (avatars) |
 | `gold` | `#b9975b` | Hidden-gem pins on place maps |

@@ -234,9 +234,12 @@ export function StayRow({ stays, at }: { stays: PlaceDetail['stays']; at?: SpotP
     <View style={{ marginTop: 28 }}>
       <SectionHeader>Where to stay</SectionHeader>
       {bands.length >= 2 && (
-        <View accessibilityRole="tablist" accessibilityLabel="Price a night" style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: GUTTER, marginBottom: 14 }}>
+        <View accessibilityRole="tablist" accessibilityLabel="Price per night" style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8, paddingHorizontal: GUTTER, marginBottom: 14 }}>
+          <Text variant="label" style={{ width: '100%', marginBottom: 2 }}>
+            Price per night, from
+          </Text>
           {[PRICE_BANDS[0], ...bands].map((b) => (
-            <Chip key={b.id} label={b.label} selected={band === b.id} onPress={() => setBand(b.id)} accessibilityLabel={`Show stays: ${b.label}`} />
+            <Chip key={b.id} label={b.label} selected={band === b.id} onPress={() => setBand(b.id)} accessibilityLabel={`Show stays: ${b.label}${b.id === 'any' ? '' : ' a night'}`} />
           ))}
         </View>
       )}

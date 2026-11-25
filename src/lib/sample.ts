@@ -1232,9 +1232,9 @@ export const places: SamplePlace[] = [
     "name": "Mykonos",
     "region": "Greece",
     "score": 8.5,
-    "photo": "own-mykonos-harbour",
+    "photo": "own-mykonos-beach",
     "photos": [
-      "own-mykonos-harbour"
+      "own-mykonos-beach"
     ]
   },
   {

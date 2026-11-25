@@ -112,6 +112,15 @@ export default function Settings() {
             </View>
           </Section>
         )}
+        <Section label="Your taste">
+          <Pressable onPress={() => router.push('/setup')} accessibilityRole="link" style={{ padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <View style={{ flex: 1 }}>
+              <Text variant="strong">Tell us what you love</Text>
+              <Text variant="small">The quick questions from when you joined. Your scores update straight away.</Text>
+            </View>
+            <Text variant="link">Start →</Text>
+          </Pressable>
+        </Section>
         <Section label="Blocked people">
           <View style={{ padding: 16, gap: 12 }}>
             {!blocked ? (

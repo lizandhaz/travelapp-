@@ -4,7 +4,7 @@ import { Linking, Pressable, View } from 'react-native';
 import { BedIcon, ChevronIcon } from '@/components/Icons';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
-import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
+import { BackButton, Button, Card, ExampleTag, Screen, SectionHeader } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { sampleWouldReturn } from '@/lib/friendTrips';
 import { placeDetails } from '@/lib/placeDetails';
@@ -92,7 +92,10 @@ export default function StayPage() {
           >
             {friendScore != null && <ScoreStamp score={friendScore} size="sm" label={`${friend}'s score`} />}
             <View style={{ flex: 1 }}>
-              <Text variant="strong">{friend} stayed here</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text variant="strong">{friend} stayed here</Text>
+                <ExampleTag />
+              </View>
               <Text variant="small">
                 {[friendScore != null ? `Gave it ${friendScore.toFixed(1)}` : null, wouldReturn === true ? 'Would stay again' : wouldReturn === false ? "Wouldn't stay again" : null].filter(Boolean).join(' · ') || 'See their profile'}
               </Text>

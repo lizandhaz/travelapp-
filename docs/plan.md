@@ -212,7 +212,7 @@ Each step's ready-made prompt is in your build plan doc ("XYZX: build plan from 
 | F | For you and trending from real ratings | Tue 8 Dec |
 | G ✅ | Add photos to trips (location data removed first) (done early) | Wed 9 Dec |
 | H | Postcards inside the app: likes and comments saved for real, Postcards show likes, comments, follow requests (accept/decline) and new followers, with an unread count (built Nov 2026, database part waiting for your OK) | Thu 10 Dec |
-| I | First-time setup for new people | Fri 11 Dec |
+| I ✅ | First-time setup for new people (built Nov 2026: three quick questions, Home without friends, example content labelled) | Fri 11 Dec |
 | J | Block, report and delete account; privacy policy (built Nov 2026, database part waiting for your OK; still to do: download your data, a legal check of the policy and a contact email) | Sat 12 Dec |
 | K | Beta on TestFlight (💷 Apple Developer, about £79 a year: Claude asks first) | Sun 13 Dec |
 

@@ -142,6 +142,11 @@ src/
     settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places
                           I look at, clear viewed places, Blocked people, Privacy policy, sign out, Delete account), opened from You
     privacy.tsx           The privacy policy (plain-English draft; readable signed in or out)
+    setup.tsx             First-time setup (Step I, owner Nov 2026): 3 tap-only steps (holidays you love, who you go with, tap places once for Been
+                          / twice for Want to go), "Skip for now". Home opens it once for anyone with nothing to go on (lib/startTaste.ts, kept on
+                          the phone; retake from Settings → Your taste). Answers feed taste.tsx: an `interest` signal for the types, and "been"
+                          places as trip signals with `told: true` (shape taste, never shown as "yours"; reason "Like X, where you've been");
+                          Want to go places are saved to the real board
     place/[slug].tsx      A sample place: photo, one-tap "Want to go" (on the photo and under the score), score, On the map, best time, what friends said, where to stay,
                           then "More about <place>" (tap to open: where to eat, things to do and top tips; owner Nov 2026: keep the page short; the Culture section was removed, its data stays for matching), "I've been" (opens Add a trip with the place filled in)
     stay/[slug].tsx       One hotel, villa or Airbnb (?name=, from a place page's Where to stay card; owner Nov 2026): a sage band with type, name and
@@ -366,6 +371,8 @@ From the owner's palette (Nov 2026; toned down slightly later that month: accent
 | `onDark` | `#faf7f0` | Text on photos and dark buttons |
 
 Trips without photos use soft blush (`blushSoft`) with dark text (saved-trip tiles, a friend's trip page; feed posts are a cream mini postcard); never the olive-to-terracotta gradient (owner disliked it). **Use plenty of colour** (owner, Nov 2026: "not enough colour"): selected chips, segmented switches and the tab bar's + and active tab are terracotta; dark buttons are olive; Explore's "Made for your taste" sits on a sage band; friends' feed cards are white with the stay on a sage strip; Trending rank badges (`PhotoBadge accent`) and the line under trend cards are terracotta; You's stats are three tiles (Trips cream, Countries sage, world sky) (Trips, Countries, % "Of the world" = countries / 195; no average score, owner Nov 2026); avatars without a photo use olive/terracotta/sky; place score card cream (not pink, owner Nov 2026), place facts sky/blush; Saved's Want to go card cream. The owner tried and didn't want fully tinted feed cards or a band behind Explore's Trending (too much), nor all-plain (too little): keep this middle ground. Collection tiles show no count.
+
+**Example content is labelled** (owner, Nov 2026): sample friends' feed posts and their hotel stays carry an EXAMPLE tag (`ExampleTag` in ui.tsx), sample profiles say "Example profile", place pages say "Example page: friends, scores and prices are made up while COVA is in testing". Home with no friends shows a "Your friends' trips show here" card (Find friends) above "Meanwhile, some example trips". Until we know your taste, place pages say "Traveller score · Popular with travellers" and Home says "Popular picks" instead of "Top picks for you".
 
 `accent` is too light for small text on `bg`. Use `accentText` for small text and `accentDeep` behind white text. The place maps in `assets/maps/` have their pins drawn in `olive`/`accent`/`ink`/`gold` (rendered from the prototype's SVGs with those colours swapped in); if those change, redraw the maps so the key still matches.
 

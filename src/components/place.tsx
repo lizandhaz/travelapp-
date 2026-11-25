@@ -506,7 +506,7 @@ export function MoreAbout({ name, detail, eat, todo }: { name: string; detail: P
  * Your score card on a place page: the score, a word, why, and a
  * "How we worked this out" breakdown (lib/match.ts).
  */
-export function YourScore({ result, note }: { result: PlaceResult; note: string }) {
+export function YourScore({ result, note, known = true }: { result: PlaceResult; note: string; /** False until we know anything about your taste. */ known?: boolean }) {
   const [open, setOpen] = useState(false);
   const b = result.breakdown;
   const from =
@@ -519,9 +519,9 @@ export function YourScore({ result, note }: { result: PlaceResult; note: string 
         <ScoreStamp score={result.score} size="md" label={result.yours != null ? 'Your rating' : 'Your score'} />
         <View style={{ flex: 1 }}>
           <Text variant="subheading">
-            {result.yours != null ? 'Your rating' : 'Your score'}
+            {result.yours != null ? 'Your rating' : known ? 'Your score' : 'Traveller score'}
           </Text>
-          <Text variant="small">{result.yours != null ? 'You’ve been. This is the score you gave it.' : 'Worked out for you'}</Text>
+          <Text variant="small">{result.yours != null ? 'You’ve been. This is the score you gave it.' : known ? 'Worked out for you' : 'Popular with travellers. Add a trip or save places and it becomes yours.'}</Text>
         </View>
       </View>
       {result.reasons.filter((r) => !r.startsWith('You gave')).length > 0 && (

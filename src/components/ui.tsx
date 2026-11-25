@@ -334,3 +334,15 @@ export const styles = StyleSheet.create({
   },
   gutter: { paddingHorizontal: GUTTER },
 });
+
+/** A small "Example" tag for sample content (owner, Nov 2026: make clear what's made up while COVA is in testing). */
+export function ExampleTag({ onPhoto = false }: { onPhoto?: boolean }) {
+  return (
+    <View
+      accessibilityLabel="Example"
+      style={{ alignSelf: 'center', borderRadius: radius.pill, paddingHorizontal: 7, paddingVertical: 1, backgroundColor: onPhoto ? 'rgba(255,255,255,0.22)' : colors.sand }}
+    >
+      <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 10, letterSpacing: 0.6, color: onPhoto ? colors.onDark : colors.muted }}>EXAMPLE</Text>
+    </View>
+  );
+}

@@ -11844,5 +11844,165 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "barcelona": {
+    "kicker": "City · Food",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June, September or October",
+    "staysFrom": "from £180 a night",
+    "goodFor": [
+      "Friends",
+      "Couples"
+    ],
+    "temps": [
+      14,
+      15,
+      17,
+      19,
+      22,
+      26,
+      29,
+      29,
+      26,
+      22,
+      17,
+      14
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Priya",
+        "month": "May 2025",
+        "quote": "The Sagrada Família took my breath away, then tapas in El Born.",
+        "score": 9.0,
+        "face": null
+      },
+      {
+        "who": "Tom",
+        "month": "Sep 2024",
+        "quote": "Beach in the morning, city in the afternoon.",
+        "score": 8.5,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Hotel Arts Barcelona",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £400 a night · On the beach, with the sea from every room.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Casa Bonay",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £220 a night · Priya stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Yurbban Passage",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £180 a night · Tom stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Cal Pep",
+        "price": "££",
+        "what": "Seafood at the counter, no menu",
+        "score": 9.1,
+        "from": "Tom",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "El Xampanyet",
+        "price": "£",
+        "what": "Cava and anchovies in El Born",
+        "score": 8.9,
+        "from": "Priya",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Bar Cañete",
+        "price": "££",
+        "what": "Classic tapas just off La Rambla",
+        "score": 8.8,
+        "from": null,
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Culture",
+        "name": "Sagrada Família",
+        "what": "Book ahead, and go up one of the towers.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "The Gothic Quarter and El Born",
+        "what": "Get lost in the old lanes, then stop for a vermouth.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Bunkers del Carmel",
+        "what": "The best free view over the city, at sunset.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "Park Güell",
+        "what": "Gaudí's mosaic park above the city. Book a timed slot.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Watch your phone on La Rambla and the metro: pickpockets are busy.",
+        "from": "Priya"
+      }
+    ],
+    "credits": null
   }
 };

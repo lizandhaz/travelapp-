@@ -90,6 +90,8 @@ export const placeMaps: Record<string, PlaceMap> = {
   "zakynthos": { pins: [{ n: 1, name: "Porto Zante Villas", kind: "Stay", ll: [37.8555, 20.8875] }, { n: 2, name: "Lesante Blu", kind: "Stay", ll: [37.731, 20.871] }, { n: 3, name: "Olea All Suite Hotel", kind: "Stay", ll: [37.818, 20.855] }, { n: 4, name: "Taverna Porto Limnionas", kind: "Eat", ll: [37.721, 20.678] }, { n: 5, name: "Prosilio", kind: "Eat", ll: [37.7835, 20.8975] }, { n: 6, name: "Shipwreck Beach (Navagio)", kind: "Do", ll: [37.8595, 20.6245] }, { n: 7, name: "Turtle spotting in Laganas Bay", kind: "Do", ll: [37.715, 20.86] }, { n: 8, name: "Keri cliffs at sunset", kind: "Hidden gem", ll: [37.6545, 20.8095] }] },
   // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
   "athens": { pins: [{ n: 1, name: "Hotel Grande Bretagne", kind: "Stay", ll: [37.9762, 23.7348] }, { n: 2, name: "The Zillers Athens", kind: "Stay", ll: [37.9758, 23.7275] }, { n: 3, name: "Electra Metropolis", kind: "Stay", ll: [37.9748, 23.7305] }, { n: 4, name: "Diporto", kind: "Eat", ll: [37.9805, 23.7253] }, { n: 5, name: "Kuzina", kind: "Eat", ll: [37.9762, 23.7225] }, { n: 6, name: "Ta Karamanlidika tou Fani", kind: "Eat", ll: [37.9795, 23.7262] }, { n: 7, name: "The Acropolis", kind: "Do", ll: [37.9715, 23.7257] }, { n: 8, name: "Acropolis Museum", kind: "Do", ll: [37.9684, 23.7285] }, { n: 9, name: "Anafiotika", kind: "Hidden gem", ll: [37.9727, 23.7295] }] },
+  // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
+  "barcelona": { pins: [{ n: 1, name: "Hotel Arts Barcelona", kind: "Stay", ll: [41.3866, 2.1963] }, { n: 2, name: "Casa Bonay", kind: "Stay", ll: [41.3936, 2.1749] }, { n: 3, name: "Yurbban Passage", kind: "Stay", ll: [41.3925, 2.1765] }, { n: 4, name: "Cal Pep", kind: "Eat", ll: [41.3836, 2.1834] }, { n: 5, name: "El Xampanyet", kind: "Eat", ll: [41.3843, 2.1813] }, { n: 6, name: "Bar Cañete", kind: "Eat", ll: [41.3792, 2.1726] }, { n: 7, name: "Sagrada Família", kind: "Do", ll: [41.4036, 2.1744] }, { n: 8, name: "The Gothic Quarter and El Born", kind: "Do", ll: [41.3833, 2.1777] }, { n: 9, name: "Bunkers del Carmel", kind: "Hidden gem", ll: [41.4189, 2.1615] }] },
 };
 
 /**
@@ -169,6 +171,7 @@ export const placeCentres: Record<string, { at: [number, number]; span: number }
   rhodes: { at: [36.27, 28.1], span: 0.8 },
   zakynthos: { at: [37.78, 20.8], span: 0.6 },
   athens: { at: [37.975, 23.73], span: 0.12 },
+  barcelona: { at: [41.395, 2.17], span: 0.12 },
 };
 
 /**

@@ -1266,6 +1266,16 @@ export const places: SamplePlace[] = [
     "photos": [
       "own-athens-acropolis"
     ]
+  },
+  {
+    "slug": "barcelona",
+    "name": "Barcelona",
+    "region": "Catalonia, Spain",
+    "score": 8.6,
+    "photo": "own-barcelona-sagrada",
+    "photos": [
+      "own-barcelona-sagrada"
+    ]
   }
 ] as SamplePlace[];
 

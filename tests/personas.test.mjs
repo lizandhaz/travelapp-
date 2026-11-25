@@ -45,7 +45,9 @@ test('a city lover gets cities, not the highest-rated islands', () => {
     ['2026-05', 9.2, 'Rome', 'Italy'], ['2025-10', 9.0, 'New York', 'United States'], ['2025-04', 8.9, 'Prague', 'Czechia'],
     ['2025-02', 8.7, 'Vienna', 'Austria'], ['2024-11', 8.8, 'Barcelona', 'Spain', 'friends'], ['2024-08', 6.0, 'Ayia Napa', 'Cyprus', 'friends'],
   ], 8);
-  assert.ok(top.includes('paris'), top.join(', '));
+  // Every pick is a city or culture break (owner added Athens and Barcelona, Nov 2026, so Paris may now sit just below the top 8).
+  assert.ok(top.every((s) => tagOf(s, 'city') >= 0.5 || tagOf(s, 'culture') >= 0.5), top.join(', '));
+  assert.ok(topFor([['2026-05', 9.2, 'Rome', 'Italy'], ['2025-10', 9.0, 'New York', 'United States']], 12).includes('paris'));
   for (const island of ['borabora', 'maldives', 'seychelles', 'turks']) assert.ok(!top.includes(island), `${island} in ${top.join(', ')}`);
 });
 

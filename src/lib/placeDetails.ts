@@ -11058,5 +11058,951 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "santorini": {
+    "kicker": "Island · Coast",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June, September or October",
+    "staysFrom": "from £350 a night",
+    "goodFor": [
+      "Couples"
+    ],
+    "temps": [
+      14,
+      14,
+      16,
+      19,
+      23,
+      27,
+      29,
+      29,
+      26,
+      22,
+      18,
+      15
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Maya",
+        "month": "Sep 2025",
+        "quote": "Sunset in Oia lives up to it, but Imerovigli is calmer.",
+        "score": 8.9,
+        "face": null
+      },
+      {
+        "who": "Sam",
+        "month": "Jun 2024",
+        "quote": "Black sand beaches and the volcano boat trip.",
+        "score": 8.5,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Canaves Oia",
+        "type": "Hotel",
+        "match": 90,
+        "featured": true,
+        "sub": "from £700 a night · Cave suites over the caldera.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Grace Hotel Santorini",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £600 a night · Maya stayed",
+        "because": null,
+        "score": 9.1,
+        "photo": null
+      },
+      {
+        "name": "Astra Suites",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £350 a night · Sam stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Metaxi Mas",
+        "price": "££",
+        "what": "A village taverna locals love",
+        "score": 9.2,
+        "from": "Maya",
+        "match": 89,
+        "photo": null
+      },
+      {
+        "name": "Ammoudi Fish Tavern",
+        "price": "££",
+        "what": "Fish by the water below Oia",
+        "score": 8.8,
+        "from": "Sam",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Lucky's Souvlakis",
+        "price": "£",
+        "what": "The best cheap gyros in Fira",
+        "score": 8.6,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "Fira to Oia clifftop walk",
+        "what": "About three hours along the caldera rim. Start early.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Boat",
+        "name": "Volcano and hot springs boat",
+        "what": "Climb the volcano, then swim to the warm springs.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Pyrgos",
+        "what": "A hilltop village with sunset views and no crowds.",
+        "from": "Maya",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Akrotiri",
+        "what": "A Bronze Age town buried by the eruption, like Pompeii.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Watch the sunset from Imerovigli or Pyrgos instead of Oia's crush.",
+        "from": "Maya"
+      }
+    ],
+    "credits": null
+  },
+  "mykonos": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "June or September",
+    "staysFrom": "from £300 a night",
+    "goodFor": [
+      "Friends",
+      "Couples"
+    ],
+    "temps": [
+      14,
+      14,
+      16,
+      19,
+      23,
+      27,
+      28,
+      28,
+      25,
+      22,
+      18,
+      15
+    ],
+    "bestMonths": [
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Jonah",
+        "month": "Jul 2025",
+        "quote": "Little Venice at sunset, then dancing till late.",
+        "score": 8.4,
+        "face": null
+      },
+      {
+        "who": "Sophie",
+        "month": "Sep 2024",
+        "quote": "Quieter in September, and the sea is still warm.",
+        "score": 8.7,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Cavo Tagoo",
+        "type": "Hotel",
+        "match": 89,
+        "featured": true,
+        "sub": "from £600 a night · Cave-style rooms and an infinity pool over the sea.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Bill & Coo Suites",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £450 a night · Sophie stayed",
+        "because": null,
+        "score": 8.9,
+        "photo": null
+      },
+      {
+        "name": "Semeli Hotel",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £300 a night · Jonah stayed",
+        "because": null,
+        "score": 8.3,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Kiki's Tavern",
+        "price": "££",
+        "what": "Grilled meat above a beach, no sign, no bookings",
+        "score": 9.0,
+        "from": "Sophie",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Nammos",
+        "price": "£££",
+        "what": "The famous beach club at Psarou",
+        "score": 8.1,
+        "from": "Jonah",
+        "match": 80,
+        "photo": null
+      },
+      {
+        "name": "Niko's Taverna",
+        "price": "££",
+        "what": "An Old Town classic",
+        "score": 8.4,
+        "from": null,
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "Little Venice at sunset",
+        "what": "Drinks on the water, then up to the windmills.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Boat",
+        "name": "Day trip to Delos",
+        "what": "The sacred island of ancient Greece, half an hour by boat. Closed Mondays.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Agios Sostis beach",
+        "what": "No sunbeds, no music, and Kiki's for lunch.",
+        "from": "Sophie",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Kato Mili windmills",
+        "what": "Sixteenth-century windmills above Little Venice.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Go in June or September: July and August are packed and pricey.",
+        "from": "Sophie"
+      }
+    ],
+    "credits": null
+  },
+  "rhodes": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June, September or October",
+    "staysFrom": "from £200 a night",
+    "goodFor": [
+      "Families",
+      "Couples"
+    ],
+    "temps": [
+      15,
+      15,
+      17,
+      20,
+      24,
+      28,
+      31,
+      31,
+      28,
+      24,
+      20,
+      16
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Harriet",
+        "month": "Jun 2025",
+        "quote": "The acropolis at Lindos in the morning, St Paul's Bay all afternoon.",
+        "score": 8.9,
+        "face": null
+      },
+      {
+        "who": "Sam",
+        "month": "Aug 2024",
+        "quote": "Easy with the kids, and Rhodes Old Town at night.",
+        "score": 8.3,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Lindos Blu",
+        "type": "Hotel",
+        "match": 89,
+        "featured": true,
+        "sub": "from £400 a night · Adults only, looking over Lindos bay.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Melenos Lindos",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £350 a night · Harriet stayed",
+        "because": null,
+        "score": 9.1,
+        "photo": null
+      },
+      {
+        "name": "Lindos Imperial",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £200 a night · Sam stayed",
+        "because": null,
+        "score": 8.2,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Mavrikos",
+        "price": "££",
+        "what": "Family-run in Lindos for generations",
+        "score": 9.0,
+        "from": "Harriet",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Marco Polo Café",
+        "price": "££",
+        "what": "Dinner in the courtyard of an old mansion",
+        "score": 8.8,
+        "from": null,
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Kalypso",
+        "price": "££",
+        "what": "On the roof of an old captain's house",
+        "score": 8.5,
+        "from": "Sam",
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "History",
+        "name": "Acropolis of Lindos",
+        "what": "Go at opening, before the heat and the crowds.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "Rhodes Old Town",
+        "what": "The medieval walled town of the Knights. Lovely at night.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "St Paul's Bay",
+        "what": "A tiny round bay below Lindos, perfect for a swim.",
+        "from": "Harriet",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Palace of the Grand Master",
+        "what": "The Knights' castle at the top of the Street of the Knights.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Stay near Lindos for beaches and evenings; it's about an hour from the airport.",
+        "from": "Harriet"
+      }
+    ],
+    "credits": null
+  },
+  "zakynthos": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "June or September",
+    "staysFrom": "from £300 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      14,
+      14,
+      16,
+      19,
+      23,
+      27,
+      30,
+      31,
+      27,
+      23,
+      19,
+      15
+    ],
+    "bestMonths": [
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Tom",
+        "month": "Aug 2025",
+        "quote": "A boat round the cliffs to Shipwreck Beach and the Blue Caves.",
+        "score": 8.7,
+        "face": null
+      },
+      {
+        "who": "Priya",
+        "month": "Jun 2024",
+        "quote": "Turtles in Laganas Bay before breakfast.",
+        "score": 8.5,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Porto Zante Villas",
+        "type": "Villa",
+        "match": 89,
+        "featured": true,
+        "sub": "from £700 a night · Villas on a private beach near Tragaki.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Lesante Blu",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £350 a night · Tom stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": null
+      },
+      {
+        "name": "Olea All Suite Hotel",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £300 a night · Priya stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Taverna Porto Limnionas",
+        "price": "££",
+        "what": "Fish on the rocks, with a swim first",
+        "score": 9.0,
+        "from": "Tom",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Prosilio",
+        "price": "££",
+        "what": "Modern Greek in Zakynthos Town",
+        "score": 8.9,
+        "from": "Priya",
+        "match": 86,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Boat",
+        "name": "Shipwreck Beach (Navagio)",
+        "what": "See it by boat from below, or from the clifftop viewpoint (check it is open).",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Animals",
+        "name": "Turtle spotting in Laganas Bay",
+        "what": "Loggerhead turtles: go with a licensed boat and keep your distance.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Keri cliffs at sunset",
+        "what": "Huge white cliffs and arches at the south-west tip.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Bochali",
+        "what": "The old hilltop quarter above Zakynthos Town, with a Venetian castle.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Hire a small boat for the day: you don't need a licence for the little ones.",
+        "from": "Tom"
+      }
+    ],
+    "credits": null
+  },
+  "athens": {
+    "kicker": "City · Culture",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "April, May, October or November",
+    "staysFrom": "from £200 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      13,
+      14,
+      17,
+      20,
+      25,
+      30,
+      33,
+      33,
+      29,
+      24,
+      19,
+      15
+    ],
+    "bestMonths": [
+      3,
+      4,
+      9,
+      10
+    ],
+    "crowds": [
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Sophie",
+        "month": "Apr 2025",
+        "quote": "The Acropolis at opening, then mezze in Plaka.",
+        "score": 8.6,
+        "face": null
+      },
+      {
+        "who": "Jonah",
+        "month": "Oct 2024",
+        "quote": "Rooftop bars with the Parthenon lit up.",
+        "score": 8.3,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Hotel Grande Bretagne",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £450 a night · The grand old hotel on Syntagma Square.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "The Zillers Athens",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £250 a night · Sophie stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": null
+      },
+      {
+        "name": "Electra Metropolis",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £200 a night · Jonah stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Diporto",
+        "price": "£",
+        "what": "A basement taverna with no menu",
+        "score": 9.0,
+        "from": "Sophie",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Kuzina",
+        "price": "££",
+        "what": "Modern Greek with an Acropolis view",
+        "score": 8.7,
+        "from": "Jonah",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Ta Karamanlidika tou Fani",
+        "price": "££",
+        "what": "Cured meats and cheeses in Psyrri",
+        "score": 8.8,
+        "from": null,
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "History",
+        "name": "The Acropolis",
+        "what": "Go at 8am opening or late afternoon, with a timed ticket.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Acropolis Museum",
+        "what": "Glass floors show the ancient city underneath.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Anafiotika",
+        "what": "A tiny island-style village of white houses under the Acropolis.",
+        "from": "Jonah",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Ancient Agora",
+        "what": "The old marketplace, with one of the best-kept temples in Greece.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Buy the combined ticket: it covers the Acropolis and six other sites.",
+        "from": "Sophie"
+      }
+    ],
+    "credits": null
+  },
+  "barcelona": {
+    "kicker": "City · Food",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June, September or October",
+    "staysFrom": "from £180 a night",
+    "goodFor": [
+      "Friends",
+      "Couples"
+    ],
+    "temps": [
+      14,
+      15,
+      17,
+      19,
+      22,
+      26,
+      29,
+      29,
+      26,
+      22,
+      17,
+      14
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Priya",
+        "month": "May 2025",
+        "quote": "The Sagrada Família took my breath away, then tapas in El Born.",
+        "score": 9.0,
+        "face": null
+      },
+      {
+        "who": "Tom",
+        "month": "Sep 2024",
+        "quote": "Beach in the morning, city in the afternoon.",
+        "score": 8.5,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Hotel Arts Barcelona",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £400 a night · On the beach, with the sea from every room.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Casa Bonay",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £220 a night · Priya stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Yurbban Passage",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £180 a night · Tom stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Cal Pep",
+        "price": "££",
+        "what": "Seafood at the counter, no menu",
+        "score": 9.1,
+        "from": "Tom",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "El Xampanyet",
+        "price": "£",
+        "what": "Cava and anchovies in El Born",
+        "score": 8.9,
+        "from": "Priya",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Bar Cañete",
+        "price": "££",
+        "what": "Classic tapas just off La Rambla",
+        "score": 8.8,
+        "from": null,
+        "match": 85,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Culture",
+        "name": "Sagrada Família",
+        "what": "Book ahead, and go up one of the towers.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "The Gothic Quarter and El Born",
+        "what": "Get lost in the old lanes, then stop for a vermouth.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Bunkers del Carmel",
+        "what": "The best free view over the city, at sunset.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "Park Güell",
+        "what": "Gaudí's mosaic park above the city. Book a timed slot.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Watch your phone on La Rambla and the metro: pickpockets are busy.",
+        "from": "Priya"
+      }
+    ],
+    "credits": null
   }
 };

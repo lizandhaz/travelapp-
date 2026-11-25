@@ -179,7 +179,11 @@ export default function FriendTripScreen() {
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: 30 }}>
         {!!trip.slug && <Button title={`More about ${trip.place}`} kind="outline" onPress={() => router.push(`/place/${trip.slug}`)} />}
-        {!!personHref(trip.who) && <Button title={`See ${trip.who}’s profile`} kind="outline" style={{ marginTop: 12 }} onPress={() => router.push(personHref(trip.who) as never)} />}
+        {isReal && 'ownerId' in trip ? (
+          <Button title={`See ${trip.who}’s profile`} kind="outline" style={{ marginTop: 12 }} onPress={() => router.push({ pathname: '/user/[id]', params: { id: String(trip.ownerId) } })} />
+        ) : (
+          !!personHref(trip.who) && <Button title={`See ${trip.who}’s profile`} kind="outline" style={{ marginTop: 12 }} onPress={() => router.push(personHref(trip.who) as never)} />
+        )}
       </View>
       {isReal && 'ownerId' in trip && (
         <Pressable onPress={() => setSafety(true)} accessibilityRole="button" hitSlop={8} style={{ alignSelf: 'center', marginTop: 22 }}>

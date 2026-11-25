@@ -13,6 +13,10 @@ export type Profile = {
   canGoPublic: boolean;
   /** Your profile picture in the private photo store, if you've added one. */
   avatarPath: string | null;
+  /** On a public profile: who sees your trips, boards and stats (owner, Nov 2026). */
+  shareTrips: 'everyone' | 'followers';
+  shareBoards: 'everyone' | 'followers';
+  shareStats: 'everyone' | 'followers';
 };
 
 type AuthState = {
@@ -39,7 +43,7 @@ export function useAuth() {
 
 async function loadProfile(id: string, email: string): Promise<Profile | null> {
   const [{ data: profile }, { data: priv }] = await Promise.all([
-    supabase.from('profiles').select('name, handle, is_public, avatar_path').eq('id', id).maybeSingle(),
+    supabase.from('profiles').select('name, handle, is_public, avatar_path, share_trips, share_boards, share_stats').eq('id', id).maybeSingle(),
     supabase.from('profile_private').select('date_of_birth').eq('id', id).maybeSingle(),
   ]);
   if (!profile) return null;
@@ -52,6 +56,9 @@ async function loadProfile(id: string, email: string): Promise<Profile | null> {
     isPublic: profile.is_public,
     canGoPublic: age !== null && age >= MIN_AGE_FOR_PUBLIC_PROFILE,
     avatarPath: profile.avatar_path ?? null,
+    shareTrips: profile.share_trips ?? 'everyone',
+    shareBoards: profile.share_boards ?? 'everyone',
+    shareStats: profile.share_stats ?? 'everyone',
   };
 }
 

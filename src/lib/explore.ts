@@ -314,7 +314,7 @@ const noFlyTest = (slug: string) => UK.test(region(slug)) || slug === 'paris';
 let searchable: SearchablePlace[] | null = null;
 /** Every sample place in the search's terms (worked out once). */
 // Well-known golf holiday spots among the sample places (owner, Nov 2026: "golf holidays" found nothing).
-const GOLF = new Set(['algarve', 'mallorca', 'tenerife', 'dubai', 'cyprus', 'costabrava', 'mauritius', 'turks']);
+const GOLF = new Set(['algarve', 'mallorca', 'tenerife', 'dubai', 'cyprus', 'costabrava', 'mauritius', 'turks', 'marbella']);
 // …and well-known wine places ("wine tasting" put Heidelberg first).
 const WINE = new Set(['tuscany', 'southafrica', 'madeira', 'santorini', 'sicily']);
 

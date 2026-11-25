@@ -12342,5 +12342,497 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "seville": {
+    "kicker": "City · Culture",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "March to May, or October",
+    "staysFrom": "from £150 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      16,
+      18,
+      22,
+      24,
+      28,
+      33,
+      36,
+      36,
+      32,
+      26,
+      20,
+      16
+    ],
+    "bestMonths": [
+      2,
+      3,
+      4,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      2,
+      3,
+      2,
+      2,
+      1,
+      1,
+      2,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Maya",
+        "month": "Apr 2025",
+        "quote": "Orange blossom everywhere and flamenco till late.",
+        "score": 9.1,
+        "face": null
+      },
+      {
+        "who": "Sam",
+        "month": "Oct 2024",
+        "quote": "The Alcázar is unreal. Go in the morning before the heat.",
+        "score": 8.6,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Hotel Alfonso XIII",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £350 a night · A grand Moorish-style palace next to the Alcázar.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Corral del Rey",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £280 a night · Maya stayed",
+        "because": null,
+        "score": 9.2,
+        "photo": null
+      },
+      {
+        "name": "Hotel Casa 1800",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £150 a night · Sam stayed",
+        "because": null,
+        "score": 8.5,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Eslava",
+        "price": "££",
+        "what": "Inventive tapas in San Lorenzo. Queue early",
+        "score": 9.1,
+        "from": "Maya",
+        "match": 89,
+        "photo": null
+      },
+      {
+        "name": "El Rinconcillo",
+        "price": "£",
+        "what": "Seville's oldest tapas bar, open since 1670",
+        "score": 8.9,
+        "from": "Sam",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Bodega Santa Cruz",
+        "price": "£",
+        "what": "Standing-room tapas by the cathedral",
+        "score": 8.6,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Culture",
+        "name": "Real Alcázar",
+        "what": "Book a timed ticket and wander the gardens.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Seville Cathedral and the Giralda",
+        "what": "Walk up the ramps inside the Giralda for the view.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Flamenco at Casa de la Memoria",
+        "what": "An intimate show in an old courtyard.",
+        "from": "Maya",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Sight",
+        "when": null,
+        "name": "Plaza de España",
+        "what": "The tiled half-circle in María Luisa Park, best at sunset.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Avoid July and August: it often passes 40°.",
+        "from": "Sam"
+      }
+    ],
+    "credits": null
+  },
+  "marbella": {
+    "kicker": "Beach · Glamour",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June, September or October",
+    "staysFrom": "from £200 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      17,
+      17,
+      19,
+      21,
+      24,
+      28,
+      30,
+      31,
+      28,
+      24,
+      20,
+      17
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Sophie",
+        "month": "Jun 2025",
+        "quote": "Old town for dinner, beach clubs by day.",
+        "score": 8.6,
+        "face": null
+      },
+      {
+        "who": "Jonah",
+        "month": "Sep 2024",
+        "quote": "Puerto Banús is a scene, but the old town is the real charm.",
+        "score": 8.0,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Marbella Club Hotel",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £600 a night · The original Golden Mile glamour, right on the beach.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Puente Romano Beach Resort",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £450 a night · Sophie stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Hotel Claude Marbella",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £200 a night · Jonah stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Skina",
+        "price": "£££",
+        "what": "A tiny Michelin-starred Andalusian restaurant in the old town",
+        "score": 9.2,
+        "from": "Sophie",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "La Niña del Pisto",
+        "price": "£",
+        "what": "Tapas and pisto in a little old-town bar",
+        "score": 8.5,
+        "from": "Jonah",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Nikki Beach",
+        "price": "£££",
+        "what": "A beach club lunch that runs into the evening",
+        "score": 8.0,
+        "from": null,
+        "match": 80,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "Marbella Old Town",
+        "what": "Orange trees and whitewashed lanes around Plaza de los Naranjos.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Day out",
+        "name": "Puerto Banús",
+        "what": "Yachts and people-watching, a short drive along the coast.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Golf",
+        "name": "Real Club de Golf Las Brisas",
+        "what": "A classic course in Nueva Andalucía’s Golf Valley.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Ronda",
+        "what": "An hour inland: a town split by a dramatic gorge.",
+        "from": "Jonah",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "Avenida del Mar",
+        "what": "Dalí sculptures along the walk down to the sea.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Stay in or near the old town so you can walk to dinner. Puerto Banús is for an evening, not a base.",
+        "from": "Jonah"
+      }
+    ],
+    "credits": null
+  },
+  "menorca": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "June or September",
+    "staysFrom": "from £160 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      14,
+      14,
+      16,
+      18,
+      22,
+      26,
+      29,
+      30,
+      27,
+      23,
+      18,
+      15
+    ],
+    "bestMonths": [
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Harriet",
+        "month": "Jul 2025",
+        "quote": "Calm coves, clear water and none of the Ibiza noise.",
+        "score": 9.2,
+        "face": null
+      },
+      {
+        "who": "Priya",
+        "month": "Sep 2024",
+        "quote": "Ciutadella at dusk is magical.",
+        "score": 8.7,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Torralbenc",
+        "type": "Hotel",
+        "match": 88,
+        "featured": true,
+        "sub": "from £400 a night · A whitewashed farmhouse hotel among vineyards near the south coast.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Faustino Gran Relais & Château",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £300 a night · Harriet stayed",
+        "because": null,
+        "score": 9.3,
+        "photo": null
+      },
+      {
+        "name": "Menorca Experimental",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £160 a night · Priya stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Es Cranc",
+        "price": "£££",
+        "what": "Lobster stew in Fornells, the island's classic",
+        "score": 9.0,
+        "from": "Harriet",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Smoix",
+        "price": "££",
+        "what": "Modern Menorcan cooking in Ciutadella",
+        "score": 8.7,
+        "from": "Priya",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Sa Foganya",
+        "price": "££",
+        "what": "Grilled meat in Ciutadella old town",
+        "score": 8.5,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Beach",
+        "name": "Cala Mitjana",
+        "what": "A white cove in the pines. Go early or late.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "Camí de Cavalls",
+        "what": "The old path all round the island: walk a stretch between coves.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Cala Macarella",
+        "what": "Clear water and rocks to snorkel round.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Cova d'en Xoroi",
+        "what": "A bar in cliff caves for sunset drinks.",
+        "from": "Harriet",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Sight",
+        "when": null,
+        "name": "Ciutadella old town",
+        "what": "The old capital, with a pretty harbour and cathedral.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Hire a car. The best coves are a walk from small car parks that fill by 10am in summer.",
+        "from": "Harriet"
+      }
+    ],
+    "credits": null
   }
 };

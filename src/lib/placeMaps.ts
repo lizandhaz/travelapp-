@@ -92,6 +92,10 @@ export const placeMaps: Record<string, PlaceMap> = {
   "athens": { pins: [{ n: 1, name: "Hotel Grande Bretagne", kind: "Stay", ll: [37.9762, 23.7348] }, { n: 2, name: "The Zillers Athens", kind: "Stay", ll: [37.9758, 23.7275] }, { n: 3, name: "Electra Metropolis", kind: "Stay", ll: [37.9748, 23.7305] }, { n: 4, name: "Diporto", kind: "Eat", ll: [37.9805, 23.7253] }, { n: 5, name: "Kuzina", kind: "Eat", ll: [37.9762, 23.7225] }, { n: 6, name: "Ta Karamanlidika tou Fani", kind: "Eat", ll: [37.9795, 23.7262] }, { n: 7, name: "The Acropolis", kind: "Do", ll: [37.9715, 23.7257] }, { n: 8, name: "Acropolis Museum", kind: "Do", ll: [37.9684, 23.7285] }, { n: 9, name: "Anafiotika", kind: "Hidden gem", ll: [37.9727, 23.7295] }] },
   // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
   "barcelona": { pins: [{ n: 1, name: "Hotel Arts Barcelona", kind: "Stay", ll: [41.3866, 2.1963] }, { n: 2, name: "Casa Bonay", kind: "Stay", ll: [41.3936, 2.1749] }, { n: 3, name: "Yurbban Passage", kind: "Stay", ll: [41.3925, 2.1765] }, { n: 4, name: "Cal Pep", kind: "Eat", ll: [41.3836, 2.1834] }, { n: 5, name: "El Xampanyet", kind: "Eat", ll: [41.3843, 2.1813] }, { n: 6, name: "Bar Cañete", kind: "Eat", ll: [41.3792, 2.1726] }, { n: 7, name: "Sagrada Família", kind: "Do", ll: [41.4036, 2.1744] }, { n: 8, name: "The Gothic Quarter and El Born", kind: "Do", ll: [41.3833, 2.1777] }, { n: 9, name: "Bunkers del Carmel", kind: "Hidden gem", ll: [41.4189, 2.1615] }] },
+  // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
+  "seville": { pins: [{ n: 1, name: "Hotel Alfonso XIII", kind: "Stay", ll: [37.3807, -5.9925] }, { n: 2, name: "Corral del Rey", kind: "Stay", ll: [37.3912, -5.9893] }, { n: 3, name: "Hotel Casa 1800", kind: "Stay", ll: [37.3854, -5.991] }, { n: 4, name: "Eslava", kind: "Eat", ll: [37.399, -5.9985] }, { n: 5, name: "El Rinconcillo", kind: "Eat", ll: [37.3946, -5.9877] }, { n: 6, name: "Bodega Santa Cruz", kind: "Eat", ll: [37.3857, -5.9907] }, { n: 7, name: "Real Alcázar", kind: "Do", ll: [37.3831, -5.9902] }, { n: 8, name: "Seville Cathedral and the Giralda", kind: "Do", ll: [37.3858, -5.9931] }, { n: 9, name: "Flamenco at Casa de la Memoria", kind: "Hidden gem", ll: [37.392, -5.9912] }] },
+  "marbella": { pins: [{ n: 1, name: "Marbella Club Hotel", kind: "Stay", ll: [36.5117, -4.9242] }, { n: 2, name: "Puente Romano Beach Resort", kind: "Stay", ll: [36.5102, -4.9147] }, { n: 3, name: "Hotel Claude Marbella", kind: "Stay", ll: [36.5112, -4.884] }, { n: 4, name: "Skina", kind: "Eat", ll: [36.5106, -4.8833] }, { n: 5, name: "La Niña del Pisto", kind: "Eat", ll: [36.5104, -4.8838] }, { n: 6, name: "Nikki Beach", kind: "Eat", ll: [36.4936, -4.761] }, { n: 7, name: "Marbella Old Town", kind: "Do", ll: [36.5104, -4.8836] }, { n: 8, name: "Puerto Banús", kind: "Do", ll: [36.487, -4.952] }, { n: 9, name: "Real Club de Golf Las Brisas", kind: "Do", ll: [36.504, -4.967] }, { n: 10, name: "Ronda", kind: "Hidden gem", ll: [36.7423, -5.1671] }] },
+  "menorca": { pins: [{ n: 1, name: "Torralbenc", kind: "Stay", ll: [39.9005, 4.159] }, { n: 2, name: "Faustino Gran Relais & Château", kind: "Stay", ll: [40.001, 3.8395] }, { n: 3, name: "Menorca Experimental", kind: "Stay", ll: [39.934, 4.22] }, { n: 4, name: "Es Cranc", kind: "Eat", ll: [40.056, 4.1315] }, { n: 5, name: "Smoix", kind: "Eat", ll: [40.002, 3.838] }, { n: 6, name: "Sa Foganya", kind: "Eat", ll: [40.001, 3.842] }, { n: 7, name: "Cala Mitjana", kind: "Do", ll: [39.931, 3.969] }, { n: 8, name: "Camí de Cavalls", kind: "Do", ll: [39.933, 3.98] }, { n: 9, name: "Cala Macarella", kind: "Do", ll: [39.937, 3.938] }, { n: 10, name: "Cova d'en Xoroi", kind: "Hidden gem", ll: [39.908, 4.111] }] },
 };
 
 /**
@@ -172,6 +176,9 @@ export const placeCentres: Record<string, { at: [number, number]; span: number }
   zakynthos: { at: [37.78, 20.8], span: 0.6 },
   athens: { at: [37.975, 23.73], span: 0.12 },
   barcelona: { at: [41.395, 2.17], span: 0.12 },
+  seville: { at: [37.3891, -5.9845], span: 0.05 },
+  marbella: { at: [36.505, -4.9], span: 0.16 },
+  menorca: { at: [39.95, 4.05], span: 0.75 },
 };
 
 /**

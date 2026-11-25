@@ -46,7 +46,7 @@ export const rows = {
       "rank": "#2",
       "name": "Madeira",
       "sub": "Portugal",
-      "photo": null
+      "photo": "own-madeira-cliffs"
     },
     {
       "slug": "sicily",
@@ -113,7 +113,7 @@ export const rows = {
       "score": 8.7,
       "name": "The Cotswolds",
       "sub": "1h 45m drive from London",
-      "photo": null
+      "photo": "own-cotswolds-castle-combe"
     },
     {
       "slug": "stives",
@@ -155,7 +155,7 @@ export const rows = {
       "score": 8.1,
       "name": "Lisbon",
       "sub": "2h 40m flight",
-      "photo": null
+      "photo": "own-lisbon-sunset"
     }
   ],
   "overnight": [
@@ -302,7 +302,7 @@ export const rows = {
       "where": "Lisbon, Portugal",
       "because": "Because you loved sunset spritz in Positano",
       "friends": "1 friend has been too",
-      "photo": null
+      "photo": "own-lisbon-sunset"
     },
     {
       "slug": "paris",
@@ -599,8 +599,9 @@ export const places: SamplePlace[] = [
     "name": "The Cotswolds",
     "region": "England",
     "score": 8.7,
-    "photo": null,
+    "photo": "own-cotswolds-castle-combe",
     "photos": [
+      "own-cotswolds-castle-combe"
     ]
   },
   {
@@ -658,8 +659,9 @@ export const places: SamplePlace[] = [
     "name": "Lisbon",
     "region": "Portugal",
     "score": 8.1,
-    "photo": null,
+    "photo": "own-lisbon-sunset",
     "photos": [
+      "own-lisbon-sunset"
     ]
   },
   {
@@ -675,8 +677,9 @@ export const places: SamplePlace[] = [
     "name": "Madeira",
     "region": "Portugal",
     "score": 8.3,
-    "photo": null,
+    "photo": "own-madeira-cliffs",
     "photos": [
+      "own-madeira-cliffs"
     ]
   },
   {
@@ -876,8 +879,9 @@ export const places: SamplePlace[] = [
     "name": "Zermatt",
     "region": "Switzerland",
     "score": 8.8,
-    "photo": null,
+    "photo": "own-zermatt-matterhorn",
     "photos": [
+      "own-zermatt-matterhorn"
     ]
   },
   {
@@ -1212,6 +1216,16 @@ export const places: SamplePlace[] = [
     "photos": [
       "own-rottnest"
     ]
+  },
+  {
+    "slug": "santorini",
+    "name": "Santorini",
+    "region": "Greece",
+    "score": 8.8,
+    "photo": "own-santorini-oia",
+    "photos": [
+      "own-santorini-oia"
+    ]
   }
 ] as SamplePlace[];
 
@@ -1228,7 +1242,7 @@ export const trendingThisMonth: RowItem[] = [
     "rank": "#2 ↑5",
     "name": "Madeira",
     "sub": "Most-saved for spring 2027",
-    "photo": null
+    "photo": "own-madeira-cliffs"
   },
   {
     "slug": "sicily",
@@ -1382,7 +1396,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": null,
+    "photo": "own-madeira-cliffs",
     "kind": "Do",
     "name": "Levada walk",
     "sub": "Hike · Madeira",
@@ -1396,7 +1410,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": null,
+    "photo": "own-cotswolds-castle-combe",
     "kind": "place",
     "score": 8.7,
     "name": "The Cotswolds, England",
@@ -1454,7 +1468,7 @@ export const board: BoardItem[] = [
     "slug": "positano"
   },
   {
-    "photo": null,
+    "photo": "own-lisbon-sunset",
     "kind": "place",
     "score": 8.1,
     "name": "Lisbon, Portugal",
@@ -1630,7 +1644,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": null,
+    "photo": "own-madeira-cliffs",
     "kind": "place",
     "score": 8.3,
     "name": "Madeira, Portugal",
@@ -1702,7 +1716,7 @@ export const board: BoardItem[] = [
     "slug": "crete"
   },
   {
-    "photo": null,
+    "photo": "own-zermatt-matterhorn",
     "kind": "place",
     "score": 8.8,
     "name": "Zermatt, Switzerland",
@@ -2014,6 +2028,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   palermo: 'own-palermo-cathedral', sicily: 'own-palermo-cathedral',
   capri: 'own-capri-faraglioni', anacapri: 'own-capri-faraglioni', 'amalfi coast': ['own-positano-town', 'own-capri-faraglioni'], amalfi: 'own-positano-town', ravello: 'own-positano-town', sorrento: 'own-capri-faraglioni', positano: 'own-positano-town', 'polignano a mare': 'own-polignano-cove', polignano: 'own-polignano-cove', puglia: 'own-polignano-cove', bari: 'own-polignano-cove', monopoli: 'own-polignano-cove',
   comporta: 'own-comporta-boardwalk', carvalhal: 'own-comporta-boardwalk', melides: 'own-comporta-boardwalk', alentejo: 'own-comporta-boardwalk',
+  madeira: 'own-madeira-cliffs', funchal: 'own-madeira-cliffs', 'ponta de sao lourenco': 'own-madeira-cliffs', zermatt: 'own-zermatt-matterhorn', matterhorn: 'own-zermatt-matterhorn', lisbon: 'own-lisbon-sunset', lisboa: 'own-lisbon-sunset', cotswolds: 'own-cotswolds-castle-combe', 'the cotswolds': 'own-cotswolds-castle-combe', 'castle combe': 'own-cotswolds-castle-combe', bibury: 'own-cotswolds-castle-combe', santorini: 'own-santorini-oia', oia: 'own-santorini-oia', fira: 'own-santorini-oia', imerovigli: 'own-santorini-oia', thira: 'own-santorini-oia',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

@@ -1,5 +1,5 @@
 // Sample photos: only the owner's own holiday photos (own-*.jpg, EXIF/GPS stripped), plus four the owner licensed
-// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach, own-kyoto-blossom/-pagoda/-river, own-marrakech-koutoubia/-rooftops, own-srilanka-sigiriya/-turtles/-bay, own-mauritius-aerial/-palms, own-ladigue-rocks, own-palermo-cathedral, own-polignano-cove, own-capri-faraglioni, own-positano-town, own-maldives-boardwalk, own-comporta-boardwalk; owner confirmed bought, Nov 2026). The design prototype's
+// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach, own-kyoto-blossom/-pagoda/-river, own-marrakech-koutoubia/-rooftops, own-srilanka-sigiriya/-turtles/-bay, own-mauritius-aerial/-palms, own-ladigue-rocks, own-palermo-cathedral, own-polignano-cove, own-capri-faraglioni, own-positano-town, own-maldives-boardwalk, own-comporta-boardwalk, own-madeira-cliffs, own-zermatt-matterhorn, own-lisbon-sunset, own-cotswolds-castle-combe, own-santorini-oia; owner confirmed bought, Nov 2026). The design prototype's
 // Unsplash photos were removed (owner, Nov 2026); some prototype names (e.g. 'bath-1') point at the owner's photos.
 // Sample content with no photo of the owner's shows a placeholder.
 
@@ -104,6 +104,11 @@ export const photos = {
   'own-positano-town': require('../../assets/photos/own-positano-town.jpg'),
   'own-maldives-boardwalk': require('../../assets/photos/own-maldives-boardwalk.jpg'),
   'own-comporta-boardwalk': require('../../assets/photos/own-comporta-boardwalk.jpg'),
+  'own-madeira-cliffs': require('../../assets/photos/own-madeira-cliffs.jpg'),
+  'own-zermatt-matterhorn': require('../../assets/photos/own-zermatt-matterhorn.jpg'),
+  'own-lisbon-sunset': require('../../assets/photos/own-lisbon-sunset.jpg'),
+  'own-cotswolds-castle-combe': require('../../assets/photos/own-cotswolds-castle-combe.jpg'),
+  'own-santorini-oia': require('../../assets/photos/own-santorini-oia.jpg'),
 } as const;
 
 export type PhotoName = keyof typeof photos;

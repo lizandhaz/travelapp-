@@ -80,6 +80,8 @@ export const placeMaps: Record<string, PlaceMap> = {
   "whitsundays": { pins: [{ n: 1, name: "InterContinental Hayman Island", kind: "Stay", ll: [-20.06, 148.88] }, { n: 2, name: "Coral Sea Marina Resort", kind: "Stay", ll: [-20.268, 148.72] }, { n: 3, name: "Fish D'vine", kind: "Eat", ll: [-20.2685, 148.715] }, { n: 4, name: "Sail the islands", kind: "Do", ll: [-20.27, 148.722] }, { n: 5, name: "Whitehaven Beach", kind: "Do", ll: [-20.282, 149.04] }, { n: 6, name: "Hill Inlet lookout", kind: "Hidden gem", ll: [-20.25, 149.03] }] },
   "hamiltonisland": { pins: [{ n: 1, name: "qualia", kind: "Stay", ll: [-20.3345, 148.95] }, { n: 2, name: "Beach Club", kind: "Stay", ll: [-20.351, 148.959] }, { n: 3, name: "Reef View Hotel", kind: "Stay", ll: [-20.353, 148.96] }, { n: 4, name: "Bommie", kind: "Eat", ll: [-20.3505, 148.9535] }, { n: 5, name: "Romano's", kind: "Eat", ll: [-20.352, 148.952] }, { n: 6, name: "Manta Ray Café", kind: "Eat", ll: [-20.3525, 148.9525] }, { n: 7, name: "Wild Life Hamilton Island", kind: "Do", ll: [-20.35, 148.96] }, { n: 8, name: "Catseye Beach", kind: "Do", ll: [-20.354, 148.958] }, { n: 9, name: "Passage Peak", kind: "Hidden gem", ll: [-20.345, 148.965] }] },
   "rottnest": { pins: [{ n: 1, name: "Discovery Rottnest Island", kind: "Stay", ll: [-31.9975, 115.548] }, { n: 2, name: "Samphire Rottnest", kind: "Stay", ll: [-31.9963, 115.5418] }, { n: 3, name: "Hotel Rottnest", kind: "Eat", ll: [-31.9966, 115.5404] }, { n: 4, name: "Rottnest Bakery", kind: "Eat", ll: [-31.9975, 115.542] }, { n: 5, name: "Cycle the island", kind: "Do", ll: [-31.9985, 115.539] }, { n: 6, name: "The Basin", kind: "Do", ll: [-31.9923, 115.5427] }, { n: 7, name: "Little Salmon Bay", kind: "Hidden gem", ll: [-32.0225, 115.52] }] },
+  // Newer places (owner Nov 2026): no drawing; pins at rough real positions (ll).
+  "santorini": { pins: [{ n: 1, name: "Canaves Oia", kind: "Stay", ll: [36.4615, 25.3755] }, { n: 2, name: "Grace Hotel Santorini", kind: "Stay", ll: [36.4325, 25.4235] }, { n: 3, name: "Astra Suites", kind: "Stay", ll: [36.4337, 25.4248] }, { n: 4, name: "Metaxi Mas", kind: "Eat", ll: [36.385, 25.47] }, { n: 5, name: "Ammoudi Fish Tavern", kind: "Eat", ll: [36.4587, 25.3709] }, { n: 6, name: "Lucky's Souvlakis", kind: "Eat", ll: [36.4166, 25.4317] }, { n: 7, name: "Fira to Oia clifftop walk", kind: "Do", ll: [36.44, 25.42] }, { n: 8, name: "Volcano and hot springs boat", kind: "Do", ll: [36.404, 25.396] }, { n: 9, name: "Pyrgos", kind: "Hidden gem", ll: [36.3836, 25.449] }] },
 };
 
 /**
@@ -154,6 +156,7 @@ export const placeCentres: Record<string, { at: [number, number]; span: number }
   whitsundays: { at: [-20.25, 148.95], span: 1.0 },
   hamiltonisland: { at: [-20.35, 148.95], span: 0.12 },
   rottnest: { at: [-32.0, 115.52], span: 0.25 },
+  santorini: { at: [36.42, 25.43], span: 0.3 },
 };
 
 /**

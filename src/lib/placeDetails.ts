@@ -11058,5 +11058,164 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "santorini": {
+    "kicker": "Island · Coast",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June, September or October",
+    "staysFrom": "from £350 a night",
+    "goodFor": [
+      "Couples"
+    ],
+    "temps": [
+      14,
+      14,
+      16,
+      19,
+      23,
+      27,
+      29,
+      29,
+      26,
+      22,
+      18,
+      15
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Maya",
+        "month": "Sep 2025",
+        "quote": "Sunset in Oia lives up to it, but Imerovigli is calmer.",
+        "score": 8.9,
+        "face": null
+      },
+      {
+        "who": "Sam",
+        "month": "Jun 2024",
+        "quote": "Black sand beaches and the volcano boat trip.",
+        "score": 8.5,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Canaves Oia",
+        "type": "Hotel",
+        "match": 90,
+        "featured": true,
+        "sub": "from £700 a night · Cave suites over the caldera.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Grace Hotel Santorini",
+        "type": "Hotel",
+        "match": 89,
+        "featured": false,
+        "sub": "from £600 a night · Maya stayed",
+        "because": null,
+        "score": 9.1,
+        "photo": null
+      },
+      {
+        "name": "Astra Suites",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £350 a night · Sam stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Metaxi Mas",
+        "price": "££",
+        "what": "A village taverna locals love",
+        "score": 9.2,
+        "from": "Maya",
+        "match": 89,
+        "photo": null
+      },
+      {
+        "name": "Ammoudi Fish Tavern",
+        "price": "££",
+        "what": "Fish by the water below Oia",
+        "score": 8.8,
+        "from": "Sam",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Lucky's Souvlakis",
+        "price": "£",
+        "what": "The best cheap gyros in Fira",
+        "score": 8.6,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "Fira to Oia clifftop walk",
+        "what": "About three hours along the caldera rim. Start early.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Boat",
+        "name": "Volcano and hot springs boat",
+        "what": "Climb the volcano, then swim to the warm springs.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Pyrgos",
+        "what": "A hilltop village with sunset views and no crowds.",
+        "from": "Maya",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Akrotiri",
+        "what": "A Bronze Age town buried by the eruption, like Pompeii.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Watch the sunset from Imerovigli or Pyrgos instead of Oia's crush.",
+        "from": "Maya"
+      }
+    ],
+    "credits": null
   }
 };

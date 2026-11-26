@@ -13851,5 +13851,517 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "sardinia": {
+    "kicker": "Island · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "June or September",
+    "staysFrom": "from £250 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      14,
+      14,
+      16,
+      19,
+      23,
+      28,
+      31,
+      31,
+      27,
+      23,
+      18,
+      15
+    ],
+    "bestMonths": [
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Harriet",
+        "month": "Jun 2025",
+        "quote": "The water is unreal. Every cove is clearer than the last.",
+        "score": 9.3,
+        "face": null
+      },
+      {
+        "who": "Jonah",
+        "month": "Sep 2024",
+        "quote": "Hire a boat round La Maddalena: best day of the year.",
+        "score": 8.8,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Hotel Cala di Volpe",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £900 a night · The famous Costa Smeralda hotel, on its own bay.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Petra Segreta Resort & Spa",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £350 a night · Harriet stayed",
+        "because": null,
+        "score": 9.2,
+        "photo": null
+      },
+      {
+        "name": "Hotel Capo d'Orso Thalasso & Spa",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £250 a night · Jonah stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "La Gritta",
+        "price": "£££",
+        "what": "Seafood on the rocks, looking out to La Maddalena",
+        "score": 9.0,
+        "from": "Harriet",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Su Gologone",
+        "price": "££",
+        "what": "Roast porceddu in the hills near Oliena",
+        "score": 8.8,
+        "from": "Jonah",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Il Pescatore, Porto Cervo",
+        "price": "£££",
+        "what": "Grilled fish by the old marina",
+        "score": 8.6,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Boat",
+        "name": "La Maddalena islands",
+        "what": "Hire a boat or join a day trip round the archipelago.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Beach",
+        "name": "Cala Coticcio",
+        "what": "A tropical-looking cove on Caprera. Book a slot in summer.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Spiaggia Rosa, Budelli",
+        "what": "The famous pink beach, seen from the boat. You can't land.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "San Pantaleo market",
+        "what": "A Thursday market in a pretty granite village.",
+        "from": "Harriet",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Su Nuraxi di Barumini",
+        "what": "Bronze Age stone towers, a UNESCO site.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Hire a car and a boat: the best beaches are a drive or a sail away.",
+        "from": "Jonah"
+      }
+    ],
+    "credits": null
+  },
+  "garda": {
+    "kicker": "Lakes · Family",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £150 a night",
+    "goodFor": [
+      "Families",
+      "Couples"
+    ],
+    "temps": [
+      6,
+      8,
+      13,
+      17,
+      22,
+      26,
+      29,
+      28,
+      24,
+      18,
+      11,
+      7
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Sophie",
+        "month": "Jun 2025",
+        "quote": "Sirmione for gelato, Malcesine for the cable car, and swims everywhere.",
+        "score": 8.8,
+        "face": null
+      },
+      {
+        "who": "Sam",
+        "month": "Aug 2024",
+        "quote": "Great with the kids: Gardaland and lake beaches in one trip.",
+        "score": 8.4,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Villa Feltrinelli",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £1200 a night · A grand lakeside villa hotel in Gargnano.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Lefay Resort & Spa Lago di Garda",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £450 a night · Sophie stayed",
+        "because": null,
+        "score": 9.2,
+        "photo": null
+      },
+      {
+        "name": "Hotel Sirmione",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £150 a night · Sam stayed",
+        "because": null,
+        "score": 8.3,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "La Rucola 2.0",
+        "price": "£££",
+        "what": "Michelin-starred cooking in Sirmione’s old town",
+        "score": 9.0,
+        "from": "Sophie",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Ai Beati",
+        "price": "£££",
+        "what": "Dinner on a terrace above the lake at Garda",
+        "score": 8.7,
+        "from": null,
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Agli Angeli",
+        "price": "££",
+        "what": "Lake fish and pasta in Gardone Riviera",
+        "score": 8.6,
+        "from": "Sam",
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Culture",
+        "name": "Scaligero Castle, Sirmione",
+        "what": "A moated castle you walk into from the old town.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Hike",
+        "name": "Monte Baldo cable car",
+        "what": "From Malcesine up to the ridge for huge views.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Family",
+        "name": "Gardaland",
+        "what": "Italy's biggest theme park, near Peschiera.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Grottoes of Catullus",
+        "what": "Roman villa ruins at the tip of Sirmione.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Limone sul Garda",
+        "what": "Lemon houses and lanes on the steep north-west shore.",
+        "from": "Sam",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Culture",
+        "when": null,
+        "name": "Il Vittoriale degli Italiani",
+        "what": "The poet D'Annunzio's eccentric estate in Gardone Riviera.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Use the ferries between towns: quicker and prettier than the lake road.",
+        "from": "Sophie"
+      }
+    ],
+    "credits": null
+  },
+  "cinqueterre": {
+    "kicker": "Coast · Walking",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "April, May, September or October",
+    "staysFrom": "from £150 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      13,
+      13,
+      15,
+      18,
+      22,
+      26,
+      29,
+      29,
+      25,
+      21,
+      16,
+      13
+    ],
+    "bestMonths": [
+      3,
+      4,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Maya",
+        "month": "May 2025",
+        "quote": "Walked village to village and ate pesto every day.",
+        "score": 9.1,
+        "face": null
+      },
+      {
+        "who": "Tom",
+        "month": "Sep 2024",
+        "quote": "Stay a night or two: it's magic once the day-trippers leave.",
+        "score": 8.6,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "La Torretta Lodge",
+        "type": "Hotel",
+        "match": 87,
+        "featured": true,
+        "sub": "from £350 a night · A boutique hotel with terraces over Manarola.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hotel Porto Roca",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £280 a night · Maya stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "La Mala",
+        "type": "B&B",
+        "match": 84,
+        "featured": false,
+        "sub": "from £150 a night · Tom stayed",
+        "because": null,
+        "score": 8.5,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Belforte",
+        "price": "£££",
+        "what": "Seafood in an old tower above the sea in Vernazza",
+        "score": 8.9,
+        "from": "Maya",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Trattoria dal Billy",
+        "price": "££",
+        "what": "Seafood up the hill in Manarola. Book ahead",
+        "score": 8.8,
+        "from": null,
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Nessun Dorma",
+        "price": "£",
+        "what": "Bruschetta and a spritz with the famous view",
+        "score": 8.4,
+        "from": "Tom",
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "Sentiero Azzurro",
+        "what": "The coastal path between the villages. Monterosso to Vernazza is the classic.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Boat",
+        "name": "Ferry between the villages",
+        "what": "See all five from the sea in one day.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Beach",
+        "name": "Monterosso beach",
+        "what": "The one proper sandy beach of the five villages.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "Sciacchetrà",
+        "what": "Taste the local sweet wine, made from the terraced vines.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Sunset at Manarola",
+        "what": "Watch from the vineyard path above the harbour.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Sight",
+        "when": null,
+        "name": "Vernazza harbour",
+        "what": "The little square and tower, best first thing in the morning.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Get a Cinque Terre Card for the trains and paths, and leave the car at home.",
+        "from": "Maya"
+      }
+    ],
+    "credits": null
   }
 };

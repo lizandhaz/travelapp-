@@ -1371,6 +1371,36 @@ export const places: SamplePlace[] = [
     "photos": [
       "own-ibiza-esvedra"
     ]
+  },
+  {
+    "slug": "sardinia",
+    "name": "Sardinia",
+    "region": "Italy",
+    "score": 8.7,
+    "photo": "own-sardinia-cove",
+    "photos": [
+      "own-sardinia-cove"
+    ]
+  },
+  {
+    "slug": "garda",
+    "name": "Lake Garda",
+    "region": "Italy",
+    "score": 8.6,
+    "photo": "own-garda-sirmione",
+    "photos": [
+      "own-garda-sirmione"
+    ]
+  },
+  {
+    "slug": "cinqueterre",
+    "name": "Cinque Terre",
+    "region": "Liguria, Italy",
+    "score": 8.7,
+    "photo": "own-cinqueterre-vernazza",
+    "photos": [
+      "own-cinqueterre-vernazza"
+    ]
   }
 ] as SamplePlace[];
 
@@ -2173,7 +2203,7 @@ const OWN_PLACE_PHOTOS: Record<string, PhotoName | PhotoName[]> = {
   palermo: 'own-palermo-cathedral', sicily: 'own-palermo-cathedral',
   capri: 'own-capri-faraglioni', anacapri: 'own-capri-faraglioni', 'amalfi coast': ['own-positano-town', 'own-capri-faraglioni'], amalfi: 'own-positano-town', ravello: 'own-positano-town', sorrento: 'own-capri-faraglioni', positano: 'own-positano-town', 'polignano a mare': 'own-polignano-cove', polignano: 'own-polignano-cove', puglia: 'own-polignano-cove', bari: 'own-polignano-cove', monopoli: 'own-polignano-cove',
   comporta: 'own-comporta-boardwalk', carvalhal: 'own-comporta-boardwalk', melides: 'own-comporta-boardwalk', alentejo: 'own-comporta-boardwalk',
-  madeira: 'own-madeira-cliffs', funchal: 'own-madeira-cliffs', 'ponta de sao lourenco': 'own-madeira-cliffs', zermatt: 'own-zermatt-matterhorn', verbier: 'own-verbier-village', ibiza: 'own-ibiza-esvedra', eivissa: 'own-ibiza-esvedra', 'ibiza town': 'own-ibiza-esvedra', 'san antonio': 'own-ibiza-esvedra', 'sant antoni': 'own-ibiza-esvedra', 'santa eulalia': 'own-ibiza-esvedra', cheltenham: 'own-cheltenham-hills', madrid: 'own-madrid-cibeles', rome: 'own-rome-stpeters', roma: 'own-rome-stpeters', vatican: 'own-rome-stpeters', 'vatican city': 'own-rome-stpeters', 'gran canaria': 'own-grancanaria-pines', maspalomas: 'own-grancanaria-pines', 'playa del ingles': 'own-grancanaria-pines', 'las palmas': 'own-grancanaria-pines', 'las palmas de gran canaria': 'own-grancanaria-pines', 'puerto de mogan': 'own-grancanaria-pines', meloneras: 'own-grancanaria-pines', lanzarote: 'own-lanzarote-beach', 'playa blanca': 'own-lanzarote-beach', 'puerto del carmen': 'own-lanzarote-beach', 'costa teguise': 'own-lanzarote-beach', arrecife: 'own-lanzarote-beach', orzola: 'own-lanzarote-beach', famara: 'own-lanzarote-beach', soller: 'own-mallorca-soller', 'port de soller': 'own-mallorca-soller', taganana: 'own-tenerife-anaga', anaga: 'own-tenerife-anaga', porto: 'own-porto-ribeira', oporto: 'own-porto-ribeira', 'vila nova de gaia': 'own-porto-ribeira', seville: 'own-seville-plaza', sevilla: 'own-seville-plaza', marbella: 'own-marbella-marina', 'puerto banus': 'own-marbella-marina', menorca: 'own-menorca-cala', minorca: 'own-menorca-cala', ciutadella: 'own-menorca-cala', mahon: 'own-menorca-cala', 'four valleys': 'own-verbier-village', matterhorn: 'own-zermatt-matterhorn', lisbon: 'own-lisbon-sunset', lisboa: 'own-lisbon-sunset', cotswolds: 'own-cotswolds-castle-combe', 'the cotswolds': 'own-cotswolds-castle-combe', 'castle combe': 'own-cotswolds-castle-combe', bibury: 'own-cotswolds-castle-combe', santorini: 'own-santorini-oia', oia: 'own-santorini-oia', fira: 'own-santorini-oia', imerovigli: 'own-santorini-oia', thira: 'own-santorini-oia',
+  madeira: 'own-madeira-cliffs', funchal: 'own-madeira-cliffs', 'ponta de sao lourenco': 'own-madeira-cliffs', zermatt: 'own-zermatt-matterhorn', verbier: 'own-verbier-village', sardinia: 'own-sardinia-cove', sardegna: 'own-sardinia-cove', 'costa smeralda': 'own-sardinia-cove', 'porto cervo': 'own-sardinia-cove', 'la maddalena': 'own-sardinia-cove', olbia: 'own-sardinia-cove', 'lake garda': 'own-garda-sirmione', garda: 'own-garda-sirmione', 'lago di garda': 'own-garda-sirmione', sirmione: 'own-garda-sirmione', malcesine: 'own-garda-sirmione', 'riva del garda': 'own-garda-sirmione', 'limone sul garda': 'own-garda-sirmione', desenzano: 'own-garda-sirmione', 'desenzano del garda': 'own-garda-sirmione', 'cinque terre': 'own-cinqueterre-vernazza', vernazza: 'own-cinqueterre-vernazza', manarola: 'own-cinqueterre-vernazza', monterosso: 'own-cinqueterre-vernazza', 'monterosso al mare': 'own-cinqueterre-vernazza', riomaggiore: 'own-cinqueterre-vernazza', corniglia: 'own-cinqueterre-vernazza', ibiza: 'own-ibiza-esvedra', eivissa: 'own-ibiza-esvedra', 'ibiza town': 'own-ibiza-esvedra', 'san antonio': 'own-ibiza-esvedra', 'sant antoni': 'own-ibiza-esvedra', 'santa eulalia': 'own-ibiza-esvedra', cheltenham: 'own-cheltenham-hills', madrid: 'own-madrid-cibeles', rome: 'own-rome-stpeters', roma: 'own-rome-stpeters', vatican: 'own-rome-stpeters', 'vatican city': 'own-rome-stpeters', 'gran canaria': 'own-grancanaria-pines', maspalomas: 'own-grancanaria-pines', 'playa del ingles': 'own-grancanaria-pines', 'las palmas': 'own-grancanaria-pines', 'las palmas de gran canaria': 'own-grancanaria-pines', 'puerto de mogan': 'own-grancanaria-pines', meloneras: 'own-grancanaria-pines', lanzarote: 'own-lanzarote-beach', 'playa blanca': 'own-lanzarote-beach', 'puerto del carmen': 'own-lanzarote-beach', 'costa teguise': 'own-lanzarote-beach', arrecife: 'own-lanzarote-beach', orzola: 'own-lanzarote-beach', famara: 'own-lanzarote-beach', soller: 'own-mallorca-soller', 'port de soller': 'own-mallorca-soller', taganana: 'own-tenerife-anaga', anaga: 'own-tenerife-anaga', porto: 'own-porto-ribeira', oporto: 'own-porto-ribeira', 'vila nova de gaia': 'own-porto-ribeira', seville: 'own-seville-plaza', sevilla: 'own-seville-plaza', marbella: 'own-marbella-marina', 'puerto banus': 'own-marbella-marina', menorca: 'own-menorca-cala', minorca: 'own-menorca-cala', ciutadella: 'own-menorca-cala', mahon: 'own-menorca-cala', 'four valleys': 'own-verbier-village', matterhorn: 'own-zermatt-matterhorn', lisbon: 'own-lisbon-sunset', lisboa: 'own-lisbon-sunset', cotswolds: 'own-cotswolds-castle-combe', 'the cotswolds': 'own-cotswolds-castle-combe', 'castle combe': 'own-cotswolds-castle-combe', bibury: 'own-cotswolds-castle-combe', santorini: 'own-santorini-oia', oia: 'own-santorini-oia', fira: 'own-santorini-oia', imerovigli: 'own-santorini-oia', thira: 'own-santorini-oia',
   'south africa': 'own-safari-drive', kruger: 'own-safari-drive', 'kruger national park': 'own-safari-drive', 'sabi sands': 'own-safari-drive',
 };
 

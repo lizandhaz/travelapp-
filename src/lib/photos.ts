@@ -1,5 +1,5 @@
 // Sample photos: only the owner's own holiday photos (own-*.jpg, EXIF/GPS stripped), plus four the owner licensed
-// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach, own-kyoto-blossom/-pagoda/-river, own-marrakech-koutoubia/-rooftops, own-srilanka-sigiriya/-turtles/-bay, own-mauritius-aerial/-palms, own-ladigue-rocks, own-palermo-cathedral, own-polignano-cove, own-capri-faraglioni, own-positano-town, own-maldives-boardwalk, own-comporta-boardwalk, own-madeira-cliffs, own-zermatt-matterhorn, own-lisbon-sunset, own-cotswolds-castle-combe, own-santorini-oia, own-mykonos-beach, own-rhodes-lindos, own-zakynthos-cliffs, own-athens-acropolis, own-barcelona-sagrada, own-verbier-village, own-seville-plaza, own-marbella-marina, own-menorca-cala, own-mallorca-soller, own-tenerife-anaga, own-porto-ribeira, own-lanzarote-beach, own-madrid-cibeles, own-rome-stpeters, own-grancanaria-pines, own-cheltenham-hills, own-maldives-kayak, own-ibiza-esvedra; owner confirmed bought, Nov 2026). The design prototype's
+// from Shutterstock (own-zanzibar-*, own-kilimanjaro-giraffe, own-victoria-falls-sunset, own-borabora-beach, own-borabora-pool, own-borabora-fish, own-water-villas, own-copenhagen-nyhavn, own-hydra-harbour, own-turks-beach, own-kyoto-blossom/-pagoda/-river, own-marrakech-koutoubia/-rooftops, own-srilanka-sigiriya/-turtles/-bay, own-mauritius-aerial/-palms, own-ladigue-rocks, own-palermo-cathedral, own-polignano-cove, own-capri-faraglioni, own-positano-town, own-maldives-boardwalk, own-comporta-boardwalk, own-madeira-cliffs, own-zermatt-matterhorn, own-lisbon-sunset, own-cotswolds-castle-combe, own-santorini-oia, own-mykonos-beach, own-rhodes-lindos, own-zakynthos-cliffs, own-athens-acropolis, own-barcelona-sagrada, own-verbier-village, own-seville-plaza, own-marbella-marina, own-menorca-cala, own-mallorca-soller, own-tenerife-anaga, own-porto-ribeira, own-lanzarote-beach, own-madrid-cibeles, own-rome-stpeters, own-grancanaria-pines, own-cheltenham-hills, own-maldives-kayak, own-ibiza-esvedra, own-sardinia-cove, own-garda-sirmione, own-cinqueterre-vernazza; owner confirmed bought, Nov 2026). The design prototype's
 // Unsplash photos were removed (owner, Nov 2026); some prototype names (e.g. 'bath-1') point at the owner's photos.
 // Sample content with no photo of the owner's shows a placeholder.
 
@@ -126,6 +126,9 @@ export const photos = {
   'own-cheltenham-hills': require('../../assets/photos/own-cheltenham-hills.jpg'),
   'own-maldives-kayak': require('../../assets/photos/own-maldives-kayak.jpg'),
   'own-ibiza-esvedra': require('../../assets/photos/own-ibiza-esvedra.jpg'),
+  'own-sardinia-cove': require('../../assets/photos/own-sardinia-cove.jpg'),
+  'own-garda-sirmione': require('../../assets/photos/own-garda-sirmione.jpg'),
+  'own-cinqueterre-vernazza': require('../../assets/photos/own-cinqueterre-vernazza.jpg'),
   'own-athens-acropolis': require('../../assets/photos/own-athens-acropolis.jpg'),
   'own-barcelona-sagrada': require('../../assets/photos/own-barcelona-sagrada.jpg'),
 } as const;

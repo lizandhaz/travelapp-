@@ -41,6 +41,15 @@ const KICKER: Record<string, Tags> = {
   Après: { nightlife: 0.6 },
   Town: { culture: 0.5 },
   Castle: { history: 1, family: 0.4 },
+  // Words on newer place pages (owner Nov 2026: these were ignored, so Courchevel had no "luxury" and Cinque Terre no walking).
+  Luxury: { luxury: 1 },
+  Glamour: { luxury: 0.7, nightlife: 0.5 },
+  Walking: { hiking: 0.8, outdoors: 0.6 },
+  Adventure: { outdoors: 1, hiking: 0.6 },
+  Nature: { outdoors: 1 },
+  Wildlife: { wildlife: 1 },
+  Wine: { food: 0.6, countryside: 0.4 },
+  Party: { nightlife: 1 },
 };
 
 // "Things to do" and "Culture" tags → holiday types (lighter: they're one thing among many).
@@ -154,7 +163,20 @@ export function featuresForPlace(p: Place): PlaceFeatures {
 
 function fromName(p: Place, key: string): PlaceFeatures {
   const pos = positionOf(p);
-  return { key, name: p.name, tags: tagsForPlace(p), pos, warmth: pos ? warmthFromLatitude(pos[0]) : null, goodFor: [], priceFrom: null, baseScore: null };
+  const tags = { ...tagsForPlace(p) };
+  deriveTags(tags, pos, null);
+  return { key, name: p.name, tags, pos, warmth: pos ? warmthFromLatitude(pos[0]) : null, goodFor: [], priceFrom: null, baseScore: null };
+}
+
+/**
+ * Types worked out from facts rather than words (owner, Nov 2026: the Maldives, Corfu and Lanzarote all looked like
+ * "island + beach", so a luxury long-haul fan got Corfu): a beach or island in the tropics is "tropical", and a place
+ * where even the cheapest stay costs £300+ leans "luxury" (fully from £500).
+ */
+function deriveTags(tags: Tags, pos: [number, number] | null, price: number | null) {
+  const sunny = Math.max(tags.beach ?? 0, tags.island ?? 0);
+  if (pos && Math.abs(pos[0]) < 23.5 && sunny >= 0.5) tags.tropical = Math.max(tags.tropical ?? 0, 1);
+  if (price != null && price >= 300) tags.luxury = Math.max(tags.luxury ?? 0, Math.min(1, (price - 250) / 250));
 }
 
 /** The country part of a sample place's region ("Sicily, Italy" → "Italy"). */
@@ -181,6 +203,10 @@ export function featuresForSlug(slug: string): PlaceFeatures | null {
   for (const x of d?.dos ?? []) if (ACTIVITY[x.tag]) add(ACTIVITY[x.tag], 0.35);
   for (const x of d?.culture ?? []) if (ACTIVITY[x.tag]) add(ACTIVITY[x.tag], 0.25);
   if ((d?.eats.length ?? 0) >= 3) add({ food: 1 }, 0.25);
+  // What we know about the place by name fills in what the page's words miss (Ibiza's nightlife, the Maldives' luxury,
+  // Victoria Falls' wildlife). Lighter than the page's own words.
+  const known = TAGS_BY_NAME.get(norm(place.name));
+  if (known) add(known, 0.7);
   if (!Object.keys(tags).length) add(tagsForPlace({ name: place.name, country }), 1);
 
   const pos = positionOf({ name: place.name, country });
@@ -189,7 +215,14 @@ export function featuresForSlug(slug: string): PlaceFeatures | null {
     const months = d.bestMonths.length ? d.bestMonths : [5, 6, 7];
     warmth = Math.round(months.reduce((a, m) => a + d.temps![m], 0) / months.length);
   } else if (pos) warmth = warmthFromLatitude(pos[0]);
-  const price = d?.staysFrom?.match(/£\s?(\d+)/);
+  // A typical price: between the cheapest stay and the middle one (each place's sample stays include a splurge, so the
+  // middle alone made every city look luxurious; the cheapest alone made Dubai look like a £120 place).
+  const stayPrices = (d?.stays ?? []).map((s) => parseStaySub(s.sub).priceFrom).filter((x): x is number => x != null).sort((a, b) => a - b);
+  const fromPrice = d?.staysFrom?.match(/£\s?(\d+)/);
+  const cheapest = stayPrices[0] ?? (fromPrice ? Number(fromPrice[1]) : null);
+  const middle = stayPrices.length ? stayPrices[Math.floor((stayPrices.length - 1) / 2)] : cheapest;
+  const typical = cheapest != null && middle != null ? Math.round(Math.sqrt(cheapest * middle)) : null;
+  deriveTags(tags, pos, cheapest);
 
   const f: PlaceFeatures = {
     key,
@@ -198,7 +231,7 @@ export function featuresForSlug(slug: string): PlaceFeatures | null {
     pos,
     warmth,
     goodFor: (d?.goodFor ?? []).map((g) => g.toLowerCase()).map((g) => (g === 'couple' ? 'couples' : g === 'family' ? 'families' : g)),
-    priceFrom: price ? Number(price[1]) : null,
+    priceFrom: typical,
     baseScore: place.score,
   };
   featureCache.set(key, f);
@@ -215,7 +248,7 @@ export function sampleFriendRatings(): FriendRating[] {
     const id = `${friend}|${f.key}`;
     if (seen.has(id)) return;
     seen.add(id);
-    out.push({ friend, placeKey: f.key, score });
+    out.push({ friend, placeKey: f.key, score, tags: f.tags });
   };
   for (const item of friendsFeed) push(item.who, item.slug, item.score);
   for (const [slug, d] of Object.entries(placeDetails)) for (const s of d.said) push(s.who, slug, s.score);

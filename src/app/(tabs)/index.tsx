@@ -13,7 +13,8 @@ import { Button, Card, ExampleTag, IconCircle, Screen, SectionHeader } from '@/c
 import { Wordmark } from '@/components/Wordmark';
 import { colors, fonts, GUTTER, appWidth } from '@/constants/theme';
 import { collectionTiles } from '@/lib/explore';
-import { rankValue } from '@/lib/match';
+import { diversify, likeness, rankValue } from '@/lib/match';
+import { featuresForSlug } from '@/lib/placeFeatures';
 import { friendsFeed, places, rows } from '@/lib/sample';
 import { refreshUnread, useUnreadPostcards } from '@/lib/postcardsLive';
 import { useTaste } from '@/lib/taste';
@@ -48,11 +49,15 @@ export default function Home() {
   // Top picks: your best matches that are new to you (not been, not saved). Before we
   // know your taste, the prototype's picks.
   const picks = personal
-    ? places
-        .filter((p) => p.score != null && !t.forSlug(p.slug)?.yours && !t.isSaved(p.slug))
-        .map((p) => ({ slug: p.slug, name: p.name, sub: p.region, photo: p.photo, r: t.forSlug(p.slug)! }))
-        .sort((a, b) => rankValue(b.r) - rankValue(a.r))
-        .slice(0, 8)
+    ? diversify(
+        places
+          .filter((p) => p.score != null && !t.forSlug(p.slug)?.yours && !t.isSaved(p.slug))
+          .map((p) => ({ slug: p.slug, name: p.name, sub: p.region, photo: p.photo, r: t.forSlug(p.slug)!, f: featuresForSlug(p.slug)! })),
+        8,
+        (x) => rankValue(x.r),
+        // Not eight of the same: a little less for each pick very like one already chosen (owner, Nov 2026).
+        (x, y) => likeness(x.f, y.f),
+      )
         // Shown highest score first (owner, Nov 2026); the best matches above are the ones chosen.
         .sort((a, b) => b.r.score - a.r.score)
     : rows.picked

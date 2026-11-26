@@ -14,11 +14,14 @@
  *         (more recent and longer trips count a bit more);
  *       - places on their Want to go list (a strong "like") and other lists (a lighter one);
  *       - who they travel with, and the kinds of stay they rated well.
- *  3. Fit (0–1) compares the profile with a place on four things: the same kind of
- *     holiday, near places they loved, the right warmth, and the right company.
+ *  3. Fit (0–1) compares the profile with a place on five things: the same kind of
+ *     holiday, near places they loved, the right warmth, the right company and the
+ *     right price. What they've enjoyed and what they want next are two interests: a
+ *     place that suits either one well fits (not a lukewarm average of both).
  *     With little to go on, fit stays near neutral and sharpens as signals add up.
- *  4. Score = the place's base rating (blended with friends' ratings, friends who
- *     agree with you counting more), nudged up or down by fit.
+ *  4. Score = the place's base rating (blended with friends' ratings, friends whose
+ *     taste is like theirs counting more), moved by fit: a little up for a great fit,
+ *     a lot down for a poor one, so a place that isn't for them reads 5–7, not 8.
  */
 
 export type Tags = Record<string, number>;
@@ -66,7 +69,7 @@ export type Signal =
   | { kind: 'interest'; tags: Tags; label: string };
 
 /** A friend's rating of a place (or of a stay at a place). */
-export type FriendRating = { friend: string; placeKey: string; score: number };
+export type FriendRating = { friend: string; placeKey: string; score: number; /** The place's holiday types (to learn the friend's taste). */ tags?: Tags };
 
 export type Anchor = {
   name: string;
@@ -103,6 +106,8 @@ export type Profile = {
   stayTypes: Record<string, number>;
   /** Typical stay price they liked, £ a night. */
   price: number | null;
+  /** Share of their trips that were short (3 nights or fewer): weekenders want places nearby. */
+  shortTrips: number;
   /** How telling each holiday type is (rare types like "ski" count more than "food", which almost everywhere has). */
   tagWeights: Tags;
   /** How much we know: the sum of signal strengths. */
@@ -115,14 +120,18 @@ export type Profile = {
   saved: Record<string, 'wish' | 'list'>;
   /** Place pages they've looked at, by key. */
   viewed: Record<string, { views: number; seconds: number; weight: number }>;
-  /** How much each friend's ratings count (friends who agree with you count more). */
+  /** How much each friend's ratings count (friends whose taste is like yours count more). */
   friendWeights: Record<string, number>;
+  /** How far each friend rates above everyone's average (a friend who gives everything 9.5 is evened out). */
+  friendOffsets: Record<string, number>;
   counts: { trips: number; wish: number; lists: number; views: number };
 };
 
 export type PlaceResult = {
   /** Out of 10, one decimal. */
   score: number;
+  /** The score before rounding, for putting places in order (so the order always follows the numbers shown). */
+  raw: number;
   /** 40–99. */
   match: number;
   /** 0–1 before turning into a percentage. */
@@ -245,6 +254,8 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
   let priceSum = 0;
   let priceW = 0;
   const counts = { trips: 0, wish: 0, lists: 0, views: 0 };
+  let shortN = 0;
+  let nightsN = 0;
   const goodForSum: Record<string, number> = {};
   let goodForW = 0;
 
@@ -261,6 +272,10 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
       half = 'enjoyed';
       w = tripWeight(s.score, s.month, s.nights, now);
       if (!s.extraStop) counts.trips++;
+      if (!s.extraStop && s.nights != null && w > 0) {
+        nightsN++;
+        if (s.nights <= 3) shortN++;
+      }
       // Several trips to one place: keep the best score as "yours" (not for places only ticked in setup).
       if (!s.told) been[s.place.key] = Math.max(been[s.place.key] ?? 0, s.score);
       if (s.companions) companionCount[s.companions] = (companionCount[s.companions] ?? 0) + 1;
@@ -316,20 +331,7 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
   const companions: Partial<Record<Companions, number>> = {};
   for (const [c, n] of Object.entries(companionCount)) companions[c as Companions] = (n ?? 0) / totalCompany;
 
-  // Friends who rate shared places like you do count for more (0.4–2×).
-  const friendWeights: Record<string, number> = {};
-  const byFriend = new Map<string, FriendRating[]>();
-  for (const r of friendRatings) byFriend.set(r.friend, [...(byFriend.get(r.friend) ?? []), r]);
-  for (const [friend, list] of byFriend) {
-    const shared = list.filter((r) => been[r.placeKey] != null);
-    if (!shared.length) {
-      friendWeights[friend] = 1;
-      continue;
-    }
-    const meanGap = shared.reduce((a, r) => a + Math.abs(r.score - been[r.placeKey]), 0) / shared.length;
-    const trust = Math.min(1, shared.length / 3); // one shared place says less than three
-    friendWeights[friend] = clamp(1 + trust * (1 - meanGap / 1.5), 0.4, 2);
-  }
+  const { friendWeights, friendOffsets } = friendTrust(friendRatings, been, tags, 1 - Math.exp(-(enjoyed.evidence + next.evidence) / 1.5));
 
   const nextGoodFor: Record<string, number> = {};
   for (const [g, v] of Object.entries(goodForSum)) nextGoodFor[g] = v / goodForW;
@@ -346,14 +348,62 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
     nextGoodFor,
     stayTypes,
     price: priceW > 0 ? priceSum / priceW : null,
+    shortTrips: nightsN ? shortN / nightsN : 0,
     evidence,
     confidence: 1 - Math.exp(-evidence / 1.5), // ~50% after one loved trip, ~85% after three
     been,
     saved,
     viewed,
     friendWeights,
+    friendOffsets,
     counts,
   };
+}
+
+/**
+ * How much to trust each friend, and how to even out how generously they rate (owner, Nov 2026: friends barely moved
+ * scores). A friend counts more (up to 2.5×) when their taste is like yours: the kinds of places they rate above their
+ * own average are the kinds you love. Rating the places you've both been to like you do counts too. A friend whose taste
+ * is the opposite of yours counts less (down to 0.4×). Each friend's ratings are also evened out against everyone's:
+ * someone who gives everything 9.5 doesn't count as a rave every time.
+ */
+export function friendTrust(friendRatings: FriendRating[], been: Record<string, number>, yourTags: Tags, confidence: number) {
+  const friendWeights: Record<string, number> = {};
+  const friendOffsets: Record<string, number> = {};
+  if (!friendRatings.length) return { friendWeights, friendOffsets };
+  const everyone = friendRatings.reduce((a, r) => a + r.score, 0) / friendRatings.length;
+  const byFriend = new Map<string, FriendRating[]>();
+  for (const r of friendRatings) byFriend.set(r.friend, [...(byFriend.get(r.friend) ?? []), r]);
+  for (const [friend, list] of byFriend) {
+    const mean = list.reduce((a, r) => a + r.score, 0) / list.length;
+    friendOffsets[friend] = (mean - everyone) * (list.length / (list.length + 3)); // only trusted once they've rated a few
+    // Their taste: the kinds of places they rate above their own average.
+    const theirs: Tags = {};
+    for (const r of list) for (const [t, v] of Object.entries(r.tags ?? {})) theirs[t] = (theirs[t] ?? 0) + (r.score - mean) * v;
+    const alike = signedSimilarity(yourTags, theirs) * confidence; // −1…1, gentle while we know little about you
+    // Places you've both been: how close their scores are to yours.
+    const shared = list.filter((r) => been[r.placeKey] != null);
+    let agree = 0;
+    if (shared.length) {
+      const meanGap = shared.reduce((a, r) => a + Math.abs(r.score - been[r.placeKey]), 0) / shared.length;
+      agree = Math.min(1, shared.length / 3) * (1 - meanGap / 1.5);
+    }
+    friendWeights[friend] = clamp(1 + 1.2 * alike + agree, 0.4, 2.5);
+  }
+  return { friendWeights, friendOffsets };
+}
+
+/** Cosine similarity that keeps signs: −1 (opposite tastes) to 1 (the same). */
+function signedSimilarity(a: Tags, b: Tags): number {
+  let dot = 0;
+  let na = 0;
+  let nb = 0;
+  for (const v of Object.values(a)) na += v * v;
+  for (const [k, v] of Object.entries(b)) {
+    nb += v * v;
+    dot += (a[k] ?? 0) * v;
+  }
+  return na && nb ? dot / Math.sqrt(na * nb) : 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -361,20 +411,35 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
 // ---------------------------------------------------------------------------
 
 const COMPANY_TO_GOOD_FOR: Record<Companions, string> = { solo: 'solo', partner: 'couples', friends: 'friends', family: 'families' };
-// The kind of holiday matters most (owner, Nov 2026: a beach lover's picks should be beaches).
-const PART_WEIGHTS = { kind: 0.55, near: 0.15, warmth: 0.15, company: 0.15 };
+// The kind of holiday matters most (owner, Nov 2026: a beach lover's picks should be beaches); price joined in Nov 2026
+// (a luxury traveller and a family on a budget were getting the same picks).
+const PART_WEIGHTS = { kind: 0.5, near: 0.13, warmth: 0.12, company: 0.12, price: 0.13 };
 
 /** Ski places are judged in winter, so warmth says nothing about them (either way). */
 const skiPlace = (p: PlaceFeatures) => (p.tags.ski ?? 0) >= 0.5;
 
-/** How much "want next" counts against "enjoyed" when both are known: an equal say. */
+/**
+ * How much "want next" counts against "enjoyed": up to an equal say, less while you've saved much less than you've
+ * travelled (two saves shouldn't outweigh four loved trips), but never under a quarter, so a long trip history can't
+ * drown out what you want now.
+ */
 export const NEXT_SHARE = 0.5;
+export function nextShare(enjoyedEvidence: number, nextEvidence: number): number {
+  if (enjoyedEvidence <= 0) return 1;
+  if (nextEvidence <= 0) return 0;
+  return clamp(NEXT_SHARE * Math.sqrt(nextEvidence / enjoyedEvidence), 0.25, NEXT_SHARE);
+}
 
-/** Blends the two halves' answers: equal say when both know something, else whichever does. */
-function blend(enjoyed: number | null, next: number | null): number | null {
+/**
+ * Two interests, not one average (owner, Nov 2026: a city lover who saved two islands got only islands): a place that
+ * suits what you've enjoyed OR what you want next fits well. Half the weighted average, half the better of the two.
+ */
+const EITHER = 0.5;
+function blend(enjoyed: number | null, next: number | null, share = NEXT_SHARE): number | null {
   if (enjoyed == null) return next;
   if (next == null) return enjoyed;
-  return (1 - NEXT_SHARE) * enjoyed + NEXT_SHARE * next;
+  const average = (1 - share) * enjoyed + share * next;
+  return (1 - EITHER) * average + EITHER * Math.max(enjoyed, next);
 }
 
 /**
@@ -403,7 +468,8 @@ function kindFit(tags: Tags, place: PlaceFeatures, rarity: Tags = {}): number | 
   if (!Object.keys(likes).length && !Object.keys(dislikes).length) return null;
   if (!Object.keys(place.tags).length) return null;
   const pt = weighted(place.tags, rarity);
-  return clamp(0.2 + 0.8 * tagSimilarity(weighted(likes, rarity), pt) - 0.6 * tagSimilarity(weighted(dislikes, rarity), pt), 0, 1);
+  // 0 overlap really is a poor fit (it used to start at 0.2, so a skier's beach still looked half right).
+  return clamp(0.05 + 0.95 * tagSimilarity(weighted(likes, rarity), pt) - 0.7 * tagSimilarity(weighted(dislikes, rarity), pt), 0, 1);
 }
 
 /** Near places in one half (a 1,200 km falloff: the same region, not the same town). */
@@ -416,31 +482,46 @@ function nearFit(anchors: Anchor[], place: PlaceFeatures): number | null {
     pull += a.weight * Math.exp(-distanceKm(a.place.pos, place.pos) / 1200);
     total += Math.abs(a.weight);
   }
-  return total > 0 ? clamp(0.3 + 0.7 * (pull / total), 0, 1) : null;
+  return total > 0 ? clamp(0.15 + 0.85 * (pull / total), 0, 1) : null;
 }
 
-/** The four parts of fit, each 0–1 (or null when we can't tell). */
-export function fitParts(profile: Profile, place: PlaceFeatures) {
-  const kind = blend(kindFit(profile.enjoyed.tags, place, profile.tagWeights), kindFit(profile.next.tags, place, profile.tagWeights));
-  const near = blend(nearFit(profile.enjoyed.anchors, place), nearFit(profile.next.anchors, place));
+/** The warmth one half goes for (gentle: 7 °C off is still fine). Ski places are judged in winter, so not on warmth. */
+function warmthFit(want: number | null, place: PlaceFeatures): number | null {
+  return want != null && place.warmth != null && !skiPlace(place) ? Math.exp(-(((place.warmth - want) / 7) ** 2)) : null;
+}
 
-  // The warmth they go for (gentle: 7 °C off is still fine).
-  const warmth = profile.warmth != null && place.warmth != null && !skiPlace(place) ? Math.exp(-(((place.warmth - profile.warmth) / 7) ** 2)) : null;
+/**
+ * A price like you usually pay (from the places you loved and saved). Pricier than usual counts against a place
+ * quickly; cheaper only gently (a luxury traveller may still love a simple place).
+ */
+function priceFit(usual: number | null, place: PlaceFeatures): number | null {
+  if (usual == null || place.priceFrom == null) return null;
+  const r = Math.log(place.priceFrom / usual);
+  return r > 0 ? Math.exp(-((r / 0.7) ** 2)) : Math.exp(-((r / 1.3) ** 2));
+}
+
+/** The five parts of fit, each 0–1 (or null when we can't tell). */
+export function fitParts(profile: Profile, place: PlaceFeatures) {
+  const share = nextShare(profile.enjoyed.evidence, profile.next.evidence);
+  const kind = blend(kindFit(profile.enjoyed.tags, place, profile.tagWeights), kindFit(profile.next.tags, place, profile.tagWeights), share);
+  const near = blend(nearFit(profile.enjoyed.anchors, place), nearFit(profile.next.anchors, place), share);
+  const warmth = blend(warmthFit(profile.enjoyed.warmth, place), warmthFit(profile.next.warmth, place), share);
 
   // Suits who they travel with (from trips) and who the places they want next suit.
   let past: number | null = null;
   const shares = Object.entries(profile.companions);
   if (shares.length && place.goodFor.length) {
-    past = 0.25 + 0.75 * shares.reduce((a, [c, share]) => a + (place.goodFor.includes(COMPANY_TO_GOOD_FOR[c as Companions]) ? (share ?? 0) : 0), 0);
+    past = 0.25 + 0.75 * shares.reduce((a, [c, s]) => a + (place.goodFor.includes(COMPANY_TO_GOOD_FOR[c as Companions]) ? (s ?? 0) : 0), 0);
   }
   let ahead: number | null = null;
   const wanted = Object.entries(profile.nextGoodFor);
   if (wanted.length && place.goodFor.length) {
-    ahead = 0.25 + 0.75 * wanted.reduce((a, [g, share]) => a + (place.goodFor.includes(g) ? share : 0), 0);
+    ahead = 0.25 + 0.75 * wanted.reduce((a, [g, s]) => a + (place.goodFor.includes(g) ? s : 0), 0);
   }
-  const company = blend(past, ahead);
+  const company = blend(past, ahead, share);
+  const price = priceFit(profile.price, place);
 
-  return { kind, near, warmth, company };
+  return { kind, near, warmth, company, price };
 }
 
 /** Overall fit, 0–1, pulled towards a neutral 0.5 when we don't know much yet. */
@@ -450,11 +531,18 @@ export function fitFor(profile: Profile, place: PlaceFeatures): number {
   let w = 0;
   for (const [name, value] of Object.entries(parts)) {
     if (value == null) continue;
-    const pw = PART_WEIGHTS[name as keyof typeof PART_WEIGHTS];
+    // Someone whose trips are weekends cares much more about being near (owner, Nov 2026: a Bath-and-York weekender got Kyoto).
+    const pw = PART_WEIGHTS[name as keyof typeof PART_WEIGHTS] * (name === 'near' ? 1 + 3 * profile.shortTrips : 1);
     sum += pw * value;
     w += pw;
   }
-  const raw = w ? sum / w : 0.5;
+  let raw = w ? sum / w : 0.5;
+  // Gates: being near, warm or the right company can't rescue the wrong kind of holiday (a skier's beach resort), and a
+  // price far beyond what you pay counts against everything else (a budget traveller's £650-a-night island).
+  if (parts.kind != null) raw = Math.min(raw, parts.kind + 0.15);
+  if (parts.price != null) raw *= 0.75 + 0.25 * parts.price;
+  // …and for someone who takes weekends, somewhere far away can't score as a great fit (a Bath-and-York weekender got Kyoto).
+  if (parts.near != null && profile.shortTrips >= 0.5) raw = Math.min(raw, parts.near + 0.2);
   return clamp(0.5 + (raw - 0.5) * profile.confidence + interestLift(profile, place), 0, 1);
 }
 
@@ -483,7 +571,7 @@ export function matchPercent(fit: number): number {
  */
 export function baseRating(profile: Profile, place: PlaceFeatures, friendRatings: FriendRating[]) {
   const mine = friendRatings.filter((r) => r.placeKey === place.key);
-  const PRIOR = 2; // the place's own rating counts like two friends
+  const PRIOR = 1.5; // the place's own rating counts like one and a half friends (friends are the point of the app)
   let sum = 0;
   let w = 0;
   if (place.baseScore != null) {
@@ -492,7 +580,7 @@ export function baseRating(profile: Profile, place: PlaceFeatures, friendRatings
   }
   for (const r of mine) {
     const fw = profile.friendWeights[r.friend] ?? 1;
-    sum += fw * r.score;
+    sum += fw * (r.score - (profile.friendOffsets[r.friend] ?? 0));
     w += fw;
   }
   const base = w ? sum / w : 7;
@@ -509,27 +597,54 @@ export function softTop(s: number): number {
   return s <= 9 ? s : 9 + 0.9 * (1 - Math.exp(-(s - 9) / 0.9));
 }
 
-/** How far fit moves the score: up to ±1.5 points. */
-const TASTE_SWING = 3;
+/**
+ * How far fit moves the score. Lopsided on purpose (owner, Nov 2026: everything scored 7.5–9.6, so a poor fit still
+ * looked good): the places here are already well loved, so a great fit adds a little (up to +1.5) but a poor one takes
+ * a lot away (down to −3.5). With little to go on, fit stays near neutral, so new people see each place's own rating.
+ */
+const UP_SWING = 3;
+const DOWN_SWING = 7;
+const tasteShift = (fit: number) => (fit >= 0.5 ? UP_SWING : DOWN_SWING) * (fit - 0.5);
+
+/**
+ * Other people's rating says less when a place isn't your kind of thing: a beach resort's 8.6 comes from people who
+ * chose a beach holiday, not from skiers. So below a neutral fit the base slides towards an ordinary 7 (up to 60% of
+ * the way for the poorest fit).
+ */
+const ORDINARY = 7;
+export function relevantBase(base: number, fit: number): number {
+  const relevance = fit >= 0.5 ? 1 : 0.4 + 1.2 * fit;
+  return ORDINARY + (base - ORDINARY) * relevance;
+}
 
 export function scorePlace(profile: Profile, place: PlaceFeatures, friendRatings: FriendRating[]): PlaceResult {
   const fit = fitFor(profile, place);
-  const { base, baseFrom, friends } = baseRating(profile, place, friendRatings);
-  const tasteNudge = TASTE_SWING * (fit - 0.5);
+  const { base: rated, baseFrom, friends } = baseRating(profile, place, friendRatings);
+  const base = relevantBase(rated, fit);
+  const tasteNudge = tasteShift(fit);
   const yours = profile.been[place.key] ?? null;
   const parts = fitParts(profile, place);
-  const labels: Record<string, string> = { kind: 'The kind of holiday you love', near: 'Near places you loved', warmth: 'The warmth you go for', company: 'Suits who you travel with' };
+  const labels: Record<string, string> = {
+    kind: 'The kind of holiday you love',
+    near: 'Near places you loved',
+    warmth: 'The warmth you go for',
+    company: 'Suits who you travel with',
+    price: 'A price like you usually pay',
+  };
+  const raw = yours ?? clamp(softTop(base + tasteNudge), 1, 9.9);
   return {
-    score: yours ?? round1(softTop(clamp(base + tasteNudge, 1, 10))),
+    score: yours ?? round1(raw),
+    raw,
     match: matchPercent(fit),
     fit,
     yours,
     reasons: reasonsFor(profile, place, friends),
     breakdown: {
-      base: round1(base),
+      // What the place is rated (by everyone and friends), and how far your taste moves it in all (shown on place pages).
+      base: round1(rated),
       baseFrom,
       friendsCount: new Set(friends.map((f) => f.friend)).size,
-      tasteNudge: round1(tasteNudge),
+      tasteNudge: yours != null ? 0 : round1(raw - rated),
       parts: Object.entries(parts)
         .filter(([, v]) => v != null)
         .map(([k, v]) => ({ label: labels[k], value: v as number })),
@@ -660,11 +775,35 @@ export function topTastes(profile: Profile, n = 4): string[] {
 }
 
 /**
- * How to order places "for you": mostly your score, with fit as a strong tie-breaker,
- * so a famous place you'd only half enjoy doesn't beat a great fit.
+ * How to order places "for you": by your score, exactly (owner, Nov 2026: one number; the order used to mix in a hidden
+ * % match, so a 9.4 could sit above a 9.5). Fit now moves the score itself, so a famous place you'd only half enjoy
+ * already scores lower. Unrounded, so two places showing 9.4 still come in the right order.
  */
-export function rankValue(r: { score: number; match: number }): number {
-  return 0.6 * r.score + 0.04 * r.match;
+export function rankValue(r: { score: number; raw?: number }): number {
+  return r.raw ?? r.score;
+}
+
+/**
+ * The best n, without near-duplicates (owner, Nov 2026: someone with two interests should see both, not eight of the
+ * same): each pick is the highest value left, minus a little for being very like a place already picked. `alike` is
+ * 0–1 (e.g. likeness()); `spread` is how many points full alikeness costs.
+ */
+export function diversify<T>(items: T[], n: number, value: (x: T) => number, alike: (a: T, b: T) => number, spread = 0.3): T[] {
+  const pool = [...items].sort((a, b) => value(b) - value(a)).slice(0, Math.max(n * 4, n));
+  const picked: T[] = [];
+  while (picked.length < n && pool.length) {
+    let best = 0;
+    let bestValue = -Infinity;
+    pool.forEach((x, i) => {
+      const v = value(x) - spread * Math.max(0, ...picked.map((p) => alike(x, p)));
+      if (v > bestValue) {
+        bestValue = v;
+        best = i;
+      }
+    });
+    picked.push(pool.splice(best, 1)[0]);
+  }
+  return picked;
 }
 
 /**

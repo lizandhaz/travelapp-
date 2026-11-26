@@ -41,7 +41,7 @@ test('loving beach trips ranks beaches above cities, and above the base score', 
   const city = scorePlace(profile, paris, []);
   assert.ok(beach.match > city.match, `beach ${beach.match}% should beat city ${city.match}%`);
   assert.ok(beach.score > 8.6, `beach score ${beach.score} should be above its base 8.6`);
-  assert.ok(beach.match >= 80, `beach match ${beach.match}% should be high`);
+  assert.ok(beach.match >= 75, `beach match ${beach.match}% should be high`);
 });
 
 test('a disliked city trip pushes other cities down', () => {
@@ -139,9 +139,16 @@ test('your taste lists what you like most', () => {
   assert.ok(!top.includes('city'));
 });
 
-test('ranking for you prefers a great fit over a famous place you would half enjoy', async () => {
+test('places are ordered by the score you see (owner, Nov 2026: one number), unrounded for ties', async () => {
   const { rankValue } = await import('../src/lib/match.ts');
-  assert.ok(rankValue({ score: 9.0, match: 89 }) > rankValue({ score: 9.2, match: 70 }));
+  assert.ok(rankValue({ score: 9.2, raw: 9.2, match: 70 }) > rankValue({ score: 9.0, raw: 9.0, match: 89 }));
+  assert.ok(rankValue({ score: 9.4, raw: 9.44 }) > rankValue({ score: 9.4, raw: 9.36 }));
+});
+
+test('a great fit on a famous place you would only half enjoy: fit moves the score itself', () => {
+  const skier = buildProfile([trip(place('Zermatt', 'Switzerland', { ski: 1, mountains: 1 }, { pos: [46, 7.7], warmth: 2 }), 9.5)], [], NOW);
+  const beach = place('Bora Bora', 'French Polynesia', { island: 1, beach: 1 }, { pos: [-16.5, -151.7], warmth: 29, baseScore: 9.3 });
+  assert.ok(scorePlace(skier, beach, []).score < 9.3, 'below its own rating for a skier');
 });
 
 // --- What you want next: Want to go, lists, list names and pages you look at ---

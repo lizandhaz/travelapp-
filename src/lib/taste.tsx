@@ -202,6 +202,7 @@ export const TASTE_LABELS: Record<string, string> = {
   family: 'Family trips',
   wildlife: 'Wildlife',
   luxury: 'Treats',
+  tropical: 'Tropical beaches',
   shortbreak: 'Short breaks',
 };
 

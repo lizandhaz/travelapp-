@@ -14889,5 +14889,354 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "monaco": {
+    "kicker": "City · Glamour",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £220 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      13,
+      14,
+      15,
+      17,
+      21,
+      24,
+      27,
+      28,
+      25,
+      21,
+      17,
+      14
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Sophie",
+        "month": "May 2025",
+        "quote": "Yachts, the casino and a Riviera sunset. Pure glamour.",
+        "score": 8.6,
+        "face": null
+      },
+      {
+        "who": "Jonah",
+        "month": "Sep 2024",
+        "quote": "Small enough to walk everywhere, and Nice is 20 minutes by train.",
+        "score": 8.2,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Hôtel de Paris Monte-Carlo",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £900 a night · The grand hotel on Casino Square, open since 1864.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hôtel Hermitage Monte-Carlo",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £700 a night · Belle Époque rooms with balconies over the harbour.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Monte-Carlo Bay Hotel & Resort",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £450 a night · Sophie stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Novotel Monte-Carlo",
+        "type": "Hotel",
+        "match": 82,
+        "featured": false,
+        "sub": "from £220 a night · Jonah stayed",
+        "because": null,
+        "score": 8.0,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Le Louis XV – Alain Ducasse",
+        "price": "£££",
+        "what": "Three Michelin stars in the Hôtel de Paris",
+        "score": 9.3,
+        "from": "Sophie",
+        "match": 88,
+        "photo": null
+      },
+      {
+        "name": "Marché de la Condamine",
+        "price": "£",
+        "what": "Socca and lunch stalls in the covered market",
+        "score": 8.5,
+        "from": null,
+        "match": 84,
+        "photo": null
+      },
+      {
+        "name": "Café de Paris Monte-Carlo",
+        "price": "££",
+        "what": "People-watching on Casino Square",
+        "score": 8.2,
+        "from": "Jonah",
+        "match": 82,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Culture",
+        "name": "Monte-Carlo Casino",
+        "what": "Step inside the gilded halls, even if you don't play.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Oceanographic Museum",
+        "what": "On the cliff edge, with a rooftop view.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "The old town on the Rock",
+        "what": "The Prince's Palace, and the changing of the guard at 11:55.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Jardin Exotique",
+        "what": "Cacti on the cliff, with a view over the whole principality.",
+        "from": "Jonah",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Sight",
+        "when": null,
+        "name": "Prince's Palace",
+        "what": "The royal family's home on the Rock.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Stay in Nice or Menton for less and take the 20-minute train in.",
+        "from": "Jonah"
+      }
+    ],
+    "credits": null
+  },
+  "bordeaux": {
+    "kicker": "City · Wine",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £100 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      10,
+      12,
+      15,
+      18,
+      21,
+      25,
+      27,
+      27,
+      24,
+      19,
+      14,
+      11
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Maya",
+        "month": "Sep 2024",
+        "quote": "Golden stone, great wine bars and a day trip to Saint-Émilion.",
+        "score": 8.8,
+        "face": null
+      },
+      {
+        "who": "Tom",
+        "month": "May 2025",
+        "quote": "The Cité du Vin was a surprise hit. And the canelés!",
+        "score": 8.4,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Les Sources de Caudalie",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £400 a night · A spa hotel among the vines of Château Smith Haut Lafitte.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "InterContinental Bordeaux – Le Grand Hôtel",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £350 a night · Maya stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Mama Shelter Bordeaux",
+        "type": "Hotel",
+        "match": 82,
+        "featured": false,
+        "sub": "from £100 a night · Tom stayed",
+        "because": null,
+        "score": 8.1,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Le Chapon Fin",
+        "price": "£££",
+        "what": "Classic French dining since 1825",
+        "score": 8.8,
+        "from": "Maya",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Le Petit Commerce",
+        "price": "££",
+        "what": "A seafood bistro in the old town",
+        "score": 8.7,
+        "from": "Tom",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Marché des Capucins",
+        "price": "£",
+        "what": "Oysters and a glass of white at the Saturday market",
+        "score": 8.6,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Wine",
+        "name": "Saint-Émilion",
+        "what": "A day among the vineyards and the medieval village.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "La Cité du Vin",
+        "what": "A museum of wine, with a tasting at the top.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "Miroir d'Eau",
+        "what": "The world's largest reflecting pool, best at dusk.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "Médoc châteaux",
+        "what": "Tastings along the famous wine route.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Canelés at Baillardran",
+        "what": "The little caramelised cakes Bordeaux is known for.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Sight",
+        "when": null,
+        "name": "Place de la Bourse",
+        "what": "The grand square reflected in the Miroir d'Eau.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Book château tastings ahead: many only open by appointment.",
+        "from": "Maya"
+      }
+    ],
+    "credits": null
   }
 };

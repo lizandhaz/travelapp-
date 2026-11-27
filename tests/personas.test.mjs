@@ -47,7 +47,8 @@ test('a city lover gets cities, not the highest-rated islands', () => {
   ], 8);
   // Every pick is a city or culture break (owner added Athens and Barcelona, Nov 2026, so Paris may now sit just below the top 8).
   assert.ok(top.every((s) => tagOf(s, 'city') >= 0.5 || tagOf(s, 'culture') >= 0.5), top.join(', '));
-  assert.ok(topFor([['2026-05', 9.2, 'Rome', 'Italy'], ['2025-10', 9.0, 'New York', 'United States']], 12).includes('paris'));
+  // Top 15: the catalogue keeps gaining city breaks (Florence, Bordeaux… Nov 2026), and Paris's own rating is one of the lower ones.
+  assert.ok(topFor([['2026-05', 9.2, 'Rome', 'Italy'], ['2025-10', 9.0, 'New York', 'United States']], 15).includes('paris'));
   for (const island of ['borabora', 'maldives', 'seychelles', 'turks']) assert.ok(!top.includes(island), `${island} in ${top.join(', ')}`);
 });
 

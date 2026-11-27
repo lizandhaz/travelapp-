@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ComponentRef } from 'react';
+import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import { Platform, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
@@ -44,9 +44,16 @@ export function AreaMap({
 }) {
   const centre = placeCentres[slug];
   const map = useRef<ComponentRef<typeof MapView>>(null);
-  const spots = pins.map((p) => ({ ...p, pos: pinPosition(slug, p) }));
   const ratio = width / height;
   const home = centre ? { latitude: centre.at[0], longitude: centre.at[1], latitudeDelta: centre.span * 0.4, longitudeDelta: centre.span * 0.4 * ratio } : null;
+  // Names show once you zoom in (and always on the picked pin). Each pin's tap area is its whole drawing, so at the
+  // starting zoom a neighbour's name label used to cover numbers and swallow taps (owner, Nov 2026).
+  const [zoomedIn, setZoomedIn] = useState(false);
+  const spots = spreadOut(
+    pins.map((p) => ({ ...p, pos: pinPosition(slug, p) })),
+    // About 40 points apart on screen at the starting zoom.
+    home ? (home.latitudeDelta * 40) / height : 0,
+  );
 
   // Glide to a pin (or back to the whole place) when asked.
   const focusKey = focus?.key;
@@ -79,6 +86,7 @@ export function AreaMap({
       scrollEnabled={!preview}
       zoomEnabled={!preview}
       onPress={preview ? onPress : undefined}
+      onRegionChangeComplete={(r) => home && setZoomedIn(r.latitudeDelta < home.latitudeDelta * 0.45)}
       // Belt and braces (owner, Nov 2026: some numbers didn't respond): the map also reports which pin was tapped.
       onMarkerPress={(e) => {
         const n = Number(e.nativeEvent.id);
@@ -89,8 +97,8 @@ export function AreaMap({
       {spots.map((s) =>
         s.pos ? (
           <Marker
-            // A new key redraws the marker when it's picked or becomes your stay.
-            key={`${s.n}-${picked === s.n}-${stay === s.n}`}
+            // A new key redraws the marker when it's picked, becomes your stay or its name shows.
+            key={`${s.n}-${picked === s.n}-${stay === s.n}-${zoomedIn}`}
             identifier={String(s.n)}
             coordinate={{ latitude: s.pos[0], longitude: s.pos[1] }}
             anchor={{ x: 0.5, y: 0.2 }}
@@ -102,7 +110,7 @@ export function AreaMap({
             onSelect={() => (preview ? undefined : onPin(s.n))}
             accessibilityLabel={`${s.n}. ${s.name}, ${s.kind}`}
           >
-            <SpotPin n={s.n} name={s.name} colour={PIN[s.kind] ?? colors.ink} picked={picked === s.n} stay={stay === s.n} />
+            <SpotPin n={s.n} name={s.name} colour={PIN[s.kind] ?? colors.ink} picked={picked === s.n} stay={stay === s.n} label={zoomedIn || picked === s.n || stay === s.n} />
           </Marker>
         ) : null,
       )}
@@ -111,7 +119,7 @@ export function AreaMap({
 }
 
 /** A numbered pin with a white name label, like the drawn close-up. */
-function SpotPin({ n, name, colour, picked, stay }: { n: number; name: string; colour: string; picked: boolean; stay: boolean }) {
+function SpotPin({ n, name, colour, picked, stay, label }: { n: number; name: string; colour: string; picked: boolean; stay: boolean; label: boolean }) {
   const ring = stay ? colors.olive : picked ? colors.accentDeep : colors.card;
   return (
     <View style={{ alignItems: 'center' }}>
@@ -129,11 +137,40 @@ function SpotPin({ n, name, colour, picked, stay }: { n: number; name: string; c
       >
         <Text style={{ fontFamily: fonts.sansBold, fontSize: 12, lineHeight: 14, color: colors.onDark }}>{n}</Text>
       </View>
+      {label && (
       <View style={{ marginTop: 3, backgroundColor: stay ? colors.olive : colors.card, borderRadius: 8, paddingHorizontal: 7, paddingVertical: 2, borderWidth: 1, borderColor: colors.line }}>
         <Text numberOfLines={1} style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, color: stay ? colors.onDark : colors.ink, maxWidth: 140 }}>
           {stay ? `You’re here · ${name}` : name}
         </Text>
       </View>
+      )}
     </View>
   );
+}
+
+/**
+ * Nudges pins that would sit on top of each other apart, so every number can be tapped at the starting zoom (the
+ * positions are rough anyway). Lower numbers (your best picks) keep their place; others step round in a small spiral.
+ */
+function spreadOut<T extends { n: number; pos: [number, number] | null }>(spots: T[], minDeg: number): T[] {
+  if (minDeg <= 0) return spots;
+  const placed: [number, number][] = [];
+  const far = (a: [number, number], b: [number, number]) => {
+    const k = Math.cos((a[0] * Math.PI) / 180);
+    return Math.hypot(a[0] - b[0], (a[1] - b[1]) * k) >= minDeg;
+  };
+  return [...spots]
+    .sort((a, b) => a.n - b.n)
+    .map((s) => {
+      if (!s.pos) return s;
+      let pos = s.pos;
+      const k = Math.cos((s.pos[0] * Math.PI) / 180) || 1;
+      for (let i = 0; i < 16 && !placed.every((q) => far(pos, q)); i++) {
+        const angle = i * 2.4;
+        const r = minDeg * (1 + i * 0.2);
+        pos = [s.pos[0] + r * Math.sin(angle), s.pos[1] + (r * Math.cos(angle)) / k];
+      }
+      placed.push(pos);
+      return { ...s, pos };
+    });
 }

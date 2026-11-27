@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { Dimensions, Modal, Pressable, ScrollView, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Dimensions, Modal, Pressable, ScrollView, View, type GestureResponderEvent } from 'react-native';
+import Svg, { Circle, Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 
 import { colors, fonts, GUTTER, radius, MAX_WIDTH } from '@/constants/theme';
 import type { PlaceResult } from '@/lib/match';
@@ -17,7 +18,7 @@ import { Avatar } from './Avatar';
 import { Row } from './cards';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { Card, Chip, Input, SectionHeader } from './ui';
+import { Card, Input, SectionHeader } from './ui';
 import { AreaMap } from './AreaMap';
 import { BedIcon, BookmarkIcon, ForkIcon } from './Icons';
 
@@ -80,69 +81,131 @@ export function PlaceFacts({ detail }: { detail: PlaceDetail }) {
 /** Average temperature for each month as bars, best months in olive, the rest misty sky, and how busy it gets. */
 export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
   const temps = detail.temps;
-  if (!temps) return null;
-  const lo = Math.min(...temps);
-  const hi = Math.max(...temps);
-  const barHeight = (t: number) => 10 + ((t - lo) / Math.max(1, hi - lo)) * 62;
   const best = new Set(detail.bestMonths);
+  const [chosen, setChosen] = useState<number>(detail.bestMonths[0] ?? 6);
+  const [w, setW] = useState(0);
+  if (!temps) return null;
+
+  // A soft curve through the monthly highs (owner, Nov 2026: "as aesthetic as possible"): best months shaded behind it,
+  // one dot per month, and the month you tap picked out with its temperature, crowds and whether it's a best month.
+  const H = 92;
+  const PAD = 18; // room above the curve for the picked month's temperature
+  const lo = Math.min(...temps) - 2;
+  const hi = Math.max(...temps) + 1;
+  const col = w / 12;
+  const x = (i: number) => col * i + col / 2;
+  const y = (t: number) => PAD + (1 - (t - lo) / Math.max(1, hi - lo)) * (H - PAD - 8);
+  const pts = temps.map((t, i) => [x(i), y(t)] as const);
+  // Catmull-Rom → cubic Bézier for a smooth line.
+  let line = `M ${pts[0][0]} ${pts[0][1]}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[Math.min(pts.length - 1, i + 2)];
+    line += ` C ${p1[0] + (p2[0] - p0[0]) / 6} ${p1[1] + (p2[1] - p0[1]) / 6}, ${p2[0] - (p3[0] - p1[0]) / 6} ${p2[1] - (p3[1] - p1[1]) / 6}, ${p2[0]} ${p2[1]}`;
+  }
+  const area = `${line} L ${pts[11][0]} ${H} L ${pts[0][0]} ${H} Z`;
+  const crowd = detail.crowds;
   const summary =
     `Average daytime highs: ${temps.map((t, i) => `${MONTH_NAMES[i]} ${t}°C`).join(', ')}.` +
     (best.size ? ` Best months: ${[...best].map((m) => MONTH_NAMES[m]).join(', ')}.` : '') +
-    (detail.crowds ? ` Crowds: ${detail.crowds.map((c, i) => `${MONTH_NAMES[i]} ${CROWD_WORDS[c]}`).join(', ')}.` : '');
+    (crowd ? ` Crowds: ${crowd.map((c, i) => `${MONTH_NAMES[i]} ${CROWD_WORDS[c]}`).join(', ')}.` : '');
+
   return (
     <View style={{ marginTop: 28 }}>
       <SectionHeader>Best time to go</SectionHeader>
-      <Card style={{ marginHorizontal: GUTTER, padding: 14 }}>
-        <View accessible accessibilityRole="image" accessibilityLabel={summary}>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 4, height: 96 }}>
-            {temps.map((t, i) => (
-              <View key={i} style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={{ fontFamily: best.has(i) ? fonts.sansSemiBold : fonts.sans, fontSize: 10, lineHeight: 13, color: best.has(i) ? colors.olive : colors.muted, marginBottom: 3 }}>
-                  {t}°
-                </Text>
-                <View style={{ width: '100%', height: barHeight(t), borderTopLeftRadius: 5, borderTopRightRadius: 5, backgroundColor: best.has(i) ? colors.olive : colors.sky }} />
-              </View>
-            ))}
+      <Card tone="cream" style={{ marginHorizontal: GUTTER, paddingHorizontal: 16, paddingTop: 16, paddingBottom: 14, gap: 12 }}>
+        {/* The month you've picked. */}
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }} accessibilityLiveRegion="polite">
+          <View>
+            <Text style={{ fontFamily: fonts.displayItalic, fontSize: 24, lineHeight: 30, color: colors.ink }}>{LONG_MONTHS[chosen]}</Text>
+            <View style={{ flexDirection: 'row', gap: 6, marginTop: 4, flexWrap: 'wrap' }}>
+              {crowd && <MiniPill text={CROWD_LABELS[crowd[chosen]]} bg={[colors.card, colors.sageSoft, colors.blushSoft, colors.blushSoft][crowd[chosen]]} color={crowd[chosen] === 3 ? colors.accentText : colors.ink} />}
+              {best.has(chosen) && <MiniPill text="✦ Best month" bg={colors.sageSoft} color={colors.olive} />}
+            </View>
           </View>
-          <View style={{ flexDirection: 'row', gap: 4, marginTop: 6 }}>
-            {MONTH_LETTERS.map((m, i) => (
-              <Text key={i} style={{ flex: 1, textAlign: 'center', fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, color: best.has(i) ? colors.olive : colors.muted }}>
-                {m}
-              </Text>
-            ))}
-          </View>
-          {detail.crowds && (
-            <View style={{ flexDirection: 'row', gap: 4, marginTop: 6 }}>
-              {detail.crowds.map((c, i) => (
-                <View key={i} style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 2 }}>
-                  {[1, 2, 3].map((d) => (
-                    <View key={d} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: d <= c ? colors.accent : colors.line }} />
-                  ))}
-                </View>
+          <Text style={{ fontFamily: fonts.display, fontSize: 34, lineHeight: 40, color: colors.ink }}>
+            {temps[chosen]}
+            <Text style={{ fontFamily: fonts.displayRegular, fontSize: 18, color: colors.muted }}>°C</Text>
+          </Text>
+        </View>
+
+        <View accessible accessibilityRole="image" accessibilityLabel={summary} onLayout={(e) => setW(e.nativeEvent.layout.width)} style={{ height: H }}>
+          {w > 0 && (
+            <Svg width={w} height={H}>
+              <Defs>
+                <LinearGradient id="warm" x1="0" y1="0" x2="0" y2="1">
+                  <Stop offset="0" stopColor={colors.accent} stopOpacity={0.28} />
+                  <Stop offset="1" stopColor={colors.accent} stopOpacity={0} />
+                </LinearGradient>
+              </Defs>
+              {bestRuns(detail.bestMonths).map(([a, b]) => (
+                <Rect key={a} x={col * a + 2} y={0} width={col * (b - a + 1) - 4} height={H} rx={10} fill={colors.sageSoft} />
               ))}
-            </View>
+              <Path d={area} fill="url(#warm)" />
+              <Path d={line} stroke={colors.accent} strokeWidth={2} fill="none" strokeLinecap="round" />
+              {pts.map(([px, py], i) => (
+                <Circle key={i} cx={px} cy={py} r={i === chosen ? 5.5 : 2.5} fill={i === chosen ? colors.card : colors.accent} stroke={colors.accent} strokeWidth={i === chosen ? 2.5 : 0} />
+              ))}
+            </Svg>
           )}
         </View>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', columnGap: 14, rowGap: 4, marginTop: 12 }}>
-          {best.size > 0 && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-              <View style={{ width: 9, height: 9, borderRadius: 2, backgroundColor: colors.olive }} />
-              <Text variant="tiny">Best months</Text>
-            </View>
-          )}
-          <Text variant="tiny">Bars: average daytime high, °C</Text>
-          {detail.crowds && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-              <View style={{ flexDirection: 'row', gap: 2 }}>
-                {[0, 1, 2].map((d) => (
-                  <View key={d} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: colors.accent }} />
-                ))}
+
+        {/* Months: tap one to see it above. */}
+        <View style={{ flexDirection: 'row' }}>
+          {MONTH_LETTERS.map((m, i) => (
+            <Pressable
+              key={i}
+              onPress={() => setChosen(i)}
+              accessibilityRole="button"
+              accessibilityState={{ selected: chosen === i }}
+              accessibilityLabel={`${LONG_MONTHS[i]}, ${temps[i]} degrees${crowd ? `, ${CROWD_WORDS[crowd[i]]}` : ''}${best.has(i) ? ', a best month' : ''}`}
+              hitSlop={{ top: 60, bottom: 8 }}
+              style={{ flex: 1, alignItems: 'center', gap: 5 }}
+            >
+              <View style={{ width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: chosen === i ? colors.ink : 'transparent' }}>
+                <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, color: chosen === i ? colors.onDark : best.has(i) ? colors.olive : colors.muted }}>{m}</Text>
               </View>
-              <Text variant="tiny">Crowds</Text>
-            </View>
-          )}
+              {crowd && <View style={{ width: '70%', height: 4, borderRadius: 2, backgroundColor: CROWD_FILL[crowd[i]] }} />}
+            </Pressable>
+          ))}
         </View>
+        {crowd && (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <Text variant="tiny">Crowds</Text>
+            {[1, 2, 3].map((c) => (
+              <View key={c} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                <View style={{ width: 12, height: 4, borderRadius: 2, backgroundColor: CROWD_FILL[c] }} />
+                <Text variant="tiny">{CROWD_LABELS[c]}</Text>
+              </View>
+            ))}
+          </View>
+        )}
       </Card>
+    </View>
+  );
+}
+
+const LONG_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const CROWD_LABELS = ['', 'Quiet', 'Busy', 'Very busy'];
+const CROWD_FILL = ['transparent', colors.sage, colors.stamp, colors.accent];
+
+/** Best months as runs of neighbouring months ([5, 6, 8] → [[5, 6], [8, 8]]), so they shade as one band each. */
+function bestRuns(months: number[]): [number, number][] {
+  const runs: [number, number][] = [];
+  for (const m of [...months].sort((a, b) => a - b)) {
+    const last = runs[runs.length - 1];
+    if (last && m === last[1] + 1) last[1] = m;
+    else runs.push([m, m]);
+  }
+  return runs;
+}
+
+function MiniPill({ text, bg, color = colors.ink }: { text: string; bg: string; color?: string }) {
+  return (
+    <View style={{ backgroundColor: bg, borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 3 }}>
+      <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, color }}>{text}</Text>
     </View>
   );
 }
@@ -211,39 +274,101 @@ export function SaidList({ items, slug }: { items: PlaceDetail['said']; slug: st
 
 /** Where to stay: photo cards with the type and your score out of 10. */
 /** Price bands for "Where to stay" (owner, Nov 2026: filter stays by budget). */
-export const PRICE_BANDS = [
-  { id: 'any', label: 'Any price', fits: () => true },
-  { id: 'low', label: 'Under £150', fits: (p: number | null) => p != null && p < 150 },
-  { id: 'mid', label: '£150–£300', fits: (p: number | null) => p != null && p >= 150 && p <= 300 },
-  { id: 'high', label: 'Over £300', fits: (p: number | null) => p != null && p > 300 },
-] as const;
+/**
+ * "Up to £X a night": drag (or tap) along the bar to set the most you'd pay (owner, Nov 2026: no broad buckets). It runs
+ * from this place's cheapest stay to its dearest in £10 steps, with a small dot for each stay's price; all the way to
+ * the right is any price. Screen readers swipe up/down to change it by £10.
+ */
+export function PriceSlider({ prices, value, onChange, shown }: { prices: number[]; value: number | null; onChange: (v: number | null) => void; shown: number }) {
+  const width = useRef(1);
+  const lo = Math.floor(Math.min(...prices) / 10) * 10;
+  const hi = Math.ceil(Math.max(...prices) / 10) * 10;
+  const at = value ?? hi;
+  const pct = (v: number) => ((v - lo) / Math.max(1, hi - lo)) * 100;
+  const set = (v: number) => {
+    const snapped = Math.round(Math.min(hi, Math.max(lo, v)) / 10) * 10;
+    const next = snapped >= hi ? null : snapped;
+    if (next !== value) onChange(next);
+  };
+  const fromTouch = (e: GestureResponderEvent) => set(lo + (Math.min(width.current, Math.max(0, e.nativeEvent.locationX)) / width.current) * (hi - lo));
+  const label = value == null ? 'Any price' : `Up to £${value} a night`;
+  return (
+    <View style={{ paddingHorizontal: GUTTER, marginBottom: 16, gap: 6 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
+        <Text style={{ fontFamily: fonts.display, fontSize: 18, lineHeight: 24, color: colors.ink }} accessibilityLiveRegion="polite">
+          {label}
+        </Text>
+        <Text variant="tiny">
+          {shown} of {prices.length} {prices.length === 1 ? 'stay' : 'stays'}
+        </Text>
+      </View>
+      <View
+        accessible
+        accessibilityRole="adjustable"
+        accessibilityLabel="Most you'd pay a night"
+        accessibilityValue={{ min: lo, max: hi, now: at, text: label }}
+        accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+        onAccessibilityAction={(e) => set(at + (e.nativeEvent.actionName === 'increment' ? 10 : -10))}
+        onLayout={(e) => (width.current = e.nativeEvent.layout.width || 1)}
+        onStartShouldSetResponder={() => true}
+        onMoveShouldSetResponder={() => true}
+        onResponderTerminationRequest={() => false}
+        onResponderGrant={fromTouch}
+        onResponderMove={fromTouch}
+        style={{ height: 30, justifyContent: 'center' }}
+      >
+        <View pointerEvents="none" style={{ height: 6, borderRadius: 3, backgroundColor: colors.line, overflow: 'hidden' }}>
+          <View style={{ width: `${pct(at)}%`, height: 6, backgroundColor: colors.olive }} />
+        </View>
+        {prices.map((p, i) => (
+          <View key={i} pointerEvents="none" style={{ position: 'absolute', left: `${pct(p)}%`, marginLeft: -3, width: 6, height: 6, borderRadius: 3, backgroundColor: p <= at ? colors.card : colors.muted, opacity: p <= at ? 1 : 0.5 }} />
+        ))}
+        <View
+          pointerEvents="none"
+          style={{
+            position: 'absolute',
+            left: `${pct(at)}%`,
+            marginLeft: -12,
+            width: 24,
+            height: 24,
+            borderRadius: 12,
+            backgroundColor: colors.card,
+            borderWidth: 2,
+            borderColor: colors.olive,
+            shadowColor: '#000',
+            shadowOpacity: 0.15,
+            shadowRadius: 3,
+            shadowOffset: { width: 0, height: 1 },
+            elevation: 2,
+          }}
+        />
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text variant="tiny">£{lo}</Text>
+        <Text variant="tiny">£{hi}+</Text>
+      </View>
+    </View>
+  );
+}
 
 /**
- * Where to stay: price chips (the bands this place has), then the stays as cards that scroll sideways.
+ * Where to stay: a price slider (when the stays' prices differ), then the stays as cards that scroll sideways.
  * Tap a card for its own page (app/stay/[slug].tsx) with prices and links out.
  */
 export function StayRow({ stays, at }: { stays: PlaceDetail['stays']; at?: SpotPlace }) {
-  const [band, setBand] = useState<string>('any');
+  const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const prices = stays.map((s) => parseStaySub(s.sub).priceFrom);
-  // Only the price bands this place has stays in (owner, Nov 2026: no "Under £150" when nothing is), and only
-  // when there's a choice to make (two or more bands).
-  const bands = PRICE_BANDS.filter((b) => b.id !== 'any' && prices.some((p) => b.fits(p)));
-  const chosen = PRICE_BANDS.find((b) => b.id === band) ?? PRICE_BANDS[0];
-  const shown = stays.filter((s, i) => chosen.fits(prices[i]));
+  const known = prices.filter((p): p is number => p != null);
+  const shown = stays.filter((s, i) => maxPrice == null || (prices[i] != null && prices[i]! <= maxPrice));
   return (
     <View style={{ marginTop: 28 }}>
       <SectionHeader>Where to stay</SectionHeader>
-      {bands.length >= 2 && (
-        <View accessibilityRole="tablist" accessibilityLabel="Price per night" style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8, paddingHorizontal: GUTTER, marginBottom: 14 }}>
-          <Text variant="label" style={{ width: '100%', marginBottom: 2 }}>
-            Price per night, from
-          </Text>
-          {[PRICE_BANDS[0], ...bands].map((b) => (
-            <Chip key={b.id} label={b.label} selected={band === b.id} onPress={() => setBand(b.id)} accessibilityLabel={`Show stays: ${b.label}${b.id === 'any' ? '' : ' a night'}`} />
-          ))}
-        </View>
-      )}
-      {shown.length === 0 ? null : (
+      {new Set(known).size >= 2 && <PriceSlider prices={known} value={maxPrice} onChange={setMaxPrice} shown={shown.length} />}
+      {shown.length === 0 ? (
+        <Text variant="small" style={{ paddingHorizontal: GUTTER }}>
+          No stays that low here. Slide right to see more.
+        </Text>
+      ) : (
         <Pinboard
           items={shown.map((s, i) => (
             <WithSave key={s.name} at={at} name={s.name} kind="stay">

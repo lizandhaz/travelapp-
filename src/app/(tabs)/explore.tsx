@@ -6,6 +6,7 @@ import { AccentTitle } from '@/components/AccentTitle';
 import { BoardTile, PlaceCard, Row, TrendCard } from '@/components/cards';
 import { CollectionTile } from '@/components/explore';
 import { SearchIcon } from '@/components/Icons';
+import { NearbyTrips } from '@/components/NearbyTrips';
 import { Text } from '@/components/Text';
 import { Chip, Input, Screen, SectionHeader } from '@/components/ui';
 import { colors, GUTTER, appWidth } from '@/constants/theme';
@@ -121,6 +122,8 @@ export default function Explore() {
             ))}
           </Row>
         </View>
+
+        {!search && filter === 'all' && <NearbyTrips />}
 
         <View style={{ marginTop: 28 }}>
           <SectionHeader>Trending this month</SectionHeader>

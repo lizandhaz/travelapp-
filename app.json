@@ -8,6 +8,10 @@
     "scheme": "postcard",
     "userInterfaceStyle": "light",
     "android": {
+      "blockedPermissions": [
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#f2ede2",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -36,6 +40,20 @@
           "photosPermission": "(set in app.config.ts)",
           "microphonePermission": false,
           "cameraPermission": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "We use your approximate location to suggest holidays near you.",
+          "locationAlwaysPermission": false,
+          "locationAlwaysAndWhenInUsePermission": false,
+          "locationFullAccuracyPermission": false,
+          "isIosReducedAccuracyByDefault": true,
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": false,
+          "motionUsagePermission": false
         }
       ]
     ],

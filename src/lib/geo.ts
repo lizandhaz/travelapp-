@@ -58,7 +58,7 @@ for (const p of WORLD_PLACES) {
 const CAPITAL_POS = new Map(Object.entries(CAPITALS).map(([c, pos]) => [plain(c), pos]));
 
 /** Latitude and longitude for a place, or null if we don't know roughly where it is. */
-export function positionOf(p: Place): [number, number] | null {
+export function positionOf(p: Place, allowCountryFallback = true): [number, number] | null {
   const n = plain(p.name);
   const country = plain(countryOf(p));
   const known = PLACE_POS.get(p.name.trim().toLowerCase()) ?? PLACE_POS.get(p.name.trim().toLowerCase().replace(/^the /, ''));
@@ -66,7 +66,7 @@ export function positionOf(p: Place): [number, number] | null {
   const towns = WORLD_POS.get(n) ?? WORLD_POS.get(n.replace(/^the /, ''));
   const town = towns?.find((t) => !country || t.country === country);
   if (town) return town.pos;
-  return COUNTRY_POS.get(country) ?? CAPITAL_POS.get(country) ?? null;
+  return allowCountryFallback ? COUNTRY_POS.get(country) ?? CAPITAL_POS.get(country) ?? null : null;
 }
 
 /**

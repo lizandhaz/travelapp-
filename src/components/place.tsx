@@ -561,6 +561,12 @@ export function YourScore({ result, note, known = true }: { result: PlaceResult;
 }
 
 const PIN_COLOURS: Record<string, string> = { Stay: colors.olive, Eat: colors.accent, Do: colors.ink, 'Hidden gem': colors.gold };
+/** The map key's sections, in order (hidden gems sit with things to do). */
+const MAP_SECTIONS = [
+  { kind: 'Stay', label: 'Where to stay' },
+  { kind: 'Eat', label: 'Where to eat' },
+  { kind: 'Do', label: 'Things to do' },
+] as const;
 
 /**
  * "On the map": a still preview of the real (Apple) map with numbered pins (stay, eat, do, hidden gem)
@@ -582,9 +588,22 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
   const [lastStay, setLastStay] = useState<number | null>(null);
   const map = placeMaps[slug];
   const centre = placeCentres[slug];
+  const d = placeDetails[slug];
+
+  // Ranked (owner, Nov 2026): the key is in sections (stay, eat, do), each best for you first, and the pins are numbered
+  // in that order, so 1 is your best stay and the numbers read top to bottom.
+  const scored = (map?.pins ?? []).map((p) => {
+    const kind = p.kind === 'Stay' ? 'Stay' : p.kind === 'Eat' ? 'Eat' : 'Do';
+    const { score, note } = taste.forItem({ slug, kind, name: p.name, friends: '' });
+    const what =
+      d?.stays.find((x) => x.name === p.name)?.sub ?? d?.eats.find((x) => x.name === p.name)?.what ?? d?.dos.find((x) => x.name === p.name)?.what ?? null;
+    return { ...p, section: kind, score, note, what };
+  });
+  const spots = MAP_SECTIONS.flatMap((sec) => scored.filter((s) => s.section === sec.kind).sort((a, b) => b.score - a.score)).map((s, i) => ({ ...s, n: i + 1 }));
+  const pins = spots.map(({ n, name, kind, at, ll }) => ({ n, name, kind, at, ll }));
 
   // "Where are you staying?": typing picks the stay on the map once only one matches.
-  const stays = map ? map.pins.filter((p) => p.kind === 'Stay') : [];
+  const stays = spots.filter((p) => p.kind === 'Stay');
   const q = plainName(typed);
   const matches = q.length >= 2 ? stays.filter((s) => plainName(s.name).includes(q)) : [];
   const stayPin = matches.length === 1 ? matches[0] : (stays.find((s) => plainName(s.name) === q) ?? null);
@@ -596,14 +615,6 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
   }
   if (!map) return null;
 
-  const d = placeDetails[slug];
-  const spots = map.pins.map((p) => {
-    const kind = p.kind === 'Stay' ? 'Stay' : p.kind === 'Eat' ? 'Eat' : 'Do';
-    const { score, note } = taste.forItem({ slug, kind, name: p.name, friends: '' });
-    const what =
-      d?.stays.find((x) => x.name === p.name)?.sub ?? d?.eats.find((x) => x.name === p.name)?.what ?? d?.dos.find((x) => x.name === p.name)?.what ?? null;
-    return { ...p, score, note, what };
-  });
   const top = [...spots].sort((a, b) => b.score - a.score)[0]?.n;
 
   // Everything else on the map, nearest your stay first.
@@ -663,7 +674,22 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
       </Pressable>
     );
   };
-  const key = <View style={{ gap: 2 }}>{spots.map((s) => row(s))}</View>;
+  const key = (
+    <View style={{ gap: 2 }}>
+      {MAP_SECTIONS.map((sec) => {
+        const inSection = spots.filter((s) => s.section === sec.kind);
+        if (!inSection.length) return null;
+        return (
+          <View key={sec.kind} style={{ paddingTop: 8 }}>
+            <Text variant="label" style={{ fontSize: 10 }}>
+              {sec.label}
+            </Text>
+            {inSection.map((s) => row(s))}
+          </View>
+        );
+      })}
+    </View>
+  );
 
   return (
     <View style={{ marginTop: 28 }}>
@@ -678,7 +704,7 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
             name={name}
             width={width - GUTTER * 2 - 2}
             height={Math.round(((width - GUTTER * 2) * 300) / 400)}
-            pins={map.pins}
+            pins={pins}
             picked={picked}
             stay={null}
             focus={focus}
@@ -697,7 +723,7 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
             </Pressable>
           </View>
           {open && !!centre && (
-            <AreaMap slug={slug} name={name} width={width} height={bigHeight} pins={map.pins} picked={picked} stay={stay} focus={focus} onPin={choosePin} />
+            <AreaMap slug={slug} name={name} width={width} height={bigHeight} pins={pins} picked={picked} stay={stay} focus={focus} onPin={choosePin} />
           )}
           <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: GUTTER, paddingTop: 14, paddingBottom: 40, gap: 12 }}>
             {stays.length > 0 && (

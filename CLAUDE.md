@@ -100,7 +100,7 @@ src/
                           say boards/lists): your Want to go board and your own boards ("Made by you", + New board), and
                           Friends' trips you've saved (SavedTripCard grid)
     (tabs)/profile.tsx    You (built from components/profile.tsx): profile picture (tap to change), name, followers / following / requests counts
-                          at the top (tap → people.tsx), Find friends / Add a trip buttons, stats (Countries and % "Of the world" open CountriesSheet, owner Nov 2026), Your taste (plain outline tags, no colours), travel map card (tap → map), "Your collections" (your lists + saved friends' trips, each opens; See all
+                          at the top (tap → people.tsx), Find friends / Add a trip buttons, stats (Countries and % "Of the world" open CountriesSheet, owner Nov 2026), Your taste (plain outline tags, no colours), travel map card (tap → map), "Your boards" (owner Nov 2026, was "Your collections": your boards + saved friends' trips, each opens; See all
                           → Saved), your trips as photo
                           stamps: Newest (default) / Oldest / Top rated, and a year filter
     list/[id].tsx         One board: cover (chosen photo, or a collage of its places) with the name, Share/Edit circles, places as a
@@ -134,7 +134,7 @@ src/
                           content sets the card's height. Then Like / Comment / Save, big photos, "See <who>'s whole trip" and "More about <place>"
     person/[who]/         A sample friend's profile, laid out like You (owner Nov 2026: "everyone's profile the same as mine"; lib/samplePeople.ts):
                           index.tsx: picture/initials, name, @handle · home town, followers & following counts at the top, bio, Follow/Following
-                          (local only) + "Follows you", stats tiles, their taste, travel map (open={false}), "<Name>'s collections" (boards) and
+                          (local only) + "Follows you", stats tiles, their taste, travel map (open={false}), "<Name>'s boards" and
                           "<Name>'s trips" (photo stamps, Newest/Oldest/Top rated + years). follows.tsx: Followers/Following lists (?tab=).
                           board.tsx?i=: one board's places. Linked from friends' avatars on feed cards, place pages' "What friends said"
                           (FriendName), friend-trip and postcard pages ("See <who>'s profile"). Place pages also show "See <who>'s trip →"

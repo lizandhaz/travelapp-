@@ -101,11 +101,11 @@ export default function You() {
 
       {trips && <TravelMapCard been={been} wish={wish} countries={countries.length} />}
 
-      {/* Your collections: your lists and friends' trips you've saved; each opens. */}
+      {/* Your boards (owner, Nov 2026; was "Your collections"): your boards and friends' trips you've saved; each opens. */}
       {(boards.length > 0 || savedTrips.length > 0) && (
         <View style={{ marginTop: 30 }}>
           <SectionHeader action="See all" onAction={() => router.navigate('/saved')}>
-            <AccentTitle before="Your" accent="collections" variant="heading" />
+            <AccentTitle before="Your" accent="boards" variant="heading" />
           </SectionHeader>
           <Row gap={14}>
             {[...boards.filter((b) => b.kind === 'wish'), ...boards.filter((b) => b.kind !== 'wish')].map((b) => (

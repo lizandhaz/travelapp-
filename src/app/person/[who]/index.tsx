@@ -20,7 +20,7 @@ import NotFound from '../../+not-found';
 
 /**
  * A sample friend's profile, laid out like You (owner, Nov 2026): picture, name, followers and following
- * at the top, Follow, stats, their taste, travel map, their collections (boards) and their trips.
+ * at the top, Follow, stats, their taste, travel map, their boards and their trips.
  */
 export default function PersonScreen() {
   const { who } = useLocalSearchParams<{ who: string }>();
@@ -86,7 +86,7 @@ export default function PersonScreen() {
       {boards.length > 0 && (
         <View style={{ marginTop: 30 }}>
           <SectionHeader>
-            <AccentTitle before={`${person.name}’s`} accent="collections" variant="heading" />
+            <AccentTitle before={`${person.name}’s`} accent="boards" variant="heading" />
           </SectionHeader>
           <Row gap={14}>
             {boards.map((b, i) => (

@@ -79,6 +79,12 @@ export function AreaMap({
       scrollEnabled={!preview}
       zoomEnabled={!preview}
       onPress={preview ? onPress : undefined}
+      // Backup for pin taps: some iPhones only report the tap here, not on the Marker itself. Choosing a pin twice is harmless.
+      onMarkerPress={(e) => {
+        const n = Number(e.nativeEvent.id);
+        if (preview) onPress?.();
+        else if (Number.isFinite(n) && pins.some((p) => p.n === n)) onPin(n);
+      }}
       accessibilityLabel={`Map of ${name}`}
     >
       {spots.map((s) =>
@@ -86,6 +92,7 @@ export function AreaMap({
           <Marker
             // A new key redraws the marker when it's picked or becomes your stay.
             key={`${s.n}-${picked === s.n}-${stay === s.n}`}
+            identifier={String(s.n)}
             coordinate={{ latitude: s.pos[0], longitude: s.pos[1] }}
             anchor={{ x: 0.5, y: 0.2 }}
             tracksViewChanges={false}

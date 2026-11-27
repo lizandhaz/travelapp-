@@ -18,7 +18,7 @@ import { Avatar } from './Avatar';
 import { Row } from './cards';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { Card, Input, SectionHeader } from './ui';
+import { Card, Input, SectionHeader, useScrollLock } from './ui';
 import { AreaMap } from './AreaMap';
 import { BedIcon, BookmarkIcon, ForkIcon } from './Icons';
 
@@ -281,6 +281,8 @@ export function SaidList({ items, slug }: { items: PlaceDetail['said']; slug: st
  */
 export function PriceSlider({ prices, value, onChange, shown }: { prices: number[]; value: number | null; onChange: (v: number | null) => void; shown: number }) {
   const width = useRef(1);
+  // Hold the page still while dragging, so only the slider moves.
+  const lockScroll = useScrollLock();
   const lo = Math.floor(Math.min(...prices) / 10) * 10;
   const hi = Math.ceil(Math.max(...prices) / 10) * 10;
   const at = value ?? hi;
@@ -313,8 +315,13 @@ export function PriceSlider({ prices, value, onChange, shown }: { prices: number
         onStartShouldSetResponder={() => true}
         onMoveShouldSetResponder={() => true}
         onResponderTerminationRequest={() => false}
-        onResponderGrant={fromTouch}
+        onResponderGrant={(e) => {
+          lockScroll(true);
+          fromTouch(e);
+        }}
         onResponderMove={fromTouch}
+        onResponderRelease={() => lockScroll(false)}
+        onResponderTerminate={() => lockScroll(false)}
         style={{ height: 30, justifyContent: 'center' }}
       >
         <View pointerEvents="none" style={{ height: 6, borderRadius: 3, backgroundColor: colors.line, overflow: 'hidden' }}>
@@ -759,6 +766,75 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
     if (next != null) setFocus((f) => ({ n: next, zoom: Math.max(2.5, fill), key: f.key + 1 }));
   };
 
+  // Tapping a numbered pin on the map pulls that spot up in a card over the map (owner, Nov 2026), rather than only
+  // opening its row in the key further down. Tapping the same pin again keeps it up; × closes it.
+  const selectPin = (n: number) => {
+    setPicked(n);
+    setFocus((f) => ({ n, zoom: Math.max(2.5, fill), key: f.key + 1 }));
+  };
+  const pickedSpot = spots.find((s) => s.n === picked) ?? null;
+  const hasStayPage = (s: (typeof spots)[number]) => s.kind === 'Stay' && !!d?.stays.some((x) => x.name === s.name);
+  const openStay = (s: (typeof spots)[number]) => {
+    setOpen(false);
+    router.push({ pathname: '/stay/[slug]', params: { slug, name: s.name } });
+  };
+  const pinCard = pickedSpot ? (
+    <View
+      style={{
+        position: 'absolute',
+        left: 10,
+        right: 10,
+        bottom: 10,
+        backgroundColor: colors.card,
+        borderRadius: radius.md,
+        borderWidth: 1,
+        borderColor: colors.line,
+        padding: 12,
+        gap: 6,
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 4,
+      }}
+      accessibilityLiveRegion="polite"
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+        <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: PIN_COLOURS[pickedSpot.kind] ?? colors.ink, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontFamily: fonts.sansBold, fontSize: 12, lineHeight: 14, color: colors.onDark }}>{pickedSpot.n}</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text variant="strong" numberOfLines={1} style={{ fontSize: 15 }}>
+            {pickedSpot.name}
+          </Text>
+          <Text variant="tiny">
+            {pickedSpot.kind}
+            {pickedSpot.n === top ? ' · ✦ Top pick for you' : ''}
+          </Text>
+        </View>
+        <Text style={{ fontFamily: fonts.display, fontSize: 20, color: colors.ink, fontVariant: ['tabular-nums'] }}>{formatScore(pickedSpot.score)}</Text>
+        <Pressable onPress={() => setPicked(null)} accessibilityRole="button" accessibilityLabel={`Close ${pickedSpot.name}`} hitSlop={10}>
+          <Text style={{ fontFamily: fonts.sansBold, fontSize: 18, lineHeight: 20, color: colors.muted }}>×</Text>
+        </Pressable>
+      </View>
+      {!!pickedSpot.what && (
+        <Text variant="small" numberOfLines={2}>
+          {pickedSpot.what}
+        </Text>
+      )}
+      {!!pickedSpot.note && (
+        <Text variant="small" numberOfLines={2} style={{ color: colors.ink }}>
+          ✦ {pickedSpot.note}
+        </Text>
+      )}
+      {hasStayPage(pickedSpot) && (
+        <Pressable onPress={() => openStay(pickedSpot)} accessibilityRole="link" hitSlop={6} style={{ alignSelf: 'flex-start' }}>
+          <Text variant="link">Prices & details →</Text>
+        </Pressable>
+      )}
+    </View>
+  ) : null;
+
   const row = (s: (typeof spots)[number], extra?: string) => {
     const on = picked === s.n;
     return (
@@ -794,6 +870,11 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
                 ✦ {s.note}
               </Text>
             )}
+            {hasStayPage(s) && (
+              <Pressable onPress={() => openStay(s)} accessibilityRole="link" hitSlop={6} style={{ alignSelf: 'flex-start', marginTop: 4 }}>
+                <Text variant="link">Prices & details →</Text>
+              </Pressable>
+            )}
           </View>
         )}
       </Pressable>
@@ -822,19 +903,22 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
         On the map
       </SectionHeader>
       <Card style={{ marginHorizontal: GUTTER, overflow: 'hidden' }}>
-        {/* The real map, right here: pinch to zoom, drag to look around, tap a pin to see it in the list. */}
+        {/* The real map, right here: pinch to zoom, drag to look around, tap a pin to pull it up in a card. */}
         {!open && (
-          <AreaMap
-            slug={slug}
-            name={name}
-            width={width - GUTTER * 2 - 2}
-            height={Math.round(((width - GUTTER * 2) * 300) / 400)}
-            pins={pins}
-            picked={picked}
-            stay={null}
-            focus={focus}
-            onPin={choosePin}
-          />
+          <View>
+            <AreaMap
+              slug={slug}
+              name={name}
+              width={width - GUTTER * 2 - 2}
+              height={Math.round(((width - GUTTER * 2) * 300) / 400)}
+              pins={pins}
+              picked={picked}
+              stay={null}
+              focus={focus}
+              onPin={selectPin}
+            />
+            {pinCard}
+          </View>
         )}
         <View style={{ paddingHorizontal: 14, paddingVertical: 6 }}>{key}</View>
       </Card>
@@ -848,7 +932,10 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
             </Pressable>
           </View>
           {open && !!centre && (
-            <AreaMap slug={slug} name={name} width={width} height={bigHeight} pins={pins} picked={picked} stay={stay} focus={focus} onPin={choosePin} />
+            <View>
+              <AreaMap slug={slug} name={name} width={width} height={bigHeight} pins={pins} picked={picked} stay={stay} focus={focus} onPin={selectPin} />
+              {pinCard}
+            </View>
           )}
           <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: GUTTER, paddingTop: 14, paddingBottom: 40, gap: 12 }}>
             {stays.length > 0 && (

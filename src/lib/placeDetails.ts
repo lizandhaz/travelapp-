@@ -14363,5 +14363,531 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "florence": {
+    "kicker": "City · Culture",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "April, May, September or October",
+    "staysFrom": "from £150 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      11,
+      13,
+      16,
+      20,
+      24,
+      29,
+      32,
+      32,
+      27,
+      21,
+      15,
+      11
+    ],
+    "bestMonths": [
+      3,
+      4,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      1,
+      2
+    ],
+    "said": [
+      {
+        "who": "Priya",
+        "month": "Apr 2025",
+        "quote": "Art at every turn, and the best steak of my life.",
+        "score": 9.0,
+        "face": null
+      },
+      {
+        "who": "Sam",
+        "month": "Oct 2024",
+        "quote": "Climb the Duomo early, then sunset at Piazzale Michelangelo.",
+        "score": 8.7,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Four Seasons Hotel Firenze",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £800 a night · A Renaissance palace in a huge private garden.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hotel Lungarno",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £400 a night · Priya stayed",
+        "because": null,
+        "score": 9.1,
+        "photo": null
+      },
+      {
+        "name": "Hotel Brunelleschi",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £220 a night · Sam stayed",
+        "because": null,
+        "score": 8.5,
+        "photo": null
+      },
+      {
+        "name": "Hotel Davanzati",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £150 a night · A friendly family-run hotel in a palazzo near the Ponte Vecchio.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Trattoria Mario",
+        "price": "£",
+        "what": "Lunch only, at shared tables by the market",
+        "score": 8.9,
+        "from": "Priya",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Buca Mario",
+        "price": "££",
+        "what": "Bistecca alla fiorentina in an old cellar",
+        "score": 8.7,
+        "from": "Sam",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "All'Antico Vinaio",
+        "price": "£",
+        "what": "The famous schiacciata sandwiches",
+        "score": 8.5,
+        "from": null,
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Culture",
+        "name": "Uffizi Gallery",
+        "what": "Botticelli and the Renaissance. Book a timed ticket.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Climb the Duomo",
+        "what": "Up inside Brunelleschi's dome for the view. Book ahead.",
+        "from": "Sam",
+        "gem": false
+      },
+      {
+        "tag": "Walk",
+        "name": "Ponte Vecchio and the Oltrarno",
+        "what": "Cross to the artisans' side for workshops and quieter streets.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Piazzale Michelangelo at sunset",
+        "what": "The whole city turns gold.",
+        "from": "Sam",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "Accademia Gallery",
+        "what": "Michelangelo's David.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Book the Uffizi, the Accademia and the Duomo climb ahead, especially from April to October.",
+        "from": "Priya"
+      }
+    ],
+    "credits": null
+  },
+  "nice": {
+    "kicker": "City · Beach",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £150 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      13,
+      14,
+      15,
+      17,
+      21,
+      25,
+      28,
+      28,
+      25,
+      21,
+      17,
+      14
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Tom",
+        "month": "Jun 2025",
+        "quote": "Socca in the old town, a swim off the pebbles, then rosé on the Promenade.",
+        "score": 8.6,
+        "face": null
+      },
+      {
+        "who": "Harriet",
+        "month": "Sep 2024",
+        "quote": "A perfect base: Monaco, Èze and Antibes are a short train away.",
+        "score": 8.5,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Hotel Negresco",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £350 a night · The famous pink-domed palace on the Promenade des Anglais.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hôtel La Pérouse",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £280 a night · Harriet stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Hôtel Le Grimaldi",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £170 a night · A calm boutique hotel a few streets from the sea.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Hôtel Windsor",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £150 a night · Tom stayed",
+        "because": null,
+        "score": 8.3,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "La Merenda",
+        "price": "££",
+        "what": "A tiny Niçoise bistro. Cash only",
+        "score": 8.9,
+        "from": "Harriet",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Chez Pipo",
+        "price": "£",
+        "what": "Socca, the chickpea pancake, since 1923",
+        "score": 8.8,
+        "from": "Tom",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Le Plongeoir",
+        "price": "££",
+        "what": "Dinner on a rock above the sea",
+        "score": 8.4,
+        "from": null,
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "Promenade des Anglais",
+        "what": "Walk or cycle the seafront from end to end.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Market",
+        "name": "Cours Saleya market",
+        "what": "Flowers and food in the old town every morning except Monday.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Views",
+        "name": "Castle Hill",
+        "what": "Climb up for the view over the Baie des Anges.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Èze village",
+        "what": "A hilltop village half an hour away, with a cactus garden at the top.",
+        "from": "Harriet",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "Art",
+        "when": null,
+        "name": "Musée Matisse",
+        "what": "Matisse lived and worked in Nice. His museum is in Cimiez.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "The beaches are pebbles: bring water shoes, or book a beach club for a cushion.",
+        "from": "Tom"
+      }
+    ],
+    "credits": null
+  },
+  "provence": {
+    "kicker": "Countryside · Food",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "June, July or September",
+    "staysFrom": "from £200 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      11,
+      12,
+      15,
+      18,
+      22,
+      27,
+      30,
+      30,
+      26,
+      20,
+      14,
+      11
+    ],
+    "bestMonths": [
+      5,
+      6,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Sophie",
+        "month": "Jul 2025",
+        "quote": "Lavender fields, hilltop villages and long lunches. Bliss.",
+        "score": 9.2,
+        "face": null
+      },
+      {
+        "who": "Maya",
+        "month": "Sep 2024",
+        "quote": "Hire a car and potter between markets and vineyards.",
+        "score": 8.8,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "La Bastide de Gordes",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £450 a night · A grand hotel on the edge of the hilltop village of Gordes.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Coquillade Provence",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £350 a night · Sophie stayed",
+        "because": null,
+        "score": 9.3,
+        "photo": null
+      },
+      {
+        "name": "Hôtel Les Ateliers de l'Image",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £200 a night · Maya stayed",
+        "because": null,
+        "score": 8.6,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "La Bastide de Moustiers",
+        "price": "£££",
+        "what": "Alain Ducasse's country inn in Moustiers",
+        "score": 9.0,
+        "from": "Sophie",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Le Bistrot du Paradou",
+        "price": "££",
+        "what": "A set lunch near Les Baux that locals love",
+        "score": 8.7,
+        "from": "Maya",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Restaurant Prévôt",
+        "price": "£££",
+        "what": "Michelin-starred cooking in Cavaillon, famous for its melon menu",
+        "score": 8.6,
+        "from": null,
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Nature",
+        "name": "Lavender at Valensole",
+        "what": "The fields bloom from late June to mid-July.",
+        "from": "Sophie",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Gordes and Roussillon",
+        "what": "Two hilltop villages: one stone grey, one ochre red.",
+        "from": "Maya",
+        "gem": false
+      },
+      {
+        "tag": "Market",
+        "name": "L'Isle-sur-la-Sorgue market",
+        "what": "Antiques and food by the river on Sundays.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Wine",
+        "name": "Châteauneuf-du-Pape",
+        "what": "Tastings in the famous wine village.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Abbaye de Sénanque",
+        "what": "A monastery in its own lavender valley.",
+        "from": "Sophie",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Pont du Gard",
+        "what": "A Roman aqueduct you can swim beneath.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Hire a car: the villages, markets and fields are spread out and buses are rare.",
+        "from": "Maya"
+      }
+    ],
+    "credits": null
   }
 };

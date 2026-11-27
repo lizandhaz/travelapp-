@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { View, type GestureResponderEvent } from 'react-native';
 
 import { Text } from '@/components/Text';
-import { Card } from '@/components/ui';
+import { Card, useScrollLock } from '@/components/ui';
 import { colors, fonts } from '@/constants/theme';
 import { clampScore, formatScore, scoreWord } from '@/lib/score';
 
@@ -26,6 +26,7 @@ export function ScorePicker({
   bare?: boolean;
 }) {
   const width = useRef(1);
+  const lock = useScrollLock();
 
   const fromTouch = (e: GestureResponderEvent) => {
     const x = Math.min(width.current, Math.max(0, e.nativeEvent.locationX));
@@ -80,8 +81,13 @@ export function ScorePicker({
         onMoveShouldSetResponder={() => true}
         // Keep the drag once it starts, so sliding right isn't taken as a swipe back or a scroll.
         onResponderTerminationRequest={() => false}
-        onResponderGrant={fromTouch}
+        onResponderGrant={(e) => {
+          lock(true); // the page holds still while you slide
+          fromTouch(e);
+        }}
         onResponderMove={fromTouch}
+        onResponderRelease={() => lock(false)}
+        onResponderTerminate={() => lock(false)}
         style={{ height: 30, justifyContent: 'center' }}
       >
         <View pointerEvents="none" style={{ height: 6, borderRadius: 3, backgroundColor: value == null ? colors.line : colors.ink, overflow: 'hidden' }}>

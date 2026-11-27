@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { forwardRef, type ComponentRef } from 'react';
+import { createContext, forwardRef, useContext, useState, type ComponentRef } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -17,10 +17,18 @@ import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { BackIcon } from './Icons';
 import { Text } from './Text';
 
+/**
+ * Lets a slider hold the page still while you drag it (owner, Nov 2026: dragging the price slider moved the page).
+ * `useScrollLock()(true)` when the drag starts, `(false)` when it ends. Does nothing outside a Screen.
+ */
+const ScrollLock = createContext<(locked: boolean) => void>(() => {});
+export const useScrollLock = () => useContext(ScrollLock);
+
 /** Scrolling screen with safe-area padding at the top and room for the tab bar below. */
 export const Screen = forwardRef<ComponentRef<typeof ScrollView>, ScrollViewProps & { tabBar?: boolean; contentStyle?: ViewStyle; noTopInset?: boolean }>(
   function Screen({ children, tabBar = false, contentStyle, noTopInset = false, ...props }, ref) {
     const insets = useSafeAreaInsets();
+    const [locked, setLocked] = useState(false);
     return (
       <ScrollView
         ref={ref}
@@ -30,8 +38,9 @@ export const Screen = forwardRef<ComponentRef<typeof ScrollView>, ScrollViewProp
         // iPhone: scroll so a focused text box isn't hidden behind the keyboard.
         automaticallyAdjustKeyboardInsets
         {...props}
+        scrollEnabled={!locked && (props.scrollEnabled ?? true)}
       >
-        {children}
+        <ScrollLock.Provider value={setLocked}>{children}</ScrollLock.Provider>
       </ScrollView>
     );
   },

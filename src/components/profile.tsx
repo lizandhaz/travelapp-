@@ -7,6 +7,7 @@ import { fitLines, fitWordSize } from '@/lib/fit';
 import { tripPic, tripPlace, type FriendTrip } from '@/lib/friendTrips';
 import { TASTE_LABELS } from '@/lib/taste';
 import { AccentTitle } from './AccentTitle';
+import { ChevronIcon } from './Icons';
 import { MonthPill } from './MonthPill';
 import { PhotoStamp } from './Photo';
 import { Text } from './Text';
@@ -57,26 +58,39 @@ export function ProfileTop({
 }
 
 /** Trips, countries and share of the world, as three coloured tiles. */
-export function ProfileStats({ trips, countries }: { trips: number; countries: number }) {
+/** `onCountries` makes Countries and "% of the world" tappable (You: opens the list of countries you've been to). */
+export function ProfileStats({ trips, countries, onCountries }: { trips: number; countries: number; onCountries?: () => void }) {
+  const hint = 'Shows the countries you’ve been to.';
   return (
     <View style={{ marginHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', gap: 8 }}>
       <Stat label="Trips" value={trips} tone="cream" />
-      <Stat label="Countries" value={countries} tone="sage" />
-      <Stat label="Of the world" value={worldShare(countries)} tone="sky" />
+      <Stat label="Countries" value={countries} tone="sage" onPress={onCountries} a11y={`${countries} ${countries === 1 ? 'country' : 'countries'}. ${hint}`} />
+      <Stat label="Of the world" value={worldShare(countries)} tone="sky" onPress={onCountries} a11y={`${worldShare(countries)} of the world. ${hint}`} />
     </View>
   );
 }
 
-function Stat({ label, value, tone }: { label: string; value: string | number; tone: Tone }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', paddingVertical: 14, borderRadius: radius.md, backgroundColor: toneFill(tone), borderWidth: tone === 'cream' ? 1 : 0, borderColor: colors.line }}>
+function Stat({ label, value, tone, onPress, a11y }: { label: string; value: string | number; tone: Tone; onPress?: () => void; a11y?: string }) {
+  const style = { flex: 1, alignItems: 'center' as const, paddingVertical: 14, borderRadius: radius.md, backgroundColor: toneFill(tone), borderWidth: tone === 'cream' ? 1 : 0, borderColor: colors.line };
+  const body = (
+    <>
       <Text variant="title" style={{ fontSize: 26, lineHeight: 30 }}>
         {value}
       </Text>
-      <Text variant="label" style={{ fontSize: 10, marginTop: 2 }}>
-        {label}
-      </Text>
-    </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2, marginTop: 2 }}>
+        <Text variant="label" style={{ fontSize: 10 }}>
+          {label}
+        </Text>
+        {onPress && <ChevronIcon color={colors.muted} size={10} strokeWidth={2.4} />}
+      </View>
+    </>
+  );
+  return onPress ? (
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={a11y} style={({ pressed }) => [style, { opacity: pressed ? 0.75 : 1 }]}>
+      {body}
+    </Pressable>
+  ) : (
+    <View style={style}>{body}</View>
   );
 }
 

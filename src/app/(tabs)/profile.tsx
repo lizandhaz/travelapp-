@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
+import { CountriesSheet } from '@/components/CountriesSheet';
 import { Avatar } from '@/components/Avatar';
 import { PlusIcon, SlidersIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
@@ -20,7 +21,7 @@ import { useAuth } from '@/lib/auth';
 import { useTaste } from '@/lib/taste';
 import { beenPlaces, wishPlaces } from '@/lib/travelPlaces';
 import { boardMeta, fetchBoards, type Board } from '@/lib/boards';
-import { countriesIn, fetchMyTrips, setProfilePicture, type Trip } from '@/lib/trips';
+import { fetchMyTrips, setProfilePicture, visitedCountries, type Trip } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
 
 export default function You() {
@@ -64,6 +65,9 @@ export default function You() {
   const list = useMemo(() => trips ?? [], [trips]);
   const been = useMemo(() => beenPlaces(list), [list]);
   const wish = useMemo(() => wishPlaces(boards.find((x) => x.kind === 'wish')?.items ?? []), [boards]);
+  // One list for the tiles, the map's count and the countries sheet, so the numbers always match.
+  const countries = useMemo(() => visitedCountries(list), [list]);
+  const [showCountries, setShowCountries] = useState(false);
 
   const cardWidth = (appWidth() - GUTTER * 2 - 14) / 2;
 
@@ -91,10 +95,11 @@ export default function You() {
         </Link>
       </View>
 
-      <ProfileStats trips={list.length} countries={countriesIn(list)} />
+      <ProfileStats trips={list.length} countries={countries.length} onCountries={() => setShowCountries(true)} />
+      <CountriesSheet visible={showCountries} onClose={() => setShowCountries(false)} countries={countries} />
       <TasteTags label="Your taste" tastes={taste.tastes} />
 
-      {trips && <TravelMapCard been={been} wish={wish} countries={countriesIn(list)} />}
+      {trips && <TravelMapCard been={been} wish={wish} countries={countries.length} />}
 
       {/* Your collections: your lists and friends' trips you've saved; each opens. */}
       {(boards.length > 0 || savedTrips.length > 0) && (

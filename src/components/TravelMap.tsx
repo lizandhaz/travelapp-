@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import Svg, { Circle, Defs, G, LinearGradient, Path, Rect, Stop, Text as SvgText } from 'react-native-svg';
 
-import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { appWidth, colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { positionOf, toMap } from '@/lib/geo';
 import type { MapPlace } from '@/lib/travelPlaces';
 import { placeLabel } from '@/lib/trips';
@@ -20,6 +20,16 @@ const H = WORLD_VIEWBOX.height;
 const ASPECT = 1.8;
 const fullFor = (aspect: number) => ({ x: 0, y: (H - W / aspect) / 2, w: W, h: W / aspect });
 const FULL = fullFor(1.2); // the sea is drawn this tall, enough for both frames
+
+/**
+ * The map's size in points: the card's inside width (the app column less the gutters and the card's 1pt borders) and
+ * a height from the aspect ratio. Fixed numbers, never "100% wide" inside a scroll view, so the map can't be resized
+ * by what's drawn on it (owner, Nov 2026: it squashed when switching Been / Want to go).
+ */
+const mapSize = (aspect: number) => {
+  const width = Math.round(appWidth() - GUTTER * 2 - 2);
+  return { width, height: Math.round(width / aspect) };
+};
 
 export type { MapPlace };
 type Show = 'all' | 'been' | 'wish';
@@ -83,11 +93,11 @@ function toPins(list: MapPlace[], kind: Pin['kind']): Pin[] {
 }
 
 /** The map itself: sea, land, your pins and (optionally) their names. */
-function MapCanvas({ pins, view, aspect, labels, description }: { pins: Pin[]; view: { x: number; y: number; w: number; h: number }; aspect: number; labels: boolean; description: string }) {
+function MapCanvas({ pins, view, size, labels, description }: { pins: Pin[]; view: { x: number; y: number; w: number; h: number }; size: { width: number; height: number }; labels: boolean; description: string }) {
   const z = W / view.w; // how far we're zoomed in; pins and labels keep the same size on screen
   return (
-    <View accessible accessibilityRole="image" accessibilityLabel={description}>
-      <Svg viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`} style={{ width: '100%', aspectRatio: aspect }}>
+    <View accessible accessibilityRole="image" accessibilityLabel={description} style={size}>
+      <Svg viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`} width={size.width} height={size.height}>
         <Defs>
           <LinearGradient id="tm-sea" x1="0" y1="0" x2="0" y2="1">
             <Stop offset="0" stopColor={colors.card} />
@@ -156,7 +166,7 @@ export function TravelMapCard({ been, wish, countries, title, open = true }: { b
         </Text>
       </View>
       <Pressable disabled={!open} onPress={() => router.push('/map')} accessibilityRole={open ? 'button' : 'image'} accessibilityLabel={`${describe(been, wish)}${open ? ' Opens the full map.' : ''}`} style={({ pressed }) => [cardStyle, { opacity: pressed ? 0.9 : 1 }]}>
-        <MapCanvas pins={pins} view={view} aspect={ASPECT} labels={false} description="" />
+        <MapCanvas pins={pins} view={view} size={mapSize(ASPECT)} labels={false} description="" />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 14, paddingVertical: 11, borderTopWidth: 1, borderTopColor: colors.line }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.accent }} />
@@ -186,10 +196,14 @@ export function TravelMapCard({ been, wish, countries, title, open = true }: { b
 export function TravelMapFull({ been, wish }: { been: MapPlace[]; wish: MapPlace[] }) {
   const [show, setShow] = useState<Show>('all');
   const [whole, setWhole] = useState(false);
-  const pins = useMemo(() => [...(show !== 'been' ? toPins(wish, 'wish') : []), ...(show !== 'wish' ? toPins(been, 'been') : [])], [been, wish, show]);
+  // The view is framed on all your places, whichever tab is on, so switching All / Been / Want to go only changes
+  // which pins show: the map doesn't zoom, move or resize (owner, Nov 2026).
+  const allPins = useMemo(() => [...toPins(wish, 'wish'), ...toPins(been, 'been')], [been, wish]);
+  const pins = useMemo(() => allPins.filter((p) => show === 'all' || p.kind === show), [allPins, show]);
   const aspect = 1.55;
-  const view = frame(pins, whole, aspect);
-  const zoomable = pins.length > 0 && frame(pins, false, aspect).w < W;
+  const size = mapSize(aspect);
+  const view = frame(allPins, whole, aspect);
+  const zoomable = allPins.length > 0 && frame(allPins, false, aspect).w < W;
 
   return (
     <View style={{ gap: 14 }}>
@@ -225,8 +239,17 @@ export function TravelMapFull({ been, wish }: { been: MapPlace[]; wish: MapPlace
 
       <View style={[cardStyle, { marginHorizontal: GUTTER }]}>
         {/* Pinch to zoom on iPhone (ScrollView zooming); the buttons above work everywhere. */}
-        <ScrollView maximumZoomScale={5} minimumZoomScale={1} bouncesZoom centerContent showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
-          <MapCanvas pins={pins} view={view} aspect={aspect} labels={pins.length <= 16} description={describe(show === 'wish' ? [] : been, show === 'been' ? [] : wish)} />
+        <ScrollView
+          maximumZoomScale={5}
+          minimumZoomScale={1}
+          bouncesZoom
+          centerContent
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          style={{ ...size, flexGrow: 0 }}
+          contentContainerStyle={size}
+        >
+          <MapCanvas pins={pins} view={view} size={size} labels={pins.length <= 16} description={describe(show === 'wish' ? [] : been, show === 'been' ? [] : wish)} />
         </ScrollView>
       </View>
       <Text variant="tiny" style={{ paddingHorizontal: GUTTER }}>

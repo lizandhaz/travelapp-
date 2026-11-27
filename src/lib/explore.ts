@@ -133,7 +133,10 @@ export type ExploreItem = {
   scoreKind: 'Stay' | 'Eat' | 'Do';
   name: string;
   what: string | null;
+  /** A photo of this very thing, or null: never a photo of something else (owner, Nov 2026: "only show things that are accurate"). */
   photo: PhotoName | null;
+  /** Its place's photo: only for a collection's cover, never on the thing's own card. */
+  cover: PhotoName | null;
 };
 
 export type ItemCollection = { id: string; title: string; items: () => ExploreItem[]; /** A chosen cover photo. */ photo?: PhotoName };
@@ -148,7 +151,7 @@ function staysPriced(ok: (price: number) => boolean): ExploreItem[] {
     (placeDetails[slug]?.stays ?? [])
       .map((s) => ({ s, price: parseStaySub(s.sub).priceFrom }))
       .filter(({ price }) => price != null && ok(price))
-      .map(({ s }) => ({ key: `${slug}-${s.name}`, slug, place, kind: s.type, scoreKind: 'Stay' as const, name: s.name, what: s.sub, photo: s.photo ?? photo })),
+      .map(({ s }) => ({ key: `${slug}-${s.name}`, slug, place, kind: s.type, scoreKind: 'Stay' as const, name: s.name, what: s.sub, photo: s.photo, cover: photo })),
   ).sort((a, b) => (parseStaySub(a.what).priceFrom ?? 0) - (parseStaySub(b.what).priceFrom ?? 0));
 }
 
@@ -163,9 +166,9 @@ export const itemCollections: ItemCollection[] = [
         if (!AMALFI.includes(slug)) return [];
         const d = placeDetails[slug];
         return [
-          ...(d?.stays ?? []).map((x) => ({ key: `${slug}-${x.name}`, slug, place, kind: x.type, scoreKind: 'Stay' as const, name: x.name, what: x.sub, photo: x.photo ?? photo })),
-          ...(d?.eats ?? []).map((x) => ({ key: `${slug}-${x.name}`, slug, place, kind: 'Eat', scoreKind: 'Eat' as const, name: x.name, what: x.what, photo: x.photo ?? photo })),
-          ...(d?.dos ?? []).map((x) => ({ key: `${slug}-${x.name}`, slug, place, kind: x.gem ? 'Hidden gem' : x.tag, scoreKind: 'Do' as const, name: x.name, what: x.what, photo: photoForActivity(x) ?? photo })),
+          ...(d?.stays ?? []).map((x) => ({ key: `${slug}-${x.name}`, slug, place, kind: x.type, scoreKind: 'Stay' as const, name: x.name, what: x.sub, photo: x.photo, cover: photo })),
+          ...(d?.eats ?? []).map((x) => ({ key: `${slug}-${x.name}`, slug, place, kind: 'Eat', scoreKind: 'Eat' as const, name: x.name, what: x.what, photo: x.photo, cover: photo })),
+          ...(d?.dos ?? []).map((x) => ({ key: `${slug}-${x.name}`, slug, place, kind: x.gem ? 'Hidden gem' : x.tag, scoreKind: 'Do' as const, name: x.name, what: x.what, photo: photoForActivity(x), cover: photo })),
         ];
       }),
   },
@@ -174,7 +177,7 @@ export const itemCollections: ItemCollection[] = [
     title: 'Hidden gems',
     items: () =>
       gather((slug, place, photo) =>
-        (placeDetails[slug]?.dos ?? []).filter((d) => d.gem).map((d) => ({ key: `${slug}-${d.name}`, slug, place, kind: 'Hidden gem', scoreKind: 'Do' as const, name: d.name, what: d.what, photo: photoForActivity(d) ?? photo })),
+        (placeDetails[slug]?.dos ?? []).filter((d) => d.gem).map((d) => ({ key: `${slug}-${d.name}`, slug, place, kind: 'Hidden gem', scoreKind: 'Do' as const, name: d.name, what: d.what, photo: photoForActivity(d), cover: photo })),
       ),
   },
   {
@@ -184,7 +187,7 @@ export const itemCollections: ItemCollection[] = [
       gather((slug, place, photo) =>
         (placeDetails[slug]?.stays ?? [])
           .filter((s) => parseStaySub(s.sub).friend)
-          .map((s) => ({ key: `${slug}-${s.name}`, slug, place, kind: s.type, scoreKind: 'Stay' as const, name: s.name, what: s.sub, photo: s.photo ?? photo })),
+          .map((s) => ({ key: `${slug}-${s.name}`, slug, place, kind: s.type, scoreKind: 'Stay' as const, name: s.name, what: s.sub, photo: s.photo, cover: photo })),
       ),
   },
   // Stays by budget (owner, Nov 2026: filter where to stay by price). Each opens the stay's own page.
@@ -203,7 +206,7 @@ export const itemCollections: ItemCollection[] = [
     title: 'Friends’ favourite restaurants',
     items: () =>
       gather((slug, place, photo) =>
-        (placeDetails[slug]?.eats ?? []).filter((e) => e.from).map((e) => ({ key: `${slug}-${e.name}`, slug, place, kind: 'Eat', scoreKind: 'Eat' as const, name: e.name, what: e.what, photo: e.photo ?? photo })),
+        (placeDetails[slug]?.eats ?? []).filter((e) => e.from).map((e) => ({ key: `${slug}-${e.name}`, slug, place, kind: 'Eat', scoreKind: 'Eat' as const, name: e.name, what: e.what, photo: e.photo, cover: photo })),
       ),
   },
   {
@@ -211,7 +214,7 @@ export const itemCollections: ItemCollection[] = [
     title: 'Things to do',
     items: () =>
       gather((slug, place, photo) =>
-        (placeDetails[slug]?.dos ?? []).filter((d) => !d.gem).map((d) => ({ key: `${slug}-${d.name}`, slug, place, kind: d.tag, scoreKind: 'Do' as const, name: d.name, what: d.what, photo: photoForActivity(d) ?? photo })),
+        (placeDetails[slug]?.dos ?? []).filter((d) => !d.gem).map((d) => ({ key: `${slug}-${d.name}`, slug, place, kind: d.tag, scoreKind: 'Do' as const, name: d.name, what: d.what, photo: photoForActivity(d), cover: photo })),
       ),
   },
   {
@@ -227,7 +230,8 @@ export const itemCollections: ItemCollection[] = [
           scoreKind: 'Do' as const,
           name: c.name,
           what: c.what,
-          photo,
+          photo: null,
+          cover: photo,
         })),
       ),
   },
@@ -409,7 +413,7 @@ export type CollectionTileInfo = { id: string; title: string; photo: PhotoName; 
 export function collectionTiles(): CollectionTileInfo[] {
   const all = [
     ...placeCollections().map((c) => ({ id: c.id, title: c.title, cover: c.photo ?? null, photos: placesIn(c).map((p) => p.photo) })),
-    ...itemCollections.map((c) => ({ id: c.id, title: c.title, cover: c.photo ?? null, photos: c.items().map((i) => i.photo) })),
+    ...itemCollections.map((c) => ({ id: c.id, title: c.title, cover: c.photo ?? null, photos: c.items().map((i) => i.photo ?? i.cover) })),
   ].filter((c) => c.photos.length >= 3);
   const used = new Set<PhotoName>(all.map((c) => c.cover).filter((p): p is PhotoName => !!p));
   const out: CollectionTileInfo[] = [];

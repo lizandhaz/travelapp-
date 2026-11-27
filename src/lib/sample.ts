@@ -232,7 +232,7 @@ export const rows = {
       "where": "For 2027 list",
       "because": "Because you gave Da Adolfo in Positano a 9.4",
       "friends": "1 friend has been too",
-      "photo": "taverna-1"
+      "photo": null
     },
     {
       "slug": "kyoto",
@@ -242,7 +242,7 @@ export const rows = {
       "where": "For One day",
       "because": "Because you gave the Orangerie a 9.2",
       "friends": "1 friend has been too",
-      "photo": "own-kyoto-blossom"
+      "photo": null
     },
     {
       "slug": "lisbon",
@@ -262,7 +262,7 @@ export const rows = {
       "where": "Hydra, Greece",
       "because": "Because you gave Da Adolfo in Positano a 9.4",
       "friends": "2 friends have been too",
-      "photo": "food-table"
+      "photo": null
     },
     {
       "slug": "paris",
@@ -282,7 +282,7 @@ export const rows = {
       "where": "Polignano a Mare, Puglia, Italy",
       "because": "Because you gave Riad Zitoun a 9.1",
       "friends": "1 friend has been too",
-      "photo": "villa-1"
+      "photo": null
     },
     {
       "slug": "maldives",
@@ -292,7 +292,7 @@ export const rows = {
       "where": "The Maldives, Indian Ocean",
       "because": "Because you gave Sal in Comporta a 9.0",
       "friends": "1 friend has been too",
-      "photo": "maldives-2"
+      "photo": null
     },
     {
       "slug": "lisbon",
@@ -312,7 +312,7 @@ export const rows = {
       "where": "Paris, France",
       "because": "Because you gave the Orangerie a 9.2",
       "friends": "New to your friends. Found by {app}",
-      "photo": "paris-1"
+      "photo": null
     },
     {
       "slug": "copenhagen",
@@ -342,7 +342,7 @@ export const rows = {
       "where": "Copenhagen, Denmark",
       "because": "Because you gave the Orangerie a 9.2",
       "friends": "1 friend has been too",
-      "photo": "own-copenhagen-nyhavn"
+      "photo": null
     },
     {
       "slug": "stives",
@@ -362,7 +362,7 @@ export const rows = {
       "where": "Hydra, Greece",
       "because": "Because you gave Villa Limone a 9.0",
       "friends": "2 friends have been too",
-      "photo": "own-hydra-harbour"
+      "photo": null
     },
     {
       "slug": "paris",
@@ -372,7 +372,7 @@ export const rows = {
       "where": "Paris, France",
       "because": "Because you loved sunset spritz in Positano",
       "friends": "1 friend has been too",
-      "photo": "food-wine"
+      "photo": null
     },
     {
       "slug": "hydra",
@@ -382,7 +382,7 @@ export const rows = {
       "where": "Hydra, Greece",
       "because": "Because you loved Pego beach at 8pm",
       "friends": "2 friends have been too",
-      "photo": "food-wine"
+      "photo": null
     },
     {
       "slug": "sicily",
@@ -422,7 +422,7 @@ export const rows = {
       "where": "Polignano a Mare, Puglia, Italy",
       "because": "Because you gave Ca's Patró March in Deià a 9.2",
       "friends": "1 friend has been too",
-      "photo": "food-pasta"
+      "photo": null
     },
     {
       "slug": "crete",
@@ -462,7 +462,7 @@ export const rows = {
       "where": "Lake Como, Italy",
       "because": "Because you gave Sal in Comporta a 9.0",
       "friends": "1 friend has been too",
-      "photo": "como-2"
+      "photo": null
     },
     {
       "slug": "heidelberg",
@@ -1576,7 +1576,7 @@ export const board: BoardItem[] = [
     "slug": "paris"
   },
   {
-    "photo": "food-pasta",
+    "photo": null,
     "kind": "Eat",
     "name": "Mozzarella grilled on lemon leaves",
     "sub": "Da Adolfo, Positano · ££",
@@ -1590,7 +1590,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": "own-comporta-boardwalk",
+    "photo": null,
     "kind": "Hidden gem",
     "name": "Carrasqueira pier",
     "sub": "Hidden gem in Comporta · found by Priya",
@@ -1621,7 +1621,7 @@ export const board: BoardItem[] = [
     "slug": "borabora"
   },
   {
-    "photo": "own-kyoto-blossom",
+    "photo": null,
     "kind": "Culture · Festival",
     "name": "Gion Matsuri",
     "sub": "All of July · Kyoto, Japan",
@@ -1642,14 +1642,14 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": "own-madeira-cliffs",
+    "photo": null,
     "kind": "Do",
     "name": "Levada walk",
     "sub": "Hike · Madeira",
     "slug": "madeira"
   },
   {
-    "photo": "como-2",
+    "photo": null,
     "kind": "Villa",
     "name": "Villa Cipressi",
     "sub": "Lake Como · from £240 a night · 9.1",
@@ -1671,7 +1671,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": "own-kyoto-blossom",
+    "photo": null,
     "kind": "Eat",
     "name": "Kaiseki dinner",
     "sub": "Gion Okumura, Kyoto · £££",
@@ -1693,7 +1693,7 @@ export const board: BoardItem[] = [
     "slug": "copenhagen"
   },
   {
-    "photo": "own-marrakech-koutoubia",
+    "photo": null,
     "kind": "Culture · Music",
     "name": "Jemaa el-Fnaa at dusk",
     "sub": "Marrakech, Morocco",
@@ -1707,7 +1707,7 @@ export const board: BoardItem[] = [
     "slug": "warwick"
   },
   {
-    "photo": "own-positano-town",
+    "photo": null,
     "kind": "Hidden gem",
     "name": "Fornillo beach",
     "sub": "Hidden gem in Positano · found by Priya",
@@ -1746,7 +1746,7 @@ export const board: BoardItem[] = [
     "slug": "zanzibar"
   },
   {
-    "photo": "own-palermo-cathedral",
+    "photo": null,
     "kind": "Culture · Art",
     "name": "Puppet theatre",
     "sub": "Palermo, Sicily, Italy",
@@ -1795,21 +1795,21 @@ export const board: BoardItem[] = [
     "slug": "paris"
   },
   {
-    "photo": "lemon-1",
+    "photo": "own-positano-town",
     "kind": "Collection",
     "name": "Lemon season",
     "sub": "Amalfi, Sorrento, Sicily",
     "slug": null
   },
   {
-    "photo": "villa-1",
+    "photo": null,
     "kind": "Villa",
     "name": "Villa Limone",
     "sub": "Positano · from £520 a night · 9.0",
     "slug": null
   },
   {
-    "photo": "own-polignano-cove",
+    "photo": null,
     "kind": "Do",
     "name": "Sea cave boat trip",
     "sub": "Boat · Polignano a Mare",
@@ -1824,7 +1824,7 @@ export const board: BoardItem[] = [
     "slug": "como"
   },
   {
-    "photo": "own-marrakech-koutoubia",
+    "photo": null,
     "kind": "Eat",
     "name": "Mint tea above the spice square",
     "sub": "Café des Épices, Marrakech · £",
@@ -1898,14 +1898,14 @@ export const board: BoardItem[] = [
     "slug": "madeira"
   },
   {
-    "photo": "own-copenhagen-nyhavn",
+    "photo": null,
     "kind": "Do",
     "name": "Harbour swim",
     "sub": "Outdoors · Copenhagen",
     "slug": "copenhagen"
   },
   {
-    "photo": "taverna-1",
+    "photo": null,
     "kind": "Eat",
     "name": "Grilled octopus and fava",
     "sub": "Taverna Ostria, Hydra · ££",
@@ -1927,7 +1927,7 @@ export const board: BoardItem[] = [
     "slug": null
   },
   {
-    "photo": "pool-2",
+    "photo": null,
     "kind": "Villa",
     "name": "Casa Arrozal",
     "sub": "Comporta · from £280 a night · 8.9",

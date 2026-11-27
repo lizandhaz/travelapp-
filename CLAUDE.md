@@ -101,8 +101,8 @@ src/
                           Friends' trips you've saved (SavedTripCard grid)
     (tabs)/profile.tsx    You (built from components/profile.tsx): profile picture (tap to change), name, followers / following / requests counts
                           at the top (tap → people.tsx), Find friends / Add a trip buttons, stats (Countries and % "Of the world" open CountriesSheet, owner Nov 2026), Your taste (plain outline tags, no colours), travel map card (tap → map), "Your boards" (owner Nov 2026, was "Your collections": your boards + saved friends' trips, each opens; See all
-                          → Saved), your trips as photo
-                          stamps: Newest (default) / Oldest / Top rated, and a year filter
+                          → Saved), your trips as postcards (the feed's TripPostcard, a sideways row; owner Nov 2026):
+                          Newest (default) / Oldest / Top rated, and a year filter
     list/[id].tsx         One board: cover (chosen photo, or a collage of its places) with the name, Share/Edit circles, places as a
                           2-column grid of photo cards (score stamp, "N saved spots", × to remove; tap → its saved hotels/restaurants
                           in a sheet with "Open <place>", or the place page); "Hotels, restaurants & more" for spots whose place isn't
@@ -172,7 +172,7 @@ src/
     ui.tsx                Screen (+ `useScrollLock()`: sliders call it while dragging so the page holds still, owner Nov 2026), PageTitle, SectionHeader, IconCircle, BackButton, Button (dark/accent/outline, optional icon),
                           Input (optional icon), Field, Chip, Segmented, Card (tone: white/blush/sage/sky), Notice, ErrorNotice
     profile.tsx           Shared by You and friends' profiles: ProfileTop (picture, name, line, followers/following(/requests) counts at the
-                          top), ProfileStats, TasteTags, TripsSection (order chips + year filter + grid), FriendTripStamp, worldShare
+                          top), ProfileStats, TasteTags, TripsSection (order chips + year filter + a sideways row of postcards), FriendTripPostcard, profilePostcardWidth, worldShare
     Text.tsx              All text goes through <Text variant="…"> (fonts + colours). A bigger fontSize without a
                           lineHeight gets lineHeight ≈ 1.28× automatically, so big numbers aren't clipped on iPhone
     AccentTitle.tsx       Heading with one italic word and a terracotta swash ("Where did *you* go?")
@@ -181,7 +181,8 @@ src/
     Photo.tsx             PhotoFill, Shade, PhotoTile (rounded photo), PhotoStamp (photo in a perforated frame)
     MonthPill.tsx         Tilted outline pill with a trip month ("JUN 2026")
     Avatar.tsx            Face photo or initials
-    cards.tsx             Row, TrendCard, PlaceCard, TasteCard, FeedCard, BoardTile, PhotoBadge, SavedTripCard
+    cards.tsx             Row, TrendCard, PlaceCard, TasteCard, FeedCard (= TripPostcard + who + Like/Comment/Save), TripPostcard (a trip as
+                          the feed's postcard: photo or cream mini postcard; also every profile's trips, `who={false}`), BoardTile, PhotoBadge, SavedTripCard
     explore.tsx           CollectionTile, ItemCard, sorting helpers (used by Explore and collection pages)
     lists.tsx             ListCover (photo collage), PlaceThumb, WishStar, WantToGoButton, photoForItem, placeSlugForItem
     TravelMap.tsx         TravelMapCard (You: calm map zoomed to your places, pins only, one-line key, tap to open) and
@@ -219,7 +220,7 @@ src/
     trip/NightsPicker.tsx "How long did you stay?": 1 night … two weeks, or "Longer…" (type up to 365)
     trip/MonthPicker.tsx  This month + last 6 months as chips ("Nov 2026"), or "Earlier…"
     trip/ScorePicker.tsx  "Slide to rate out of 10": 1.0–10.0 in 0.1 steps; accessibilityRole "adjustable"
-    trip/TripCard.tsx     One of your trips as a photo stamp: the name on its own full-width line, the score under it (no "Loved it" word, owner Nov 2026)
+    trip/TripCard.tsx     One of your trips on You as a TripPostcard (cover photo or the place's photo, month, place, score, note, stay)
   constants/theme.ts      Colours, fonts, radius, GUTTER (the only place for raw hex values)
   constants/brand.json    The app name ("COVA"); brand.ts exports APP_NAME. Sample text writes {app} for it (postcards.ts fills it in)
   lib/

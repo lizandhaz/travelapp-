@@ -8,7 +8,7 @@ import { CountriesSheet } from '@/components/CountriesSheet';
 import { Avatar } from '@/components/Avatar';
 import { PlusIcon, SlidersIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
-import { ProfileStats, ProfileTop, TasteTags, TripsSection } from '@/components/profile';
+import { ProfileStats, ProfileTop, TasteTags, TripsSection, profilePostcardWidth } from '@/components/profile';
 import { TravelMapCard } from '@/components/TravelMap';
 import { TripCard } from '@/components/trip/TripCard';
 import { Button, Card, IconCircle, Screen, SectionHeader } from '@/components/ui';
@@ -16,7 +16,7 @@ import { Row, SavedTripCard } from '@/components/cards';
 import { ListCover } from '@/components/lists';
 import { useSavedTrips } from '@/lib/reactions';
 import { fetchFollows, type Follows } from '@/lib/friends';
-import { colors, GUTTER, radius, appWidth } from '@/constants/theme';
+import { colors, GUTTER, radius } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { useTaste } from '@/lib/taste';
 import { beenPlaces, wishPlaces } from '@/lib/travelPlaces';
@@ -69,7 +69,7 @@ export default function You() {
   const countries = useMemo(() => visitedCountries(list), [list]);
   const [showCountries, setShowCountries] = useState(false);
 
-  const cardWidth = (appWidth() - GUTTER * 2 - 14) / 2;
+  const cardWidth = profilePostcardWidth();
 
   return (
     <Screen tabBar>

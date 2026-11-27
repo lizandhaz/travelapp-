@@ -113,32 +113,82 @@ export function TasteCard({ item, width = 220 }: { item: TasteItem; width?: numb
   );
 }
 
-/** One friend's trip in the Friends feed: a big photo with who, when, where and their score, then their words and stay. */
+/** One friend's trip in the Friends feed: the trip postcard, with who posted it and Like / Comment / Save. */
 export function FeedCard({ item }: { item: FeedItem }) {
   // Opens as a postcard first, like a Postcard (owner, Nov 2026); their whole trip is below it.
   const id = item.id ?? friendTripId(item);
-  const hasPhoto = !!(item.photoUri || item.photo);
-  const open = () => router.push(`/postcard/${id}`);
-  // The place name shrinks so a long word fits beside the score stamp (card ~ screen minus margins, padding and stamp).
-  const feedSize = fitWordSize(item.place, appWidth() - 40 - 36 - 70, 34, 20);
   const label = `${item.who}'s ${item.place} trip, ${item.month}${item.posted ? `, posted ${item.posted.toLowerCase()}` : ''}. ${item.score.toFixed(1)} out of 10. Open their postcard`;
   return (
-    <Pressable onPress={open} accessibilityRole="link" accessibilityLabel={label} style={({ pressed }) => pressed && { opacity: 0.92 }}>
+    <TripPostcard
+      item={item}
+      width={appWidth() - GUTTER * 2}
+      onPress={() => router.push(`/postcard/${id}`)}
+      accessibilityLabel={label}
+      example={!item.id}
+      actions={<TripActions id={id} who={item.who} place={item.place} slug={item.slug} country={item.country} />}
+    />
+  );
+}
+
+/**
+ * A trip as a postcard: the look of the Friends feed, shared by the feed and every profile's trips (owner, Nov 2026:
+ * "the same style as the postcards in the friends feed"). With photos: a big photo with the month, place and score
+ * stamp, then their words and the stay on a sage strip. Without: a cream mini postcard (no "Greetings from", too
+ * cheesy) with the place in italic, the score as a tilted stamp, and their words left of the middle line and the stay
+ * on the right. `who` shows who posted it (the feed); profiles leave it off, as it's their page. `actions` goes at the
+ * bottom (Like / Comment / Save in the feed).
+ */
+export function TripPostcard({
+  item,
+  width,
+  onPress,
+  accessibilityLabel,
+  who = true,
+  example = false,
+  actions,
+  more = 'Their trip →',
+}: {
+  item: FeedItem;
+  width: number;
+  onPress: () => void;
+  accessibilityLabel: string;
+  who?: boolean;
+  example?: boolean;
+  actions?: React.ReactNode;
+  /** The little link by the stay ("Their trip →"; "Your trip →" on You). */
+  more?: string;
+}) {
+  const hasPhoto = !!(item.photoUri || item.photo);
+  // The place name shrinks so a long word fits beside the score stamp (card minus padding and stamp).
+  const feedSize = fitWordSize(item.place, width - 36 - 70, 34, 20);
+  // The feed's photo is 380 tall at full width; smaller cards (profiles) keep the same shape.
+  const photoHeight = Math.round(Math.min(380, width * 1.08));
+  const quote = item.quote ? item.quote.replace(/^[“"]+|[”"]+$/g, '') : null;
+  const profile = (onPhoto: boolean) =>
+    who ? (
+      <>
+        <Pressable disabled={!personHref(item.who)} onPress={() => router.push(personHref(item.who) as never)} accessibilityRole="link" accessibilityLabel={`${item.who}. Open their profile`} hitSlop={6} style={onPhoto ? { borderWidth: 2, borderColor: colors.onDark, borderRadius: 22 } : undefined}>
+          <Avatar face={item.face} uri={item.faceUri} name={item.who} size={36} />
+        </Pressable>
+        <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: onPhoto ? colors.onDark : colors.ink }}>
+          {item.who}
+          {!!item.posted && <Text style={{ fontFamily: fonts.sans, fontSize: 13, color: onPhoto ? colors.onDark : colors.muted }}> · {item.posted}</Text>}
+        </Text>
+      </>
+    ) : (
+      <View style={{ flex: 1 }} />
+    );
+  return (
+    <Pressable onPress={onPress} accessibilityRole="link" accessibilityLabel={accessibilityLabel} style={({ pressed }) => [{ width }, pressed && { opacity: 0.92 }]}>
       <Card>
         {hasPhoto ? (
-          <View style={{ height: 380 }}>
+          <View style={{ height: photoHeight }}>
             <PhotoFill photo={item.photo} uri={item.photoUri} />
             <LinearGradient colors={['rgba(0,0,0,0.38)', 'transparent']} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 110 }} />
             <Shade strength={0.6} />
             <View style={{ position: 'absolute', top: 14, left: 14, right: 14, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Pressable disabled={!personHref(item.who)} onPress={() => router.push(personHref(item.who) as never)} accessibilityRole="link" accessibilityLabel={`${item.who}. Open their profile`} hitSlop={6} style={{ borderWidth: 2, borderColor: colors.onDark, borderRadius: 22 }}>
-                <Avatar face={item.face} uri={item.faceUri} name={item.who} size={36} />
-              </Pressable>
-              <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.onDark }}>
-                {item.who}
-                {!!item.posted && <Text style={{ fontFamily: fonts.sans, fontSize: 13, color: colors.onDark }}> · {item.posted}</Text>}
-              </Text>
-              {!item.id && <ExampleTag onPhoto />}
+              {profile(true)}
+              {example && <ExampleTag onPhoto />}
               <MonthPill month={item.month} onPhoto />
             </View>
             <View style={{ position: 'absolute', left: 18, right: 18, bottom: 18, flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
@@ -152,18 +202,10 @@ export function FeedCard({ item }: { item: FeedItem }) {
             </View>
           </View>
         ) : (
-          // No photos: a mini postcard (owner's pick, Nov 2026; no "Greetings from", too cheesy): the place in italic with their score
-          // as the stamp, then like the back of a postcard their words left of the middle line and the stay on the right.
           <View style={{ backgroundColor: colors.cream, padding: 16, gap: 14 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Pressable disabled={!personHref(item.who)} onPress={() => router.push(personHref(item.who) as never)} accessibilityRole="link" accessibilityLabel={`${item.who}. Open their profile`} hitSlop={6}>
-                <Avatar face={item.face} uri={item.faceUri} name={item.who} size={36} />
-              </Pressable>
-              <Text style={{ flex: 1, fontFamily: fonts.sansSemiBold, fontSize: 15, color: colors.ink }}>
-                {item.who}
-                {!!item.posted && <Text style={{ fontFamily: fonts.sans, fontSize: 13, color: colors.muted }}> · {item.posted}</Text>}
-              </Text>
-              {!item.id && <ExampleTag />}
+              {profile(false)}
+              {example && <ExampleTag />}
               <MonthPill month={item.month} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
@@ -179,16 +221,16 @@ export function FeedCard({ item }: { item: FeedItem }) {
                 <ScoreStamp score={item.score} size="md" label="Destination" />
               </View>
             </View>
-            {(!!item.quote || !!item.stayName) && (
+            {(!!quote || !!item.stayName) && (
               <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: colors.line, paddingTop: 14 }}>
-                {!!item.quote && (
-                  <Text style={{ flex: 1.1, fontFamily: fonts.displayItalic, fontSize: 17, lineHeight: 24, color: colors.ink, paddingRight: item.stayName ? 14 : 0 }}>
-                    “{item.quote.replace(/^[“"]+|[”"]+$/g, '')}”
+                {!!quote && (
+                  <Text numberOfLines={who ? undefined : 5} style={{ flex: 1.1, fontFamily: fonts.displayItalic, fontSize: 17, lineHeight: 24, color: colors.ink, paddingRight: item.stayName ? 14 : 0 }}>
+                    “{quote}”
                   </Text>
                 )}
-                {!!item.quote && !!item.stayName && <View style={{ width: 1, backgroundColor: colors.line }} />}
+                {!!quote && !!item.stayName && <View style={{ width: 1, backgroundColor: colors.line }} />}
                 {!!item.stayName && (
-                  <View style={{ flex: 1, paddingLeft: item.quote ? 14 : 0, gap: 3 }}>
+                  <View style={{ flex: 1, paddingLeft: quote ? 14 : 0, gap: 3 }}>
                     <Text variant="label" style={{ fontSize: 10 }}>
                       Stayed at
                     </Text>
@@ -197,35 +239,39 @@ export function FeedCard({ item }: { item: FeedItem }) {
                     </Text>
                     {!!item.stayType && <Text variant="tiny">{item.stayType}</Text>}
                     <Text variant="small" style={{ color: colors.accentText, marginTop: 6 }}>
-                      Their trip →
+                      {more}
                     </Text>
                   </View>
                 )}
               </View>
             )}
-            <TripActions id={id} who={item.who} place={item.place} slug={item.slug} country={item.country} />
+            {actions}
           </View>
         )}
-        {hasPhoto && (
-        <View style={{ padding: 16, gap: 14 }}>
-          {!!item.quote && <Text variant="quote">{item.quote}</Text>}
-          {!!item.stayName && (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.sageSoft, borderRadius: radius.md, padding: 10 }}>
-            <View style={{ flex: 1 }}>
-              <Text variant="label" style={{ fontSize: 10 }}>
-                Stayed at · {item.stayType}
+        {hasPhoto && (!!quote || !!item.stayName || !!actions) && (
+          <View style={{ padding: 16, gap: 14 }}>
+            {!!quote && (
+              <Text variant="quote" numberOfLines={who ? undefined : 4}>
+                {item.quote}
               </Text>
-              <Text variant="strong" style={{ fontSize: 15 }}>
-                {item.stayName}
-              </Text>
-            </View>
-            <Text variant="small" style={{ color: colors.accentText }}>
-              Their trip →
-            </Text>
+            )}
+            {!!item.stayName && (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.sageSoft, borderRadius: radius.md, padding: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text variant="label" style={{ fontSize: 10 }}>
+                    Stayed at{item.stayType ? ` · ${item.stayType}` : ''}
+                  </Text>
+                  <Text variant="strong" numberOfLines={1} style={{ fontSize: 15 }}>
+                    {item.stayName}
+                  </Text>
+                </View>
+                <Text variant="small" style={{ color: colors.accentText }}>
+                  {more}
+                </Text>
+              </View>
+            )}
+            {actions}
           </View>
-          )}
-          <TripActions id={id} who={item.who} place={item.place} slug={item.slug} country={item.country} />
-        </View>
         )}
       </Card>
     </Pressable>

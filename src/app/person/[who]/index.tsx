@@ -6,11 +6,11 @@ import { AccentTitle } from '@/components/AccentTitle';
 import { Avatar } from '@/components/Avatar';
 import { Row } from '@/components/cards';
 import { PhotoTile } from '@/components/Photo';
-import { FriendTripStamp, ProfileStats, ProfileTop, TasteTags, TripsSection } from '@/components/profile';
+import { FriendTripPostcard, ProfileStats, ProfileTop, TasteTags, TripsSection, profilePostcardWidth } from '@/components/profile';
 import { Text } from '@/components/Text';
 import { TravelMapCard } from '@/components/TravelMap';
 import { BackButton, Button, Screen, SectionHeader } from '@/components/ui';
-import { colors, GUTTER, radius, appWidth } from '@/constants/theme';
+import { colors, GUTTER, radius } from '@/constants/theme';
 import type { FriendTrip } from '@/lib/friendTrips';
 import { countryOf } from '@/lib/knownPlaces';
 import { getPlace } from '@/lib/sample';
@@ -37,7 +37,7 @@ export default function PersonScreen() {
   };
   const been = trips.map((t) => placeOf(t.slug)).filter((p): p is MapPlace => !!p);
   const wish = (boards[0]?.slugs ?? []).map(placeOf).filter((p): p is MapPlace => !!p);
-  const cardWidth = (appWidth() - GUTTER * 2 - 14) / 2;
+  const cardWidth = profilePostcardWidth();
   const follows = (tab: 'followers' | 'following') => () => router.push({ pathname: '/person/[who]/follows', params: { who: person.id, tab } });
 
   return (
@@ -115,7 +115,7 @@ export default function PersonScreen() {
         trips={trips}
         when={tripWhen}
         score={tripScore}
-        render={(t) => <FriendTripStamp key={t.id} trip={t} width={cardWidth} />}
+        render={(t) => <FriendTripPostcard key={t.id} trip={t} width={cardWidth} />}
         empty={<Text variant="bodySoft">{person.name} hasn’t added a trip yet.</Text>}
       />
 

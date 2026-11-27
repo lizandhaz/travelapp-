@@ -1,17 +1,18 @@
+import { router } from 'expo-router';
 import { useMemo, useRef, useState, type ComponentRef } from 'react';
-import { ActivityIndicator, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccentTitle } from '@/components/AccentTitle';
 import { BoardTile, PlaceCard, Row, TrendCard } from '@/components/cards';
 import { CollectionTile } from '@/components/explore';
 import { SearchIcon } from '@/components/Icons';
-import { NearbyTrips } from '@/components/NearbyTrips';
 import { Text } from '@/components/Text';
 import { Chip, Input, Screen, SectionHeader } from '@/components/ui';
 import { colors, GUTTER, appWidth } from '@/constants/theme';
-import { collectionTiles, exploreFeed, searchTrips, type FeedItem } from '@/lib/explore';
+import { collectionTiles, curateExploreFeed, exploreFeed, searchTrips, type FeedItem } from '@/lib/explore';
 import { trendingThisMonth } from '@/lib/sample';
+import { useExploreDeparture } from '@/lib/useExploreDeparture';
 
 const STAYS = ['Riad', 'Villa', 'Ryokan', 'Hotel', 'B&B', 'Airbnb', 'Other'];
 
@@ -31,6 +32,7 @@ const FILTERS: { id: string; label: string; match: (b: FeedItem) => boolean }[] 
 
 /** How many tiles to show at first, and how many more load as you near the bottom. */
 const PAGE = 60;
+const TRENDING = trendingThisMonth.filter((tile) => !!tile.photo);
 
 /**
  * Explore: search, filter chips, "Find your next trip" collection tiles (each opens its
@@ -44,31 +46,36 @@ export default function Explore() {
 
   const feed = useMemo(() => exploreFeed(), []);
   const collections = useMemo(() => collectionTiles(), []);
+  const collectionLinks = useMemo(() => new Set(collections.map(({ id }) => `/collection/${id}`)), [collections]);
+  const { city, groups } = useExploreDeparture();
 
-
-  const words = query.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
-  const shown = useMemo(() => {
-    const f = FILTERS.find((x) => x.id === filter)!;
-    return feed.filter((b) => !!b.photo && f.match(b) && (!words.length || words.some((w) => `${b.name} ${b.sub} ${b.kind}`.toLowerCase().includes(w))));
-  }, [feed, filter, words]);
-  // "Beach in February", "romantic weekend", "Greece": the places that fit, with why.
+  // Text search takes priority. Trending and collections belong to the unfiltered browse view.
+  const searching = !!query.trim();
   const search = useMemo(() => (query.trim() ? searchTrips(query) : null), [query]);
+  const best = useMemo(() => search?.places.slice(0, 12) ?? [], [search]);
+  const browse = !searching && filter === 'all';
+  const matching = useMemo(() => {
+    const words = query.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
+    const f = FILTERS.find((x) => x.id === filter)!;
+    return feed.filter((b) => b.photo && f.match(b) && !(browse && b.href && collectionLinks.has(b.href))
+      && (!words.length || words.some((w) => `${b.name} ${b.sub} ${b.kind}`.toLowerCase().includes(w))));
+  }, [browse, collectionLinks, feed, filter, query]);
+  const shown = useMemo(() => curateExploreFeed(matching, browse ? TRENDING : best, searching ? [] : groups), [best, browse, groups, matching, searching]);
   const visible = shown.slice(0, limit);
   const left = visible.filter((_, i) => i % 2 === 0);
   const right = visible.filter((_, i) => i % 2 === 1);
   const heights = [230, 170, 200, 250, 180];
   const cardWidth = (appWidth() - GUTTER * 2 - 14) / 2;
 
-  // The search bar and chips stay pinned at the top; picking a chip (or searching) jumps down to the feed.
+  // Focused results appear directly under the sticky search bar and chips.
   const insets = useSafeAreaInsets();
   const scroller = useRef<ComponentRef<typeof ScrollView>>(null);
-  const spots = useRef({ feed: 0, bar: 0 });
-  const toFeed = () => scroller.current?.scrollTo({ y: Math.max(0, spots.current.feed - spots.current.bar - 6), animated: true });
+  const toTop = () => scroller.current?.scrollTo({ y: 0, animated: false });
 
   const pick = (id: string) => {
     setFilter(id);
     setLimit(PAGE);
-    toFeed();
+    toTop();
   };
 
   return (
@@ -86,16 +93,16 @@ export default function Explore() {
           }
         }}
       >
-        <View onLayout={(e) => (spots.current.bar = e.nativeEvent.layout.height)} style={{ backgroundColor: colors.bg, paddingTop: 16, paddingBottom: 12 }}>
+        <View style={{ backgroundColor: colors.bg, paddingTop: 16, paddingBottom: 12 }}>
           <View style={{ paddingHorizontal: GUTTER }}>
             <Input
               value={query}
               onChangeText={(t) => {
-                if (!query && t) toFeed();
+                if (!!t.trim() !== searching) toTop();
                 setQuery(t);
                 setLimit(PAGE);
               }}
-              onSubmitEditing={toFeed}
+              onSubmitEditing={toTop}
               placeholder="Describe your perfect trip"
               accessibilityLabel="Describe your perfect trip"
               returnKeyType="search"
@@ -112,30 +119,31 @@ export default function Explore() {
           </View>
         </View>
 
-        <View>
-          <View style={{ paddingHorizontal: GUTTER, marginTop: 10, marginBottom: 14 }}>
-            <AccentTitle before="Find your" accent="next" after="trip" />
-          </View>
-          <Row>
-            {collections.map((c) => (
-              <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.photo} count={c.count} />
-            ))}
-          </Row>
-        </View>
+        {browse && (
+          <>
+            <View>
+              <View style={{ paddingHorizontal: GUTTER, marginTop: 10, marginBottom: 14 }}>
+                <AccentTitle before="Find your" accent="next" after="trip" />
+              </View>
+              <Row>
+                {collections.map((c) => (
+                  <CollectionTile key={c.id} id={c.id} title={c.title} photo={c.photo} count={c.count} />
+                ))}
+              </Row>
+            </View>
+            <View style={{ marginTop: 28 }}>
+              <SectionHeader>Trending this month</SectionHeader>
+              <Row>
+                {/* Photos are required here, so rank only what’s shown. */}
+                {TRENDING.map((t, i) => (
+                  <TrendCard key={t.slug} item={{ ...t, rank: t.rank ? t.rank.replace(/^#\d+/, `#${i + 1}`) : t.rank }} width={170} height={180} />
+                ))}
+              </Row>
+            </View>
+          </>
+        )}
 
-        {!search && filter === 'all' && <NearbyTrips />}
-
-        <View style={{ marginTop: 28 }}>
-          <SectionHeader>Trending this month</SectionHeader>
-          <Row>
-            {/* Places without a photo are left out, so number what's shown 1, 2, 3… (owner Nov 2026: #2 was missing). */}
-            {trendingThisMonth.filter((t) => !!t.photo).map((t, i) => (
-              <TrendCard key={t.slug} item={{ ...t, rank: t.rank ? t.rank.replace(/^#\d+/, `#${i + 1}`) : t.rank }} width={170} height={180} />
-            ))}
-          </Row>
-        </View>
-
-        <View onLayout={(e) => (spots.current.feed = e.nativeEvent.layout.y)} style={{ paddingTop: 30 }}>
+        <View style={{ paddingTop: browse ? 30 : 12 }}>
           {search && (
             <View style={{ marginBottom: 30 }}>
               <View style={{ paddingHorizontal: GUTTER, marginBottom: 6 }}>
@@ -144,9 +152,9 @@ export default function Explore() {
               <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginBottom: 14 }} accessibilityLabel={`Looking for ${search.understood.join(', ')}`}>
                 Looking for <Text variant="tiny" style={{ color: colors.accentText }}>{search.understood.join(' · ')}</Text>
               </Text>
-              {search.places.length ? (
+              {best.length ? (
                 <View style={{ paddingHorizontal: GUTTER, flexDirection: 'row', flexWrap: 'wrap', gap: 14, rowGap: 22 }}>
-                  {search.places.slice(0, 12).map((p) => (
+                  {best.map((p) => (
                     <PlaceCard key={p.slug} item={p} width={cardWidth} height={cardWidth * 1.1} />
                   ))}
                 </View>
@@ -158,8 +166,20 @@ export default function Explore() {
             </View>
           )}
           {!(search && shown.length === 0) && (
-            <View style={{ paddingHorizontal: GUTTER, marginBottom: 14 }}>
-              {search ? <AccentTitle before="More" accent="ideas" variant="heading" /> : <AccentTitle before="Just" accent="for you" variant="heading" />}
+            <View style={{ paddingHorizontal: GUTTER, marginBottom: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+              {search ? <AccentTitle before="More" accent="ideas" variant="heading" />
+                : searching ? <AccentTitle before="Search" accent="results" variant="heading" />
+                : <AccentTitle before="Just" accent="for you" variant="heading" />}
+              {!searching && city !== undefined && (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={city ? `Change departure city from ${city.name}` : 'Set departure city'}
+                  onPress={() => router.push('/departure-city')}
+                  style={{ maxWidth: '48%', minHeight: 44, justifyContent: 'center' }}
+                >
+                  <Text variant="link" numberOfLines={1}>{city ? `From ${city.name}` : 'Set city'}</Text>
+                </Pressable>
+              )}
             </View>
           )}
           <View style={{ paddingHorizontal: GUTTER, flexDirection: 'row', gap: 12 }}>

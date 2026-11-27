@@ -39,7 +39,7 @@ Postcard is a holiday-rating **phone app**. Friends rate holiday **destinations*
 
 ### Trips near you
 
-Explore can suggest sample destinations from a departure city. The trip groups use straight-line distance as an estimate, then use taste scores and the destination’s existing best months to order the places in each group. `src/lib/nearbyTrips.ts` accepts a different journey estimator if route data becomes available.
+Explore blends a few departure-city picks into **Just for you**, with the city beside the heading. Shorter journeys get more of those places, while some longer trips get a turn. The underlying groups still use straight-line distance, taste scores and existing best months. `src/lib/nearbyTrips.ts` accepts a different journey estimator if route data becomes available. Trending destinations are excluded from the main grid, and search keeps its own ranking with each best-match destination shown once. Collections and Trending appear in the default browse view.
 
 Settings → Trips near you lets the user pick, change or remove their departure city. When the user chooses device location, COVA explains the feature before asking for approximate foreground access via `expo-location`. Explore refreshes only with existing permission. The device matches the position to a city using the bundled place catalogue. AsyncStorage holds only the city key and the selected mode, per signed-in account. There is no background check, online geocoder, or live location on maps or profiles. The web uses manual city selection. Expo Go uses its own permission wording, while a COVA build uses the wording in `app.json`.
 

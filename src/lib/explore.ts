@@ -260,6 +260,37 @@ export function searchExplore(query: string): { places: RowItem[]; items: Explor
 /** A tile in the Explore feed. `href` opens a collection instead of a place. */
 export type FeedItem = BoardItem & { href?: string };
 
+const nearbyOrder = ['weekend', 'weekend', 'medium', 'weekend', 'medium', 'long'] as const;
+type NearbyGroup = { id: (typeof nearbyOrder)[number]; places: readonly { slug: string }[] };
+
+/** Promote a few ranked destinations among the existing stories. Each destination gets one card. */
+export function curateExploreFeed(feed: FeedItem[], featured: readonly { slug: string }[], nearby: readonly NearbyGroup[] = []): FeedItem[] {
+  const seen = new Set(featured.map(({ slug }) => slug));
+  const placesBySlug = new Map<string, FeedItem>();
+  const unique = feed.filter((tile) => {
+    if (tile.kind !== 'place' || !tile.slug) return true;
+    if (seen.has(tile.slug)) return false;
+    seen.add(tile.slug);
+    placesBySlug.set(tile.slug, tile);
+    return true;
+  });
+  const pools = new Map(nearby.map(({ id, places }) => [id, places.flatMap(({ slug }) => {
+    const tile = placesBySlug.get(slug);
+    return tile ? [tile] : [];
+  })]));
+  const promoted = nearbyOrder.flatMap((group) => {
+    const tile = pools.get(group)?.shift();
+    return tile ? [tile] : [];
+  });
+  const picks = [...promoted, ...[...pools.values()].flat()].slice(0, nearbyOrder.length);
+  if (!picks.length) return unique;
+
+  const selected = new Set(picks);
+  const remaining = unique.filter((tile) => !selected.has(tile));
+  const ordered = picks.flatMap((tile) => [tile, ...remaining.splice(0, 2)]);
+  return [...ordered, ...remaining];
+}
+
 const STAY_KINDS = ['Hotel', 'Villa', 'B&B', 'Airbnb', 'Riad', 'Ryokan', 'Other'];
 
 /**

@@ -427,3 +427,61 @@ export function collectionTiles(): CollectionTileInfo[] {
   }
   return out;
 }
+
+// ---------------------------------------------------------------------------
+// A taste's page (owner, Nov 2026: tap "Food" or "Skiing" under Your taste on a profile)
+// ---------------------------------------------------------------------------
+
+/** Tastes that are also search topics: their page lists matching spots too, and opens places tailored to them. */
+const TASTE_TOPIC: Record<string, { topic: string; /** How many things on a page bring in a place not tagged with the taste (0 = never). */ min: number }> = {
+  food: { topic: 'food', min: 2 },
+  ski: { topic: 'ski', min: 0 }, // cable cars and glaciers aren't skiing: only real ski resorts
+  wellness: { topic: 'spa', min: 2 },
+  hiking: { topic: 'walking', min: 0 }, // a stroll round the city walls or the old town isn't a hiking holiday
+  outdoors: { topic: 'walking', min: 0 },
+  nightlife: { topic: 'nightlife', min: 2 },
+  history: { topic: 'history', min: 2 },
+  culture: { topic: 'sights', min: 2 },
+  golf: { topic: 'golf', min: 1 },
+  wine: { topic: 'wine', min: 2 },
+};
+
+/**
+ * Everything for one taste, for the shared taste page (app/taste/[tag].tsx): any holiday type the matching engine
+ * knows, now or later. Places count when the taste is part of what they are (their tag is at least 0.5), or, for a
+ * taste that's also a search topic, when their page has enough things for it (TASTE_TOPIC's `min`: Verbier's W Spa
+ * for spas; never for skiing, as cable cars aren't ski resorts). Each place's line says why; spots are the restaurants, stays and things to do that fit, at most
+ * two a place. The screen sorts both best for you first.
+ */
+export function tastePage(tag: string): { topic: string | null; places: RowItem[]; spots: ExploreItem[] } {
+  const topic = TASTE_TOPIC[tag]?.topic ?? null;
+  const min = TASTE_TOPIC[tag]?.min ?? 0;
+  const found: RowItem[] = [];
+  const spots: ExploreItem[] = [];
+  for (const p of searchablePlaces()) {
+    const place = getPlace(p.slug);
+    if (!place) continue;
+    const picks = topic ? (topicPicks(p.slug, topic)?.picks ?? []).filter((x) => x.kind !== 'tip') : [];
+    const weight = p.tags[tag] ?? 0;
+    // Every place has restaurants, so for food only food things beyond them (markets, cooking classes) count towards it.
+    const counted = topic === 'food' ? picks.filter((x) => x.kind !== 'eat') : picks;
+    if (weight < 0.5 && (!min || counted.length < min)) continue;
+    // For food, the restaurants lead the line and the spots.
+    const shown = topic === 'food' ? [...picks.filter((x) => x.kind === 'eat'), ...picks.filter((x) => x.kind !== 'eat')] : picks;
+    const why = shown.length ? shown.slice(0, 2).map((x) => x.name).join(' · ') : kicker(p.slug) || place.region;
+    found.push({ slug: p.slug, name: place.name, sub: why, photo: place.photo, score: place.score ?? undefined, topic: shown.length ? topic! : undefined });
+    for (const x of shown.slice(0, 2))
+      spots.push({
+        key: `${p.slug}-${x.name}`,
+        slug: p.slug,
+        place: place.name,
+        kind: x.kind === 'eat' ? 'Eat' : x.kind === 'culture' ? `Culture · ${x.label}` : x.label,
+        scoreKind: x.kind === 'stay' ? 'Stay' : x.kind === 'eat' ? 'Eat' : 'Do',
+        name: x.name,
+        what: x.what,
+        photo: x.kind === 'do' || x.kind === 'culture' ? photoForActivity({ name: x.name, what: x.what }) : null,
+        cover: place.photo,
+      });
+  }
+  return { topic, places: found, spots };
+}

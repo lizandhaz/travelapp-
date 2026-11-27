@@ -100,7 +100,7 @@ src/
                           say boards/lists): your Want to go board and your own boards ("Made by you", + New board), and
                           Friends' trips you've saved (SavedTripCard grid)
     (tabs)/profile.tsx    You (built from components/profile.tsx): profile picture (tap to change), name, followers / following / requests counts
-                          at the top (tap → people.tsx), Find friends / Add a trip buttons, stats (Countries and % "Of the world" open CountriesSheet, owner Nov 2026), Your taste (plain outline tags, no colours), travel map card (tap → map), "Your boards" (owner Nov 2026, was "Your collections": your boards + saved friends' trips, each opens; See all
+                          at the top (tap → people.tsx), Find friends / Add a trip buttons, stats (Countries and % "Of the world" open CountriesSheet, owner Nov 2026), Your taste (outline tags with ›, each opens taste/[tag]), travel map card (tap → map), "Your boards" (owner Nov 2026, was "Your collections": your boards + saved friends' trips, each opens; See all
                           → Saved), your trips as postcards (the feed's TripPostcard, a sideways row; owner Nov 2026):
                           Newest (default) / Oldest / Top rated, and a year filter
     list/[id].tsx         One board: cover (chosen photo, or a collage of its places) with the name, Share/Edit circles, places as a
@@ -110,6 +110,10 @@ src/
     list/new.tsx          New board, or rename/cover/who-can-see with ?id=; cover photo picker (Collage, the board's places, a dozen
                           favourites); with ?place= (and kind/parent for a spot) it also adds that
     collection/[id].tsx   One Explore collection (places or things) as a 2-column grid, best for you first
+    taste/[tag].tsx       One page for every taste (owner Nov 2026), opened from the tags under "Your taste" on any profile: "For your love of
+                          <taste>", Spots for you (tastes that are search topics: food, ski, spas, walking, nightlife, history, culture, golf,
+                          wine) and Best places for you (2-column, best for you first, opening tailored to the topic). explore.ts `tastePage(tag)`:
+                          places tagged ≥ 0.5, or with enough matching things (TASTE_TOPIC `min`; never for ski/hiking/outdoors)
     map.tsx               The full travel map: All/Been/Want to go, names on pins, pinch to zoom (iPhone), Whole world, place chips.
                           The map has a fixed pixel size (`mapSize()`: app width less gutters, height from the aspect ratio) and is framed on
                           all your places whatever the tab, so switching tabs only changes which pins show (owner Nov 2026: it used to squash)
@@ -254,8 +258,8 @@ src/
                           nightlife, snorkelling, skiing, spa and wellness, shopping; owner Nov 2026) found inside each place's page (`things`: its stays, restaurants,
                           things to do, culture and tips) with the thing's name as the reason ("Musée d'Orsay"), or a tag ("Known for golf":
                           GOLF / WINE sets in explore.ts); other words are looked for on the page too. Tapping a result of a topic search
-                          opens the place tailored to it (`/place/<slug>?topic=golf`; owner Nov 2026): a sage "From your search · Golf in
-                          Mauritius" section under the buttons lists what fits (explore.ts `topicPicks()`, same `thingMatches()` as search;
+                          opens the place tailored to it (`/place/<slug>?topic=golf`; owner Nov 2026): a sage "Picked for you · Golf in
+                          Mauritius" section (also from a taste page) under the buttons lists what fits (explore.ts `topicPicks()`, same `thingMatches()` as search;
                           stays open stay/[slug] and go first in Where to stay), with × to hide it. Real golf courses, wineries and
                           snorkel spots were added as things to do (tag Golf / Wine / Snorkel, no friend) for the golf, wine and beach places
                           (tests/topicPages.test.mjs); searchPlaces() ranks places (more than half of what was asked; reasons like

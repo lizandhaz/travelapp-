@@ -98,19 +98,33 @@ export function worldShare(countries: number): string {
   return `${pct < 10 ? pct.toFixed(1).replace(/\.0$/, '') : Math.round(pct)}%`;
 }
 
-/** "Your taste" / "Tom's taste": plain outline tags. */
+/**
+ * "Your taste" / "Tom's taste": outline tags, each opening the places for that taste (owner, Nov 2026), on one
+ * shared page (app/taste/[tag].tsx), scored for you. A small › says they open; they darken a little when pressed.
+ */
 export function TasteTags({ label, tastes }: { label: string; tastes: string[] }) {
   if (!tastes.length) return null;
   return (
     <View style={{ paddingHorizontal: GUTTER, marginTop: 14, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
       <Text variant="label">{label}</Text>
-      {tastes.map((t) => (
-        <View key={t} style={{ borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 }}>
-          <Text variant="small" style={{ color: colors.ink }}>
-            {TASTE_LABELS[t] ?? t}
-          </Text>
-        </View>
-      ))}
+      {tastes.map((t) => {
+        const name = TASTE_LABELS[t] ?? t;
+        return (
+          <Pressable
+            key={t}
+            onPress={() => router.push({ pathname: '/taste/[tag]', params: { tag: t } })}
+            accessibilityRole="link"
+            accessibilityLabel={`${name}. See places picked for this taste`}
+            hitSlop={4}
+            style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 3, borderWidth: 1, borderColor: pressed ? colors.sage : colors.line, backgroundColor: pressed ? colors.sageSoft : colors.card, borderRadius: 999, paddingLeft: 12, paddingRight: 9, paddingVertical: 4 })}
+          >
+            <Text variant="small" style={{ color: colors.ink }}>
+              {name}
+            </Text>
+            <ChevronIcon color={colors.muted} size={11} strokeWidth={2.2} />
+          </Pressable>
+        );
+      })}
     </View>
   );
 }

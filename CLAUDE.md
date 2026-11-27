@@ -186,7 +186,8 @@ src/
                           TravelMapFull (map screen: names placed so they don't overlap, filters, pinch zoom, place chips)
     place.tsx             Place page pieces (stay/eat/do cards have a bookmark to save that spot to a board under its place): YourScore ("Your score" with no word after it, owner Nov 2026), PlaceFacts (Best time / Stays as plain text, no boxes), PlaceMapSection
                           (on the page: the real map itself, interactive (pinch, drag, tap a pin to open it in the key) + the numbered
-                          key with your score for each spot, tap for why; tap the map or "Full screen" for the big real map (zoom from the street to the world) +
+                          key with your score for each spot, in sections (Where to stay, Where to eat, Things to do incl. hidden gems), each best for you first,
+                          and the pins renumbered to match so 1 is your best stay and numbers read top to bottom (owner Nov 2026; the web stand-in's drawn picture keeps its old numbers), tap for why; tap the map or "Full screen" for the big real map (zoom from the street to the world) +
                           "Where are you staying?" (typing only; picks the stay once one name matches) → "Near <stay>": the rest
                           nearest first, Right nearby / A short way / Further out. The drawn maps are no longer shown on phones
                           (owner, Nov 2026); they're only the web stand-in), BestTimeChart, SaidList, StayRow ("Price per night, from" label + price chips Any / Under £150 / £150–£300 / Over £300, PRICE_BANDS: only the bands that place has stays in, and only when there are two or more (owner Nov 2026); each card opens stay/[slug]; Explore also has "Stays under £150 a night" and "Worth the splurge" (£500+) collections, whose stays open stay/[slug] too), EatRow (Pinterest-style: no photos until friends add their own, owner Nov 2026; soft sage/blush/sky/champagne cards in a

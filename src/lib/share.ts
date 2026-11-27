@@ -2,7 +2,7 @@ import { Platform, Share } from 'react-native';
 
 import { APP_NAME } from '@/constants/brand';
 import { countryOf } from './knownPlaces';
-import { longMonth } from './months';
+import { dayRange, longMonth } from './months';
 import { formatScore, scoreWord } from './score';
 import { companionsLabel, placeLabel, type Trip } from './trips';
 
@@ -34,7 +34,7 @@ export function tripShareText(trip: Trip): string {
   const where = placeLabel({ name: main.name, country: countryOf(main) || main.country });
   const nights = trip.stops.reduce((n, s) => n + (s.nights ?? 0), 0);
   const who = companionsLabel(trip.companions);
-  const lines = [`${where} · ${longMonth(trip.month)}`, `${formatScore(trip.score)}/10 – ${scoreWord(trip.score)}`];
+  const lines = [`${where} · ${trip.dates ? dayRange(trip.dates.start, trip.dates.end) : longMonth(trip.month)}`, `${formatScore(trip.score)}/10 – ${scoreWord(trip.score)}`];
   const details = [who && (trip.companions === 'solo' ? 'Solo' : `With ${who.toLowerCase()}`), nights ? `${nights} ${nights === 1 ? 'night' : 'nights'}` : null].filter(Boolean);
   if (trip.wouldReturn != null) details.push(trip.wouldReturn ? 'Would go back' : 'Wouldn’t go back');
   if (details.length) lines.push(details.join(' · '));

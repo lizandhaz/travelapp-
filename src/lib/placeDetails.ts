@@ -15238,5 +15238,380 @@ export const placeDetails: Record<string, PlaceDetail> = {
       }
     ],
     "credits": null
+  },
+  "malta": {
+    "kicker": "Island · Old town",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "April to June, or September and October",
+    "staysFrom": "from £130 a night",
+    "goodFor": [
+      "Couples",
+      "Families"
+    ],
+    "temps": [
+      16,
+      16,
+      18,
+      21,
+      25,
+      29,
+      32,
+      32,
+      29,
+      25,
+      21,
+      17
+    ],
+    "bestMonths": [
+      3,
+      4,
+      5,
+      8,
+      9
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Harriet",
+        "month": "Oct 2024",
+        "quote": "Valletta's golden streets, then a boat to the Blue Lagoon.",
+        "score": 8.7,
+        "face": null
+      },
+      {
+        "who": "Jonah",
+        "month": "May 2025",
+        "quote": "History everywhere and the water is unreal. Gozo was the highlight.",
+        "score": 8.5,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "The Phoenicia Malta",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £300 a night · A grand 1930s hotel just outside Valletta's gates.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Rosselli – AX Privilege",
+        "type": "Hotel",
+        "match": 87,
+        "featured": false,
+        "sub": "from £280 a night · Harriet stayed",
+        "because": null,
+        "score": 9.0,
+        "photo": null
+      },
+      {
+        "name": "Palazzo Consiglia",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £180 a night · Jonah stayed",
+        "because": null,
+        "score": 8.4,
+        "photo": null
+      },
+      {
+        "name": "Hotel Juliani",
+        "type": "Hotel",
+        "match": 83,
+        "featured": false,
+        "sub": "from £130 a night · A small boutique hotel on Spinola Bay in St Julian’s.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Noni",
+        "price": "£££",
+        "what": "Modern Maltese cooking in Valletta",
+        "score": 9.0,
+        "from": "Harriet",
+        "match": 87,
+        "photo": null
+      },
+      {
+        "name": "Ta' Rikardu",
+        "price": "££",
+        "what": "Gozo's own cheeses and wine in the Citadel",
+        "score": 8.6,
+        "from": null,
+        "match": 84,
+        "photo": null
+      },
+      {
+        "name": "Is-Suq tal-Belt",
+        "price": "£",
+        "what": "Valletta's food market for a casual lunch",
+        "score": 8.4,
+        "from": "Jonah",
+        "match": 83,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Boat",
+        "name": "Blue Lagoon, Comino",
+        "what": "Go early or late to beat the day boats.",
+        "from": "Harriet",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Mdina",
+        "what": "The silent walled city, best at dusk.",
+        "from": "Jonah",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "St John's Co-Cathedral",
+        "what": "Gilded inside, with Caravaggio's Beheading of St John.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Snorkel",
+        "name": "Għar Lapsi",
+        "what": "A sheltered swimming spot the locals love.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Ħal Saflieni Hypogeum",
+        "what": "An underground prehistoric temple. Book weeks ahead.",
+        "from": "Jonah",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Valletta",
+        "what": "A UNESCO capital built by the Knights of St John.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Use the ferries: Valletta to Sliema, and to Gozo, are quick and cheap.",
+        "from": "Harriet"
+      }
+    ],
+    "credits": null
+  },
+  "croatia": {
+    "kicker": "Coast · Islands",
+    "scoreNote": "From 2 friends and people with your taste.",
+    "bestTime": "May, June or September",
+    "staysFrom": "from £180 a night",
+    "goodFor": [
+      "Couples",
+      "Friends"
+    ],
+    "temps": [
+      12,
+      13,
+      15,
+      19,
+      23,
+      27,
+      30,
+      30,
+      26,
+      21,
+      16,
+      13
+    ],
+    "bestMonths": [
+      4,
+      5,
+      8
+    ],
+    "crowds": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "said": [
+      {
+        "who": "Tom",
+        "month": "Jun 2025",
+        "quote": "Island-hopping from Split and swimming off the rocks in the clearest water.",
+        "score": 9.0,
+        "face": null
+      },
+      {
+        "who": "Priya",
+        "month": "Sep 2024",
+        "quote": "Dubrovnik's walls at sunset were magic.",
+        "score": 8.6,
+        "face": null
+      }
+    ],
+    "stays": [
+      {
+        "name": "Villa Dubrovnik",
+        "type": "Hotel",
+        "match": 86,
+        "featured": true,
+        "sub": "from £450 a night · Terraced rooms above the sea, looking across to the old town.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Maslina Resort, Hvar",
+        "type": "Hotel",
+        "match": 88,
+        "featured": false,
+        "sub": "from £350 a night · Tom stayed",
+        "because": null,
+        "score": 9.1,
+        "photo": null
+      },
+      {
+        "name": "Hotel Excelsior Dubrovnik",
+        "type": "Hotel",
+        "match": 86,
+        "featured": false,
+        "sub": "from £300 a night · Priya stayed",
+        "because": null,
+        "score": 8.8,
+        "photo": null
+      },
+      {
+        "name": "Cornaro Hotel, Split",
+        "type": "Hotel",
+        "match": 84,
+        "featured": false,
+        "sub": "from £180 a night · A rooftop bar hotel next to the palace walls.",
+        "because": null,
+        "score": null,
+        "photo": null
+      }
+    ],
+    "eats": [
+      {
+        "name": "Proto, Dubrovnik",
+        "price": "£££",
+        "what": "Seafood in the old town since 1886",
+        "score": 8.8,
+        "from": "Priya",
+        "match": 86,
+        "photo": null
+      },
+      {
+        "name": "Konoba Fetivi, Split",
+        "price": "££",
+        "what": "Family-run seafood just outside the palace",
+        "score": 8.7,
+        "from": "Tom",
+        "match": 85,
+        "photo": null
+      },
+      {
+        "name": "Zori, Palmižana",
+        "price": "£££",
+        "what": "A long island lunch, by taxi boat from Hvar",
+        "score": 8.6,
+        "from": null,
+        "match": 84,
+        "photo": null
+      }
+    ],
+    "dos": [
+      {
+        "tag": "Walk",
+        "name": "Dubrovnik city walls",
+        "what": "Walk the whole loop early, before the heat.",
+        "from": "Priya",
+        "gem": false
+      },
+      {
+        "tag": "Boat",
+        "name": "Island-hop by catamaran",
+        "what": "Split to Hvar, Brač and Korčula by fast ferry.",
+        "from": "Tom",
+        "gem": false
+      },
+      {
+        "tag": "Culture",
+        "name": "Diocletian's Palace, Split",
+        "what": "A Roman palace that the old town lives inside.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Beach",
+        "name": "Zlatni Rat, Brač",
+        "what": "The famous beach that changes shape with the wind.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Nature",
+        "name": "Krka National Park",
+        "what": "Waterfalls and boardwalks, a day trip from Split.",
+        "from": null,
+        "gem": false
+      },
+      {
+        "tag": "Hidden gem",
+        "name": "Pakleni Islands",
+        "what": "Pine-fringed coves a short taxi boat from Hvar.",
+        "from": "Tom",
+        "gem": true
+      }
+    ],
+    "culture": [
+      {
+        "tag": "History",
+        "when": null,
+        "name": "Korčula old town",
+        "what": "A tiny walled town said to be Marco Polo's birthplace.",
+        "from": null
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Book ferries ahead in July and August, and bring swim shoes for the pebbles.",
+        "from": "Tom"
+      }
+    ],
+    "credits": null
   }
 };

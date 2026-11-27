@@ -141,7 +141,7 @@ function CoverChoice({ photo, label, selected, onPress }: { photo?: PhotoName; l
       accessibilityRole="radio"
       accessibilityState={{ selected }}
       accessibilityLabel={label ?? `Cover photo ${photo}`}
-      style={{ width: 76, height: 76, borderRadius: 14, overflow: 'hidden', borderWidth: selected ? 3 : 1, borderColor: selected ? colors.accentDeep : colors.line, backgroundColor: colors.sand, alignItems: 'center', justifyContent: 'center' }}
+      style={{ width: 76, height: 76, borderRadius: 14, overflow: 'hidden', borderWidth: selected ? 3 : 1, borderColor: selected ? colors.action : colors.line, backgroundColor: colors.sand, alignItems: 'center', justifyContent: 'center' }}
     >
       {photo ? <PhotoFill photo={photo} /> : <Text variant="small" style={{ color: colors.ink }}>{label}</Text>}
     </Pressable>

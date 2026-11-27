@@ -38,7 +38,7 @@ export function Row({ children, gap = 12 }: { children: React.ReactNode; gap?: n
 /** Pill badge on a photo ("#1", "Eat"): white, or terracotta with `accent`. */
 export function PhotoBadge({ text, style, accent = false }: { text: string; style?: ViewStyle; accent?: boolean }) {
   return (
-    <View style={[{ backgroundColor: accent ? colors.accentDeep : 'rgba(255,255,255,0.94)', borderRadius: 999, paddingHorizontal: 9, paddingVertical: 3 }, style]}>
+    <View style={[{ backgroundColor: accent ? colors.action : 'rgba(255,255,255,0.94)', borderRadius: 999, paddingHorizontal: 9, paddingVertical: 3 }, style]}>
       <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, color: accent ? colors.onDark : colors.ink }}>{text}</Text>
     </View>
   );

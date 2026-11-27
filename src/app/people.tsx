@@ -301,9 +301,9 @@ function Pill({ label, filled = false, onPress, a11y }: { label: string; filled?
         borderRadius: radius.pill,
         paddingHorizontal: 16,
         paddingVertical: 8,
-        backgroundColor: filled ? colors.accentDeep : colors.card,
+        backgroundColor: filled ? colors.action : colors.card,
         borderWidth: 1,
-        borderColor: filled ? colors.accentDeep : colors.line,
+        borderColor: filled ? colors.action : colors.line,
         opacity: pressed ? 0.8 : 1,
       })}
     >

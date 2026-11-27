@@ -19,7 +19,8 @@ export const colors = {
   sage: '#a7b39e', // soft tags (e.g. stay type): sage whisper
   sky: '#bac6d3', // misty sky: the quieter months in the best-time chart
   accent: '#ba7e66', // terracotta clay: swash under italic words, star, slider fill, shapes, large text
-  accentDeep: '#9e624a', // "Save trip" / "I've been" buttons (white text passes contrast)
+  accentDeep: '#9e624a', // deep terracotta for small touches: hearts, avatar shades, "Want to go" in setup (white text passes)
+  action: '#636b51', // olive (owner, Nov 2026: "not sure I love the orange boxes"): the + button, selected chips and switches, filled buttons like "I've been", Follow
   accentText: '#905640', // small terracotta text: links, taglines, labels (passes contrast)
   olive: '#636b51', // olive grove (a shade deeper so small text passes): stay score stamp, stay pins, saved
   blushSoft: '#f5e5de', // soft blush fill for cards and bands

@@ -6,12 +6,12 @@ import { AccentTitle } from '@/components/AccentTitle';
 import { Avatar } from '@/components/Avatar';
 import { Row } from '@/components/cards';
 import { ListCover } from '@/components/lists';
-import { FriendTripStamp, ProfileStats, ProfileTop, TripsSection } from '@/components/profile';
+import { FriendTripPostcard, ProfileStats, ProfileTop, TripsSection, profilePostcardWidth } from '@/components/profile';
 import { SafetySheet } from '@/components/SafetySheet';
 import { Text } from '@/components/Text';
 import { TravelMapCard } from '@/components/TravelMap';
 import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
-import { appWidth, colors, GUTTER, radius } from '@/constants/theme';
+import { colors, GUTTER, radius } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { boardMeta, fetchBoardsOf, type Board } from '@/lib/boards';
 import { follow, unfollow } from '@/lib/friends';
@@ -73,7 +73,7 @@ export default function UserProfile() {
   const first = card.name.split(' ')[0];
   const isMe = card.status === 'me';
   const been: MapPlace[] = trips.map((t) => ({ name: t.place, country: countryOf({ name: t.place, country: t.country }), href: `/friend-trip/${t.id}` }));
-  const cardWidth = (appWidth() - GUTTER * 2 - 14) / 2;
+  const cardWidth = profilePostcardWidth();
 
   async function toggleFollow() {
     if (!card) return;
@@ -172,7 +172,7 @@ export default function UserProfile() {
           trips={trips}
           when={(t) => isoMonth(t.month)}
           score={(t) => t.score}
-          render={(t) => <FriendTripStamp key={t.id} trip={t} width={cardWidth} />}
+          render={(t) => <FriendTripPostcard key={t.id} trip={t} width={cardWidth} />}
           empty={<Text variant="bodySoft">{first} hasn’t shared a trip yet.</Text>}
         />
       )}

@@ -2,14 +2,12 @@ import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 
-import { colors, fonts, GUTTER, radius } from '@/constants/theme';
-import { fitLines, fitWordSize } from '@/lib/fit';
+import { appWidth, colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { tripPic, tripPlace, type FriendTrip } from '@/lib/friendTrips';
 import { TASTE_LABELS } from '@/lib/taste';
 import { AccentTitle } from './AccentTitle';
+import { TripPostcard } from './cards';
 import { ChevronIcon } from './Icons';
-import { MonthPill } from './MonthPill';
-import { PhotoStamp } from './Photo';
 import { Text } from './Text';
 import { Chip, toneFill, type Tone } from './ui';
 
@@ -121,7 +119,7 @@ type Order = 'newest' | 'oldest' | 'top';
 
 /**
  * "Your trips" / "Tom's trips": Newest (default) / Oldest / Top rated, a year filter when there's more
- * than one year, and a two-column grid drawn by `render`. `when` gives a trip's sortable month ("2026-08").
+ * than one year, and a sideways row of trip postcards drawn by `render`. `when` gives a trip's sortable month ("2026-08").
  */
 export function TripsSection<T>({
   title,
@@ -175,7 +173,18 @@ export function TripsSection<T>({
               </ScrollView>
             </View>
           )}
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 14, rowGap: 18 }}>{shown.map(render)}</View>
+          {/* A sideways row of postcards (owner, Nov 2026), each snapping into place, the next peeking in. */}
+          <View style={{ marginHorizontal: -GUTTER }}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              decelerationRate="fast"
+              snapToInterval={profilePostcardWidth() + 14}
+              contentContainerStyle={{ gap: 14, paddingHorizontal: GUTTER, alignItems: 'flex-start' }}
+            >
+              {shown.map(render)}
+            </ScrollView>
+          </View>
         </View>
       )}
     </View>
@@ -198,31 +207,38 @@ function YearChip({ label, selected, onPress }: { label: string; selected: boole
   );
 }
 
-/** A friend's trip as a photo stamp, like your own trips (components/trip/TripCard). Tap to open it. */
-export function FriendTripStamp({ trip, width }: { trip: FriendTrip; width: number }) {
-  const place = tripPlace(trip);
+/** How wide a trip postcard is on a profile: most of the screen, so the next one peeks in from the side. */
+export const profilePostcardWidth = () => Math.round(Math.min(appWidth() * 0.8, 340));
+
+/** "Their words" in curly quotes, however they were written. */
+export const quoted = (s: string | null | undefined) => (s && s.trim() ? `“${s.trim().replace(/^[“"]+|[”"]+$/g, '')}”` : null);
+
+/** A friend's trip on their profile, as the same postcard as the Friends feed (owner, Nov 2026). Tap to open it. */
+export function FriendTripPostcard({ trip, width }: { trip: FriendTrip; width: number }) {
   const pic = tripPic(trip, 0);
-  const nameSize = fitWordSize(place, width - 2 * Math.max(6, Math.round(width * 0.025)) - 32, 22, 15);
+  const place = tripPlace(trip);
   return (
-    <Pressable
+    <TripPostcard
+      item={{
+        id: trip.id,
+        who: trip.who,
+        face: trip.face,
+        place,
+        region: trip.region,
+        month: trip.month.toUpperCase(),
+        photo: pic?.photo ?? null,
+        photoUri: pic?.uri ?? null,
+        quote: quoted(trip.quote),
+        score: trip.score,
+        stayType: trip.stay?.type ?? '',
+        stayName: trip.stay?.name ?? '',
+        stayScore: trip.stay?.score ?? null,
+        slug: trip.slug,
+      }}
+      width={width}
+      who={false}
       onPress={() => router.push(`/friend-trip/${trip.id}`)}
-      accessibilityRole="link"
-      accessibilityLabel={`${trip.who}'s ${place} trip, ${trip.month}, ${trip.score.toFixed(1)} out of 10`}
-      style={{ width }}
-    >
-      <PhotoStamp {...(pic ?? {})} width={width} height={width * 1.2}>
-        <View style={{ position: 'absolute', top: 18, left: 16 }}>
-          <MonthPill month={trip.month.toUpperCase()} onPhoto />
-        </View>
-        <View style={{ position: 'absolute', left: 16, right: 16, bottom: 14 }}>
-          <Text {...fitLines(place)} style={{ fontFamily: fonts.display, fontSize: nameSize, lineHeight: Math.round(nameSize * 1.18), color: colors.onDark }}>
-            {place}
-          </Text>
-          <Text numberOfLines={1} style={{ marginTop: 2, fontFamily: fonts.display, fontSize: 17, color: colors.onDark, fontVariant: ['tabular-nums'] }}>
-            {trip.score.toFixed(1)}
-          </Text>
-        </View>
-      </PhotoStamp>
-    </Pressable>
+      accessibilityLabel={`${trip.who}'s ${place} trip, ${trip.month}, ${trip.score.toFixed(1)} out of 10. Open the trip`}
+    />
   );
 }

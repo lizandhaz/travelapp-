@@ -83,6 +83,7 @@ function Navigator() {
             <Stack.Screen name="save" />
             <Stack.Screen name="map" />
             <Stack.Screen name="collection/[id]" />
+            <Stack.Screen name="taste/[tag]" />
             <Stack.Screen name="friend-trip/[id]" />
             <Stack.Screen name="postcard/[id]" />
             <Stack.Screen name="people" />

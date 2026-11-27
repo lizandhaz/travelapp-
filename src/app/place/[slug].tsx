@@ -241,7 +241,7 @@ function TopicSection({ slug, place, label, picks }: { slug: string; place: stri
     <View style={{ marginTop: 22, marginHorizontal: GUTTER, backgroundColor: colors.sageSoft, borderRadius: radius.lg, padding: 16, gap: 12 }}>
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
         <View style={{ flex: 1, gap: 2 }}>
-          <Text variant="label">From your search</Text>
+          <Text variant="label">Picked for you</Text>
           <Text variant="heading" accessibilityRole="header">
             {label} in {place}
           </Text>

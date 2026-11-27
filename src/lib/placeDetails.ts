@@ -95,7 +95,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £300 a night · Country house in four acres of gardens, ten minutes from town.",
         "because": "Because you loved breakfast in the garden at Es Molí",
         "score": null,
-        "photo": "bath-1"
+        "photo": null
       },
       {
         "name": "No.15 Great Pulteney",
@@ -105,7 +105,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £240 a night · Maya stayed",
         "because": null,
         "score": 9.2,
-        "photo": "bath-1"
+        "photo": null
       },
       {
         "name": "The Royal Crescent Hotel",
@@ -115,7 +115,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £340 a night · Mum stayed",
         "because": null,
         "score": 9.0,
-        "photo": "bath-1"
+        "photo": null
       },
       {
         "name": "Number One Bath",
@@ -154,7 +154,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Mum",
         "match": 82,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -320,7 +320,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.1,
         "from": "Sophie",
         "match": 84,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Snack Matira",
@@ -329,7 +329,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Sam",
         "match": 79,
-        "photo": "food-table"
+        "photo": null
       }
     ],
     "dos": [
@@ -490,7 +490,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.8,
         "from": "Sophie",
         "match": 86,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Riddle & Finns on the Beach",
@@ -637,7 +637,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Mum",
         "match": 91,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Fitzbillies",
@@ -655,7 +655,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Sam",
         "match": 80,
-        "photo": "food-pasta"
+        "photo": null
       }
     ],
     "dos": [
@@ -803,7 +803,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Sam",
         "match": 88,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Refuge du Lac Blanc",
@@ -812,7 +812,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.8,
         "from": "Sophie",
         "match": 85,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Le Cap Horn",
@@ -821,7 +821,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.4,
         "from": "Tom",
         "match": 76,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -946,7 +946,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £150 a night · Mum stayed",
         "because": null,
         "score": 8.3,
-        "photo": "bath-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -957,7 +957,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.1,
         "from": "Sophie",
         "match": 86,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Coffee Dispensary",
@@ -1095,7 +1095,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £1100 a night · Every room faces the lake. Floating pool on the water.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "como-1"
+        "photo": null
       },
       {
         "name": "Villa Cipressi",
@@ -1105,7 +1105,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £240 a night · Tom stayed",
         "because": null,
         "score": 9.1,
-        "photo": "como-2"
+        "photo": null
       },
       {
         "name": "Albergo Milano, Varenna",
@@ -1135,7 +1135,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.8,
         "from": "Sophie",
         "match": 85,
-        "photo": "food-pasta"
+        "photo": null
       },
       {
         "name": "Bar Il Molo",
@@ -1144,7 +1144,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.4,
         "from": "Sam",
         "match": 79,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -1256,7 +1256,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £420 a night · Cabins in the pines with a natural pool.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "pool-1"
+        "photo": null
       },
       {
         "name": "Casa Arrozal",
@@ -1266,7 +1266,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £280 a night · You stayed",
         "because": null,
         "score": 8.9,
-        "photo": "villa-1"
+        "photo": null
       },
       {
         "name": "Casas na Areia",
@@ -1276,7 +1276,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £380 a night · Sophie stayed",
         "because": null,
         "score": 9.0,
-        "photo": "villa-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -1287,7 +1287,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Priya",
         "match": 90,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Museu do Arroz",
@@ -1296,7 +1296,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Maya",
         "match": 87,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Comporta Café",
@@ -1305,7 +1305,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Sam",
         "match": 85,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -1453,7 +1453,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.9,
         "from": "Tom",
         "match": 84,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Torvehallerne",
@@ -1462,7 +1462,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Jonah",
         "match": 80,
-        "photo": "food-table"
+        "photo": null
       }
     ],
     "dos": [
@@ -1602,7 +1602,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £260 a night · Mum stayed",
         "because": null,
         "score": 8.5,
-        "photo": "bath-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -1622,7 +1622,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.9,
         "from": "Sophie",
         "match": 84,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Daylesford Farm Café",
@@ -1761,7 +1761,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £560 a night · Mum stayed",
         "because": null,
         "score": 8.6,
-        "photo": "bath-1"
+        "photo": null
       },
       {
         "name": "Hôtel des Trois Vallées",
@@ -1782,7 +1782,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Maya",
         "match": 82,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Le Chalet de Pierres",
@@ -1791,7 +1791,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.9,
         "from": "Sophie",
         "match": 81,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "La Saulire",
@@ -1800,7 +1800,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Mum",
         "match": 79,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -1942,7 +1942,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £140 a night · Maya stayed",
         "because": null,
         "score": 8.9,
-        "photo": "lemon-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -1953,7 +1953,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.9,
         "from": "Sam",
         "match": 90,
-        "photo": "taverna-1"
+        "photo": null
       },
       {
         "name": "Taverna Tamam",
@@ -1962,7 +1962,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Maya",
         "match": 83,
-        "photo": "taverna-1"
+        "photo": null
       },
       {
         "name": "Raki at the harbour",
@@ -1971,7 +1971,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.5,
         "from": "Priya",
         "match": 83,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Bougatsa Iordanis",
@@ -2108,7 +2108,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £600 a night · Two old manor houses in the olive groves.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "pool-2"
+        "photo": null
       },
       {
         "name": "Es Molí House",
@@ -2118,7 +2118,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £160 a night · Jonah stayed",
         "because": null,
         "score": 8.6,
-        "photo": "lemon-1"
+        "photo": null
       },
       {
         "name": "Hotel Es Petit",
@@ -2139,7 +2139,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.2,
         "from": "Jonah",
         "match": 93,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Es Racó d'es Teix",
@@ -2148,7 +2148,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.1,
         "from": "Priya",
         "match": 88,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Sa Fonda",
@@ -2298,7 +2298,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £260 a night · Mum stayed",
         "because": null,
         "score": 8.8,
-        "photo": "bath-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -2309,7 +2309,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Sophie",
         "match": 84,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Café Knösel",
@@ -2327,7 +2327,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.8,
         "from": "Sophie",
         "match": 80,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -2455,7 +2455,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £140 a night · Jonah stayed",
         "because": null,
         "score": 9.2,
-        "photo": "lemon-1"
+        "photo": null
       },
       {
         "name": "Hotel Leto",
@@ -2486,7 +2486,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Maya",
         "match": 88,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Techne",
@@ -2495,7 +2495,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.8,
         "from": "Sophie",
         "match": 86,
-        "photo": "taverna-1"
+        "photo": null
       },
       {
         "name": "Sunset Bar",
@@ -2504,7 +2504,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Jonah",
         "match": 85,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Isalos",
@@ -2859,7 +2859,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.2,
         "from": "Maya",
         "match": 92,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Taberna da Rua das Flores",
@@ -2868,7 +2868,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Priya",
         "match": 87,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Manteigaria",
@@ -3043,7 +3043,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.3,
         "from": "Mum",
         "match": 78,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Center Parcs Forest Café",
@@ -3175,7 +3175,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £360 a night · Tom stayed",
         "because": null,
         "score": 9.1,
-        "photo": "pool-2"
+        "photo": null
       },
       {
         "name": "Quinta da Serra",
@@ -3195,7 +3195,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £150 a night · Sam stayed",
         "because": null,
         "score": 8.6,
-        "photo": "villa-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -3206,7 +3206,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.8,
         "from": "Tom",
         "match": 83,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Mercado dos Lavradores",
@@ -3224,7 +3224,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.5,
         "from": "Sam",
         "match": 77,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -3341,7 +3341,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £1500 a night · Barefoot luxury. Overwater villas with no shoes allowed.",
         "because": "Because you gave Villa Limone a 9.0",
         "score": null,
-        "photo": "maldives-2"
+        "photo": null
       },
       {
         "name": "Soneva Jani",
@@ -3351,7 +3351,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £1800 a night · Maya stayed",
         "because": null,
         "score": 9.6,
-        "photo": "maldives-1"
+        "photo": null
       },
       {
         "name": "Joali",
@@ -3361,7 +3361,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £1500 a night · Sophie stayed",
         "because": null,
         "score": 9.4,
-        "photo": "maldives-2"
+        "photo": null
       },
       {
         "name": "Six Senses Laamu",
@@ -3371,7 +3371,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £1100 a night · Tom stayed",
         "because": null,
         "score": 9.2,
-        "photo": "pool-2"
+        "photo": null
       },
       {
         "name": "Kuramathi Island",
@@ -3381,7 +3381,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £420 a night · Jonah stayed",
         "because": null,
         "score": 8.8,
-        "photo": "maldives-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -3401,7 +3401,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Tom",
         "match": 82,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Fish market, Malé",
@@ -3410,7 +3410,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.2,
         "from": "Sam",
         "match": 79,
-        "photo": "food-table"
+        "photo": null
       }
     ],
     "dos": [
@@ -3560,7 +3560,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £140 a night · Priya stayed",
         "because": null,
         "score": 8.8,
-        "photo": "pool-2"
+        "photo": null
       },
       {
         "name": "Dar Lila",
@@ -3599,7 +3599,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.5,
         "from": "Sam",
         "match": 83,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Le Jardin",
@@ -3770,7 +3770,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.8,
         "from": "Priya",
         "match": 89,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Chez Tante Athalie",
@@ -3779,7 +3779,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Sam",
         "match": 83,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Port Louis street food",
@@ -3962,7 +3962,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £320 a night · Mum stayed",
         "because": null,
         "score": 8.7,
-        "photo": "pool-1"
+        "photo": null
       },
       {
         "name": "Grand Floridian",
@@ -3972,7 +3972,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £650 a night · Sam stayed",
         "because": null,
         "score": 8.4,
-        "photo": "pool-2"
+        "photo": null
       },
       {
         "name": "Palm Resort Orlando",
@@ -3993,7 +3993,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Mum",
         "match": 84,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Winter Park brunch",
@@ -4011,7 +4011,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.2,
         "from": "Sam",
         "match": 80,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Lake Eola food trucks",
@@ -4155,7 +4155,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £280 a night · The grand old hotel opposite the Ashmolean.",
         "because": "Because you liked the small, central Hôtel du Marais",
         "score": null,
-        "photo": "oxford-1"
+        "photo": null
       },
       {
         "name": "The Store",
@@ -4175,7 +4175,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £280 a night · Priya stayed",
         "because": null,
         "score": 8.8,
-        "photo": "oxford-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -4186,7 +4186,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Mum",
         "match": 83,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "The Turf Tavern",
@@ -4318,7 +4318,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £420 a night · Five suites in a hidden mansion with a secret garden.",
         "because": "Because you liked the small, central Hôtel du Marais",
         "score": null,
-        "photo": "paris-1"
+        "photo": null
       },
       {
         "name": "Hôtel des Grands Boulevards",
@@ -4359,7 +4359,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Maya",
         "match": 91,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Le Bistrot d'à Côté",
@@ -4377,7 +4377,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.4,
         "from": "Sam",
         "match": 76,
-        "photo": "food-table"
+        "photo": null
       }
     ],
     "dos": [
@@ -4516,7 +4516,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £310 a night · Sophie stayed",
         "because": null,
         "score": 8.9,
-        "photo": "lemon-1"
+        "photo": null
       },
       {
         "name": "Villa Limone",
@@ -4526,7 +4526,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £520 a night · Priya stayed",
         "because": null,
         "score": 9.0,
-        "photo": "villa-1"
+        "photo": null
       },
       {
         "name": "Hotel Scalinatella",
@@ -4547,7 +4547,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.4,
         "from": "Priya",
         "match": 92,
-        "photo": "food-pasta"
+        "photo": null
       },
       {
         "name": "La Tagliata",
@@ -4565,7 +4565,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.1,
         "from": "Sophie",
         "match": 88,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Chez Black",
@@ -4574,7 +4574,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Maya",
         "match": 82,
-        "photo": "food-pasta"
+        "photo": null
       }
     ],
     "dos": [
@@ -4689,7 +4689,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £550 a night · A whitewashed village built as a hotel, with three pools.",
         "because": "Because you gave Riad Zitoun a 9.1",
         "score": null,
-        "photo": "pool-1"
+        "photo": null
       },
       {
         "name": "Grotta Palazzese",
@@ -4709,7 +4709,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £450 a night · Priya stayed",
         "because": null,
         "score": 9.0,
-        "photo": "villa-1"
+        "photo": null
       },
       {
         "name": "Trullo near Alberobello",
@@ -4730,7 +4730,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Tom",
         "match": 88,
-        "photo": "food-pasta"
+        "photo": null
       },
       {
         "name": "Il Super Mago del Gelo",
@@ -4748,7 +4748,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.9,
         "from": "Sophie",
         "match": 82,
-        "photo": "food-pasta"
+        "photo": null
       }
     ],
     "dos": [
@@ -4876,7 +4876,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £1300 a night · Maya stayed",
         "because": null,
         "score": 9.3,
-        "photo": "pool-1"
+        "photo": null
       },
       {
         "name": "Le Domaine de L'Orangeraie",
@@ -4925,7 +4925,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Sam",
         "match": 81,
-        "photo": "food-table"
+        "photo": null
       }
     ],
     "dos": [
@@ -5071,7 +5071,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Sam",
         "match": 85,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Bisso Bistrot",
@@ -5080,7 +5080,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.9,
         "from": "Priya",
         "match": 82,
-        "photo": "food-pasta"
+        "photo": null
       },
       {
         "name": "Antica Focacceria",
@@ -5260,7 +5260,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Sophie",
         "match": 88,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "MooserWirt",
@@ -5269,7 +5269,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.2,
         "from": "Tom",
         "match": 86,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Krazy Kanguruh",
@@ -5278,7 +5278,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.8,
         "from": "Sam",
         "match": 80,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -5394,7 +5394,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £170 a night · Mum stayed",
         "because": null,
         "score": 8.2,
-        "photo": "pool-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -5405,7 +5405,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Maya",
         "match": 94,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Porthmeor Beach Café",
@@ -5414,7 +5414,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.8,
         "from": "Sophie",
         "match": 85,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "The Hub",
@@ -5423,7 +5423,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.2,
         "from": "Sam",
         "match": 83,
-        "photo": "food-table"
+        "photo": null
       }
     ],
     "dos": [
@@ -5553,7 +5553,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £170 a night · Sophie stayed",
         "because": null,
         "score": 8.5,
-        "photo": "bath-1"
+        "photo": null
       },
       {
         "name": "Ettington Park",
@@ -5574,7 +5574,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.4,
         "from": "Mum",
         "match": 85,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "The Dirty Duck",
@@ -5592,7 +5592,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.5,
         "from": "Sophie",
         "match": 78,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -5721,7 +5721,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £650 a night · Sam stayed",
         "because": null,
         "score": 8.7,
-        "photo": "pool-2"
+        "photo": null
       }
     ],
     "eats": [
@@ -5732,7 +5732,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.9,
         "from": "Sophie",
         "match": 86,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Hemingway's",
@@ -5741,7 +5741,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.5,
         "from": "Sam",
         "match": 83,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Da Conch Shack",
@@ -5918,7 +5918,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Sophie",
         "match": 82,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Le Bouchon",
@@ -5927,7 +5927,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.3,
         "from": "Sam",
         "match": 81,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -6060,7 +6060,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £290 a night · Sam stayed",
         "because": null,
         "score": 8.4,
-        "photo": "bath-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -6071,7 +6071,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.9,
         "from": "Sam",
         "match": 86,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "La Marlenaz",
@@ -6080,7 +6080,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Sophie",
         "match": 82,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Le Rouge",
@@ -6089,7 +6089,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.5,
         "from": "Maya",
         "match": 78,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -6224,7 +6224,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.6,
         "from": "Mum",
         "match": 82,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Thomas Oken Tea Rooms",
@@ -6379,7 +6379,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £170 a night · Sam stayed",
         "because": null,
         "score": 8.5,
-        "photo": "bath-1"
+        "photo": null
       }
     ],
     "eats": [
@@ -6408,7 +6408,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.5,
         "from": "Mum",
         "match": 78,
-        "photo": "food-table"
+        "photo": null
       }
     ],
     "dos": [
@@ -6560,7 +6560,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Sophie",
         "match": 85,
-        "photo": "food-wine"
+        "photo": null
       },
       {
         "name": "Lukmaan",
@@ -6569,7 +6569,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.7,
         "from": "Sam",
         "match": 85,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "The Rock",
@@ -6748,7 +6748,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 9.0,
         "from": "Sophie",
         "match": 88,
-        "photo": "food-table"
+        "photo": null
       },
       {
         "name": "Café du Pont",
@@ -6757,7 +6757,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "score": 8.5,
         "from": "Sam",
         "match": 85,
-        "photo": "food-wine"
+        "photo": null
       }
     ],
     "dos": [
@@ -6906,7 +6906,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £700 a night · Sam stayed",
         "because": null,
         "score": 9.2,
-        "photo": "own-safari-cheetahs"
+        "photo": null
       },
       {
         "name": "A flat in Bo-Kaap",

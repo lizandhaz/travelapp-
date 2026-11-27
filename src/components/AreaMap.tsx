@@ -79,6 +79,11 @@ export function AreaMap({
       scrollEnabled={!preview}
       zoomEnabled={!preview}
       onPress={preview ? onPress : undefined}
+      // Belt and braces (owner, Nov 2026: some numbers didn't respond): the map also reports which pin was tapped.
+      onMarkerPress={(e) => {
+        const n = Number(e.nativeEvent.id);
+        if (!preview && Number.isFinite(n)) onPin(n);
+      }}
       accessibilityLabel={`Map of ${name}`}
     >
       {spots.map((s) =>
@@ -86,10 +91,15 @@ export function AreaMap({
           <Marker
             // A new key redraws the marker when it's picked or becomes your stay.
             key={`${s.n}-${picked === s.n}-${stay === s.n}`}
+            identifier={String(s.n)}
             coordinate={{ latitude: s.pos[0], longitude: s.pos[1] }}
             anchor={{ x: 0.5, y: 0.2 }}
+            // The picked pin sits on top; otherwise lower numbers (your best picks) sit above higher ones, so a
+            // neighbour's name label never covers a number you're trying to tap.
+            zIndex={picked === s.n ? 1000 : 500 - s.n}
             tracksViewChanges={false}
             onPress={() => (preview ? onPress?.() : onPin(s.n))}
+            onSelect={() => (preview ? undefined : onPin(s.n))}
             accessibilityLabel={`${s.n}. ${s.name}, ${s.kind}`}
           >
             <SpotPin n={s.n} name={s.name} colour={PIN[s.kind] ?? colors.ink} picked={picked === s.n} stay={stay === s.n} />

@@ -13,6 +13,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { colors, MAX_WIDTH } from '@/constants/theme';
@@ -34,14 +35,17 @@ export default function RootLayout() {
   });
 
   return (
-    <SafeAreaProvider>
-      <AuthProvider>
-        <TasteProvider>
-          <StatusBar style="dark" />
-          {fontsLoaded && <Navigator />}
-        </TasteProvider>
-      </AuthProvider>
-    </SafeAreaProvider>
+    // The phone's own gesture system, so drags like the best-time chart work reliably inside scrolling pages.
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <AuthProvider>
+          <TasteProvider>
+            <StatusBar style="dark" />
+            {fontsLoaded && <Navigator />}
+          </TasteProvider>
+        </AuthProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 

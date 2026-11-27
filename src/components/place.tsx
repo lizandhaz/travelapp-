@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Dimensions, Modal, Pressable, ScrollView, View, type GestureResponderEvent } from 'react-native';
+import { GestureDetector, usePanGesture, useSimultaneousGestures, useTapGesture } from 'react-native-gesture-handler';
 import Svg, { Circle, Defs, Line, LinearGradient, Path, Rect, Stop, Text as SvgText } from 'react-native-svg';
 
 import { colors, fonts, GUTTER, radius, MAX_WIDTH } from '@/constants/theme';
@@ -85,14 +86,23 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
   const [chosen, setChosen] = useState<number>(detail.bestMonths[0] ?? 6);
   const [w, setW] = useState(0);
   const [sliding, setSliding] = useState(false);
-  const lock = useScrollLock();
+  // Slide a finger across the chart (or tap it) and it follows you month by month (owner, Nov 2026: "I don't want it
+  // static"). The phone's own gestures: a sideways drag takes over, an up-or-down drag is left to the page so it scrolls.
+  const pickAt = (x: number) => setChosen(Math.min(11, Math.max(0, Math.floor((x / Math.max(1, w)) * 12))));
+  const pan = usePanGesture({
+    runOnJS: true,
+    activeOffsetX: [-6, 6],
+    failOffsetY: [-12, 12],
+    onActivate: (e) => {
+      setSliding(true);
+      pickAt(e.x);
+    },
+    onUpdate: (e) => pickAt(e.x),
+    onFinalize: () => setSliding(false),
+  });
+  const tap = useTapGesture({ runOnJS: true, onActivate: (e) => pickAt(e.x) });
+  const touch = useSimultaneousGestures(pan, tap);
   if (!temps) return null;
-  // Slide a finger across the chart (or tap it) and it follows you month by month (owner, Nov 2026: "I don't want it static").
-  const monthAt = (x: number) => Math.min(11, Math.max(0, Math.floor((x / Math.max(1, w)) * 12)));
-  const follow = (e: GestureResponderEvent) => {
-    const m = monthAt(e.nativeEvent.locationX);
-    if (m !== chosen) setChosen(m);
-  };
 
   // A soft curve through the monthly highs (owner, Nov 2026: "as aesthetic as possible"): best months shaded behind it,
   // one dot per month, and the month you tap picked out with its temperature, crowds and whether it's a best month.
@@ -144,6 +154,7 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
 
         {/* The chart and the months are one area you slide across (or tap). Its children don't take touches, so the
             finger's position is always measured across the whole width. */}
+        <GestureDetector gesture={touch}>
         <View
           accessible
           accessibilityRole="adjustable"
@@ -152,23 +163,6 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
           accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
           onAccessibilityAction={(ev) => setChosen((c) => Math.min(11, Math.max(0, c + (ev.nativeEvent.actionName === 'increment' ? 1 : -1))))}
           onLayout={(ev) => setW(ev.nativeEvent.layout.width)}
-          onStartShouldSetResponder={() => true}
-          onMoveShouldSetResponder={() => true}
-          onResponderTerminationRequest={() => false}
-          onResponderGrant={(ev) => {
-            lock(true); // the page holds still while you slide
-            setSliding(true);
-            follow(ev);
-          }}
-          onResponderMove={follow}
-          onResponderRelease={() => {
-            lock(false);
-            setSliding(false);
-          }}
-          onResponderTerminate={() => {
-            lock(false);
-            setSliding(false);
-          }}
           style={{ gap: 10 }}
         >
           <View pointerEvents="none" style={{ height: H }}>
@@ -208,6 +202,7 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
             ))}
           </View>
         </View>
+        </GestureDetector>
         {crowd && (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             <Text variant="tiny">Crowds</Text>
@@ -803,7 +798,8 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
 
   const choosePin = (n: number, onMap = false) => {
     setFromMap(onMap);
-    const next = picked === n && fromMap === onMap ? null : n;
+    // From the map a tap always picks (iPhone can report one tap more than once); in the list a second tap closes it.
+    const next = onMap ? n : picked === n && !fromMap ? null : n;
     setPicked(next);
     if (next != null) setFocus((f) => ({ n: next, zoom: Math.max(2.5, fill), key: f.key + 1 }));
   };

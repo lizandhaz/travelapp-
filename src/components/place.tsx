@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Dimensions, Modal, Pressable, ScrollView, View, type GestureResponderEvent } from 'react-native';
-import Svg, { Circle, Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
+import Svg, { Circle, Defs, Line, LinearGradient, Path, Rect, Stop, Text as SvgText } from 'react-native-svg';
 
 import { colors, fonts, GUTTER, radius, MAX_WIDTH } from '@/constants/theme';
 import type { PlaceResult } from '@/lib/match';
@@ -84,7 +84,15 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
   const best = new Set(detail.bestMonths);
   const [chosen, setChosen] = useState<number>(detail.bestMonths[0] ?? 6);
   const [w, setW] = useState(0);
+  const [sliding, setSliding] = useState(false);
+  const lock = useScrollLock();
   if (!temps) return null;
+  // Slide a finger across the chart (or tap it) and it follows you month by month (owner, Nov 2026: "I don't want it static").
+  const monthAt = (x: number) => Math.min(11, Math.max(0, Math.floor((x / Math.max(1, w)) * 12)));
+  const follow = (e: GestureResponderEvent) => {
+    const m = monthAt(e.nativeEvent.locationX);
+    if (m !== chosen) setChosen(m);
+  };
 
   // A soft curve through the monthly highs (owner, Nov 2026: "as aesthetic as possible"): best months shaded behind it,
   // one dot per month, and the month you tap picked out with its temperature, crowds and whether it's a best month.
@@ -125,54 +133,83 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
               {best.has(chosen) && <MiniPill text="✦ Best month" bg={colors.sageSoft} color={colors.olive} />}
             </View>
           </View>
-          <Text style={{ fontFamily: fonts.display, fontSize: 34, lineHeight: 40, color: colors.ink }}>
-            {temps[chosen]}
-            <Text style={{ fontFamily: fonts.displayRegular, fontSize: 18, color: colors.muted }}>°C</Text>
-          </Text>
+          <View style={{ alignItems: 'flex-end' }}>
+            <Text style={{ fontFamily: fonts.display, fontSize: 34, lineHeight: 40, color: colors.ink }}>
+              {temps[chosen]}
+              <Text style={{ fontFamily: fonts.displayRegular, fontSize: 18, color: colors.muted }}>°C</Text>
+            </Text>
+            <Text variant="tiny">Average daytime high</Text>
+          </View>
         </View>
 
-        <View accessible accessibilityRole="image" accessibilityLabel={summary} onLayout={(e) => setW(e.nativeEvent.layout.width)} style={{ height: H }}>
-          {w > 0 && (
-            <Svg width={w} height={H}>
-              <Defs>
-                <LinearGradient id="warm" x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="0" stopColor={colors.accent} stopOpacity={0.28} />
-                  <Stop offset="1" stopColor={colors.accent} stopOpacity={0} />
-                </LinearGradient>
-              </Defs>
-              {bestRuns(detail.bestMonths).map(([a, b]) => (
-                <Rect key={a} x={col * a + 2} y={0} width={col * (b - a + 1) - 4} height={H} rx={10} fill={colors.sageSoft} />
-              ))}
-              <Path d={area} fill="url(#warm)" />
-              <Path d={line} stroke={colors.accent} strokeWidth={2} fill="none" strokeLinecap="round" />
-              {pts.map(([px, py], i) => (
-                <Circle key={i} cx={px} cy={py} r={i === chosen ? 5.5 : 2.5} fill={i === chosen ? colors.card : colors.accent} stroke={colors.accent} strokeWidth={i === chosen ? 2.5 : 0} />
-              ))}
-            </Svg>
-          )}
-        </View>
+        {/* The chart and the months are one area you slide across (or tap). Its children don't take touches, so the
+            finger's position is always measured across the whole width. */}
+        <View
+          accessible
+          accessibilityRole="adjustable"
+          accessibilityLabel={`Best time to go. ${summary}`}
+          accessibilityValue={{ text: `${LONG_MONTHS[chosen]}, ${temps[chosen]} degrees${crowd ? `, ${CROWD_WORDS[crowd[chosen]]}` : ''}${best.has(chosen) ? ', a best month' : ''}` }}
+          accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+          onAccessibilityAction={(ev) => setChosen((c) => Math.min(11, Math.max(0, c + (ev.nativeEvent.actionName === 'increment' ? 1 : -1))))}
+          onLayout={(ev) => setW(ev.nativeEvent.layout.width)}
+          onStartShouldSetResponder={() => true}
+          onMoveShouldSetResponder={() => true}
+          onResponderTerminationRequest={() => false}
+          onResponderGrant={(ev) => {
+            lock(true); // the page holds still while you slide
+            setSliding(true);
+            follow(ev);
+          }}
+          onResponderMove={follow}
+          onResponderRelease={() => {
+            lock(false);
+            setSliding(false);
+          }}
+          onResponderTerminate={() => {
+            lock(false);
+            setSliding(false);
+          }}
+          style={{ gap: 10, userSelect: 'none' }}
+        >
+          <View pointerEvents="none" style={{ height: H }}>
+            {w > 0 && (
+              <Svg width={w} height={H}>
+                <Defs>
+                  <LinearGradient id="warm" x1="0" y1="0" x2="0" y2="1">
+                    <Stop offset="0" stopColor={colors.accent} stopOpacity={0.28} />
+                    <Stop offset="1" stopColor={colors.accent} stopOpacity={0} />
+                  </LinearGradient>
+                </Defs>
+                {bestRuns(detail.bestMonths).map(([a, b]) => (
+                  <Rect key={a} x={col * a + 2} y={0} width={col * (b - a + 1) - 4} height={H} rx={10} fill={colors.sageSoft} />
+                ))}
+                <Path d={area} fill="url(#warm)" />
+                <Path d={line} stroke={colors.accent} strokeWidth={2} fill="none" strokeLinecap="round" />
+                {/* A guide line down from the month you're on, and its temperature above the dot. */}
+                <Line x1={x(chosen)} y1={pts[chosen][1] + 6} x2={x(chosen)} y2={H} stroke={colors.ink} strokeOpacity={sliding ? 0.35 : 0.18} strokeWidth={1} strokeDasharray="3 3" />
+                {pts.map(([px, py], i) => (
+                  <Circle key={i} cx={px} cy={py} r={i === chosen ? (sliding ? 7 : 5.5) : 2.5} fill={i === chosen ? colors.card : colors.accent} stroke={colors.accent} strokeWidth={i === chosen ? 2.5 : 0} />
+                ))}
+                <SvgText x={Math.min(w - 14, Math.max(14, x(chosen)))} y={Math.max(11, pts[chosen][1] - 11)} fontSize={11} fontFamily={fonts.sansSemiBold} fill={colors.ink} textAnchor="middle">
+                  {`${temps[chosen]}°`}
+                </SvgText>
+              </Svg>
+            )}
+          </View>
 
-        {/* Months: tap one to see it above. */}
-        <View style={{ flexDirection: 'row' }}>
-          {MONTH_LETTERS.map((m, i) => (
-            <Pressable
-              key={i}
-              onPress={() => setChosen(i)}
-              accessibilityRole="button"
-              accessibilityState={{ selected: chosen === i }}
-              accessibilityLabel={`${LONG_MONTHS[i]}, ${temps[i]} degrees${crowd ? `, ${CROWD_WORDS[crowd[i]]}` : ''}${best.has(i) ? ', a best month' : ''}`}
-              hitSlop={{ top: 60, bottom: 8 }}
-              style={{ flex: 1, alignItems: 'center', gap: 5 }}
-            >
-              <View style={{ width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: chosen === i ? colors.ink : 'transparent' }}>
-                <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, color: chosen === i ? colors.onDark : best.has(i) ? colors.olive : colors.muted }}>{m}</Text>
+          <View pointerEvents="none" style={{ flexDirection: 'row' }}>
+            {MONTH_LETTERS.map((m, i) => (
+              <View key={i} style={{ flex: 1, alignItems: 'center', gap: 5 }}>
+                <View style={{ width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: chosen === i ? colors.ink : 'transparent' }}>
+                  <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, color: chosen === i ? colors.onDark : best.has(i) ? colors.olive : colors.muted }}>{m}</Text>
+                </View>
+                {crowd && <View style={{ width: '70%', height: chosen === i ? 6 : 4, borderRadius: 3, backgroundColor: CROWD_FILL[crowd[i]] }} />}
               </View>
-              {crowd && <View style={{ width: '70%', height: 4, borderRadius: 2, backgroundColor: CROWD_FILL[crowd[i]] }} />}
-            </Pressable>
-          ))}
+            ))}
+          </View>
         </View>
         {crowd && (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             <Text variant="tiny">Crowds</Text>
             {[1, 2, 3].map((c) => (
               <View key={c} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
@@ -180,6 +217,9 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
                 <Text variant="tiny">{CROWD_LABELS[c]}</Text>
               </View>
             ))}
+            <Text variant="tiny" style={{ marginLeft: 'auto', color: colors.accentText }}>
+              Slide to explore ↔
+            </Text>
           </View>
         )}
       </Card>

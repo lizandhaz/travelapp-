@@ -1,0 +1,56 @@
+name: Expo Go preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish to Expo Go (leave unchecked to check access only)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: expo-go-preview
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      CI: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install EAS CLI
+        run: npm install --global eas-cli@27.11.0
+
+      - name: Install app dependencies
+        if: inputs.publish
+        run: npm ci
+
+      - name: Check Expo access
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo '::error::Add EXPO_TOKEN under Settings → Secrets and variables → Actions.'
+            exit 1
+          fi
+          eas project:info
+
+      - name: Publish the existing Expo Go preview
+        if: inputs.publish
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas update --branch preview --environment preview --message "GitHub ${GITHUB_SHA:0:7}" --non-interactive

@@ -72,6 +72,8 @@ The owner has **no computer**, only an iPhone (with Expo Go) and an iPad. Claude
 - After merging a change (Claude merges app-only pull requests itself; see "Working with the owner"), publish an update and tell the owner to fully close and reopen Postcard in Expo Go.
 - Changing `version` in `app.json` changes the runtime version, which breaks the QR link. Update the QR code if you ever do.
 
+GitHub can also publish the merged app to the same preview. In **Actions → Expo Go preview → Run workflow**, select `main`. Leave **Publish to Expo Go** unchecked to verify Expo access. Tick it when you want to publish. The workflow uses the `EXPO_TOKEN` repository secret and publishes to the existing Expo `preview` branch.
+
 ## Folder map
 
 ```

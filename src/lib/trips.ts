@@ -52,13 +52,18 @@ export type Trip = {
   createdAt: string;
   /** "Would you go back?" (owner, Nov 2026). null = not answered. */
   wouldReturn: boolean | null;
+  /** The exact days, if you gave them ("YYYY-MM-DD"; owner, Nov 2026). Then `month` is the first day's month and the
+   * main place's nights are the days between, worked out by save_trip too. null = just a month (most trips). */
+  dates: TripDates | null;
 };
+
+export type TripDates = { start: string; end: string };
 
 /** What the Add a trip form sends to save_trip(). */
 export type TripInput = Omit<Trip, 'id' | 'createdAt' | 'ownerId'> & { id?: string };
 
 export const TRIP_SELECT = `
-  id, owner_id, trip_month, score, visibility, companions, note, photo_paths, created_at, would_return,
+  id, owner_id, trip_month, start_date, end_date, score, visibility, companions, note, photo_paths, created_at, would_return,
   trip_stops ( position, nights, destinations ( name, country ) ),
   stays ( name, type, score, would_return ),
   food_picks ( name, position ),
@@ -76,6 +81,8 @@ export type TripRow = {
   photo_paths: string[] | null;
   created_at: string;
   would_return?: boolean | null;
+  start_date?: string | null;
+  end_date?: string | null;
   trip_stops: { position: number; nights: number | null; destinations: Place | Place[] | null }[] | null;
   stays: (Omit<TripStay, 'wouldReturn'> & { would_return?: boolean | null })[] | null;
   food_picks: { name: string; position: number | null }[] | null;
@@ -104,6 +111,7 @@ export function fromRow(r: TripRow): Trip {
     photoPaths: r.photo_paths ?? [],
     createdAt: r.created_at,
     wouldReturn: r.would_return ?? null,
+    dates: r.start_date && r.end_date ? { start: r.start_date, end: r.end_date } : null,
   };
 }
 
@@ -151,6 +159,8 @@ export async function saveTrip(input: TripInput): Promise<string> {
       companions: input.companions,
       note: input.note?.trim() || null,
       photo_paths: input.photoPaths,
+      // Only sent when given, so saving still works if this app reaches a database without the dates update.
+      ...(input.dates ? { start_date: input.dates.start, end_date: input.dates.end } : {}),
     },
   });
   if (error) throw new Error(friendlyError(error));
@@ -300,7 +310,9 @@ export function friendlyError(e: DbError): string {
   const m = e.message ?? '';
   if (/up to 50 lists|up to 300 places/i.test(m)) return m;
   if (/main_stop_has_nights/i.test(m)) return 'How long did you stay? Pick the number of nights.';
+  if (/dates are in the future/i.test(m)) return "Those dates are in the future. Trips are for holidays you're back from.";
   if (/future/i.test(m)) return "That month is in the future. Trips are for holidays you're back from.";
+  if (/trips_dates_valid|arrived and the day you left|dates don.t look right/i.test(m)) return 'Check your dates: the day you left should be after the day you arrived, and no more than a year later.';
   if (/network|fetch/i.test(m)) return "Couldn't connect. Check you're online and try again.";
   if (/save_trip|function .* does not exist|schema cache|column .* does not exist|bucket not found|relation .* does not exist/i.test(m))
     return 'The latest database update hasn’t been run in Supabase yet (see the steps Claude gave you).';

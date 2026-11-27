@@ -13,7 +13,7 @@ import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, ErrorNotice, Notice, Screen } from '@/components/ui';
 import { colors, fonts, GUTTER, radius, appWidth } from '@/constants/theme';
-import { MONTH_NAMES_SHORT, monthIndexOf, monthYear, yearOf } from '@/lib/months';
+import { dayOf, MONTH_NAMES_SHORT, monthIndexOf, monthYear, yearOf } from '@/lib/months';
 import { fitLines, fitWordSize } from '@/lib/fit';
 import { countryOf } from '@/lib/knownPlaces';
 import { getPlace, photoForPlaceName } from '@/lib/sample';
@@ -129,7 +129,7 @@ export default function TripScreen() {
         <Card style={{ flexDirection: 'row' }}>
           <Info label="With" big={companionsLabel(trip.companions) ?? '–'} small={trip.companions ? (trip.companions === 'solo' ? 'just you' : 'together') : 'not added'} />
           <Info label="How long" big={nights ? String(nights) : '–'} small={nights ? (nights === 1 ? 'night' : 'nights') : 'not added'} border />
-          <Info label="When" big={MONTH_NAMES_SHORT[monthIndexOf(trip.month)]} small={String(yearOf(trip.month))} border />
+          <Info label="When" {...whenInfo(trip)} border />
         </Card>
 
         {trip.photoPaths.length > 1 && (
@@ -318,4 +318,14 @@ function TripPhoto({ path, index }: { path: string; index: number }) {
       {url && <Image source={{ uri: url }} style={{ width: 150, height: 190 }} contentFit="cover" accessibilityLabel={`Photo ${index + 1}`} />}
     </View>
   );
+}
+
+/** "When" on the trip: the month and year, or with exact dates "10–17" / "Aug 2026" (or "28 Aug" / "– 3 Sep 2026"). */
+function whenInfo(trip: Trip): { big: string; small: string } {
+  if (!trip.dates) return { big: MONTH_NAMES_SHORT[monthIndexOf(trip.month)], small: String(yearOf(trip.month)) };
+  const { start, end } = trip.dates;
+  const sameMonth = start.slice(0, 7) === end.slice(0, 7);
+  return sameMonth
+    ? { big: `${dayOf(start)}–${dayOf(end)}`, small: `${MONTH_NAMES_SHORT[monthIndexOf(start)]} ${yearOf(start)}` }
+    : { big: `${dayOf(start)} ${MONTH_NAMES_SHORT[monthIndexOf(start)]}`, small: `– ${dayOf(end)} ${MONTH_NAMES_SHORT[monthIndexOf(end)]} ${yearOf(end)}` };
 }

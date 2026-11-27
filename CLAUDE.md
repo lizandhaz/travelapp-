@@ -221,8 +221,11 @@ src/
     trip/StayPicker.tsx   "Where you stayed": opens with "Popular in <area>" for the trip's place (lib/stayGuide via lib/knownStays:
                           Santa Cruz de Tenerife → Tenerife → Bahía del Duque, Abama…), each letter narrows it, matches elsewhere after;
                           tap one to fill the name and kind, or keep typing your own
-    trip/NightsPicker.tsx "How long did you stay?": 1 night … two weeks, or "Longer…" (type up to 365)
-    trip/MonthPicker.tsx  This month + last 6 months as chips ("Nov 2026"), or "Earlier…"
+    trip/NightsPicker.tsx "How long did you stay?": a stepper (big number, − / +, hold to speed up, tap the number to type, 1–365; starts
+                          on a week). With exact dates it's worked out from them and rests ("Worked out from your dates")
+    trip/WhenPicker.tsx   "When did you go?" (owner Nov 2026: no multiple choice): month and year wheels (scroll or tap; future months greyed
+                          and slide back), then "+ Add exact dates (optional)": a Monday-first calendar, tap the day you arrived then the day
+                          you left (› into the next month; no days after today), "10–17 Aug 2026 · 7 nights", Remove
     trip/ScorePicker.tsx  "Slide to rate out of 10": 1.0–10.0 in 0.1 steps; accessibilityRole "adjustable"
     trip/TripCard.tsx     One of your trips on You as a TripPostcard (cover photo or the place's photo, month, place, score, note, stay)
   constants/theme.ts      Colours, fonts, radius, GUTTER (the only place for raw hex values)
@@ -294,7 +297,8 @@ src/
     knownStays.ts         Stays for suggestions: the stay guide + the sample place details; searchStays(query, tripPlace, limit, tripCountry)
     stayGuide.ts          Hand-picked well-known stays (~1,280 hotels, villas, B&Bs, hostels, lodges) in ~250 holiday areas, each with
                           the towns in it, so a trip's place finds its area. Add areas here; names must be real places
-    months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear)
+    months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear) and days for exact dates (today,
+                          nightsBetween, dayRange, daysInMonth, firstWeekday; tests/months.test.mjs)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)
 supabase/config.toml      Settings for the Supabase command-line tool (used by the GitHub job)
@@ -329,6 +333,7 @@ docs/plan.md              Step-by-step plan
 - **Lists** (`20261122120000_boards.sql`): `boards` (owner_id, name 1–60, kind `wish` = the one "Want to go" list per person or `list`, visibility `friends`/`private`, updated_at kept fresh by triggers) and `board_items` (board_id, owner_id, optional `place_slug` for sample place pages, name, country; the same place can't be on a list twice, ignoring case and spaces). Owner-only RLS (friends read "friends" lists in Step C). Only name and visibility can be updated. Limits: 50 lists each, 300 places a list. The app makes the Want to go list the first time it's needed (`ensureWishList`). **Share** uses React Native's `Share` (text list), not a link.
 - **Places and countries:** `src/lib/knownPlaces.ts` lists about 525 popular holiday places with countries, plus every country and ~10,400 towns and cities from `worldPlaces.ts` (generated from GeoNames via the `all-the-cities` package: cities over 100k, towns over 15k in Europe/the Mediterranean, capitals; CC BY 4.0, credited in Settings). Suggestions (`PlacePicker`) ignore accents and rank exact name, then starts-with, then word matches. `countryOf()` fills in the country for trips saved without one. Map positions: `geo.ts` (hand-picked places, then GeoNames towns, then the country's middle or capital).
 - **Best restaurants** (`20261127120000_restaurants.sql`): a trip has up to 10 restaurants, in order, as `food_picks` rows with a `position`. `save_trip` takes `restaurants: string[]` (and still accepts the older single `meal` when `restaurants` isn't sent). The app's `Trip.restaurants` replaces `meal`. The same file makes `stays.score` optional (null = not rated).
+- **Exact dates** (`20261204120000_trip_dates.sql`, owner Nov 2026; tested on local Postgres incl. refusals): `trips.start_date` / `end_date`, both or neither (older trips and month-only trips have none). Check `trips_dates_valid`: end after start, ≤ 365 nights, start's month = `trip_month`; the `enforce_trip_month` trigger also refuses an end date after today (rule 6). `save_trip` takes `start_date`/`end_date` and then sets the month and the main stop's nights from them. The app (`Trip.dates`) sends them only when set, and shows them on the trip page ("10–17" / "Aug 2026") and in the share text. Old trips needed no conversion: the old chips only ever saved a month and a number of nights.
 - **How long you stayed** (`20261123120000_trip_nights.sql`): the main place (`trip_stops.position = 0`) must have nights (check constraint `main_stop_has_nights`, `NOT VALID` so older trips without nights still load; editing one asks for nights).
 - **Changing the database:** add a new file in `supabase/migrations/` named `YYYYMMDDHHMMSS_what_it_does.sql` (never edit one that's already been applied). **Database updates are automatic:** when a merge to `main` touches `supabase/migrations/`, the GitHub Actions job `.github/workflows/supabase-database.yml` runs `supabase db push`, which applies new files in order, each once (tracked by Supabase's migration history). The owner no longer pastes SQL.
   - The job needs GitHub secrets `SUPABASE_ACCESS_TOKEN` and `SUPABASE_DB_PASSWORD`. The project id is in the workflow file. It can be started by hand from GitHub → Actions → "Update Supabase database" → Run workflow.

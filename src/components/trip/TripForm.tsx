@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Switch, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
@@ -8,7 +8,7 @@ import { BedIcon, BulbIcon, CalendarIcon, ChevronIcon, ForkIcon, ImageIcon, Lock
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, Chip, ErrorNotice, Input, Notice, PageTitle, Screen } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
-import { currentMonth, monthYear } from '@/lib/months';
+import { currentMonth, dayRange, monthYear, nightsBetween, today } from '@/lib/months';
 import {
   COMPANIONS,
   deleteTripPhotos,
@@ -21,13 +21,14 @@ import {
   type Place,
   type StayKind,
   type Trip,
+  type TripDates,
   type TripInput,
   type Visibility,
 } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
-import { MonthPicker } from './MonthPicker';
 import { NightsPicker } from './NightsPicker';
 import { PlacePicker } from './PlacePicker';
+import { WhenPicker } from './WhenPicker';
 import { ScorePicker } from './ScorePicker';
 import { StayPicker } from './StayPicker';
 
@@ -53,6 +54,8 @@ export function TripForm({
   const [places, setPlaces] = useState<Place[]>([]);
   const [place, setPlace] = useState<Place | null>(initial?.stops[0] ?? startPlace ?? null);
   const [month, setMonth] = useState<string | null>(initial?.month ?? null);
+  // Exact dates are optional (owner, Nov 2026); with them, the nights are worked out from the dates.
+  const [dates, setDates] = useState<TripDates | null>(initial?.dates ?? null);
   const [score, setScore] = useState<number | null>(initial?.score ?? null);
   const [nights, setNights] = useState<number | null>(initial?.stops[0]?.nights ?? null);
   const [visibility, setVisibility] = useState<Visibility>(initial?.visibility ?? 'friends');
@@ -119,12 +122,21 @@ export function TripForm({
     fetchPlaces().then(setPlaces);
   }, []);
 
+  // The month and dates change together; exact dates also set the nights.
+  const pickWhen = useCallback((m: string, d: TripDates | null) => {
+    setMonth(m);
+    setDates(d);
+    if (d) setNights(nightsBetween(d.start, d.end));
+  }, []);
+
   function check(): { problems: string[]; input?: TripInput } {
     const p: string[] = [];
     if (!place?.name.trim()) p.push('Where did you go?');
     else if (place.name.trim().length > 80) p.push('That place name is a bit long (80 characters at most).');
     if (!month) p.push('When did you go?');
     else if (month > currentMonth()) p.push("That month is in the future. Trips are for holidays you're back from.");
+    if (dates && dates.end > today()) p.push("Those dates are in the future. Trips are for holidays you're back from.");
+    if (dates && (nightsBetween(dates.start, dates.end) < 1 || nightsBetween(dates.start, dates.end) > 365)) p.push('Check your dates: up to a year away, leaving after you arrived.');
     if (nights == null) p.push('How long did you stay? Pick the number of nights.');
     else if (nights < 1 || nights > 365) p.push('How long did you stay? 1 to 365 nights.');
     if (score == null) p.push('How was it? Slide to give it a score out of 10.');
@@ -151,6 +163,7 @@ export function TripForm({
       input: {
         id: initial?.id,
         month: month!,
+        dates,
         score: score!,
         visibility,
         stops: [
@@ -265,20 +278,14 @@ export function TripForm({
             <SheetRow
               icon={<CalendarIcon color={colors.ink} />}
               title="When did you go?"
-              summary={month ? monthYear(month) : undefined}
+              summary={dates ? dayRange(dates.start, dates.end) : month ? monthYear(month) : undefined}
               required
               open={sheet === 'when'}
               onOpen={() => setSheet('when')}
               onClose={close}
+              saveLabel="Save date"
             >
-              <MonthPicker
-                value={month}
-                onChange={(m) => {
-                  setMonth(m);
-                  close();
-                }}
-                wrap
-              />
+              <WhenPicker month={month} dates={dates} onChange={pickWhen} />
             </SheetRow>
             <Divider />
             <SheetRow
@@ -296,7 +303,7 @@ export function TripForm({
                   Add this to save your changes. Trips added before it was asked don’t have it yet.
                 </Text>
               )}
-              <NightsPicker value={nights} onChange={setNights} onPicked={close} wrap />
+              <NightsPicker value={nights} onChange={setNights} fromDates={dates ? dayRange(dates.start, dates.end) : null} />
             </SheetRow>
             <Divider />
             <SheetRow

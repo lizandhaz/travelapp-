@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
-import { Platform, View } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { Platform, Pressable, View } from 'react-native';
+import MapView, { type Region } from 'react-native-maps';
 
 import { colors, fonts } from '@/constants/theme';
 import { pinPosition, placeCentres, type MapPin } from '@/lib/placeMaps';
@@ -45,89 +45,119 @@ export function AreaMap({
   const centre = placeCentres[slug];
   const map = useRef<ComponentRef<typeof MapView>>(null);
   const ratio = width / height;
-  const home = centre ? { latitude: centre.at[0], longitude: centre.at[1], latitudeDelta: centre.span * 0.4, longitudeDelta: centre.span * 0.4 * ratio } : null;
-  // Names show once you zoom in (and always on the picked pin). Each pin's tap area is its whole drawing, so at the
-  // starting zoom a neighbour's name label used to cover numbers and swallow taps (owner, Nov 2026).
-  const [zoomedIn, setZoomedIn] = useState(false);
-  const spots = spreadOut(
-    pins.map((p) => ({ ...p, pos: pinPosition(slug, p) })),
-    // About 40 points apart on screen at the starting zoom.
-    home ? (home.latitudeDelta * 40) / height : 0,
-  );
+  const raw = pins.map((p) => ({ ...p, pos: pinPosition(slug, p) }));
+  // Start zoomed to fit every pin, with room for the labels (owner, Nov 2026: some pins started off the edge): fit,
+  // spread pins that would overlap about 44 points apart, then fit again so the spread pins are all in view too.
+  const first: Region | null = centre ? fitPins(raw, ratio, { latitude: centre.at[0], longitude: centre.at[1], latitudeDelta: centre.span * 0.4, longitudeDelta: centre.span * 0.4 * ratio }) : null;
+  // Zooming out to fit the spread pins brings them closer again, so spread and fit a second time at that zoom.
+  const spread1 = first ? spreadOut(raw, (first.latitudeDelta * 44) / height) : raw;
+  const fit1 = first ? fitPins(spread1, ratio, first) : null;
+  const spots = fit1 ? spreadOut(raw, (fit1.latitudeDelta * 44) / height) : raw;
+  const home: Region | null = fit1 ? fitPins(spots, ratio, fit1) : null;
+  // Where the map is looking right now, so the pins drawn on top can follow it as you drag and zoom.
+  const [region, setRegion] = useState<Region | null>(home);
 
   // Glide to a pin (or back to the whole place) when asked.
   const focusKey = focus?.key;
   const focusN = focus?.n ?? null;
+  const homeKey = home ? `${home.latitude},${home.longitude},${home.latitudeDelta}` : '';
   useEffect(() => {
-    if (focusKey == null || !centre) return;
-    const pin = pins.find((p) => p.n === focusN);
-    const pos = pin ? pinPosition(slug, pin) : null;
-    const d = centre.span * 0.4;
-    const region = pos
-      ? { latitude: pos[0], longitude: pos[1], latitudeDelta: d / 2.5, longitudeDelta: (d / 2.5) * ratio }
-      : { latitude: centre.at[0], longitude: centre.at[1], latitudeDelta: d, longitudeDelta: d * ratio };
-    map.current?.animateToRegion(region, 500);
-  }, [focusKey, focusN, slug, pins, centre, ratio]);
+    if (focusKey == null || !home) return;
+    const spot = spots.find((p) => p.n === focusN);
+    const d = Math.min(home.latitudeDelta / 2.5, (centre?.span ?? home.latitudeDelta) * 0.16);
+    const target = spot?.pos ? { latitude: spot.pos[0], longitude: spot.pos[1], latitudeDelta: d, longitudeDelta: (d * home.longitudeDelta) / home.latitudeDelta } : home;
+    map.current?.animateToRegion(target, 500);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- home and spots follow slug, pins and homeKey
+  }, [focusKey, focusN, slug, pins, homeKey]);
 
   if (!centre || !home) return null;
+  const view = region ?? home;
+  // Picked and your stay drawn last, so they sit on top.
+  const order = [...spots].sort((a, b) => Number(a.n === picked || a.n === stay) - Number(b.n === picked || b.n === stay));
   return (
-    <MapView
-      ref={map}
-      style={{ width, height }}
-      initialRegion={home}
-      mapType={Platform.OS === 'ios' ? 'mutedStandard' : 'standard'}
-      // Apple's dark map style (owner, Nov 2026), on the page and full screen alike, whatever the phone's setting.
-      userInterfaceStyle="dark"
-      showsUserLocation={false}
-      showsMyLocationButton={false}
-      showsPointsOfInterests={false}
-      rotateEnabled={false}
-      pitchEnabled={false}
-      scrollEnabled={!preview}
-      zoomEnabled={!preview}
-      onPress={preview ? onPress : undefined}
-      onRegionChangeComplete={(r) => home && setZoomedIn(r.latitudeDelta < home.latitudeDelta * 0.45)}
-      // Belt and braces (owner, Nov 2026: some numbers didn't respond): the map also reports which pin was tapped.
-      onMarkerPress={(e) => {
-        const n = Number(e.nativeEvent.id);
-        if (!preview && Number.isFinite(n)) onPin(n);
-      }}
-      accessibilityLabel={`Map of ${name}`}
-    >
-      {spots.map((s) =>
-        s.pos ? (
-          <Marker
-            // A new key redraws the marker when it's picked, becomes your stay or its name shows.
-            key={`${s.n}-${picked === s.n}-${stay === s.n}-${zoomedIn}`}
-            identifier={String(s.n)}
-            coordinate={{ latitude: s.pos[0], longitude: s.pos[1] }}
-            anchor={{ x: 0.5, y: 0.2 }}
-            // The picked pin sits on top; otherwise lower numbers (your best picks) sit above higher ones, so a
-            // neighbour's name label never covers a number you're trying to tap.
-            zIndex={picked === s.n ? 1000 : 500 - s.n}
-            tracksViewChanges={false}
-            onPress={() => (preview ? onPress?.() : onPin(s.n))}
-            onSelect={() => (preview ? undefined : onPin(s.n))}
-            accessibilityLabel={`${s.n}. ${s.name}, ${s.kind}`}
-          >
-            <SpotPin n={s.n} name={s.name} colour={PIN[s.kind] ?? colors.ink} picked={picked === s.n} stay={stay === s.n} label={zoomedIn || picked === s.n || stay === s.n} />
-          </Marker>
-        ) : null,
-      )}
-    </MapView>
+    <View style={{ width, height }}>
+      <MapView
+        ref={map}
+        style={{ width, height }}
+        initialRegion={home}
+        mapType={Platform.OS === 'ios' ? 'mutedStandard' : 'standard'}
+        // Apple's dark map style (owner, Nov 2026), on the page and full screen alike, whatever the phone's setting.
+        userInterfaceStyle="dark"
+        showsUserLocation={false}
+        showsMyLocationButton={false}
+        showsPointsOfInterests={false}
+        rotateEnabled={false}
+        pitchEnabled={false}
+        scrollEnabled={!preview}
+        zoomEnabled={!preview}
+        onPress={preview ? onPress : undefined}
+        onRegionChange={setRegion}
+        onRegionChangeComplete={setRegion}
+        accessibilityLabel={`Map of ${name}`}
+      />
+      {/* The pins are the app's own buttons drawn over the map (owner, Nov 2026: tapping the map's own markers was
+          unreliable on iPhone), placed from where the map is looking and moved as it moves. Only the number and its
+          name label take taps; the rest of the map can be dragged and pinched as normal. */}
+      <View pointerEvents={preview ? 'none' : 'box-none'} style={{ position: 'absolute', left: 0, top: 0, width, height, overflow: 'hidden' }}>
+        {order.map((s) => {
+          if (!s.pos) return null;
+          const at = toScreen(s.pos, view, width, height);
+          if (at[0] < -80 || at[0] > width + 80 || at[1] < -40 || at[1] > height + 40) return null;
+          return (
+            <View key={s.n} pointerEvents="box-none" style={{ position: 'absolute', left: at[0] - PIN_BOX / 2, top: at[1] - 15, width: PIN_BOX, alignItems: 'center' }}>
+              <Pressable onPress={() => onPin(s.n)} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${s.n}. ${s.name}, ${s.kind}`}>
+                <SpotPin n={s.n} name={s.name} colour={PIN[s.kind] ?? colors.ink} picked={picked === s.n} stay={stay === s.n} />
+              </Pressable>
+            </View>
+          );
+        })}
+      </View>
+    </View>
   );
 }
 
-/** A numbered pin with a white name label, like the drawn close-up. */
-function SpotPin({ n, name, colour, picked, stay, label }: { n: number; name: string; colour: string; picked: boolean; stay: boolean; label: boolean }) {
+/**
+ * A region that shows every pin with some room around it (more below, for the name labels), the right shape for the
+ * map. Falls back to the place's own centre when there are fewer than two pins.
+ */
+function fitPins(spots: { pos: [number, number] | null }[], ratio: number, fallback: Region): Region {
+  const ps = spots.map((s) => s.pos).filter((p): p is [number, number] => !!p);
+  if (ps.length < 2) return fallback;
+  const lats = ps.map((p) => p[0]);
+  const lngs = ps.map((p) => p[1]);
+  const [minLat, maxLat, minLng, maxLng] = [Math.min(...lats), Math.max(...lats), Math.min(...lngs), Math.max(...lngs)];
+  const k = Math.cos((((minLat + maxLat) / 2) * Math.PI) / 180) || 1;
+  // Room: 70% more top to bottom (labels hang below the pins), a third more side to side (labels are wide).
+  let dLat = (maxLat - minLat) * 1.7 + 0.004;
+  let dLng = (maxLng - minLng) * 1.35 + 0.004;
+  dLat = Math.max(dLat, (dLng * k) / ratio);
+  dLng = (dLat * ratio) / k;
+  return { latitude: (minLat + maxLat) / 2 - dLat * 0.07, longitude: (minLng + maxLng) / 2, latitudeDelta: dLat, longitudeDelta: dLng };
+}
+
+/** How wide each pin's box is (the label is centred under the number and can be up to this wide). */
+const PIN_BOX = 160;
+
+/** A map position → where it sits on screen, for the region the map is showing (Web Mercator, like Apple Maps). */
+function toScreen(pos: [number, number], r: Region, width: number, height: number): [number, number] {
+  const merc = (lat: number) => Math.log(Math.tan(Math.PI / 4 + (Math.max(-85, Math.min(85, lat)) * Math.PI) / 360));
+  const top = merc(r.latitude + r.latitudeDelta / 2);
+  const bottom = merc(r.latitude - r.latitudeDelta / 2);
+  const x = ((pos[1] - (r.longitude - r.longitudeDelta / 2)) / r.longitudeDelta) * width;
+  const y = ((top - merc(pos[0])) / (top - bottom)) * height;
+  return [x, y];
+}
+
+/** A numbered pin with a white name label under it, like the drawn close-up. */
+function SpotPin({ n, name, colour, picked, stay }: { n: number; name: string; colour: string; picked: boolean; stay: boolean }) {
   const ring = stay ? colors.olive : picked ? colors.accentDeep : colors.card;
   return (
     <View style={{ alignItems: 'center' }}>
       <View
         style={{
-          width: 28,
-          height: 28,
-          borderRadius: 14,
+          width: 30,
+          height: 30,
+          borderRadius: 15,
           backgroundColor: colour,
           borderWidth: picked || stay ? 3 : 2,
           borderColor: ring,
@@ -137,13 +167,11 @@ function SpotPin({ n, name, colour, picked, stay, label }: { n: number; name: st
       >
         <Text style={{ fontFamily: fonts.sansBold, fontSize: 12, lineHeight: 14, color: colors.onDark }}>{n}</Text>
       </View>
-      {label && (
-      <View style={{ marginTop: 3, backgroundColor: stay ? colors.olive : colors.card, borderRadius: 8, paddingHorizontal: 7, paddingVertical: 2, borderWidth: 1, borderColor: colors.line }}>
-        <Text numberOfLines={1} style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, color: stay ? colors.onDark : colors.ink, maxWidth: 140 }}>
+      <View style={{ marginTop: 3, backgroundColor: stay ? colors.olive : colors.card, borderRadius: 8, paddingHorizontal: 7, paddingVertical: 2, borderWidth: picked ? 1.5 : 1, borderColor: picked ? colors.accentDeep : colors.line }}>
+        <Text numberOfLines={1} style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, color: stay ? colors.onDark : colors.ink, maxWidth: PIN_BOX - 20 }}>
           {stay ? `You’re here · ${name}` : name}
         </Text>
       </View>
-      )}
     </View>
   );
 }

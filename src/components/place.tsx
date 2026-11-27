@@ -169,7 +169,7 @@ export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
             lock(false);
             setSliding(false);
           }}
-          style={{ gap: 10, userSelect: 'none' }}
+          style={{ gap: 10 }}
         >
           <View pointerEvents="none" style={{ height: H }}>
             {w > 0 && (

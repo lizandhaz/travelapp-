@@ -30,7 +30,7 @@ export function useTabBarStyle() {
 
 export const TabButton = forwardRef<ComponentRef<typeof Pressable>, TabTriggerSlotProps & { label: string; Icon: Icon; primary?: boolean }>(
   function TabButton({ label, Icon, primary, isFocused, ...props }, ref) {
-    const color = isFocused ? colors.accentText : colors.muted;
+    const color = isFocused ? colors.action : colors.muted;
     return (
       <Pressable
         ref={ref}
@@ -76,12 +76,12 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 18,
-    backgroundColor: colors.accentDeep,
+    backgroundColor: colors.action,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 4,
     borderColor: colors.bg,
-    shadowColor: colors.accentDeep,
+    shadowColor: colors.action,
     shadowOpacity: 0.3,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 6 },

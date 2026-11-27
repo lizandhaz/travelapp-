@@ -124,7 +124,7 @@ export function Button({
   icon,
   ...props
 }: PressableProps & { title: string; kind?: ButtonKind; size?: 'md' | 'lg' | 'sm'; style?: ViewStyle; /** Shown before the title (draw it in the button's text colour). */ icon?: React.ReactNode }) {
-  const bg = kind === 'dark' ? colors.olive : kind === 'accent' ? colors.accentDeep : colors.card;
+  const bg = kind === 'dark' ? colors.olive : kind === 'accent' ? colors.action : colors.card;
   const fg = kind === 'outline' ? colors.ink : colors.onDark;
   const pad = size === 'lg' ? 18 : size === 'sm' ? 9 : 14;
   return (
@@ -198,8 +198,8 @@ export function Chip({
       style={{
         borderRadius: radius.pill,
         borderWidth: 1,
-        borderColor: selected ? colors.accentDeep : colors.line,
-        backgroundColor: selected ? colors.accentDeep : colors.card,
+        borderColor: selected ? colors.action : colors.line,
+        backgroundColor: selected ? colors.action : colors.card,
         paddingHorizontal: 16,
         paddingVertical: 9,
       }}
@@ -231,7 +231,7 @@ export function Segmented<T extends string>({
             accessibilityRole="tab"
             accessibilityState={{ selected: on }}
             onPress={() => onChange(id)}
-            style={{ flex: 1, borderRadius: radius.pill, paddingVertical: 11, backgroundColor: on ? colors.accentDeep : 'transparent' }}
+            style={{ flex: 1, borderRadius: radius.pill, paddingVertical: 11, backgroundColor: on ? colors.action : 'transparent' }}
           >
             <Text style={{ textAlign: 'center', fontFamily: fonts.sansSemiBold, fontSize: 15, color: on ? colors.onDark : colors.muted }}>{text}</Text>
           </Pressable>

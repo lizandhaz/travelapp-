@@ -378,7 +378,7 @@ export function TripForm({
                         gap: 6,
                       }}
                     >
-                      <PlusIcon color={colors.accentDeep} size={20} />
+                      <PlusIcon color={colors.action} size={20} />
                       <Text variant="small" style={{ color: colors.ink }}>
                         {photos.length ? 'Add more' : `Up to ${MAX_PHOTOS}`}
                       </Text>
@@ -509,7 +509,7 @@ export function TripForm({
                   hitSlop={6}
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', paddingVertical: 4 }}
                 >
-                  <PlusIcon color={colors.accentDeep} size={18} />
+                  <PlusIcon color={colors.action} size={18} />
                   <Text variant="link">Add another restaurant</Text>
                 </Pressable>
               )}
@@ -540,7 +540,7 @@ export function TripForm({
               <Switch
                 value={visibility === 'private'}
                 onValueChange={(v) => setVisibility(v ? 'private' : 'friends')}
-                trackColor={{ false: colors.line, true: colors.accentDeep }}
+                trackColor={{ false: colors.line, true: colors.action }}
                 thumbColor={colors.card}
                 ios_backgroundColor={colors.line}
                 accessibilityLabel="Just me: only you can see this trip"

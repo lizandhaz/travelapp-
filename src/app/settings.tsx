@@ -7,6 +7,7 @@ import { BackButton, Button, Card, PageTitle, Screen, Segmented } from '@/compon
 import { APP_NAME } from '@/constants/brand';
 import { colors, GUTTER } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
+import { setDeparturePreference } from '@/lib/departurePreference';
 import { setProfilePicture } from '@/lib/trips';
 import { useEffect, useState } from 'react';
 import { clearPlaceViews, setViewsEnabled, viewsEnabled } from '@/lib/views';
@@ -55,6 +56,7 @@ export default function Settings() {
     setDeleteError(null);
     try {
       await deleteMyAccount();
+      if (session) await setDeparturePreference(session.user.id, null).catch(() => {});
     } catch (e) {
       setDeleteError(e instanceof Error ? e.message : 'Something went wrong.');
       setDeleting('asking');
@@ -167,6 +169,12 @@ export default function Settings() {
             </View>
           </Section>
         )}
+        <Section label="Trips near you">
+          <Pressable onPress={() => router.push('/departure-city')} accessibilityRole="link" style={{ padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <Text variant="strong" style={{ flex: 1 }}>Departure city</Text>
+            <Text variant="link">Change</Text>
+          </Pressable>
+        </Section>
         <Section label="Your taste">
           <Pressable onPress={() => router.push('/setup')} accessibilityRole="link" style={{ padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <View style={{ flex: 1 }}>

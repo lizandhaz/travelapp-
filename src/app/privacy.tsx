@@ -22,6 +22,7 @@ const SECTIONS: { title: string; body: string[] }[] = [
       'Photos: we shrink them and remove the hidden location data (GPS) before they are stored. We never show anyone where you are right now.',
       'Place pages you look at, so your scores can match your taste. You can turn this off, or clear it, in Settings.',
       'Some settings are kept only on your phone (for example, what your scores use).',
+      'For Trips near you, you can pick a departure city or let the app find one while you use Explore. Your phone matches an approximate location to a nearby city. We keep only the city and your choice of how to set it on this device. We don’t send this information to anyone. You can change or remove your city in Settings.',
     ],
   },
   {

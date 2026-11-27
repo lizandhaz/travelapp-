@@ -18,7 +18,7 @@ import { Avatar } from './Avatar';
 import { Row } from './cards';
 import { ScoreStamp } from './ScoreStamp';
 import { Text } from './Text';
-import { Card, Input, SectionHeader } from './ui';
+import { Card, Input, SectionHeader, useScrollLock } from './ui';
 import { AreaMap } from './AreaMap';
 import { BedIcon, BookmarkIcon, ForkIcon } from './Icons';
 
@@ -281,6 +281,7 @@ export function SaidList({ items, slug }: { items: PlaceDetail['said']; slug: st
  */
 export function PriceSlider({ prices, value, onChange, shown }: { prices: number[]; value: number | null; onChange: (v: number | null) => void; shown: number }) {
   const width = useRef(1);
+  const lock = useScrollLock();
   const lo = Math.floor(Math.min(...prices) / 10) * 10;
   const hi = Math.ceil(Math.max(...prices) / 10) * 10;
   const at = value ?? hi;
@@ -313,9 +314,14 @@ export function PriceSlider({ prices, value, onChange, shown }: { prices: number
         onStartShouldSetResponder={() => true}
         onMoveShouldSetResponder={() => true}
         onResponderTerminationRequest={() => false}
-        onResponderGrant={fromTouch}
+        onResponderGrant={(e) => {
+          lock(true); // the page holds still while you drag
+          fromTouch(e);
+        }}
         onResponderMove={fromTouch}
-        style={{ height: 30, justifyContent: 'center' }}
+        onResponderRelease={() => lock(false)}
+        onResponderTerminate={() => lock(false)}
+        style={{ height: 36, justifyContent: 'center' }}
       >
         <View pointerEvents="none" style={{ height: 6, borderRadius: 3, backgroundColor: colors.line, overflow: 'hidden' }}>
           <View style={{ width: `${pct(at)}%`, height: 6, backgroundColor: colors.olive }} />
@@ -708,6 +714,8 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
   const fill = bigHeight / ((width * 250) / 400);
   const [open, setOpen] = useState(false);
   const [picked, setPicked] = useState<number | null>(null);
+  // Tapped on the map (details open under the map) or in the list (details open in the list).
+  const [fromMap, setFromMap] = useState(false);
   const [typed, setTyped] = useState('');
   const [focus, setFocus] = useState<{ n: number | null; zoom: number; key: number }>({ n: null, zoom: fill, key: 0 });
   const [lastStay, setLastStay] = useState<number | null>(null);
@@ -753,8 +761,9 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
     : [];
   const howFar = (dist: number) => (dist < 50 ? 'Right nearby' : dist < 110 ? 'A short way' : 'Further out');
 
-  const choosePin = (n: number) => {
-    const next = picked === n ? null : n;
+  const choosePin = (n: number, onMap = false) => {
+    setFromMap(onMap);
+    const next = picked === n && fromMap === onMap ? null : n;
     setPicked(next);
     if (next != null) setFocus((f) => ({ n: next, zoom: Math.max(2.5, fill), key: f.key + 1 }));
   };
@@ -786,7 +795,7 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
           </View>
           <Text style={{ fontFamily: fonts.display, fontSize: 18, color: colors.ink, fontVariant: ['tabular-nums'] }}>{formatScore(s.score)}</Text>
         </View>
-        {on && (
+        {on && !fromMap && (
           <View style={{ marginLeft: 32, gap: 2 }}>
             {!!s.what && <Text variant="small">{s.what}</Text>}
             {!!s.note && (
@@ -794,11 +803,75 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
                 ✦ {s.note}
               </Text>
             )}
+            {s.kind === 'Stay' && !!d?.stays.some((x) => x.name === s.name) && (
+              <Pressable
+                onPress={() => {
+                  setOpen(false);
+                  router.push({ pathname: '/stay/[slug]', params: { slug, name: s.name } });
+                }}
+                accessibilityRole="link"
+                accessibilityLabel={`See ${s.name}: prices and details`}
+                hitSlop={8}
+                style={{ marginTop: 2 }}
+              >
+                <Text variant="link">See the stay →</Text>
+              </Pressable>
+            )}
           </View>
         )}
       </Pressable>
     );
   };
+  // Tap a number (on the map or in the list) and its details open right under the map (owner, Nov 2026): what it is,
+  // why it suits you and its score, with a way into a stay's own page.
+  const chosenSpot = spots.find((s) => s.n === picked) ?? null;
+  const hasPage = !!chosenSpot && chosenSpot.kind === 'Stay' && !!d?.stays.some((x) => x.name === chosenSpot.name);
+  const panel = chosenSpot && fromMap && (
+    <View style={{ backgroundColor: colors.sageSoft, paddingHorizontal: 14, paddingVertical: 12, gap: 8 }} accessibilityLiveRegion="polite">
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+        <View style={{ width: 26, height: 26, borderRadius: 13, marginTop: 2, backgroundColor: PIN_COLOURS[chosenSpot.kind] ?? colors.ink, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontFamily: fonts.sansBold, fontSize: 12, lineHeight: 14, color: colors.onDark }}>{chosenSpot.n}</Text>
+        </View>
+        <View style={{ flex: 1, gap: 2 }}>
+          <Text variant="label" style={{ fontSize: 10 }}>
+            {chosenSpot.kind}
+            {chosenSpot.n === top ? ' · ✦ Top pick for you' : ''}
+          </Text>
+          <Text variant="subheading">{chosenSpot.name}</Text>
+          {!!chosenSpot.what && <Text variant="small">{chosenSpot.what}</Text>}
+          {!!chosenSpot.note && (
+            <Text variant="small" style={{ color: colors.ink }}>
+              ✦ {chosenSpot.note}
+            </Text>
+          )}
+        </View>
+        <ScoreStamp score={chosenSpot.score} size="sm" label={`Your score for ${chosenSpot.name}`} />
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginLeft: 36 }}>
+        {hasPage ? (
+          <Pressable
+            onPress={() => {
+              setOpen(false);
+              router.push({ pathname: '/stay/[slug]', params: { slug, name: chosenSpot.name } });
+            }}
+            accessibilityRole="link"
+            accessibilityLabel={`See ${chosenSpot.name}: prices and details`}
+            hitSlop={8}
+          >
+            <Text variant="link">See the stay →</Text>
+          </Pressable>
+        ) : (
+          <View />
+        )}
+        <Pressable onPress={() => setPicked(null)} accessibilityRole="button" accessibilityLabel="Close" hitSlop={10}>
+          <Text variant="small" style={{ color: colors.muted }}>
+            Close
+          </Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+
   const key = (
     <View style={{ gap: 2 }}>
       {MAP_SECTIONS.map((sec) => {
@@ -833,9 +906,10 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
             picked={picked}
             stay={null}
             focus={focus}
-            onPin={choosePin}
+            onPin={(n) => choosePin(n, true)}
           />
         )}
+        {!open && panel}
         <View style={{ paddingHorizontal: 14, paddingVertical: 6 }}>{key}</View>
       </Card>
 
@@ -848,8 +922,9 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
             </Pressable>
           </View>
           {open && !!centre && (
-            <AreaMap slug={slug} name={name} width={width} height={bigHeight} pins={pins} picked={picked} stay={stay} focus={focus} onPin={choosePin} />
+            <AreaMap slug={slug} name={name} width={width} height={bigHeight} pins={pins} picked={picked} stay={stay} focus={focus} onPin={(n) => choosePin(n, true)} />
           )}
+          {open && panel}
           <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: GUTTER, paddingTop: 14, paddingBottom: 40, gap: 12 }}>
             {stays.length > 0 && (
               <View style={{ gap: 8 }}>

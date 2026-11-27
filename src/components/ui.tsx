@@ -30,6 +30,9 @@ export const Screen = forwardRef<ComponentRef<typeof ScrollView>, ScrollViewProp
     const insets = useSafeAreaInsets();
     const [locked, setLocked] = useState(false);
     return (
+      // The provider sits outside the ScrollView: inside, it would be the ScrollView's only child, and a screen's
+      // stickyHeaderIndices={[0]} would pin the whole page (owner, Nov 2026: Explore stopped scrolling).
+      <ScrollLock.Provider value={setLocked}>
       <ScrollView
         ref={ref}
         style={{ flex: 1, backgroundColor: colors.bg }}
@@ -40,8 +43,9 @@ export const Screen = forwardRef<ComponentRef<typeof ScrollView>, ScrollViewProp
         {...props}
         scrollEnabled={!locked && (props.scrollEnabled ?? true)}
       >
-        <ScrollLock.Provider value={setLocked}>{children}</ScrollLock.Provider>
+        {children}
       </ScrollView>
+      </ScrollLock.Provider>
     );
   },
 );

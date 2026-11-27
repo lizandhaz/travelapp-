@@ -1,5 +1,6 @@
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 
+import { countryInfo, type CountryInfo } from './countryInfo';
 import { ALL_PLACES, countryOf, plain } from './knownPlaces';
 import { places as samplePlaces } from './sample';
 import { myUserId, supabase } from './supabase';
@@ -263,8 +264,34 @@ export function parsePlace(text: string): Place {
 }
 
 /** Countries visited across trips (for the You page). */
+/** A country you've been to: its flag, tidy name and continent, the places you went there and on how many trips. */
+export type VisitedCountry = CountryInfo & { places: string[]; trips: number };
+
+/**
+ * Every country on your trips, once each ("UK" and "United Kingdom" count as one). The one source for both the
+ * count on You ("Countries", "% of the world") and the list behind it, so they always match.
+ */
+export function visitedCountries(trips: Trip[]): VisitedCountry[] {
+  const out = new Map<string, VisitedCountry>();
+  for (const t of trips) {
+    const onTrip = new Set<string>();
+    for (const s of t.stops) {
+      const raw = countryOf(s);
+      if (!raw.trim()) continue;
+      const info = countryInfo(raw);
+      const key = info.name.toLowerCase();
+      const c = out.get(key) ?? { ...info, places: [], trips: 0 };
+      if (s.name.trim().toLowerCase() !== key && !c.places.some((p) => p.toLowerCase() === s.name.trim().toLowerCase())) c.places.push(s.name.trim());
+      if (!onTrip.has(key)) c.trips += 1;
+      onTrip.add(key);
+      out.set(key, c);
+    }
+  }
+  return [...out.values()];
+}
+
 export function countriesIn(trips: Trip[]) {
-  return new Set(trips.flatMap((t) => t.stops.map((s) => countryOf(s).toLowerCase()).filter(Boolean))).size;
+  return visitedCountries(trips).length;
 }
 
 type DbError = { message?: string; code?: string; details?: string | null };

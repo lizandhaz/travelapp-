@@ -100,7 +100,7 @@ src/
                           say boards/lists): your Want to go board and your own boards ("Made by you", + New board), and
                           Friends' trips you've saved (SavedTripCard grid)
     (tabs)/profile.tsx    You (built from components/profile.tsx): profile picture (tap to change), name, followers / following / requests counts
-                          at the top (tap → people.tsx), Find friends / Add a trip buttons, stats, Your taste (plain outline tags, no colours), travel map card (tap → map), "Your collections" (your lists + saved friends' trips, each opens; See all
+                          at the top (tap → people.tsx), Find friends / Add a trip buttons, stats (Countries and % "Of the world" open CountriesSheet, owner Nov 2026), Your taste (plain outline tags, no colours), travel map card (tap → map), "Your collections" (your lists + saved friends' trips, each opens; See all
                           → Saved), your trips as photo
                           stamps: Newest (default) / Oldest / Top rated, and a year filter
     list/[id].tsx         One board: cover (chosen photo, or a collage of its places) with the name, Share/Edit circles, places as a
@@ -110,7 +110,9 @@ src/
     list/new.tsx          New board, or rename/cover/who-can-see with ?id=; cover photo picker (Collage, the board's places, a dozen
                           favourites); with ?place= (and kind/parent for a spot) it also adds that
     collection/[id].tsx   One Explore collection (places or things) as a 2-column grid, best for you first
-    map.tsx               The full travel map: All/Been/Want to go, names on pins, pinch to zoom (iPhone), Whole world, place chips
+    map.tsx               The full travel map: All/Been/Want to go, names on pins, pinch to zoom (iPhone), Whole world, place chips.
+                          The map has a fixed pixel size (`mapSize()`: app width less gutters, height from the aspect ratio) and is framed on
+                          all your places whatever the tab, so switching tabs only changes which pins show (owner Nov 2026: it used to squash)
     save.tsx              "Save to a board" from a place page (or a hotel/restaurant/thing to do's bookmark: ?kind=stay|eat|do|gem
                           &parent=<place>&parentSlug=): tick boards (Want to go first), + New board
     postcards.tsx         Postcards, opened from Home's paper-plane button (badge = lib/postcardsLive unread: newer than when you last
@@ -199,6 +201,9 @@ src/
                           doesn't work in an iOS page sheet)) and Save (a sheet: "Save <place>"
                           → save.tsx, or "Save <who>'s trip" → Saved → Friends' trips; the bookmark fills when the trip is saved) for a
                           friend's trip; on feed cards and the friend's trip page
+    CountriesSheet.tsx    "Your world" page sheet from You's Countries / % of the world tiles: summary (N countries · X% of the world + bar),
+                          a count per continent, then countries grouped by continent (most first), A to Z, with flag, places and trip count;
+                          an empty state with Add a trip. Fed by `visitedCountries()` (trips.ts), the same list the tiles count
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces
@@ -233,7 +238,8 @@ src/
     fit.ts                fitWordSize(): a font size that keeps a place name's longest word on one line (Fraunces is wide,
                           wider on iPhone: 0.74 × size per letter), and fitLines(): one line per word and shrink-to-fit on iPhone, so a
                           word never breaks. Use both wherever a place name is in big type (owner Nov 2026: "Singapore" looked funny)
-    trips.ts              Trip types, fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces, photo upload + signed URLs
+    countryInfo.ts        countryInfo(): flag emoji, tidy name and continent for every WORLD_COUNTRIES name + aliases (UK, United States…)
+    trips.ts              Trip types, visitedCountries()/countriesIn() (one source for the count and the list), fetchMyTrips/fetchTrip/saveTrip/deleteTrip/fetchPlaces, photo upload + signed URLs
     boards.ts             Lists: fetchBoards/fetchBoard/createBoard/ensureWishList/updateBoard/deleteBoard,
                           addToBoard/removeFromBoard, findOnBoard, shareBoard (phone share sheet)
     geo.ts                Rough map positions for popular places (country middle as fallback) + toMap()

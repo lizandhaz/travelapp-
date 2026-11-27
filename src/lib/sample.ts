@@ -2303,9 +2303,12 @@ export function photoForPlaceName(name: string, seed = ''): PhotoName | null {
   return own[pick % own.length];
 }
 
-/** A photo for a thing to do, from what it is: turtles get the owner's turtle photo (owner, Nov 2026). */
+/** A photo for a thing to do, from what it is (owner, Nov 2026): turtles get the turtle photo, Krka its waterfalls. */
 export function photoForActivity(d: { name: string; what?: string | null }): PhotoName | null {
-  return /turtle/i.test(`${d.name} ${d.what ?? ''}`) ? 'own-srilanka-turtles' : null;
+  const words = `${d.name} ${d.what ?? ''}`;
+  if (/turtle/i.test(words)) return 'own-srilanka-turtles';
+  if (/\bkrka\b/i.test(words)) return 'own-krka-falls';
+  return null;
 }
 
 /** Everything in the sample content about one place (for its page). */

@@ -81,6 +81,13 @@ const ACTIVITY: Record<string, Tags> = {
   Fun: { family: 0.5 },
   Ski: { ski: 1 },
   River: { countryside: 0.4 },
+  // Tags on newer things to do (owner, Nov 2026: Krka's waterfalls were being judged as "culture").
+  Nature: { outdoors: 1, hiking: 0.4 },
+  Wine: { food: 0.6, countryside: 0.4 },
+  Golf: { golf: 1 },
+  Market: { food: 0.6, culture: 0.4 },
+  'Day out': { culture: 0.4, outdoors: 0.3 },
+  Hiking: { hiking: 1, outdoors: 0.6 },
 };
 
 /**

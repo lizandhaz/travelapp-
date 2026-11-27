@@ -67,6 +67,10 @@ export default function PlaceScreen() {
   const eats = (detail?.eats ?? [])
     .map((e) => ({ ...e, score: personal ? taste.eatScoreFor(e) : e.score, match: null as number | null }))
     .sort((a, b) => (personal ? (b.score ?? 0) - (a.score ?? 0) : 0));
+  // Things to do, best for you first once we know your taste (owner, Nov 2026: Krka's waterfalls for someone who loves nature).
+  const dos = [...(detail?.dos ?? [])].sort((a, b) =>
+    personal ? taste.forItem({ slug, kind: 'Do', name: b.name, friends: '' }).score - taste.forItem({ slug, kind: 'Do', name: a.name, friends: '' }).score : 0,
+  );
   const moreSaid = (detail?.said ?? []).filter((s) => !said.some((f) => f.who === s.who));
   const h = appWidth() * 1.0;
 
@@ -202,7 +206,7 @@ export default function PlaceScreen() {
           name={place.name}
           detail={detail}
           eat={eats.length > 0 ? <EatRow eats={eats} at={{ name: place.name, country, slug }} /> : undefined}
-          todo={detail.dos.length ? <DoRow dos={detail.dos} at={{ name: place.name, country, slug }} /> : undefined}
+          todo={dos.length ? <DoRow dos={dos} at={{ name: place.name, country, slug }} /> : undefined}
         />
       )}
 

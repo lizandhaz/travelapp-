@@ -147,15 +147,22 @@ const isUuid = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}
  * A friend's trip for the postcard and trip pages: a sample trip straight away, or a real one (by its
  * id) loaded from the database with all its photos. `trip` is null while loading or if it can't be seen.
  */
-export function useFriendTrip(id: string | undefined): { trip: FriendTrip | RealFriendTrip | null; loading: boolean } {
+export function useFriendTrip(id: string | undefined): { trip: FriendTrip | RealFriendTrip | null; loading: boolean; error: string | null; retry: () => void } {
   const sample = id ? getFriendTrip(id) : null;
-  const [real, setReal] = useState<{ id: string; trip: RealFriendTrip | null } | null>(null);
+  const [real, setReal] = useState<{ id: string; trip: RealFriendTrip | null; error?: string } | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const wantReal = !!id && !sample && isUuid(id);
   useEffect(() => {
     if (!wantReal || !id) return;
     let live = true;
     (async () => {
-      const t = await fetchTrip(id).catch(() => null);
+      // A failed connection isn't "not found" (overnight audit): keep the message so the page can say so.
+      let t: Trip | null;
+      try {
+        t = await fetchTrip(id);
+      } catch (e) {
+        return live && setReal({ id, trip: null, error: e instanceof Error ? e.message : 'Couldn’t connect. Check you’re online and try again.' });
+      }
       if (!t) return live && setReal({ id, trip: null });
       const [people, photoUrls] = await Promise.all([fetchMyPeople().catch(() => []), signAll(t.photoPaths)]);
       const who = people.find((p) => p.userId === t.ownerId);
@@ -165,8 +172,12 @@ export function useFriendTrip(id: string | undefined): { trip: FriendTrip | Real
     return () => {
       live = false;
     };
-  }, [id, wantReal]);
-  if (sample) return { trip: sample, loading: false };
-  if (!wantReal) return { trip: null, loading: false };
-  return real?.id === id ? { trip: real.trip, loading: false } : { trip: null, loading: true };
+  }, [id, wantReal, attempt]);
+  const retry = () => {
+    setReal(null);
+    setAttempt((n) => n + 1);
+  };
+  if (sample) return { trip: sample, loading: false, error: null, retry };
+  if (!wantReal) return { trip: null, loading: false, error: null, retry };
+  return real?.id === id ? { trip: real.trip, loading: false, error: real.error ?? null, retry } : { trip: null, loading: true, error: null, retry };
 }

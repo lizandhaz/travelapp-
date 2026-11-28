@@ -41,6 +41,7 @@ type CardRow = {
 /** Someone's profile card, or null if you can't see them (blocked, or an under-18 you don't know). */
 export async function fetchProfileCard(userId: string): Promise<ProfileCard | null> {
   const { data, error } = await supabase.rpc('profile_card', { p_user: userId });
+  if (error && /network|fetch/i.test(error.message)) throw new Error('Couldn’t connect. Check you’re online and try again.');
   const r = (data as CardRow[] | null)?.[0];
   if (error || !r) return null;
   return {

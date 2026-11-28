@@ -274,6 +274,24 @@ export function Notice({ tone = 'error', children }: { tone?: 'error' | 'info'; 
 }
 
 /** A problem message, with Supabase's own wording in small print underneath (helps spot setup issues). */
+/**
+ * A page that couldn't load (overnight audit, Nov 2026): back, what went wrong ("Couldn't connect…"), and Try again.
+ * Used where a failed connection used to look like "not found".
+ */
+export function LoadFailed({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <Screen>
+      <View style={{ paddingHorizontal: GUTTER, paddingTop: 14, gap: 16 }}>
+        <BackButton />
+        <Text variant="body" accessibilityRole="alert">
+          {message}
+        </Text>
+        <Button title="Try again" kind="outline" onPress={onRetry} style={{ alignSelf: 'flex-start' }} />
+      </View>
+    </Screen>
+  );
+}
+
 export function ErrorNotice({ error }: { error: { message: string; detail?: string } | null }) {
   if (!error) return null;
   return (

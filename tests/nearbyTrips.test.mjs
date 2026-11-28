@@ -52,3 +52,33 @@ test('Explore blends nearby places into its existing cards without repeating des
   assert.deepEqual(curateExploreFeed(cards, [{ slug: 'paris' }], ranked).map(({ name }) => name), ['york', 'Lunch in Paris', 'bath', 'turks']);
   assert.deepEqual(curateExploreFeed(cards, [{ slug: 'paris' }]).map(({ name }) => name), ['Lunch in Paris', 'bath', 'turks', 'york']);
 });
+
+test('a departure city shapes the whole feed quietly: every ranked place in rhythm, one reason, no repeats', () => {
+  const place = (slug, sub = 'Somewhere') => ({ slug, kind: 'place', name: slug, sub, photo: null });
+  const thing = (n) => ({ slug: 'x', kind: 'Eat', name: `eat${n}`, sub: '', photo: null });
+  const near = ['paris', 'bath', 'york', 'oxford', 'brighton', 'lisbon', 'copenhagen', 'cotswolds'];
+  const cards = [
+    place('maldives'),
+    ...near.map((s) => place(s, s === 'paris' ? 'Weekend · 2h 16m by Eurostar' : 'Somewhere')),
+    { slug: 'bath', kind: 'One night away', name: 'One night in Bath', sub: '95% match', photo: null },
+    ...Array.from({ length: 30 }, (_, i) => thing(i)),
+  ];
+  const ranked = [
+    { id: 'weekend', places: near.map((slug) => ({ slug, why: 'Easy from London' })) },
+    { id: 'long', places: [{ slug: 'maldives', why: 'At its best in November' }] },
+  ];
+  const out = curateExploreFeed(cards, [], ranked);
+  const placesInOrder = out.filter((c) => c.kind === 'place').map((c) => c.slug);
+  // All nine ranked places, more than the old six, with the long trip given a turn early on.
+  assert.equal(placesInOrder.length, 9);
+  assert.ok(placesInOrder.indexOf('maldives') <= 6, 'a further trip appears among the first few');
+  // Each place is followed by two other cards, and "One night in Bath" gives way to Bath's own card.
+  assert.equal(out[1].kind, 'Eat');
+  assert.ok(!out.some((c) => c.kind === 'One night away'));
+  // One quiet reason, never a group name; London-only travel times only near London.
+  const paris = out.find((c) => c.slug === 'paris');
+  assert.match(paris.sub, /Easy from London$/);
+  assert.ok(!out.some((c) => /Weekend trips|Worth the journey|Big adventures/.test(c.sub)));
+  assert.equal(curateExploreFeed(cards, [], ranked, true).find((c) => c.slug === 'paris').sub, 'Weekend · 2h 16m by Eurostar');
+  assert.equal(new Set(out.filter((c) => c.kind === 'place').map((c) => c.slug)).size, 9, 'no destination twice');
+});

@@ -6,12 +6,15 @@ import { useAuth } from '@/lib/auth';
 import { getDeparturePreference, setDeparturePreference } from '@/lib/departurePreference';
 import { canUseDeviceLocation, findDeviceDeparture } from '@/lib/deviceDeparture';
 import { positionOf } from '@/lib/geo';
-import { rankValue } from '@/lib/match';
+import { distanceKm, rankValue } from '@/lib/match';
+import { MONTH_NAMES_LONG } from '@/lib/months';
 import { groupNearbyTrips, type DepartureCity } from '@/lib/nearbyTrips';
 import { placeDetails } from '@/lib/placeDetails';
 import { placeCentres } from '@/lib/placeMaps';
 import { places } from '@/lib/sample';
 import { useTaste } from '@/lib/taste';
+
+const LONDON: [number, number] = [51.51, -0.13];
 
 const destinations = places.flatMap((place) => {
   const point = placeCentres[place.slug]?.at ?? positionOf({ name: place.name, country: '' }, false);
@@ -60,11 +63,25 @@ export function useExploreDeparture() {
     };
   }, [userId]));
 
-  const groups = useMemo(() => city && ready ? groupNearbyTrips(city.point, destinations.flatMap((place) => {
+  const ranked = useMemo(() => city && ready ? groupNearbyTrips(city.point, destinations.flatMap((place) => {
     const result = forSlug(place.slug);
     if (result?.yours) return [];
     return [{ ...place, taste: result ? rankValue(result) : place.score ?? 7 }];
   }), month) : [], [city, forSlug, month, ready]);
 
-  return { city, groups };
+  // At most one quiet reason per card, never the group's name (owner, Nov 2026: personal without showing the machinery):
+  // short hops say they're easy from your city; further trips say when they're in season.
+  const groups = useMemo(() => ranked.map((group) => ({
+    id: group.id,
+    places: group.places.map((place) => ({
+      slug: place.slug,
+      why: group.id === 'weekend' && city ? `Easy from ${city.name}` : place.bestMonths.includes(month) ? `At its best in ${MONTH_NAMES_LONG[month]}` : null,
+    })),
+  })), [city, month, ranked]);
+  // Places you could do in a weekend from your city, for Explore's "Weekends" chip.
+  const weekends = useMemo(() => new Set(groups.find((g) => g.id === 'weekend')?.places.map((p) => p.slug) ?? []), [groups]);
+  // The prototype's travel times ("2h 16m by Eurostar") are from London, so they only show near London.
+  const nearLondon = !!city && distanceKm(city.point, LONDON) < 120;
+
+  return { city, groups, weekends, nearLondon };
 }

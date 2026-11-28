@@ -2306,7 +2306,8 @@ export function photoForPlaceName(name: string, seed = ''): PhotoName | null {
 /** A photo for a thing to do, from what it is (owner, Nov 2026): turtles get the turtle photo, Krka its waterfalls. */
 export function photoForActivity(d: { name: string; what?: string | null }): PhotoName | null {
   const words = `${d.name} ${d.what ?? ''}`;
-  if (/turtle/i.test(words)) return 'own-srilanka-turtles';
+  // Only where the photo was taken (owner, Nov 2026: photos must show what they're on), not every turtle trip.
+  if (/hiriketiya/i.test(words)) return 'own-srilanka-turtles';
   if (/\bkrka\b/i.test(words)) return 'own-krka-falls';
   return null;
 }

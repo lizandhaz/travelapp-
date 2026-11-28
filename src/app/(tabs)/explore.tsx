@@ -6,13 +6,49 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AccentTitle } from '@/components/AccentTitle';
 import { BoardTile, PlaceCard, Row, TrendCard } from '@/components/cards';
 import { CollectionTile } from '@/components/explore';
-import { SearchIcon } from '@/components/Icons';
+import { ChevronIcon, PinIcon, SearchIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
 import { Chip, Input, Screen, SectionHeader } from '@/components/ui';
 import { colors, GUTTER, appWidth } from '@/constants/theme';
 import { collectionTiles, curateExploreFeed, exploreFeed, searchTrips, type FeedItem } from '@/lib/explore';
 import { trendingThisMonth } from '@/lib/sample';
 import { useExploreDeparture } from '@/lib/useExploreDeparture';
+
+/**
+ * Where your trips start, beside "Just for you" (owner, Nov 2026: visible and easy to change, but quiet): a small outline
+ * pill with a pin, "From London" and a ⌄. With no city yet it offers "Add your city". Opens the departure city page.
+ */
+function CityPill({ name }: { name: string | null }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={name ? `Trips from ${name}. Change your city` : 'Add your city to see trips from it'}
+      onPress={() => router.push('/departure-city')}
+      hitSlop={8}
+      style={({ pressed }) => ({
+        maxWidth: '52%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        paddingLeft: 9,
+        paddingRight: 10,
+        paddingVertical: 5,
+        borderRadius: 999,
+        borderWidth: 1,
+        borderColor: colors.line,
+        backgroundColor: pressed ? colors.sageSoft : colors.bg,
+      })}
+    >
+      <PinIcon color={colors.muted} size={13} strokeWidth={1.8} />
+      <Text variant="tiny" numberOfLines={1} style={{ color: name ? colors.ink : colors.muted, flexShrink: 1 }}>
+        {name ? `From ${name}` : 'Add your city'}
+      </Text>
+      <View style={{ transform: [{ rotate: '90deg' }] }}>
+        <ChevronIcon color={colors.muted} size={10} strokeWidth={2.2} />
+      </View>
+    </Pressable>
+  );
+}
 
 const STAYS = ['Riad', 'Villa', 'Ryokan', 'Hotel', 'B&B', 'Airbnb', 'Other'];
 
@@ -47,7 +83,7 @@ export default function Explore() {
   const feed = useMemo(() => exploreFeed(), []);
   const collections = useMemo(() => collectionTiles(), []);
   const collectionLinks = useMemo(() => new Set(collections.map(({ id }) => `/collection/${id}`)), [collections]);
-  const { city, groups } = useExploreDeparture();
+  const { city, groups, weekends, nearLondon } = useExploreDeparture();
 
   // Text search takes priority. Trending and collections belong to the unfiltered browse view.
   const searching = !!query.trim();
@@ -57,10 +93,12 @@ export default function Explore() {
   const matching = useMemo(() => {
     const words = query.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
     const f = FILTERS.find((x) => x.id === filter)!;
-    return feed.filter((b) => b.photo && f.match(b) && !(browse && b.href && collectionLinks.has(b.href))
+    // With a departure city, "Weekends" means short hops from it (the prototype's lines are all from London).
+    const fits = f.id === 'weekends' && city ? (b: FeedItem) => b.kind === 'place' && !!b.slug && weekends.has(b.slug) : f.match;
+    return feed.filter((b) => b.photo && fits(b) && !(browse && b.href && collectionLinks.has(b.href))
       && (!words.length || words.some((w) => `${b.name} ${b.sub} ${b.kind}`.toLowerCase().includes(w))));
-  }, [browse, collectionLinks, feed, filter, query]);
-  const shown = useMemo(() => curateExploreFeed(matching, browse ? TRENDING : best, searching ? [] : groups), [best, browse, groups, matching, searching]);
+  }, [browse, city, collectionLinks, feed, filter, query, weekends]);
+  const shown = useMemo(() => curateExploreFeed(matching, browse ? TRENDING : best, searching ? [] : groups, nearLondon), [best, browse, groups, matching, nearLondon, searching]);
   const visible = shown.slice(0, limit);
   const left = visible.filter((_, i) => i % 2 === 0);
   const right = visible.filter((_, i) => i % 2 === 1);
@@ -170,16 +208,7 @@ export default function Explore() {
               {search ? <AccentTitle before="More" accent="ideas" variant="heading" />
                 : searching ? <AccentTitle before="Search" accent="results" variant="heading" />
                 : <AccentTitle before="Just" accent="for you" variant="heading" />}
-              {!searching && city !== undefined && (
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={city ? `Change departure city from ${city.name}` : 'Set departure city'}
-                  onPress={() => router.push('/departure-city')}
-                  style={{ maxWidth: '48%', minHeight: 44, justifyContent: 'center' }}
-                >
-                  <Text variant="link" numberOfLines={1}>{city ? `From ${city.name}` : 'Set city'}</Text>
-                </Pressable>
-              )}
+              {!searching && city !== undefined && <CityPill name={city?.name ?? null} />}
             </View>
           )}
           <View style={{ paddingHorizontal: GUTTER, flexDirection: 'row', gap: 12 }}>

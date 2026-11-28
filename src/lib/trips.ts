@@ -285,9 +285,11 @@ export function parsePlace(text: string): Place {
   return { name: t, country: '' };
 }
 
-/** Countries visited across trips (for the You page). */
-/** A country you've been to: its flag, tidy name and continent, the places you went there and on how many trips. */
-export type VisitedCountry = CountryInfo & { places: string[]; trips: number };
+/**
+ * A country you've been to: its flag, tidy name and continent, the places you went there, on how many trips, the month
+ * you first went ("2023-05") and the trips themselves (newest first), for the countries page on You.
+ */
+export type VisitedCountry = CountryInfo & { places: string[]; trips: number; first: string; tripIds: string[] };
 
 /**
  * Every country on your trips, once each ("UK" and "United Kingdom" count as one). The one source for both the
@@ -302,13 +304,19 @@ export function visitedCountries(trips: Trip[]): VisitedCountry[] {
       if (!raw.trim()) continue;
       const info = countryInfo(raw);
       const key = info.name.toLowerCase();
-      const c = out.get(key) ?? { ...info, places: [], trips: 0 };
+      const c = out.get(key) ?? { ...info, places: [], trips: 0, first: t.month, tripIds: [] };
       if (s.name.trim().toLowerCase() !== key && !c.places.some((p) => p.toLowerCase() === s.name.trim().toLowerCase())) c.places.push(s.name.trim());
-      if (!onTrip.has(key)) c.trips += 1;
+      if (!onTrip.has(key)) {
+        c.trips += 1;
+        c.tripIds.push(t.id);
+        if (t.month < c.first) c.first = t.month;
+      }
       onTrip.add(key);
       out.set(key, c);
     }
   }
+  const order = new Map(trips.map((t) => [t.id, `${t.month}|${t.createdAt}`]));
+  for (const c of out.values()) c.tripIds.sort((a, b) => (order.get(b) ?? '').localeCompare(order.get(a) ?? ''));
   return [...out.values()];
 }
 

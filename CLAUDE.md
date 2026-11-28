@@ -217,9 +217,13 @@ src/
                           doesn't work in an iOS page sheet)) and Save (a sheet: "Save <place>"
                           → save.tsx, or "Save <who>'s trip" → Saved → Friends' trips; the bookmark fills when the trip is saved) for a
                           friend's trip; on feed cards and the friend's trip page
-    CountriesSheet.tsx    "Your world" page sheet from You's Countries / % of the world tiles: summary (N countries · X% of the world + bar),
-                          a count per continent, then countries grouped by continent (most first), A to Z, with flag, places and trip count;
-                          an empty state with Add a trip. Fed by `visitedCountries()` (trips.ts), the same list the tiles count
+    CountriesSheet.tsx    "Your world" page sheet from You's Countries / % of the world tiles, redesigned like a travel-journal page (owner Nov 2026:
+                          "not generic tiles"): no boxes or emoji clutter. A left-aligned serif headline ("11 countries." + "5.6% of the world." in
+                          terracotta italic), one quiet line ("Five continents so far. It started with Milan, in 2023."), a muted sand world map with
+                          a terracotta dot per place, a small-caps continent index (tap to jump), then continents under hairlines + small headings
+                          (tap to fold) with countries as plain rows (flag, serif name, places, year first visited, "N trips"); tap a country for
+                          its trips (place, month, score → the trip). Ends "195 countries in the world. 184 still to go." Empty: "No stamps yet."
+                          + empty map + "Add a trip →". Fed by `visitedCountries()` (trips.ts: also `first` month and `tripIds`) and the trips
     TabBar.tsx            Tab definitions + tab button look (used by (tabs)/_layout.tsx)
     Icons.tsx             Line icons (home, compass, plus, heart, person, search, send, sliders, image, lock, back)
     CodeEntry.tsx, DateOfBirth.tsx, AuthFrame.tsx   Join / log-in pieces

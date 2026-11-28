@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --no-warnings --import ./tests/register.mjs --test tests/match.test.mjs tests/tripQuery.test.mjs tests/personas.test.mjs tests/topicPages.test.mjs tests/months.test.mjs tests/nearbyTrips.test.mjs"
+    "test": "node --experimental-strip-types --no-warnings --import ./tests/register.mjs --test tests/match.test.mjs tests/tripQuery.test.mjs tests/personas.test.mjs tests/topicPages.test.mjs tests/months.test.mjs tests/nearbyTrips.test.mjs tests/bestTime.test.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/dm-sans": "^0.4.2",

@@ -4,10 +4,11 @@ import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { WantToGoButton } from '@/components/lists';
+import { BestTimeSection } from '@/components/BestTime';
 import { InviteSheet } from '@/components/InviteSheet';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
-import { BestTimeChart, DoRow, EatRow, FriendName, FriendTripLink, MoreAbout, PlaceFacts, PlaceMapSection, SaidList, StayRow, YourScore } from '@/components/place';
+import { DoRow, EatRow, FriendName, FriendTripLink, MoreAbout, PlaceFacts, PlaceMapSection, SaidList, StayRow, YourScore } from '@/components/place';
 import { PhotoBadge, Row } from '@/components/cards';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
@@ -137,7 +138,12 @@ export default function PlaceScreen() {
 
       <PlaceMapSection slug={slug} name={place.name} />
 
-      {detail && <BestTimeChart detail={detail} />}
+      {detail && detail.bestMonths.length > 0 && (
+        <View style={{ marginTop: 36 }}>
+          <SectionHeader>Best time to go</SectionHeader>
+          <BestTimeSection detail={detail} />
+        </View>
+      )}
 
       {(said.length > 0 || moreSaid.length > 0) && (
         <View style={{ marginTop: 28 }}>

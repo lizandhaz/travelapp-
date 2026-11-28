@@ -237,22 +237,6 @@ export const itemCollections: ItemCollection[] = [
   },
 ];
 
-/** Search words across places and things ("lagoon", "sushi", "Portugal"). */
-export function searchExplore(query: string): { places: RowItem[]; items: ExploreItem[] } {
-  const words = query
-    .toLowerCase()
-    .split(/\s+/)
-    .filter((w) => w.length > 2);
-  if (!words.length) return { places: [], items: [] };
-  const hit = (text: string) => words.every((w) => text.toLowerCase().includes(w)) || words.some((w) => text.toLowerCase().split(/\W+/).includes(w));
-  const placeHits = places.filter((p) => hit(`${p.name} ${p.region} ${countryOf({ name: p.name, country: p.region.split(', ').pop() ?? '' })} ${kicker(p.slug)} ${Object.keys(tags(p.slug)).join(' ')}`));
-  const itemHits = itemCollections.flatMap((c) => c.items()).filter((i) => hit(`${i.name} ${i.kind} ${i.what ?? ''} ${i.place}`));
-  return {
-    places: placeHits.map((p) => ({ slug: p.slug, name: p.name, sub: p.region, photo: p.photo, score: p.score ?? undefined })),
-    items: itemHits.filter((i, n, a) => a.findIndex((x) => x.key === i.key) === n).slice(0, 30),
-  };
-}
-
 // ---------------------------------------------------------------------------
 // The Explore feed: the prototype's board, then every other place and thing, mixed
 // ---------------------------------------------------------------------------

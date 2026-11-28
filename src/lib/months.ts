@@ -25,12 +25,6 @@ export function longMonth(ym: string) {
   return `${LONG[monthIndexOf(ym)]} ${yearOf(ym)}`;
 }
 
-/** "Sep", or "Sep 2025" when it's not this year. */
-export function shortMonth(ym: string, now: Date = new Date()) {
-  const label = SHORT[monthIndexOf(ym)];
-  return yearOf(ym) === now.getFullYear() ? label : `${label} ${yearOf(ym)}`;
-}
-
 export const MONTH_NAMES_SHORT = SHORT;
 
 /** "Jul 2025" */

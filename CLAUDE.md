@@ -320,7 +320,7 @@ src/
     knownStays.ts         Stays for suggestions: the stay guide + the sample place details; searchStays(query, tripPlace, limit, tripCountry)
     stayGuide.ts          Hand-picked well-known stays (~1,280 hotels, villas, B&Bs, hostels, lodges) in ~250 holiday areas, each with
                           the towns in it, so a trip's place finds its area. Add areas here; names must be real places
-    months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, shortMonth, monthYear) and days for exact dates (today,
+    months.ts             "YYYY-MM" helpers (currentMonth, addMonths, longMonth, monthYear) and days for exact dates (today,
                           nightsBetween, dayRange, daysInMonth, firstWeekday; tests/months.test.mjs)
     config.ts, supabase.ts, auth.tsx, authActions.ts, age.ts   Accounts (see below)
 supabase/migrations/      Database setup, as SQL files run in order (applied automatically on merge)

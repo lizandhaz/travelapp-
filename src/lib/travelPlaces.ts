@@ -32,7 +32,7 @@ export function wishPlaces(items: BoardItem[]): MapPlace[] {
 
 /** Your map's places, loaded each time the screen comes into view (for the full-screen map). */
 export function useTravelPlaces() {
-  const [data, setData] = useState<{ been: MapPlace[]; wish: MapPlace[]; countries: number } | null>(null);
+  const [data, setData] = useState<{ been: MapPlace[]; wish: MapPlace[]; countries: number; failed?: string } | null>(null);
   useFocusEffect(
     useCallback(() => {
       let active = true;
@@ -45,7 +45,8 @@ export function useTravelPlaces() {
             countries: countriesIn(trips),
           });
         })
-        .catch(() => active && setData({ been: [], wish: [], countries: 0 }));
+        // A failed load says so, rather than an empty map that looks like you've been nowhere (overnight audit).
+        .catch((e: Error) => active && setData({ been: [], wish: [], countries: 0, failed: e.message }));
       return () => {
         active = false;
       };

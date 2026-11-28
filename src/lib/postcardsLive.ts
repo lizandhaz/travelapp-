@@ -23,8 +23,10 @@ export type LivePostcard = {
 
 type Row = { kind: LivePostcard['kind']; actor_id: string; name: string; handle: string | null; avatar_path: string | null; trip_id: string | null; place: string | null; body: string | null; created_at: string };
 
-export async function fetchMyPostcards(): Promise<LivePostcard[]> {
+/** `strict` throws on a failed load (the Postcards page says so); otherwise it quietly returns none (the badge). */
+export async function fetchMyPostcards(strict = false): Promise<LivePostcard[]> {
   const { data, error } = await supabase.rpc('my_postcards');
+  if (error && strict) throw new Error(/network|fetch/i.test(error.message) ? 'Couldn’t connect. Check you’re online and try again.' : 'Couldn’t load your Postcards. Please try again.');
   if (error) return [];
   return ((data ?? []) as Row[]).map((r) => ({
     kind: r.kind,

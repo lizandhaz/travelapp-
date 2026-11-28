@@ -27,6 +27,9 @@ export default function Postcards() {
   const { session } = useAuth();
   const myId = session?.user.id ?? '';
   const [live, setLive] = useState<LivePostcard[] | null>(null);
+  // A failed load says so, instead of looking like nothing has happened yet (overnight audit).
+  const [failed, setFailed] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [requests, setRequests] = useState<FollowRow[]>([]);
   const [seenAt, setSeenAt] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -35,8 +38,16 @@ export default function Postcards() {
     useCallback(() => {
       let active = true;
       (async () => {
-        const [list, seen, follows] = await Promise.all([fetchMyPostcards(), fetchSeenAt(), fetchFollows().catch(() => null)]);
+        let loaded: [LivePostcard[], string | null, Awaited<ReturnType<typeof fetchFollows>> | null];
+        try {
+          loaded = await Promise.all([fetchMyPostcards(true), fetchSeenAt(), fetchFollows().catch(() => null)]);
+        } catch (e) {
+          if (active) setFailed(e instanceof Error ? e.message : 'Couldn’t load your Postcards. Please try again.');
+          return;
+        }
+        const [list, seen, follows] = loaded;
         if (!active) return;
+        setFailed(null);
         setLive(list);
         setSeenAt(seen);
         setRequests(follows?.requests ?? []);
@@ -45,7 +56,8 @@ export default function Postcards() {
       return () => {
         active = false;
       };
-    }, []),
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- `attempt` re-runs the load when you tap Try again
+    }, [attempt]),
   );
 
   async function answer(r: FollowRow, accept: boolean) {
@@ -101,7 +113,20 @@ export default function Postcards() {
 
       <SectionHeader>Your trips and followers</SectionHeader>
       <View style={{ paddingHorizontal: GUTTER }}>
-        {live == null ? (
+        {failed ? (
+          <Card style={{ padding: 16, gap: 10, alignItems: 'flex-start' }}>
+            <Text variant="bodySoft">{failed}</Text>
+            <Button
+              title="Try again"
+              kind="outline"
+              size="sm"
+              onPress={() => {
+                setFailed(null);
+                setAttempt((n) => n + 1);
+              }}
+            />
+          </Card>
+        ) : live == null ? (
           <ActivityIndicator color={colors.accent} />
         ) : activity.length === 0 ? (
           <Card style={{ padding: 16 }}>

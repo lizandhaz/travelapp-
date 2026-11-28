@@ -96,7 +96,7 @@ export default function You() {
       </View>
 
       <ProfileStats trips={list.length} countries={countries.length} onCountries={() => setShowCountries(true)} />
-      <CountriesSheet visible={showCountries} onClose={() => setShowCountries(false)} countries={countries} />
+      <CountriesSheet visible={showCountries} onClose={() => setShowCountries(false)} countries={countries} trips={list} />
       <TasteTags label="Your taste" tastes={taste.tastes} />
 
       {trips && <TravelMapCard been={been} wish={wish} countries={countries.length} />}

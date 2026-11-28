@@ -1,13 +1,14 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Modal, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { WantToGoButton } from '@/components/lists';
+import { BestTimeSection } from '@/components/BestTime';
 import { InviteSheet } from '@/components/InviteSheet';
 import { MonthPill } from '@/components/MonthPill';
 import { PhotoFill, PhotoTile, Shade } from '@/components/Photo';
-import { BestTimeChart, DoRow, EatRow, FriendName, FriendTripLink, MoreAbout, PlaceFacts, PlaceMapSection, SaidList, StayRow, YourScore } from '@/components/place';
+import { DoRow, EatRow, FriendName, FriendTripLink, MoreAbout, PlaceFacts, PlaceMapSection, SaidList, StayRow, YourScore, InviteRow } from '@/components/place';
 import { PhotoBadge, Row } from '@/components/cards';
 import { ScoreStamp } from '@/components/ScoreStamp';
 import { Text } from '@/components/Text';
@@ -34,6 +35,7 @@ export default function PlaceScreen() {
   const wish = useWantToGo({ name: place?.name ?? '', country, slug });
   const taste = useTaste();
   const [inviting, setInviting] = useState(false);
+  const [friendsOpen, setFriendsOpen] = useState(false);
   // Count this visit (and how long you stay) towards your matches when you leave the page.
   const placeName = place?.name ?? '';
   useFocusEffect(
@@ -72,6 +74,17 @@ export default function PlaceScreen() {
     personal ? taste.forItem({ slug, kind: 'Do', name: b.name, friends: '' }).score - taste.forItem({ slug, kind: 'Do', name: a.name, friends: '' }).score : 0,
   );
   const moreSaid = (detail?.said ?? []).filter((s) => !said.some((f) => f.who === s.who));
+  // Friends who've been, for the strip in the score card; the full reviews open in a sheet.
+  const goBack = wouldGoBack(slug, [...said.map((s) => s.who), ...moreSaid.map((s) => s.who)]);
+  const friendsHere =
+    said.length + moreSaid.length > 0
+      ? {
+          people: [...said.map((s) => ({ who: s.who, face: s.face, score: s.score, quote: s.quote })), ...moreSaid.map((s) => ({ who: s.who, face: s.face, score: s.score, quote: s.quote }))],
+          yes: goBack.yes,
+          answered: goBack.answered,
+          onOpen: () => setFriendsOpen(true),
+        }
+      : null;
   const h = appWidth() * 1.0;
 
   return (
@@ -97,7 +110,7 @@ export default function PlaceScreen() {
         </View>
       </View>
 
-      {!!result && <YourScore result={result} note={tasteNote(taste.profile, taste.usingFriends)} known={personal} />}
+      {!!result && <YourScore result={result} note={tasteNote(taste.profile, taste.usingFriends)} known={personal} friends={friendsHere} />}
       <Text variant="tiny" style={{ paddingHorizontal: GUTTER, marginTop: 8 }}>
         Example page: friends, scores and prices are made up while {APP_NAME} is in testing.
       </Text>
@@ -109,16 +122,7 @@ export default function PlaceScreen() {
       {/* Once it's on Want to go: invite people you'd go with. Only shown then (owner Nov 2026: the hidden line left a gap);
           it appears below the buttons, so the button you tapped never moves. */}
       {wish.ready && wish.saved && !!wish.itemId && (
-        <Pressable
-          onPress={() => setInviting(true)}
-          accessibilityRole="button"
-          accessibilityLabel={`Invite people to go to ${place.name} with you`}
-          style={{ paddingHorizontal: GUTTER, marginTop: 8 }}
-        >
-          <Text variant="small" style={{ color: colors.accentText }}>
-            On your Want to go. Going with someone? <Text variant="small" style={{ color: colors.accentText, fontFamily: fonts.sansSemiBold }}>Invite them →</Text>
-          </Text>
-        </Pressable>
+        <InviteRow place={place.name} onInvite={() => setInviting(true)} />
       )}
       {inviting && !!wish.itemId && <InviteSheet itemId={wish.itemId} place={place.name} visible onClose={() => setInviting(false)} onDone={() => setInviting(false)} />}
       {!!wish.error && (
@@ -137,11 +141,25 @@ export default function PlaceScreen() {
 
       <PlaceMapSection slug={slug} name={place.name} />
 
-      {detail && <BestTimeChart detail={detail} />}
+      {detail && detail.bestMonths.length > 0 && (
+        <View style={{ marginTop: 40 }}>
+          <SectionHeader>Best time to go</SectionHeader>
+          <BestTimeSection detail={detail} />
+        </View>
+      )}
 
-      {(said.length > 0 || moreSaid.length > 0) && (
-        <View style={{ marginTop: 28 }}>
-          <SectionHeader>What friends said</SectionHeader>
+      {/* Every friend's review, opened from the friends strip in the score card (owner, Nov 2026). */}
+      <Modal visible={friendsOpen} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setFriendsOpen(false)}>
+        <View style={{ flex: 1, backgroundColor: colors.bg }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: GUTTER, paddingTop: 18, paddingBottom: 12 }}>
+            <Text variant="heading" accessibilityRole="header">
+              What friends said
+            </Text>
+            <Pressable onPress={() => setFriendsOpen(false)} accessibilityRole="button" accessibilityLabel="Close" hitSlop={12}>
+              <Text variant="link">Close</Text>
+            </Pressable>
+          </View>
+          <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
           {(() => {
             const g = wouldGoBack(slug, [...said.map((s) => s.who), ...moreSaid.map((s) => s.who)]);
             return g.answered > 0 ? (
@@ -177,13 +195,14 @@ export default function PlaceScreen() {
               <SaidList items={moreSaid} slug={slug} />
             </View>
           )}
+          </ScrollView>
         </View>
-      )}
+      </Modal>
 
       {stays.length > 0 && <StayRow stays={stays} at={{ name: place.name, country, slug }} />}
 
       {!detail && ideas.length > 0 && (
-        <View style={{ marginTop: 28 }}>
+        <View style={{ marginTop: 40 }}>
           <SectionHeader>Things friends loved here</SectionHeader>
           <Row gap={14}>
             {ideas.map((i) => (

@@ -1,8 +1,6 @@
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
-import { Dimensions, Modal, Pressable, ScrollView, View, type GestureResponderEvent } from 'react-native';
-import { GestureDetector, usePanGesture, useSimultaneousGestures, useTapGesture } from 'react-native-gesture-handler';
-import Svg, { Circle, Defs, Line, LinearGradient, Path, Rect, Stop, Text as SvgText } from 'react-native-svg';
+import { Dimensions, Modal, Pressable, ScrollView, StyleSheet, View, type GestureResponderEvent } from 'react-native';
 
 import { colors, fonts, GUTTER, radius, MAX_WIDTH } from '@/constants/theme';
 import type { PlaceResult } from '@/lib/match';
@@ -23,9 +21,6 @@ import { Card, Input, SectionHeader, useScrollLock } from './ui';
 import { AreaMap } from './AreaMap';
 import { BedIcon, BookmarkIcon, ForkIcon } from './Icons';
 
-const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
-const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const CROWD_WORDS = ['', 'quiet', 'busy', 'very busy'];
 
 /** Soft tint of a theme colour (e.g. sage at 35%). */
 const tint = (hex: string, alpha: number) =>
@@ -79,171 +74,6 @@ export function PlaceFacts({ detail }: { detail: PlaceDetail }) {
   );
 }
 
-/** Average temperature for each month as bars, best months in olive, the rest misty sky, and how busy it gets. */
-export function BestTimeChart({ detail }: { detail: PlaceDetail }) {
-  const temps = detail.temps;
-  const best = new Set(detail.bestMonths);
-  const [chosen, setChosen] = useState<number>(detail.bestMonths[0] ?? 6);
-  const [w, setW] = useState(0);
-  const [sliding, setSliding] = useState(false);
-  // Slide a finger across the chart (or tap it) and it follows you month by month (owner, Nov 2026: "I don't want it
-  // static"). The phone's own gestures: a sideways drag takes over, an up-or-down drag is left to the page so it scrolls.
-  const pickAt = (x: number) => setChosen(Math.min(11, Math.max(0, Math.floor((x / Math.max(1, w)) * 12))));
-  const pan = usePanGesture({
-    runOnJS: true,
-    activeOffsetX: [-6, 6],
-    failOffsetY: [-12, 12],
-    onActivate: (e) => {
-      setSliding(true);
-      pickAt(e.x);
-    },
-    onUpdate: (e) => pickAt(e.x),
-    onFinalize: () => setSliding(false),
-  });
-  const tap = useTapGesture({ runOnJS: true, onActivate: (e) => pickAt(e.x) });
-  const touch = useSimultaneousGestures(pan, tap);
-  if (!temps) return null;
-
-  // A soft curve through the monthly highs (owner, Nov 2026: "as aesthetic as possible"): best months shaded behind it,
-  // one dot per month, and the month you tap picked out with its temperature, crowds and whether it's a best month.
-  const H = 92;
-  const PAD = 18; // room above the curve for the picked month's temperature
-  const lo = Math.min(...temps) - 2;
-  const hi = Math.max(...temps) + 1;
-  const col = w / 12;
-  const x = (i: number) => col * i + col / 2;
-  const y = (t: number) => PAD + (1 - (t - lo) / Math.max(1, hi - lo)) * (H - PAD - 8);
-  const pts = temps.map((t, i) => [x(i), y(t)] as const);
-  // Catmull-Rom → cubic Bézier for a smooth line.
-  let line = `M ${pts[0][0]} ${pts[0][1]}`;
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[Math.max(0, i - 1)];
-    const p1 = pts[i];
-    const p2 = pts[i + 1];
-    const p3 = pts[Math.min(pts.length - 1, i + 2)];
-    line += ` C ${p1[0] + (p2[0] - p0[0]) / 6} ${p1[1] + (p2[1] - p0[1]) / 6}, ${p2[0] - (p3[0] - p1[0]) / 6} ${p2[1] - (p3[1] - p1[1]) / 6}, ${p2[0]} ${p2[1]}`;
-  }
-  const area = `${line} L ${pts[11][0]} ${H} L ${pts[0][0]} ${H} Z`;
-  const crowd = detail.crowds;
-  const summary =
-    `Average daytime highs: ${temps.map((t, i) => `${MONTH_NAMES[i]} ${t}°C`).join(', ')}.` +
-    (best.size ? ` Best months: ${[...best].map((m) => MONTH_NAMES[m]).join(', ')}.` : '') +
-    (crowd ? ` Crowds: ${crowd.map((c, i) => `${MONTH_NAMES[i]} ${CROWD_WORDS[c]}`).join(', ')}.` : '');
-
-  return (
-    <View style={{ marginTop: 28 }}>
-      <SectionHeader>Best time to go</SectionHeader>
-      <Card tone="cream" style={{ marginHorizontal: GUTTER, paddingHorizontal: 16, paddingTop: 16, paddingBottom: 14, gap: 12 }}>
-        {/* The month you've picked. */}
-        <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }} accessibilityLiveRegion="polite">
-          <View>
-            <Text style={{ fontFamily: fonts.displayItalic, fontSize: 24, lineHeight: 30, color: colors.ink }}>{LONG_MONTHS[chosen]}</Text>
-            <View style={{ flexDirection: 'row', gap: 6, marginTop: 4, flexWrap: 'wrap' }}>
-              {crowd && <MiniPill text={CROWD_LABELS[crowd[chosen]]} bg={[colors.card, colors.sageSoft, colors.blushSoft, colors.blushSoft][crowd[chosen]]} color={crowd[chosen] === 3 ? colors.accentText : colors.ink} />}
-              {best.has(chosen) && <MiniPill text="✦ Best month" bg={colors.sageSoft} color={colors.olive} />}
-            </View>
-          </View>
-          <View style={{ alignItems: 'flex-end' }}>
-            <Text style={{ fontFamily: fonts.display, fontSize: 34, lineHeight: 40, color: colors.ink }}>
-              {temps[chosen]}
-              <Text style={{ fontFamily: fonts.displayRegular, fontSize: 18, color: colors.muted }}>°C</Text>
-            </Text>
-            <Text variant="tiny">Average daytime high</Text>
-          </View>
-        </View>
-
-        {/* The chart and the months are one area you slide across (or tap). Its children don't take touches, so the
-            finger's position is always measured across the whole width. */}
-        <GestureDetector gesture={touch}>
-        <View
-          accessible
-          accessibilityRole="adjustable"
-          accessibilityLabel={`Best time to go. ${summary}`}
-          accessibilityValue={{ text: `${LONG_MONTHS[chosen]}, ${temps[chosen]} degrees${crowd ? `, ${CROWD_WORDS[crowd[chosen]]}` : ''}${best.has(chosen) ? ', a best month' : ''}` }}
-          accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
-          onAccessibilityAction={(ev) => setChosen((c) => Math.min(11, Math.max(0, c + (ev.nativeEvent.actionName === 'increment' ? 1 : -1))))}
-          onLayout={(ev) => setW(ev.nativeEvent.layout.width)}
-          style={{ gap: 10 }}
-        >
-          <View pointerEvents="none" style={{ height: H }}>
-            {w > 0 && (
-              <Svg width={w} height={H}>
-                <Defs>
-                  <LinearGradient id="warm" x1="0" y1="0" x2="0" y2="1">
-                    <Stop offset="0" stopColor={colors.accent} stopOpacity={0.28} />
-                    <Stop offset="1" stopColor={colors.accent} stopOpacity={0} />
-                  </LinearGradient>
-                </Defs>
-                {bestRuns(detail.bestMonths).map(([a, b]) => (
-                  <Rect key={a} x={col * a + 2} y={0} width={col * (b - a + 1) - 4} height={H} rx={10} fill={colors.sageSoft} />
-                ))}
-                <Path d={area} fill="url(#warm)" />
-                <Path d={line} stroke={colors.accent} strokeWidth={2} fill="none" strokeLinecap="round" />
-                {/* A guide line down from the month you're on, and its temperature above the dot. */}
-                <Line x1={x(chosen)} y1={pts[chosen][1] + 6} x2={x(chosen)} y2={H} stroke={colors.ink} strokeOpacity={sliding ? 0.35 : 0.18} strokeWidth={1} strokeDasharray="3 3" />
-                {pts.map(([px, py], i) => (
-                  <Circle key={i} cx={px} cy={py} r={i === chosen ? (sliding ? 7 : 5.5) : 2.5} fill={i === chosen ? colors.card : colors.accent} stroke={colors.accent} strokeWidth={i === chosen ? 2.5 : 0} />
-                ))}
-                <SvgText x={Math.min(w - 14, Math.max(14, x(chosen)))} y={Math.max(11, pts[chosen][1] - 11)} fontSize={11} fontFamily={fonts.sansSemiBold} fill={colors.ink} textAnchor="middle">
-                  {`${temps[chosen]}°`}
-                </SvgText>
-              </Svg>
-            )}
-          </View>
-
-          <View pointerEvents="none" style={{ flexDirection: 'row' }}>
-            {MONTH_LETTERS.map((m, i) => (
-              <View key={i} style={{ flex: 1, alignItems: 'center', gap: 5 }}>
-                <View style={{ width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: chosen === i ? colors.ink : 'transparent' }}>
-                  <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, color: chosen === i ? colors.onDark : best.has(i) ? colors.olive : colors.muted }}>{m}</Text>
-                </View>
-                {crowd && <View style={{ width: '70%', height: chosen === i ? 6 : 4, borderRadius: 3, backgroundColor: CROWD_FILL[crowd[i]] }} />}
-              </View>
-            ))}
-          </View>
-        </View>
-        </GestureDetector>
-        {crowd && (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <Text variant="tiny">Crowds</Text>
-            {[1, 2, 3].map((c) => (
-              <View key={c} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                <View style={{ width: 12, height: 4, borderRadius: 2, backgroundColor: CROWD_FILL[c] }} />
-                <Text variant="tiny">{CROWD_LABELS[c]}</Text>
-              </View>
-            ))}
-            <Text variant="tiny" style={{ marginLeft: 'auto', color: colors.accentText }}>
-              Slide to explore ↔
-            </Text>
-          </View>
-        )}
-      </Card>
-    </View>
-  );
-}
-
-const LONG_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const CROWD_LABELS = ['', 'Quiet', 'Busy', 'Very busy'];
-const CROWD_FILL = ['transparent', colors.sage, colors.stamp, colors.accent];
-
-/** Best months as runs of neighbouring months ([5, 6, 8] → [[5, 6], [8, 8]]), so they shade as one band each. */
-function bestRuns(months: number[]): [number, number][] {
-  const runs: [number, number][] = [];
-  for (const m of [...months].sort((a, b) => a - b)) {
-    const last = runs[runs.length - 1];
-    if (last && m === last[1] + 1) last[1] = m;
-    else runs.push([m, m]);
-  }
-  return runs;
-}
-
-function MiniPill({ text, bg, color = colors.ink }: { text: string; bg: string; color?: string }) {
-  return (
-    <View style={{ backgroundColor: bg, borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 3 }}>
-      <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 11, lineHeight: 14, color }}>{text}</Text>
-    </View>
-  );
-}
 
 /** Short "what friends said" rows (name, month, quote, score). */
 /** A friend's face and name; taps through to their profile when they have one. */
@@ -402,7 +232,7 @@ export function StayRow({ stays, at }: { stays: PlaceDetail['stays']; at?: SpotP
   const known = prices.filter((p): p is number => p != null);
   const shown = stays.filter((s, i) => maxPrice == null || (prices[i] != null && prices[i]! <= maxPrice));
   return (
-    <View style={{ marginTop: 28 }}>
+    <View style={{ marginTop: 40 }}>
       <SectionHeader>Where to stay</SectionHeader>
       {new Set(known).size >= 2 && <PriceSlider prices={known} value={maxPrice} onChange={setMaxPrice} shown={shown.length} />}
       {shown.length === 0 ? (
@@ -552,7 +382,7 @@ function WithSave({ at, name, kind, onDark = false, children }: { at?: SpotPlace
 /** Where to eat: soft cards with what to order, price and your score (no photos until friends add them). */
 export function EatRow({ eats, at }: { eats: PlaceDetail['eats']; at?: SpotPlace }) {
   return (
-    <View style={{ marginTop: 28 }}>
+    <View style={{ marginTop: 40 }}>
       <SectionHeader>Where to eat</SectionHeader>
       <Pinboard
         items={eats.map((e, i) => (
@@ -579,7 +409,7 @@ export function EatRow({ eats, at }: { eats: PlaceDetail['eats']; at?: SpotPlace
 /** Things to do. A hidden gem gets the navy card. */
 export function DoRow({ dos, at }: { dos: PlaceDetail['dos']; at?: SpotPlace }) {
   return (
-    <View style={{ marginTop: 28 }}>
+    <View style={{ marginTop: 40 }}>
       <SectionHeader>Things to do</SectionHeader>
       <Row gap={12}>
         {dos.map((d) => (
@@ -641,7 +471,7 @@ export function MoreAbout({ name, detail, eat, todo }: { name: string; detail: P
           {eat}
           {todo}
           {detail.tips.length > 0 && (
-            <View style={{ marginTop: 22 }}>
+            <View style={{ marginTop: 28 }}>
               <SectionHeader>Top tips</SectionHeader>
               <View style={{ paddingHorizontal: GUTTER, gap: 10 }}>
                 {detail.tips.map((t, i) => (
@@ -672,15 +502,103 @@ export function MoreAbout({ name, detail, eat, todo }: { name: string; detail: P
  * Your score card on a place page: the score, a word, why, and a
  * "How we worked this out" breakdown (lib/match.ts).
  */
-export function YourScore({ result, note, known = true }: { result: PlaceResult; note: string; /** False until we know anything about your taste. */ known?: boolean }) {
+/** Friends who've been, for the score card's friends strip: who, their face, score and a short quote. */
+export type FriendsAtPlace = {
+  people: { who: string; face: PlaceDetail['said'][number]['face']; score: number | null; quote: string | null }[];
+  /** "1 of 1 friend would go back". */
+  yes: number;
+  answered: number;
+  onOpen: () => void;
+};
+
+/**
+ * Under the buttons once a place is on Want to go (owner, Nov 2026: "a small, polished row, not a line of coloured text"):
+ * two empty avatar circles, "Going with someone?" and a small Invite button, on one line even on small phones.
+ */
+export function InviteRow({ place, onInvite }: { place: string; onInvite: () => void }) {
+  return (
+    <Pressable
+      onPress={onInvite}
+      accessibilityRole="button"
+      accessibilityLabel={`Going with someone? Invite people to ${place} with you`}
+      style={({ pressed }) => ({ marginHorizontal: GUTTER, marginTop: 12, flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: 12, paddingRight: 8, paddingVertical: 8, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.line, backgroundColor: pressed ? colors.card : colors.bg })}
+    >
+      <View style={{ flexDirection: 'row' }} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+        {[0, 1].map((i) => (
+          <View key={i} style={{ width: 26, height: 26, borderRadius: 13, marginLeft: i ? -8 : 0, borderWidth: 1.5, borderStyle: 'dashed', borderColor: colors.sage, backgroundColor: colors.bg, alignItems: 'center', justifyContent: 'center' }}>
+            {i === 1 && <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 14, lineHeight: 16, color: colors.olive }}>+</Text>}
+          </View>
+        ))}
+      </View>
+      <Text variant="small" style={{ flex: 1, color: colors.ink }} numberOfLines={1}>
+        Going with someone?
+      </Text>
+      <View style={{ borderRadius: radius.pill, borderWidth: 1, borderColor: colors.action, paddingHorizontal: 14, paddingVertical: 6 }}>
+        <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 13, lineHeight: 16, color: colors.action }}>Invite</Text>
+      </View>
+    </Pressable>
+  );
+}
+
+/**
+ * What friends said, inside the score card (owner, Nov 2026: "one of the most important things on the page"): their
+ * faces, the score ("Sam gave it 8.8", or the average of several), one short quote and how many would go back. Tap it
+ * for every friend's review.
+ */
+function FriendsStrip({ friends }: { friends: FriendsAtPlace }) {
+  const { people } = friends;
+  const scored = people.filter((p) => p.score != null);
+  const avg = scored.length ? scored.reduce((s, p) => s + p.score!, 0) / scored.length : null;
+  const headline =
+    people.length === 1
+      ? `${people[0].who}${people[0].score != null ? ` gave it ${formatScore(people[0].score)}` : ' has been'}`
+      : `${people.length} friends${avg != null ? ` · average ${formatScore(avg)}` : ' have been'}`;
+  const quote = people.find((p) => p.quote)?.quote?.replace(/^[“"]+|[”"]+$/g, '') ?? null;
+  return (
+    <Pressable
+      onPress={friends.onOpen}
+      accessibilityRole="button"
+      accessibilityLabel={`${headline}.${quote ? ` “${quote}”.` : ''}${friends.answered ? ` ${friends.yes} of ${friends.answered} would go back.` : ''} See what friends said`}
+      style={({ pressed }) => ({ borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line, paddingTop: 14, gap: 8, opacity: pressed ? 0.7 : 1 })}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+        <View style={{ flexDirection: 'row' }}>
+          {people.slice(0, 3).map((p, i) => (
+            <View key={p.who} style={{ marginLeft: i ? -10 : 0, borderRadius: 16, borderWidth: 2, borderColor: colors.cream }}>
+              <Avatar face={p.face} name={p.who} size={28} />
+            </View>
+          ))}
+        </View>
+        <Text variant="strong" style={{ flex: 1 }} numberOfLines={1}>
+          {headline}
+        </Text>
+        <Text variant="link">See all</Text>
+      </View>
+      {!!quote && (
+        <Text numberOfLines={2} style={{ fontFamily: fonts.displayItalic, fontSize: 16, lineHeight: 22, color: colors.ink }}>
+          “{quote}”
+        </Text>
+      )}
+      {friends.answered > 0 && (
+        <Text variant="small" style={{ color: colors.olive, fontFamily: fonts.sansSemiBold }}>
+          ↺ {friends.yes} of {friends.answered} {friends.answered === 1 ? 'friend' : 'friends'} would go back
+        </Text>
+      )}
+    </Pressable>
+  );
+}
+
+export function YourScore({ result, note, known = true, friends }: { result: PlaceResult; note: string; /** False until we know anything about your taste. */ known?: boolean; friends?: FriendsAtPlace | null }) {
   const [open, setOpen] = useState(false);
+  // With friends shown below, "Sam gave it 8.8" isn't repeated in the reasons.
+  const reasons = result.reasons.filter((r) => !r.startsWith('You gave') && !(friends?.people.length && friends.people.some((p) => r.startsWith(`${p.who} gave it`))));
   const b = result.breakdown;
   const from =
     b.baseFrom === 'nobody yet'
       ? 'No ratings yet, so we start from 7.0'
       : `Rated ${b.base.toFixed(1)} by ${b.baseFrom === 'everyone' ? 'everyone' : b.baseFrom === 'friends' ? `${b.friendsCount} ${b.friendsCount === 1 ? 'friend' : 'friends'}` : `everyone and ${b.friendsCount} ${b.friendsCount === 1 ? 'friend' : 'friends'}`}`;
   return (
-    <Card tone="cream" style={{ marginHorizontal: GUTTER, marginTop: -30, padding: 14, gap: 12 }}>
+    <Card tone="cream" style={{ marginHorizontal: GUTTER, marginTop: -30, padding: 18, gap: 14 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
         <ScoreStamp score={result.score} size="md" label={result.yours != null ? 'Your rating' : 'Your score'} />
         <View style={{ flex: 1 }}>
@@ -690,17 +608,16 @@ export function YourScore({ result, note, known = true }: { result: PlaceResult;
           <Text variant="small">{result.yours != null ? 'You’ve been. This is the score you gave it.' : known ? 'Worked out for you' : 'Popular with travellers. Add a trip or save places and it becomes yours.'}</Text>
         </View>
       </View>
-      {result.reasons.filter((r) => !r.startsWith('You gave')).length > 0 && (
-        <View style={{ gap: 4 }}>
-          {result.reasons
-            .filter((r) => !r.startsWith('You gave'))
-            .map((r) => (
-              <Text key={r} variant="small" style={{ color: colors.ink }}>
-                ✦ {r}
-              </Text>
-            ))}
+      {reasons.length > 0 && (
+        <View style={{ gap: 6 }}>
+          {reasons.map((r) => (
+            <Text key={r} variant="small" style={{ color: colors.ink }}>
+              ✦ {r}
+            </Text>
+          ))}
         </View>
       )}
+      {!!friends?.people.length && <FriendsStrip friends={friends} />}
       <Pressable onPress={() => setOpen((o) => !o)} accessibilityRole="button" accessibilityState={{ expanded: open }} hitSlop={6}>
         <Text variant="link">{open ? 'Hide how we worked this out' : 'How we worked this out'}</Text>
       </Pressable>
@@ -727,6 +644,18 @@ export function YourScore({ result, note, known = true }: { result: PlaceResult;
 }
 
 const PIN_COLOURS: Record<string, string> = { Stay: colors.olive, Eat: colors.accent, Do: colors.ink, 'Hidden gem': colors.gold };
+
+/** A section heading in the map's key: the pins' colour and the label ("● WHERE TO EAT"). */
+function KeyDot({ colour, label }: { colour: string; label: string }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+      <View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: colour }} />
+      <Text variant="label" style={{ color: colors.ink }}>
+        {label}
+      </Text>
+    </View>
+  );
+}
 /** The map key's sections, in order (hidden gems sit with things to do). */
 const MAP_SECTIONS = [
   { kind: 'Stay', label: 'Where to stay' },
@@ -751,6 +680,7 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
   const [picked, setPicked] = useState<number | null>(null);
   // Tapped on the map (details open under the map) or in the list (details open in the list).
   const [fromMap, setFromMap] = useState(false);
+  const [shownAll, setShownAll] = useState<Set<string>>(() => new Set());
   const [typed, setTyped] = useState('');
   const [focus, setFocus] = useState<{ n: number | null; zoom: number; key: number }>({ n: null, zoom: fill, key: 0 });
   const [lastStay, setLastStay] = useState<number | null>(null);
@@ -813,23 +743,24 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
         accessibilityRole="button"
         accessibilityState={{ expanded: on }}
         accessibilityLabel={`${s.n}. ${s.name}, ${s.kind}${extra ? `, ${extra}` : ''}, ${formatScore(s.score)} out of 10${s.n === top ? ', top pick for you' : ''}`}
-        style={{ paddingVertical: 8, gap: 6 }}
+        style={{ paddingVertical: 10, gap: 6 }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: PIN_COLOURS[s.kind] ?? colors.ink, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: PIN_COLOURS[s.kind] ?? colors.ink, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontFamily: fonts.sansBold, fontSize: 11, lineHeight: 13, color: colors.onDark }}>{s.n}</Text>
           </View>
-          <View style={{ flex: 1 }}>
-            <Text variant="strong" numberOfLines={1} style={{ fontSize: 14 }}>
+          {/* The name leads; a small line only when it adds something (owner, Nov 2026: "Eat" under every restaurant
+              in "Where to eat" said nothing new); the score sits quietly on the right. */}
+          <View style={{ flex: 1, gap: 1 }}>
+            <Text variant="strong" numberOfLines={1} style={{ fontSize: 15 }}>
               {s.name}
             </Text>
-            <Text variant="tiny">
-              {extra ? `${extra} · ` : ''}
-              {s.kind}
-              {s.n === top ? ' · ✦ Top pick for you' : ''}
-            </Text>
+            {(() => {
+              const sub = [extra, s.kind === 'Hidden gem' ? 'Hidden gem' : null, s.n === top ? '✦ Top pick for you' : null].filter(Boolean).join(' · ');
+              return sub ? <Text style={{ fontFamily: fonts.sans, fontSize: 13, lineHeight: 17, color: colors.muted }}>{sub}</Text> : null;
+            })()}
           </View>
-          <Text style={{ fontFamily: fonts.display, fontSize: 18, color: colors.ink, fontVariant: ['tabular-nums'] }}>{formatScore(s.score)}</Text>
+          <Text style={{ fontFamily: fonts.sansMedium, fontSize: 14, color: colors.muted, fontVariant: ['tabular-nums'] }}>{formatScore(s.score)}</Text>
         </View>
         {on && !fromMap && (
           <View style={{ marginLeft: 32, gap: 2 }}>
@@ -908,17 +839,34 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
     </View>
   );
 
+  // Each section starts with its best three and "See all" (owner, Nov 2026: long cards were hard to read). A spot you
+  // picked on the map always shows. Each heading has the colour of its pins, so the numbers' colours explain themselves.
   const key = (
-    <View style={{ gap: 2 }}>
-      {MAP_SECTIONS.map((sec) => {
+    <View style={{ gap: 4 }}>
+      {MAP_SECTIONS.map((sec, si) => {
         const inSection = spots.filter((s) => s.section === sec.kind);
         if (!inSection.length) return null;
+        const all = shownAll.has(sec.kind);
+        const visible = inSection.filter((s, i) => all || i < 3 || s.n === picked);
+        const gems = sec.kind === 'Do' && inSection.some((s) => s.kind === 'Hidden gem');
         return (
-          <View key={sec.kind} style={{ paddingTop: 8 }}>
-            <Text variant="label" style={{ fontSize: 10 }}>
-              {sec.label}
-            </Text>
-            {inSection.map((s) => row(s))}
+          <View key={sec.kind} style={{ paddingTop: si ? 16 : 4, borderTopWidth: si ? StyleSheet.hairlineWidth : 0, borderTopColor: colors.line, marginTop: si ? 6 : 0 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 2 }}>
+              <KeyDot colour={PIN_COLOURS[sec.kind]} label={sec.label} />
+              {gems && <KeyDot colour={PIN_COLOURS['Hidden gem']} label="Hidden gem" />}
+            </View>
+            {visible.map((s) => row(s))}
+            {inSection.length > 3 && (
+              <Pressable
+                onPress={() => setShownAll((prev) => { const next = new Set(prev); if (all) next.delete(sec.kind); else next.add(sec.kind); return next; })}
+                accessibilityRole="button"
+                accessibilityLabel={all ? `Show fewer: ${sec.label}` : `See all ${inSection.length}: ${sec.label}`}
+                hitSlop={8}
+                style={{ paddingVertical: 8 }}
+              >
+                <Text variant="link">{all ? 'Show fewer' : `See all ${inSection.length}`}</Text>
+              </Pressable>
+            )}
           </View>
         );
       })}
@@ -926,7 +874,7 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
   );
 
   return (
-    <View style={{ marginTop: 28 }}>
+    <View style={{ marginTop: 40 }}>
       <SectionHeader action="Full screen" onAction={() => setOpen(true)}>
         On the map
       </SectionHeader>
@@ -946,7 +894,7 @@ export function PlaceMapSection({ slug, name }: { slug: string; name: string }) 
           />
         )}
         {!open && panel}
-        <View style={{ paddingHorizontal: 14, paddingVertical: 6 }}>{key}</View>
+        <View style={{ paddingHorizontal: 18, paddingVertical: 14 }}>{key}</View>
       </Card>
 
       <Modal visible={open} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setOpen(false)}>

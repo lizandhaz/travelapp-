@@ -50,6 +50,10 @@ export const LockIcon = ({ color, size = 13, strokeWidth = 2 }: P) => (
 export const BackIcon = ({ color, size = 20, strokeWidth = 2 }: P) => (
   <Svg {...base(size)}><Path d="m15 5-7 7 7 7" {...line(color, strokeWidth)} /></Svg>
 );
+/** An ×: close (Add a trip). */
+export const CloseIcon = ({ color, size = 20, strokeWidth = 2 }: P) => (
+  <Svg {...base(size)}><Path d="M6 6l12 12M18 6 6 18" {...line(color, strokeWidth)} /></Svg>
+);
 export const ChevronIcon = ({ color, size = 16, strokeWidth = 2 }: P) => (
   <Svg {...base(size)}><Path d="m9 5 7 7-7 7" {...line(color, strokeWidth)} /></Svg>
 );

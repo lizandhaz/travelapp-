@@ -93,7 +93,7 @@ src/
     _layout.tsx           Fonts, AuthProvider, Stack + Stack.Protected (signed in / signed out)
     welcome.tsx           Signed out: wordmark, Corfu photo stamp (the owner's own photo), "Where your friends loved staying", Join / Log in
     signup.tsx, login.tsx Join (name, email, date of birth) / Log in (email), then the 6-digit code
-    (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You
+    (tabs)/_layout.tsx    Tab bar: Home, Explore, + (Add a trip), Saved, You. The + isn't a tab: a TabButton that pushes /add (owner Nov 2026)
     (tabs)/index.tsx      Home: wordmark + Find friends and Postcards buttons; "Top picks for you" (big photo stamps with your score, sideways;
                           no text under them); "Dip into collections" (Explore's collection tiles); "From your friends" (FeedCard: big photo
                           with who, when they posted, month, place and score, or for a post without photos a mini postcard on cream (owner's pick, Nov 2026: the place in italic, no "Greetings from" (owner: too cheesy)
@@ -103,7 +103,10 @@ src/
                           jumps down to it), "Find your next trip" collection tiles (24, each opens its collection, no counts),
                           Trending this month ("Made for your taste" was removed for now, owner Nov 2026; TasteCard/rows.taste stay),
                           and "Just for you": a long two-column photo feed (60 at a time, more as you scroll)
-    (tabs)/add.tsx        The "+": Add a trip (components/trip/TripForm)
+    add.tsx               Add a trip (components/trip/TripForm), a fullScreenModal stack screen sliding up over the tab you were on (owner Nov 2026),
+                          from the tab bar's + or a place page's "I've been" (?place=&country=). × top right goes back (router.back, or Home);
+                          with anything entered, the ×, Edit's back arrow and the phone's back all ask "Discard this trip?" (DiscardPrompt:
+                          Keep editing / Discard) via expo-router's usePreventRemove. After saving it's replaced by the new trip
     (tabs)/saved.tsx      Saved ("Your boards"; lists are called **boards** in the UI, owner Nov 2026, though the code and database still
                           say boards/lists): your Want to go board and your own boards ("Made by you", + New board), and
                           Friends' trips you've saved (SavedTripCard grid)
@@ -225,7 +228,12 @@ src/
                           "How was it?" on cream (big centred score + slider); "Add more (optional)" rows that open pages with a "Save …"
                           button: photos (up to 6, hold one then drag to reorder; screen readers get Move left/right/Make cover), note,
                           where you stayed (score optional), other places, best restaurants (several, up to 10), top tip; a "Just me" switch; Save
-    trip/PlacePicker.tsx  Search or type a place ("Sintra, Portugal" → name + country)
+    trip/PlacePicker.tsx  rankPlaces() (exact, starts-with, word, country; places with a page win ties) and the suggestion list (flag, name, country
+                          or "Country"; "Use '…'" for anything not in our list). PlacePicker: one place (boards). StopsPicker (owner Nov 2026): Add a
+                          trip's "Where did you go?": each pick becomes a chip (flag, name, country, ×; the first, sage, is the main place) and the box
+                          clears for the next stop (up to 10; Return adds the top suggestion). Replaced the "Other places on this trip" sheet;
+                          extra stops keep nights they were saved with
+    trip/CompanionPicker.tsx "Who did you go with?": 2 × 2 cards (emoji, name, a few words), chosen = sage fill + olive border + ✓, a small spring on press
     trip/StayPicker.tsx   "Where you stayed": opens with "Popular in <area>" for the trip's place (lib/stayGuide via lib/knownStays:
                           Santa Cruz de Tenerife → Tenerife → Bahía del Duque, Abama…), each letter narrows it, matches elsewhere after;
                           tap one to fill the name and kind, or keep typing your own

@@ -1,12 +1,13 @@
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
+import { usePreventRemove } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Switch, View } from 'react-native';
 
 import { AccentTitle } from '@/components/AccentTitle';
-import { BedIcon, BulbIcon, CalendarIcon, ChevronIcon, ForkIcon, ImageIcon, LockIcon, MoonIcon, NoteIcon, PeopleIcon, PinIcon, PlusIcon } from '@/components/Icons';
+import { BedIcon, BulbIcon, CalendarIcon, ChevronIcon, ForkIcon, ImageIcon, LockIcon, MoonIcon, NoteIcon, PeopleIcon, PlusIcon, CloseIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
-import { BackButton, Button, Card, Chip, ErrorNotice, Input, Notice, PageTitle, Screen } from '@/components/ui';
+import { BackButton, Button, Card, Chip, ErrorNotice, IconCircle, Input, Notice, PageTitle, Screen } from '@/components/ui';
 import { colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { currentMonth, dayRange, monthYear, nightsBetween, today } from '@/lib/months';
 import {
@@ -14,6 +15,7 @@ import {
   deleteTripPhotos,
   MAX_PHOTOS,
   fetchPlaces,
+  placeLabel,
   saveTrip,
   STAY_KINDS,
   uploadTripPhoto,
@@ -22,17 +24,18 @@ import {
   type StayKind,
   type Trip,
   type TripDates,
+  type TripStop,
   type TripInput,
   type Visibility,
 } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
 import { NightsPicker } from './NightsPicker';
-import { PlacePicker } from './PlacePicker';
+import { CompanionPicker } from './CompanionPicker';
+import { StopsPicker } from './PlacePicker';
 import { WhenPicker } from './WhenPicker';
 import { ScorePicker } from './ScorePicker';
 import { StayPicker } from './StayPicker';
 
-type ExtraStop = { key: number; place: Place | null; nights: string };
 
 /**
  * "Add a trip" (and editing a trip): the place, then the basics (when, how long, who with) in one card,
@@ -44,15 +47,23 @@ export function TripForm({
   startPlace,
   onSaved,
   back,
+  onClose,
 }: {
   initial?: Trip;
   /** Where you went, when coming from a place page's "I've been". */
   startPlace?: Place;
   onSaved: (id: string) => void;
   back?: boolean;
+  /** Shows the × top right (Add a trip). Leaving asks first if anything's been entered. */
+  onClose?: () => void;
 }) {
   const [places, setPlaces] = useState<Place[]>([]);
-  const [place, setPlace] = useState<Place | null>(initial?.stops[0] ?? startPlace ?? null);
+  // Every place on the trip, in order: the first is the main one, whose nights are "How long did you stay?"
+  // (owner, Nov 2026: one search that adds places as chips). Extra stops keep any nights they were saved with.
+  const [stops, setStops] = useState<TripStop[]>(() => initial?.stops ?? (startPlace ? [{ ...startPlace, nights: null }] : []));
+  const place = stops[0] ?? null;
+  const pickStops = (next: Place[]) =>
+    setStops((old) => next.map((p) => ({ ...p, nights: old.find((o) => placeLabel(o) === placeLabel(p))?.nights ?? null })));
   const [month, setMonth] = useState<string | null>(initial?.month ?? null);
   // Exact dates are optional (owner, Nov 2026); with them, the nights are worked out from the dates.
   const [dates, setDates] = useState<TripDates | null>(initial?.dates ?? null);
@@ -91,11 +102,6 @@ export function TripForm({
     }
   }
 
-  // Keys for extra-stop rows: existing stops use 1, 2, 3…; new rows count up from 100.
-  const nextKey = useRef(100);
-  const [extras, setExtras] = useState<ExtraStop[]>(() =>
-    (initial?.stops.slice(1) ?? []).map((s, i) => ({ key: i + 1, place: s, nights: s.nights ? String(s.nights) : '' })),
-  );
   const [stayName, setStayName] = useState(initial?.stay?.name ?? '');
   const [stayType, setStayType] = useState<StayKind | null>(initial?.stay?.type ?? null);
   const [stayScore, setStayScore] = useState<number | null>(initial?.stay?.score ?? null);
@@ -117,6 +123,17 @@ export function TripForm({
   const [saving, setSaving] = useState<false | 'trip' | { done: number; of: number }>(false);
   // An older trip saved before "How long did you stay?" was asked.
   const needsNights = !!initial && initial.stops[0]?.nights == null && nights == null;
+
+  // Leaving with something entered asks first (owner, Nov 2026: "Discard this trip?"): the ×, Edit's back arrow and
+  // the phone's back button all go through the same check. Unchanged from how it opened = nothing to lose.
+  const snapshot = JSON.stringify([
+    stops, month, dates, score, nights, visibility, companions, note, photos.map((p) => p.path ?? p.uri),
+    stayName, stayType, stayScore, stayAgain, goBack, restaurants.map((r) => r.name), tip,
+  ]);
+  const [opened] = useState(snapshot);
+  const [done, setDone] = useState(false);
+  const [discard, setDiscard] = useState<null | (() => void)>(null);
+  const allowLeave = usePreventRemove(snapshot !== opened && !done, ({ repeat }) => setDiscard(() => repeat));
 
   useEffect(() => {
     fetchPlaces().then(setPlaces);
@@ -141,12 +158,8 @@ export function TripForm({
     else if (nights < 1 || nights > 365) p.push('How long did you stay? 1 to 365 nights.');
     if (score == null) p.push('How was it? Slide to give it a score out of 10.');
 
-    const stops = extras.filter((e) => e.place?.name.trim());
-    stops.forEach((e) => {
-      if (e.nights && !/^\d+$/.test(e.nights)) p.push(`Nights in ${e.place!.name} should be a number.`);
-      else if (e.nights && (Number(e.nights) < 1 || Number(e.nights) > 365)) p.push(`Nights in ${e.place!.name} should be 1 to 365.`);
-    });
-    if (stops.length > 9) p.push('Up to 9 extra stops, please.');
+    if (stops.length > 10) p.push('Up to 10 places on one trip, please.');
+    if (stops.some((s) => s.name.trim().length > 80)) p.push('One of the place names is a bit long (80 characters at most).');
 
     const hasStay = !!(stayName.trim() || stayType || stayScore != null);
     if (hasStay) {
@@ -168,7 +181,7 @@ export function TripForm({
         visibility,
         stops: [
           { ...place!, nights: nights! },
-          ...stops.map((e) => ({ ...e.place!, nights: e.nights ? Number(e.nights) : null })),
+          ...stops.slice(1),
         ],
         stay: hasStay ? { name: stayName.trim(), type: stayType!, score: stayScore, wouldReturn: stayAgain } : null,
         wouldReturn: goBack,
@@ -206,6 +219,8 @@ export function TripForm({
       const id = await saveTrip(input);
       // Tidy up photos the trip no longer uses.
       await deleteTripPhotos((initial?.photoPaths ?? []).filter((p) => !paths.includes(p)));
+      setDone(true);
+      allowLeave();
       onSaved(id);
     } catch (e) {
       await deleteTripPhotos(uploaded);
@@ -254,24 +269,42 @@ export function TripForm({
     ) : null;
   const saveButton = <Button title={saveTitle} kind="accent" size="lg" onPress={save} disabled={!!saving} />;
 
-  const stopsCount = extras.filter((e) => e.place?.name.trim()).length;
   const named = restaurants.filter((r) => r.name.trim());
   const restSummary = named.length === 1 ? named[0].name.trim() : named.length > 1 ? `${named.length} restaurants` : undefined;
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <Screen tabBar={!back}>
+      <Screen>
         {back && (
           <View style={{ paddingHorizontal: GUTTER, paddingTop: 12 }}>
             <BackButton />
           </View>
         )}
+        {onClose && (
+          <View style={{ paddingHorizontal: GUTTER, paddingTop: 12, alignItems: 'flex-end' }}>
+            <IconCircle label="Close" onPress={onClose}>
+              <CloseIcon color={colors.ink} size={18} />
+            </IconCircle>
+          </View>
+        )}
+        <DiscardPrompt
+          visible={!!discard}
+          editing={!!initial}
+          onKeep={() => setDiscard(null)}
+          onDiscard={() => {
+            const leave = discard;
+            setDiscard(null);
+            setDone(true);
+            allowLeave();
+            leave?.();
+          }}
+        />
         <PageTitle label={initial ? 'Edit trip' : 'Add a trip'}>
           <AccentTitle before="Where did" accent="you" after="go?" />
         </PageTitle>
 
         <View style={{ paddingHorizontal: GUTTER, gap: 16 }}>
-          <PlacePicker value={place} onChange={setPlace} places={places} accessibilityLabel="Where did you go?" />
+          <StopsPicker value={stops} onChange={pickStops} places={places} />
 
           {/* The basics: when, how long, who with. */}
           <Group>
@@ -314,19 +347,14 @@ export function TripForm({
               onOpen={() => setSheet('who')}
               onClose={close}
             >
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                {COMPANIONS.map(([id, text]) => (
-                  <Chip
-                    key={id}
-                    label={text}
-                    selected={companions === id}
-                    onPress={() => {
-                      setCompanions(companions === id ? null : id);
-                      close();
-                    }}
-                  />
-                ))}
-              </View>
+              <CompanionPicker
+                value={companions}
+                onChange={(c) => {
+                  setCompanions(c);
+                  // A pick closes the page after the little press settles; clearing leaves it open.
+                  if (c) setTimeout(close, 220);
+                }}
+              />
             </SheetRow>
           </Group>
 
@@ -430,49 +458,6 @@ export function TripForm({
               </View>
               <ScorePicker value={stayScore} onChange={setStayScore} label="Stay score (optional)" compact />
               <YesNo question="Would you stay here again?" value={stayAgain} onChange={setStayAgain} />
-            </SheetRow>
-            <Divider />
-            <SheetRow
-              icon={<PinIcon color={colors.ink} />}
-              title="Other places on this trip"
-              summary={stopsCount ? `${stopsCount} ${stopsCount === 1 ? 'place' : 'places'}` : undefined}
-              open={sheet === 'places'}
-              onOpen={() => setSheet('places')}
-              onClose={close}
-              saveLabel="Save places"
-            >
-              {extras.map((e, i) => (
-                <View key={e.key} style={{ gap: 10, paddingBottom: 6 }}>
-                  <PlacePicker
-                    value={e.place}
-                    onChange={(p) => setExtras((xs) => xs.map((x) => (x.key === e.key ? { ...x, place: p } : x)))}
-                    places={places}
-                    placeholder="Another place"
-                    accessibilityLabel={`Extra stop ${i + 1}`}
-                  />
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                    <View style={{ width: 96 }}>
-                      <Input
-                        value={e.nights}
-                        onChangeText={(t) => setExtras((xs) => xs.map((x) => (x.key === e.key ? { ...x, nights: t.replace(/\D/g, '').slice(0, 3) } : x)))}
-                        keyboardType="number-pad"
-                        placeholder="0"
-                        accessibilityLabel={`Nights at extra stop ${i + 1}`}
-                        style={{ textAlign: 'center', paddingVertical: 11 }}
-                      />
-                    </View>
-                    <Text variant="small" style={{ flex: 1 }}>
-                      nights
-                    </Text>
-                    <Pressable accessibilityRole="button" accessibilityLabel={`Remove extra stop ${i + 1}`} onPress={() => setExtras((xs) => xs.filter((x) => x.key !== e.key))} hitSlop={8}>
-                      <Text variant="link">Remove</Text>
-                    </Pressable>
-                  </View>
-                </View>
-              ))}
-              {extras.length < 9 && (
-                <Button title="+ Add a place" kind="outline" onPress={() => setExtras((xs) => [...xs, { key: nextKey.current++, place: null, nights: '' }])} />
-              )}
             </SheetRow>
             <Divider />
             <SheetRow
@@ -806,5 +791,28 @@ function YesNo({ question, value, onChange }: { question: string; value: boolean
         <Chip label="No" selected={value === false} onPress={() => onChange(value === false ? null : false)} />
       </View>
     </View>
+  );
+}
+
+/**
+ * "Discard this trip?" (owner, Nov 2026), over the form when you try to leave with something entered:
+ * Keep editing (stays) or Discard (leaves, nothing saved). Its own small card, so it looks the same on every phone.
+ */
+function DiscardPrompt({ visible, editing, onKeep, onDiscard }: { visible: boolean; editing: boolean; onKeep: () => void; onDiscard: () => void }) {
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onKeep}>
+      <View style={{ flex: 1, backgroundColor: 'rgba(53,59,44,0.35)', alignItems: 'center', justifyContent: 'center', padding: GUTTER }}>
+        <View accessibilityViewIsModal style={{ width: '100%', maxWidth: 360, backgroundColor: colors.bg, borderRadius: radius.xl, padding: 22, gap: 6 }}>
+          <Text variant="heading" accessibilityRole="header">
+            {editing ? 'Discard your changes?' : 'Discard this trip?'}
+          </Text>
+          <Text variant="small">{editing ? 'Your trip stays as it was.' : 'What you’ve added so far won’t be saved.'}</Text>
+          <View style={{ flexDirection: 'row', gap: 10, marginTop: 14 }}>
+            <Button title="Keep editing" kind="outline" style={{ flex: 1 }} onPress={onKeep} />
+            <Button title="Discard" kind="accent" style={{ flex: 1 }} onPress={onDiscard} />
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 }

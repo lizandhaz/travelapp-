@@ -27,7 +27,7 @@ export default function Setup() {
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState(0);
   const [types, setTypes] = useState<string[]>([]);
-  const [who, setWho] = useState<Companions | null>(null);
+  const [who, setWho] = useState<Exclude<Companions, 'work'> | null>(null);
   const [marks, setMarks] = useState<Record<string, Mark>>({});
   const [saving, setSaving] = useState(false);
   const tiles = places.filter((p) => !!p.photo);
@@ -102,7 +102,8 @@ export default function Setup() {
         )}
         {step === 1 && (
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-            {COMPANIONS.map(([id, label]) => (
+            {/* Who you holiday with: work trips aren't a holiday style. */}
+            {COMPANIONS.filter((c): c is Exclude<(typeof COMPANIONS)[number], readonly ['work', string]> => c[0] !== 'work').map(([id, label]) => (
               <Chip key={id} label={label} selected={who === id} onPress={() => setWho(who === id ? null : id)} />
             ))}
           </View>

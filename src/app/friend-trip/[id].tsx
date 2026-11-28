@@ -18,6 +18,7 @@ import { placeDetails } from '@/lib/placeDetails';
 import { personHref } from '@/lib/samplePeople';
 import { companionsLabel, photoCount, tripPic, tripPlace } from '@/lib/friendTrips';
 import { useFriendTrip } from '@/lib/friendsFeed';
+import { TripPeople } from '@/components/TripPeople';
 import { scoreWord } from '@/lib/score';
 import NotFound from '../+not-found';
 
@@ -79,6 +80,7 @@ export default function FriendTripScreen() {
             {trip.wouldReturn != null && <Fact label="Go back?" value={trip.wouldReturn ? 'Yes' : 'No'} />}
           </View>
         )}
+        <TripPeople tripId={trip.id} />
         {!!trip.quote && <Text variant="quote">“{trip.quote}”</Text>}
         <TripActions id={trip.id} who={trip.who} place={trip.place} slug={trip.slug} country={trip.country} />
       </Card>

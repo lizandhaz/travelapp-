@@ -1,4 +1,4 @@
-import type { Companions } from './match';
+import type { Companions } from './trips';
 import { photos, type PhotoName } from './photos';
 import { placeDetails, type PlaceDetail } from './placeDetails';
 import { friendsFeed, getPlace } from './sample';
@@ -54,7 +54,7 @@ export const tripPlace = (t: { place: string }) => t.place.replace(/^The\s+/i, '
 
 /** "With friends", "On their own"… */
 export function companionsLabel(c: Companions): string {
-  return { solo: 'On their own', partner: 'With their partner', friends: 'With friends', family: 'With family' }[c];
+  return { solo: 'On their own', partner: 'With their partner', friends: 'With friends', family: 'With family', work: 'For work' }[c];
 }
 
 // Who they went with and how long for (sample).

@@ -75,7 +75,8 @@ async function loadSignals(): Promise<{ signals: Signal[]; settings: MatchSettin
         month: t.month,
         nights: s.nights,
         // Company and stay belong to the trip, so count them once (on the main place).
-        companions: i === 0 ? t.companions : null,
+        // A work trip says nothing about who you like to holiday with.
+        companions: i === 0 && t.companions !== 'work' ? t.companions : null,
         stay: i === 0 && t.stay && t.stay.score != null ? { type: t.stay.type, score: t.stay.score } : null,
         extraStop: i > 0,
       }),

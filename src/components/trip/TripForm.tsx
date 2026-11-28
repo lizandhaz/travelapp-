@@ -15,6 +15,7 @@ import {
   deleteTripPhotos,
   MAX_PHOTOS,
   fetchPlaces,
+  fetchTripPeople,
   placeLabel,
   saveTrip,
   STAY_KINDS,
@@ -30,7 +31,7 @@ import {
 } from '@/lib/trips';
 import { useTripPhoto } from '@/lib/useTripPhoto';
 import { NightsPicker } from './NightsPicker';
-import { CompanionPicker } from './CompanionPicker';
+import { CompanionPicker, TagFriends, type Tagged } from './CompanionPicker';
 import { StopsPicker } from './PlacePicker';
 import { WhenPicker } from './WhenPicker';
 import { ScorePicker } from './ScorePicker';
@@ -71,6 +72,13 @@ export function TripForm({
   const [nights, setNights] = useState<number | null>(initial?.stops[0]?.nights ?? null);
   const [visibility, setVisibility] = useState<Visibility>(initial?.visibility ?? 'friends');
   const [companions, setCompanions] = useState<Companions | null>(initial?.companions ?? null);
+  // Friends tagged on the trip (owner, Nov 2026). Loaded for an existing trip; only sent once you change them.
+  const [people, setPeople] = useState<Tagged[]>([]);
+  const [peopleTouched, setPeopleTouched] = useState(false);
+  const tagPeople = (next: Tagged[]) => {
+    setPeople(next);
+    setPeopleTouched(true);
+  };
   const [note, setNote] = useState(initial?.note ?? '');
   // Photos, in order (the first is the cover): ones already saved with the trip,
   // and newly picked ones, which are only uploaded when you save.
@@ -129,6 +137,7 @@ export function TripForm({
   const snapshot = JSON.stringify([
     stops, month, dates, score, nights, visibility, companions, note, photos.map((p) => p.path ?? p.uri),
     stayName, stayType, stayScore, stayAgain, goBack, restaurants.map((r) => r.name), tip,
+    peopleTouched ? people.map((p) => p.userId) : null,
   ]);
   const [opened] = useState(snapshot);
   const [done, setDone] = useState(false);
@@ -138,6 +147,15 @@ export function TripForm({
   useEffect(() => {
     fetchPlaces().then(setPlaces);
   }, []);
+  const tripId = initial?.id;
+  useEffect(() => {
+    if (!tripId) return;
+    let live = true;
+    fetchTripPeople(tripId).then((p) => live && setPeople(p.map(({ userId, name }) => ({ userId, name }))));
+    return () => {
+      live = false;
+    };
+  }, [tripId]);
 
   // The month and dates change together; exact dates also set the nights.
   const pickWhen = useCallback((m: string, d: TripDates | null) => {
@@ -188,6 +206,8 @@ export function TripForm({
         restaurants: restaurants.map((r) => r.name.trim()).filter(Boolean),
         tip: tip.trim() || null,
         companions,
+        // Solo means nobody tagged; otherwise send who's tagged only if it changed.
+        withPeople: companions === 'solo' && people.length ? [] : peopleTouched ? people.map((p) => p.userId) : undefined,
         note: note.trim() || null,
         photoPaths: [], // filled in by save() once new photos are uploaded
       },
@@ -342,7 +362,8 @@ export function TripForm({
             <SheetRow
               icon={<PeopleIcon color={colors.ink} />}
               title="Who did you go with?"
-              summary={companions ? COMPANIONS.find(([id]) => id === companions)?.[1] : undefined}
+              summary={companions ? [COMPANIONS.find(([id]) => id === companions)?.[1], people.length && companions !== 'solo' ? people.map((p) => p.name.split(' ')[0]).join(', ') : null].filter(Boolean).join(' · ') : undefined}
+              saveLabel="Done"
               open={sheet === 'who'}
               onOpen={() => setSheet('who')}
               onClose={close}
@@ -351,10 +372,11 @@ export function TripForm({
                 value={companions}
                 onChange={(c) => {
                   setCompanions(c);
-                  // A pick closes the page after the little press settles; clearing leaves it open.
-                  if (c) setTimeout(close, 220);
+                  // Solo closes the page after the little press settles; anyone else leaves it open to tag friends.
+                  if (c === 'solo') setTimeout(close, 220);
                 }}
               />
+              {!!companions && companions !== 'solo' && <TagFriends value={people} onChange={tagPeople} />}
             </SheetRow>
           </Group>
 

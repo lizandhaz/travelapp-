@@ -217,7 +217,10 @@ src/
     BestTime.tsx          "Best time to go" (owner Nov 2026: "understand it within 2 seconds"; chose the cleaner chart from three designs):
                           headline ("Best May, June and September") + one line ("25–26° by day · quietest in June"), the temperature line
                           only (no bands) with each month's dot coloured by its verdict (filled olive Best, sage Good, hollow Not ideal),
-                          crowds as 1–3 small dots under each month (terracotta when very busy), tap a month for one sentence, small key.
+                          crowds as 1–3 small dots under each month (terracotta when very busy), a sentence for the picked month, small key.
+                          Slide a finger along the chart or months (or tap) and it follows month by month (owner Nov 2026: "interactive like
+                          before"): react-native-gesture-handler's usePanGesture (activeOffsetX/failOffsetY, so up/down still scrolls the page) +
+                          useTapGesture, a smooth curve, a dashed guide and bigger dot at the picked month; screen readers swipe up/down by month
                           Uses lib/bestTime.ts: one verdict per month (Best; Good = a best month that's very busy; Not ideal),
                           bestSummary(), monthLine(); tests/bestTime.test.mjs
     AreaMap.tsx           The real map of a place (Apple Maps, mutedStandard; numbered pins (overlay buttons) with name labels always shown, starting fitted to all pins; `preview` = still, tap to

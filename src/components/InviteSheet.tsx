@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Modal, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Modal, Pressable, ScrollView, View, StyleSheet } from 'react-native';
 
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { shareWishItem } from '@/lib/boards';
@@ -46,8 +46,9 @@ export function InviteSheet({ itemId, place, visible, onClose, onDone, already =
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable onPress={onClose} accessibilityLabel="Close" style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'flex-end' }}>
-        <Pressable onPress={() => {}} style={{ backgroundColor: colors.bg, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: GUTTER, paddingBottom: 36, gap: 12, maxHeight: '80%' }}>
+      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+        <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="Close" style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.35)' }]} />
+        <View style={{ backgroundColor: colors.bg, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: GUTTER, paddingBottom: 36, gap: 12, maxHeight: '80%' }}>
           <Text variant="heading">Who do you want to go with?</Text>
           <Text variant="small">{place} goes on their Want to go too, with your names on it.</Text>
           {!people && !error ? (
@@ -96,8 +97,8 @@ export function InviteSheet({ itemId, place, visible, onClose, onDone, already =
             </Text>
           )}
           {!!people?.length && <Button title={busy ? 'Inviting…' : picked.length ? `Invite ${picked.length}` : 'Pick people'} disabled={busy || !picked.length} onPress={invite} />}
-        </Pressable>
-      </Pressable>
+        </View>
+      </View>
     </Modal>
   );
 }

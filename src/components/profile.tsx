@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { FlatList, Pressable, ScrollView, View } from 'react-native';
 
 import { appWidth, colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { tripPic, tripPlace, type FriendTrip } from '@/lib/friendTrips';
@@ -187,22 +187,34 @@ export function TripsSection<T>({
               </ScrollView>
             </View>
           )}
-          {/* A sideways row of postcards (owner, Nov 2026), each snapping into place, the next peeking in. */}
+          {/* A sideways row of postcards (owner, Nov 2026), each snapping into place, the next peeking in. Only the cards
+              near the screen are drawn (overnight audit), so a long trip history doesn't ask for every photo at once. */}
           <View style={{ marginHorizontal: -GUTTER }}>
-            <ScrollView
+            <FlatList
+              key={`${order}-${year ?? 'all'}`}
               horizontal
+              data={shown}
+              renderItem={({ item }) => render(item) as React.ReactElement}
+              keyExtractor={(item, i) => (item as { id?: string }).id ?? String(i)}
+              ItemSeparatorComponent={RowGap}
+              initialNumToRender={3}
+              maxToRenderPerBatch={3}
+              windowSize={5}
               showsHorizontalScrollIndicator={false}
               decelerationRate="fast"
               snapToInterval={profilePostcardWidth() + 14}
-              contentContainerStyle={{ gap: 14, paddingHorizontal: GUTTER, alignItems: 'flex-start' }}
-            >
-              {shown.map(render)}
-            </ScrollView>
+              contentContainerStyle={{ paddingHorizontal: GUTTER, alignItems: 'flex-start' }}
+            />
           </View>
         </View>
       )}
     </View>
   );
+}
+
+/** The space between postcards in the row. */
+function RowGap() {
+  return <View style={{ width: 14 }} />;
 }
 
 function YearChip({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {

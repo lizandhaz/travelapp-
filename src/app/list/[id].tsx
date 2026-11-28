@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LockIcon, PencilIcon, PlusIcon, ShareIcon } from '@/components/Icons';
@@ -245,8 +245,9 @@ export default function ListScreen() {
 
       {/* A place's saved hotels, restaurants and things to do */}
       <Modal visible={!!opened} transparent animationType="fade" onRequestClose={() => setOpened(null)}>
-        <Pressable onPress={() => setOpened(null)} accessibilityLabel="Close" style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'flex-end' }}>
-          <Pressable onPress={() => {}} style={{ backgroundColor: colors.bg, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: GUTTER, paddingBottom: 36, gap: 10 }}>
+        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+          <Pressable onPress={() => setOpened(null)} accessibilityRole="button" accessibilityLabel="Close" style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.35)' }]} />
+          <View style={{ backgroundColor: colors.bg, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: GUTTER, paddingBottom: 36, gap: 10 }}>
             {!!opened && (
               <>
                 <Text variant="heading">Saved in {opened.name}</Text>
@@ -268,8 +269,8 @@ export default function ListScreen() {
                 )}
               </>
             )}
-          </Pressable>
-        </Pressable>
+          </View>
+        </View>
       </Modal>
 
       {!!inviting && (

@@ -22,6 +22,11 @@ export async function getStartTaste(): Promise<StartTaste> {
   }
 }
 
+/** Forget the first-time setup answers on this phone (when an account is deleted). */
+export async function forgetStartTaste(): Promise<void> {
+  await AsyncStorage.removeItem(KEY).catch(() => {});
+}
+
 export async function saveStartTaste(t: StartTaste): Promise<void> {
   await AsyncStorage.setItem(KEY, JSON.stringify(t));
 }

@@ -14,6 +14,12 @@ export type PlaceView = { slug: string; name: string; country: string; views: nu
 const SETTING = 'use-views-for-matches';
 let enabled: boolean | null = null;
 
+/** Forget the on/off setting on this phone (when an account is deleted). */
+export async function forgetViewsSetting() {
+  enabled = null;
+  await AsyncStorage.removeItem(SETTING).catch(() => {});
+}
+
 /** Is "use what I look at" switched on? (On unless you've turned it off.) */
 export async function viewsEnabled(): Promise<boolean> {
   if (enabled == null) enabled = (await AsyncStorage.getItem(SETTING).catch(() => null)) !== 'off';

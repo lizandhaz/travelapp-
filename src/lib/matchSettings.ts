@@ -20,6 +20,12 @@ const KEY = 'match-settings';
 export const DEFAULT_MATCH_SETTINGS: MatchSettings = { trips: true, saves: true, friends: true };
 let cached: MatchSettings | null = null;
 
+/** Forget these settings on this phone (when an account is deleted). */
+export async function forgetMatchSettings() {
+  cached = null;
+  await AsyncStorage.removeItem(KEY).catch(() => {});
+}
+
 export async function getMatchSettings(): Promise<MatchSettings> {
   if (cached) return cached;
   try {

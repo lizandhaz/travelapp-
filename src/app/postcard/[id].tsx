@@ -7,7 +7,7 @@ import { PostcardCard } from '@/components/PostcardCard';
 import { Row } from '@/components/cards';
 import { PhotoTile } from '@/components/Photo';
 import { TripActions } from '@/components/TripActions';
-import { BackButton, Button, PageTitle, Screen, SectionHeader } from '@/components/ui';
+import { BackButton, Button, LoadFailed, PageTitle, Screen, SectionHeader } from '@/components/ui';
 import { colors, GUTTER, appWidth } from '@/constants/theme';
 import { personHref } from '@/lib/samplePeople';
 import { getPostcard } from '@/lib/postcards';
@@ -26,7 +26,7 @@ export default function PostcardScreen() {
   const fromPostcard = getPostcard(id)?.trip ?? null;
   const loaded = useFriendTrip(fromPostcard ? undefined : id);
   const trip = fromPostcard ?? loaded.trip;
-  if (!trip) return loaded.loading ? <Loading /> : <NotFound />;
+  if (!trip) return loaded.loading ? <Loading /> : loaded.error ? <LoadFailed message={loaded.error} onRetry={loaded.retry} /> : <NotFound />;
   const pics = Array.from({ length: photoCount(trip) }, (_, i) => tripPic(trip, i)!);
   const width = appWidth() - GUTTER * 2;
 

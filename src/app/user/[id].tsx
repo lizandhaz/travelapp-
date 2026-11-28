@@ -10,7 +10,7 @@ import { FriendTripPostcard, ProfileStats, ProfileTop, TripsSection, profilePost
 import { SafetySheet } from '@/components/SafetySheet';
 import { Text } from '@/components/Text';
 import { TravelMapCard } from '@/components/TravelMap';
-import { BackButton, Button, Card, Screen, SectionHeader } from '@/components/ui';
+import { BackButton, Button, Card, LoadFailed, Screen, SectionHeader } from '@/components/ui';
 import { colors, GUTTER, radius } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { boardMeta, fetchBoardsOf, type Board } from '@/lib/boards';
@@ -32,6 +32,8 @@ export default function UserProfile() {
   const { session } = useAuth();
   const me = session?.user.id ?? '';
   const [card, setCard] = useState<ProfileCard | null | undefined>(undefined);
+  const [failed, setFailed] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const [trips, setTrips] = useState<RealFriendTrip[]>([]);
   const [boards, setBoards] = useState<Board[]>([]);
   const [busy, setBusy] = useState(false);
@@ -43,16 +45,28 @@ export default function UserProfile() {
     setTrips(r.trips);
     setBoards(r.boards);
   };
-  const load = () => loadProfile(id).then(apply);
+  const load = () => loadProfile(id).then(apply).catch(() => {});
   useEffect(() => {
     let live = true;
     loadProfile(id)
       .then((r) => live && apply(r))
-      .catch(() => live && setCard(null));
+      .catch((e: Error) => live && setFailed(e.message));
     return () => {
       live = false;
     };
-  }, [id]);
+  }, [id, attempt]);
+
+  if (failed)
+    return (
+      <LoadFailed
+        message={failed}
+        onRetry={() => {
+          setFailed(null);
+          setCard(undefined);
+          setAttempt((n) => n + 1);
+        }}
+      />
+    );
 
   if (card === undefined)
     return (

@@ -1,4 +1,9 @@
 import { myUserId, supabase } from './supabase';
+import { forgetLocalReactions } from './reactions';
+import { forgetStartTaste } from './startTaste';
+import { forgetMatchSettings } from './matchSettings';
+import { forgetViewsSetting } from './views';
+import { setDeparturePreference } from './departurePreference';
 
 /**
  * Safety basics (plan Step J, supabase/migrations/20261202120000_safety_block_report_delete.sql):
@@ -65,5 +70,14 @@ export async function deleteMyAccount(): Promise<void> {
   }
   const { error } = await supabase.rpc('delete_my_account');
   if (error) throw friendly(error, 'Couldn’t delete your account. Try again in a moment.');
+  // Also forget what was kept only on this phone (overnight audit): saved friends' trips and likes on example trips,
+  // setup answers, score settings and the departure city. "Delete account" deletes everything, here too.
+  await Promise.all([
+    forgetLocalReactions(),
+    forgetStartTaste(),
+    forgetMatchSettings(),
+    forgetViewsSetting(),
+    me ? setDeparturePreference(me, null).catch(() => {}) : Promise.resolve(),
+  ]);
   await supabase.auth.signOut();
 }

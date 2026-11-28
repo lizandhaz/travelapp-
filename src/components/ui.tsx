@@ -167,7 +167,8 @@ export const Input = forwardRef<ComponentRef<typeof TextInput>, TextInputProps &
   return (
     <View style={[styles.inputWrap, props.multiline && { alignItems: 'flex-start' }]}>
       {icon}
-      <TextInput ref={ref} placeholderTextColor="rgba(100,104,88,0.75)" style={[styles.input, style]} {...props} />
+      {/* Placeholder in the muted text colour: 5.3:1 on the cream boxes (was 3.2:1, too faint to read for many). */}
+      <TextInput ref={ref} placeholderTextColor={colors.muted} style={[styles.input, style]} {...props} />
     </View>
   );
 });
@@ -274,6 +275,24 @@ export function Notice({ tone = 'error', children }: { tone?: 'error' | 'info'; 
 }
 
 /** A problem message, with Supabase's own wording in small print underneath (helps spot setup issues). */
+/**
+ * A page that couldn't load (overnight audit, Nov 2026): back, what went wrong ("Couldn't connect…"), and Try again.
+ * Used where a failed connection used to look like "not found".
+ */
+export function LoadFailed({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <Screen>
+      <View style={{ paddingHorizontal: GUTTER, paddingTop: 14, gap: 16 }}>
+        <BackButton />
+        <Text variant="body" accessibilityRole="alert">
+          {message}
+        </Text>
+        <Button title="Try again" kind="outline" onPress={onRetry} style={{ alignSelf: 'flex-start' }} />
+      </View>
+    </Screen>
+  );
+}
+
 export function ErrorNotice({ error }: { error: { message: string; detail?: string } | null }) {
   if (!error) return null;
   return (

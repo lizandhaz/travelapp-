@@ -223,7 +223,7 @@ export function TravelMapFull({ been, wish }: { been: MapPlace[]; wish: MapPlace
                 onPress={() => setShow(id)}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: on }}
-                style={{ borderRadius: radius.pill, borderWidth: 1, borderColor: on ? colors.ink : colors.line, backgroundColor: on ? colors.ink : colors.card, paddingHorizontal: 14, paddingVertical: 7 }}
+                style={{ borderRadius: radius.pill, borderWidth: 1, borderColor: on ? colors.action : colors.line, backgroundColor: on ? colors.action : colors.card, paddingHorizontal: 14, paddingVertical: 7 }}
               >
                 <Text style={{ fontFamily: fonts.sansMedium, fontSize: 13, color: on ? colors.onDark : colors.ink }}>{label}</Text>
               </Pressable>

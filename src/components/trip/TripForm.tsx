@@ -8,7 +8,7 @@ import { AccentTitle } from '@/components/AccentTitle';
 import { BedIcon, BulbIcon, CalendarIcon, ChevronIcon, ForkIcon, ImageIcon, LockIcon, MoonIcon, NoteIcon, PeopleIcon, PlusIcon, CloseIcon } from '@/components/Icons';
 import { Text } from '@/components/Text';
 import { BackButton, Button, Card, Chip, ErrorNotice, IconCircle, Input, Notice, PageTitle, Screen } from '@/components/ui';
-import { colors, fonts, GUTTER, radius } from '@/constants/theme';
+import { appWidth, colors, fonts, GUTTER, radius } from '@/constants/theme';
 import { currentMonth, dayRange, monthYear, nightsBetween, today } from '@/lib/months';
 import {
   COMPANIONS,
@@ -612,7 +612,8 @@ function SheetRow({
   saveLabel?: string;
   children: React.ReactNode;
 }) {
-  const long = !!summary && title.length + summary.length > 30;
+  // On a small phone the answer moves under the title sooner, so neither gets cut off ("Who did you go wit…").
+  const long = !!summary && title.length + summary.length > (appWidth() < 380 ? 24 : 30);
   return (
     <>
       <Pressable

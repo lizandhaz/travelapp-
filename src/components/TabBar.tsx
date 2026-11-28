@@ -35,8 +35,8 @@ export const TabButton = forwardRef<ComponentRef<typeof Pressable>, TabTriggerSl
       <Pressable
         ref={ref}
         {...props}
-        accessibilityRole="tab"
-        accessibilityState={{ selected: !!isFocused }}
+        accessibilityRole={primary ? 'button' : 'tab'}
+        accessibilityState={primary ? undefined : { selected: !!isFocused }}
         accessibilityLabel={label}
         style={styles.tab}
       >

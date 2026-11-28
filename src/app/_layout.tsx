@@ -70,6 +70,9 @@ function Navigator() {
         <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
           <Stack.Protected guard={signedIn} redirectTo="/welcome">
             <Stack.Screen name="(tabs)" />
+            {/* Add a trip slides up over the app (owner, Nov 2026: a clear way out). No swipe to dismiss: the score slider
+                drags sideways, and leaving with unsaved work asks first. */}
+            <Stack.Screen name="add" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom', gestureEnabled: false }} />
             <Stack.Screen name="place/[slug]" />
             <Stack.Screen name="stay/[slug]" />
             <Stack.Screen name="postcards" />

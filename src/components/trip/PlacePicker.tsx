@@ -167,16 +167,17 @@ export function StopsPicker({ value, onChange, places, max = 10 }: { value: Plac
           {value.map((p, i) => (
             <View
               key={`${placeLabel(p)}-${i}`}
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 7, paddingLeft: 10, paddingRight: 6, paddingVertical: 6, borderRadius: radius.pill, backgroundColor: i === 0 ? colors.sageSoft : colors.card, borderWidth: 1, borderColor: i === 0 ? colors.sage : colors.line }}
+              style={{ maxWidth: '100%', flexDirection: 'row', alignItems: 'center', gap: 7, paddingLeft: 10, paddingRight: 6, paddingVertical: 6, borderRadius: radius.pill, backgroundColor: i === 0 ? colors.sageSoft : colors.card, borderWidth: 1, borderColor: i === 0 ? colors.sage : colors.line }}
             >
               <Text style={{ fontSize: 16, lineHeight: 20 }} accessibilityElementsHidden importantForAccessibility="no">
                 {countryInfo(p.country || p.name).flag}
               </Text>
-              <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 14, color: colors.ink }} numberOfLines={1}>
+              {/* A long name shortens with "…" instead of pushing the chip off the screen (overnight audit). */}
+              <Text style={{ fontFamily: fonts.sansSemiBold, fontSize: 14, color: colors.ink, flexShrink: 1 }} numberOfLines={1}>
                 {p.name}
               </Text>
               {!!p.country && plain(p.country) !== plain(p.name) && (
-                <Text variant="tiny" numberOfLines={1}>
+                <Text variant="tiny" numberOfLines={1} style={{ flexShrink: 0, maxWidth: 96 }}>
                   {p.country}
                 </Text>
               )}
@@ -184,7 +185,7 @@ export function StopsPicker({ value, onChange, places, max = 10 }: { value: Plac
                 onPress={() => onChange(value.filter((_, j) => j !== i))}
                 accessibilityRole="button"
                 accessibilityLabel={`Remove ${placeLabel(p)}`}
-                hitSlop={8}
+                hitSlop={11}
                 style={({ pressed }) => ({ width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: pressed ? colors.line : 'transparent' })}
               >
                 <Text style={{ fontSize: 15, lineHeight: 18, color: colors.muted }}>×</Text>

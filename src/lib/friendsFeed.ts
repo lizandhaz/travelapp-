@@ -87,10 +87,16 @@ const signAll = async (paths: string[]) => (await Promise.all(paths.map((p) => t
 export async function fetchFriendsTrips(limit = 30): Promise<RealFriendTrip[]> {
   const me = await myUserId();
   if (!me) return [];
-  const [people, rows] = await Promise.all([
-    fetchMyPeople(),
-    supabase.from('trips').select(TRIP_SELECT).neq('owner_id', me).order('created_at', { ascending: false }).limit(limit),
-  ]);
+  // Only people you follow or who follow you (overnight audit, Nov 2026): the database also lets you read every public
+  // profile's trips, so "not mine" alone would fill "From your friends" with strangers' trips, shown as "Someone".
+  const people = await fetchMyPeople();
+  if (!people.length) return [];
+  const rows = await supabase
+    .from('trips')
+    .select(TRIP_SELECT)
+    .in('owner_id', people.slice(0, 500).map((p) => p.userId))
+    .order('created_at', { ascending: false })
+    .limit(limit);
   if (rows.error) throw new Error(rows.error.message);
   const byId = new Map(people.map((p) => [p.userId, p]));
   const trips = (rows.data as unknown as TripRow[]).map(fromRow);

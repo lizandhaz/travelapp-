@@ -69,7 +69,7 @@ export default function SaveToList() {
         accessibilityState={{ checked: on, busy: busyId === key }}
         accessibilityLabel={`${title}, ${meta}`}
       >
-        <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 10, borderColor: on ? colors.ink : colors.line }}>
+        <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 10, borderColor: on ? colors.action : colors.line }}>
           {board && board.items.length ? (
             <ListCover board={board} style={{ width: 52, borderRadius: radius.sm + 4 }} />
           ) : (
@@ -95,8 +95,8 @@ export default function SaveToList() {
                 height: 26,
                 borderRadius: 13,
                 borderWidth: 1.5,
-                borderColor: on ? colors.ink : colors.line,
-                backgroundColor: on ? colors.ink : colors.card,
+                borderColor: on ? colors.action : colors.line,
+                backgroundColor: on ? colors.action : colors.card,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}

@@ -167,7 +167,8 @@ export const Input = forwardRef<ComponentRef<typeof TextInput>, TextInputProps &
   return (
     <View style={[styles.inputWrap, props.multiline && { alignItems: 'flex-start' }]}>
       {icon}
-      <TextInput ref={ref} placeholderTextColor="rgba(100,104,88,0.75)" style={[styles.input, style]} {...props} />
+      {/* Placeholder in the muted text colour: 5.3:1 on the cream boxes (was 3.2:1, too faint to read for many). */}
+      <TextInput ref={ref} placeholderTextColor={colors.muted} style={[styles.input, style]} {...props} />
     </View>
   );
 });

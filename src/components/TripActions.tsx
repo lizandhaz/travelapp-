@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
-import { Keyboard, LayoutAnimation, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
+import { Keyboard, LayoutAnimation, Modal, Platform, Pressable, ScrollView, View, StyleSheet } from 'react-native';
 
 import { colors, fonts, GUTTER } from '@/constants/theme';
 import { sampleCountry } from '@/lib/placeFeatures';
@@ -48,8 +48,9 @@ export function TripActions({ id, who, place, slug, country }: { id: string; who
 
       {/* Save: the place (to a list) or their whole trip. */}
       <Modal visible={saving} transparent animationType="fade" onRequestClose={() => setSaving(false)}>
-        <Pressable onPress={() => setSaving(false)} accessibilityLabel="Close" style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'flex-end' }}>
-          <Pressable onPress={() => {}} style={{ backgroundColor: colors.bg, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: GUTTER, paddingBottom: 36, gap: 12 }}>
+        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+          <Pressable onPress={() => setSaving(false)} accessibilityRole="button" accessibilityLabel="Close" style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.35)' }]} />
+          <View style={{ backgroundColor: colors.bg, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: GUTTER, paddingBottom: 36, gap: 12 }}>
             <Text variant="heading">Save</Text>
             <SaveOption
               title={`Save ${place}`}
@@ -68,8 +69,8 @@ export function TripActions({ id, who, place, slug, country }: { id: string; who
                 setSaving(false);
               }}
             />
-          </Pressable>
-        </Pressable>
+          </View>
+        </View>
       </Modal>
 
       <Modal visible={open} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setOpen(false)}>

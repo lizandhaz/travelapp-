@@ -18,7 +18,7 @@ const SECTIONS: { title: string; body: string[] }[] = [
     title: 'What we keep',
     body: [
       'Your account: your name, a username, your email address (to send log-in codes) and your date of birth (to check your age). Your date of birth is only ever visible to you.',
-      'What you add: your trips (where, which month, how long, your scores, notes, where you stayed and ate, tips, who you went with), your photos, your boards and the places on them, who you follow, and your likes and comments.',
+      'What you add: your trips (where, which month or the exact dates if you give them, how long, your scores, notes, where you stayed and ate, tips, who you went with and any friends you tag), your photos, your boards and the places on them, who you follow, and your likes and comments.',
       'Photos: we shrink them and remove the hidden location data (GPS) before they are stored. We never show anyone where you are right now.',
       'Place pages you look at, so your scores can match your taste. You can turn this off, or clear it, in Settings.',
       'Some settings are kept only on your phone (for example, what your scores use).',
@@ -31,6 +31,8 @@ const SECTIONS: { title: string; body: string[] }[] = [
       'Trips and boards set to “Followers” are seen only by people you’ve accepted as followers. Trips set to “Just me” are seen only by you.',
       'People can find you by name or username so they can ask to follow you. If you’re under 18 your profile is always private, and people who don’t already follow you (or you them) can’t find you.',
       'Likes and comments show your name only to people who know you; anyone else sees “Someone”.',
+      `If you’re 18 or over you can make your profile public. Then anyone on ${APP_NAME} can see the parts you choose (trips, boards, stats), while “Just me” trips stay private. You can change this in Settings.`,
+      'You can tag friends on a trip, but only people you follow who follow you back. A friend you tag can see it when they can see the trip, and can remove themselves. Their name is shown only to people who know them.',
     ],
   },
   {

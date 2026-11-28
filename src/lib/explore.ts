@@ -260,35 +260,62 @@ export function searchExplore(query: string): { places: RowItem[]; items: Explor
 /** A tile in the Explore feed. `href` opens a collection instead of a place. */
 export type FeedItem = BoardItem & { href?: string };
 
-const nearbyOrder = ['weekend', 'weekend', 'medium', 'weekend', 'medium', 'long'] as const;
-type NearbyGroup = { id: (typeof nearbyOrder)[number]; places: readonly { slug: string }[] };
+/** A ranked place from the departure city, with at most one quiet reason for its card ("Easy from London"). */
+export type NearbyPlace = { slug: string; why?: string | null };
+type NearbyGroup = { id: 'weekend' | 'medium' | 'long'; places: readonly NearbyPlace[] };
 
-/** Promote a few ranked destinations among the existing stories. Each destination gets one card. */
-export function curateExploreFeed(feed: FeedItem[], featured: readonly { slug: string }[], nearby: readonly NearbyGroup[] = []): FeedItem[] {
+/** The rhythm of places in a personalised feed: mostly easy trips, a further one now and then for discovery. */
+const RHYTHM = ['weekend', 'weekend', 'medium', 'weekend', 'medium', 'long'] as const;
+const TRAVEL_TIME = /\b(flight|drive|train|eurostar|ferry)\b/i;
+
+/**
+ * The "Just for you" feed (owner, Nov 2026: "location should feel like a natural part of Explore, not another
+ * feature"). Every destination appears once: places already shown (Trending, or the best matches of a search) are
+ * left out, and "One night in Bath" tiles give way to Bath's own card. With a departure city, all the places it
+ * ranks (taste, season and how easy the journey is; nearbyTrips.ts) follow RHYTHM, each followed by two of the other
+ * cards (stays, food, gems…), and their line becomes the place's kind plus at most one reason. Places it doesn't rank
+ * (ones you've been to) follow in the same rhythm. The London-only travel times from the prototype ("2h 16m by
+ * Eurostar") stay only when `nearLondon`. No city: the feed's own order.
+ */
+export function curateExploreFeed(feed: FeedItem[], featured: readonly { slug: string }[], nearby: readonly NearbyGroup[] = [], nearLondon = false): FeedItem[] {
   const seen = new Set(featured.map(({ slug }) => slug));
+  const hasPlaceCard = new Set(feed.filter((tile) => tile.kind === 'place' && tile.slug).map((tile) => tile.slug));
   const placesBySlug = new Map<string, FeedItem>();
   const unique = feed.filter((tile) => {
+    if (tile.kind === 'One night away' && tile.slug && hasPlaceCard.has(tile.slug)) return false;
     if (tile.kind !== 'place' || !tile.slug) return true;
     if (seen.has(tile.slug)) return false;
     seen.add(tile.slug);
     placesBySlug.set(tile.slug, tile);
     return true;
   });
-  const pools = new Map(nearby.map(({ id, places }) => [id, places.flatMap(({ slug }) => {
-    const tile = placesBySlug.get(slug);
-    return tile ? [tile] : [];
-  })]));
-  const promoted = nearbyOrder.flatMap((group) => {
-    const tile = pools.get(group)?.shift();
-    return tile ? [tile] : [];
-  });
-  const picks = [...promoted, ...[...pools.values()].flat()].slice(0, nearbyOrder.length);
-  if (!picks.length) return unique;
+  if (!nearby.some((g) => g.places.length)) return unique;
 
-  const selected = new Set(picks);
-  const remaining = unique.filter((tile) => !selected.has(tile));
-  const ordered = picks.flatMap((tile) => [tile, ...remaining.splice(0, 2)]);
-  return [...ordered, ...remaining];
+  const pools = new Map(
+    nearby.map(({ id, places }) => [
+      id,
+      places.flatMap(({ slug, why }) => {
+        const tile = placesBySlug.get(slug);
+        if (!tile) return [];
+        const kind = (kicker(slug) || tile.sub).split(' · ')[0];
+        const sub = nearLondon && TRAVEL_TIME.test(tile.sub) ? tile.sub : why ? `${kind} · ${why}` : kicker(slug) || tile.sub;
+        return [{ tile, card: { ...tile, sub } }];
+      }),
+    ]),
+  );
+  const take = (id: NearbyGroup['id']) => pools.get(id)?.shift() ?? (['weekend', 'medium', 'long'] as const).map((g) => pools.get(g)).find((p) => p?.length)?.shift();
+  const picks: { tile: FeedItem; card: FeedItem }[] = [];
+  for (let i = 0; [...pools.values()].some((p) => p.length); i++) {
+    const next = take(RHYTHM[i % RHYTHM.length]);
+    if (next) picks.push(next);
+  }
+  // Places it didn't rank (mostly ones you've been to) come after the new ones, in the same rhythm.
+  const picked = new Set(picks.map(({ tile }) => tile));
+  const rest = unique
+    .filter((tile) => tile.kind === 'place' && !picked.has(tile))
+    .map((tile) => (!nearLondon && TRAVEL_TIME.test(tile.sub) && tile.slug ? { ...tile, sub: kicker(tile.slug) || tile.sub } : tile));
+  const things = unique.filter((tile) => tile.kind !== 'place');
+  return [...[...picks.map(({ card }) => card), ...rest].flatMap((card) => [card, ...things.splice(0, 2)]), ...things];
 }
 
 const STAY_KINDS = ['Hotel', 'Villa', 'B&B', 'Airbnb', 'Riad', 'Ryokan', 'Other'];

@@ -1839,7 +1839,7 @@ export const placeDetails: Record<string, PlaceDetail> = {
     "kicker": "Islands · Beach · Food",
     "scoreNote": "From 5 friends and people with your taste.",
     "bestTime": "May, June or late September",
-    "staysFrom": "from £115 a night",
+    "staysFrom": "from £190 a night",
     "goodFor": [
       "Friends",
       "Couples",
@@ -1907,39 +1907,49 @@ export const placeDetails: Record<string, PlaceDetail> = {
       {
         "name": "Blue Palace Elounda",
         "type": "Hotel",
-        "match": 92,
-        "featured": true,
+        "match": 85,
+        "featured": false,
         "sub": "from £520 a night · Private plunge pools looking at Spinalonga island.",
-        "because": "Because you gave Villa Limone a 9.0",
+        "because": null,
         "score": null,
         "photo": null
       },
       {
-        "name": "Villa Elounda Blue",
-        "type": "Villa",
-        "match": 89,
+        "name": "Domes of Elounda",
+        "type": "Hotel",
+        "match": 85,
         "featured": false,
-        "sub": "from £380 a night · Priya stayed",
+        "sub": "from £420 a night · Priya stayed",
         "because": null,
         "score": 9.1,
         "photo": null
       },
       {
-        "name": "Chania Old Port Rooms",
-        "type": "B&B",
-        "match": 87,
+        "name": "Daios Cove",
+        "type": "Hotel",
+        "match": 85,
         "featured": false,
-        "sub": "from £115 a night · Maya stayed",
+        "sub": "from £380 a night · Its own cove near Agios Nikolaos, with pool suites.",
         "because": null,
-        "score": 8.6,
+        "score": null,
         "photo": null
       },
       {
-        "name": "Serenissima Boutique",
-        "type": "B&B",
+        "name": "Domes Noruz Chania",
+        "type": "Hotel",
         "match": 85,
         "featured": false,
-        "sub": "from £140 a night · Maya stayed",
+        "sub": "from £260 a night · A design hotel on the beach, ten minutes from Chania.",
+        "because": null,
+        "score": null,
+        "photo": null
+      },
+      {
+        "name": "Casa Delfino",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £190 a night · Maya stayed",
         "because": null,
         "score": 8.9,
         "photo": null
@@ -2668,6 +2678,16 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "because": null,
         "score": 8.8,
         "photo": null
+      },
+      {
+        "name": "Four Seasons Hotel Kyoto",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £900 a night · Around an 800-year-old pond garden in Higashiyama.",
+        "because": null,
+        "score": null,
+        "photo": null
       }
     ],
     "eats": [
@@ -2848,6 +2868,16 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £230 a night · Sam stayed",
         "because": null,
         "score": 8.6,
+        "photo": null
+      },
+      {
+        "name": "Four Seasons Hotel Ritz Lisbon",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £600 a night · Above Eduardo VII Park, with a running track on the roof.",
+        "because": null,
+        "score": null,
         "photo": null
       }
     ],
@@ -3382,6 +3412,16 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "because": null,
         "score": 8.8,
         "photo": null
+      },
+      {
+        "name": "Four Seasons Resort Maldives at Landaa Giraavaru",
+        "type": "Villa",
+        "match": 85,
+        "featured": false,
+        "sub": "from £1200 a night · In Baa Atoll, a UNESCO biosphere reserve known for manta rays.",
+        "because": null,
+        "score": null,
+        "photo": null
       }
     ],
     "eats": [
@@ -3759,6 +3799,16 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £260 a night · Sam stayed",
         "because": null,
         "score": 8.7,
+        "photo": null
+      },
+      {
+        "name": "Four Seasons Resort Mauritius at Anahita",
+        "type": "Villa",
+        "match": 85,
+        "featured": false,
+        "sub": "from £600 a night · Villas with private pools by a lagoon on the east coast.",
+        "because": null,
+        "score": null,
         "photo": null
       }
     ],
@@ -7487,6 +7537,16 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £280 a night · Tom stayed",
         "because": null,
         "score": 8.7,
+        "photo": null
+      },
+      {
+        "name": "Ikos Porto Petro",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £450 a night · Luxury all-inclusive on the south-east coast, by Porto Petro.",
+        "because": null,
+        "score": null,
         "photo": null
       }
     ],
@@ -12105,6 +12165,16 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "because": null,
         "score": 8.4,
         "photo": null
+      },
+      {
+        "name": "Four Seasons Astir Palace",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £650 a night · On its own pine-covered peninsula at Vouliagmeni, on the Athens Riviera.",
+        "because": null,
+        "score": null,
+        "photo": null
       }
     ],
     "eats": [
@@ -12591,6 +12661,16 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £200 a night · Jonah stayed",
         "because": null,
         "score": 8.4,
+        "photo": null
+      },
+      {
+        "name": "Ikos Andalusia",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £450 a night · Luxury all-inclusive on the beach at Estepona, west of Marbella.",
+        "because": null,
+        "score": null,
         "photo": null
       }
     ],
@@ -13258,6 +13338,16 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £140 a night · Sam stayed",
         "because": null,
         "score": 8.2,
+        "photo": null
+      },
+      {
+        "name": "Four Seasons Hotel Madrid",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £700 a night · Seven historic buildings joined together, near Puerta del Sol.",
+        "because": null,
+        "score": null,
         "photo": null
       }
     ],
@@ -14638,6 +14728,16 @@ export const placeDetails: Record<string, PlaceDetail> = {
         "sub": "from £150 a night · Tom stayed",
         "because": null,
         "score": 8.3,
+        "photo": null
+      },
+      {
+        "name": "Grand-Hôtel du Cap-Ferrat, A Four Seasons Hotel",
+        "type": "Hotel",
+        "match": 85,
+        "featured": false,
+        "sub": "from £1100 a night · At the tip of Cap-Ferrat, about 20 minutes from Nice.",
+        "because": null,
+        "score": null,
         "photo": null
       }
     ],

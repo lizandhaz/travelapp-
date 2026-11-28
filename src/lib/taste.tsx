@@ -3,8 +3,10 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useAuth } from './auth';
 import { fetchBoards, placesOn } from './boards';
 import { countryOf } from './knownPlaces';
-import { buildProfile, itemScore, tagRarity, scorePlace, stayScore, topTastes, type FriendRating, type PlaceResult, type Profile, type Signal } from './match';
-import { featuresForPlace, featuresForSlug, parseStaySub, sampleFriendRatings, stayKind, tagsForListName, tasteItemInfo } from './placeFeatures';
+import { buildProfile, itemScore, tagRarity, scorePlace, stayScore, stayVerdict, topTastes, type FriendRating, type PlaceResult, type Profile, type Signal } from './match';
+import { featuresForPlace, featuresForSlug, findSampleStay, isCitySlug, parseStaySub, sampleFriendRatings, stayKind, tagsForListName, tasteItemInfo } from './placeFeatures';
+import { getHotelPrefs } from './hotelPrefs';
+import { EMPTY_HOTEL_PREFS, type HotelPrefs } from './hotels';
 import { places } from './sample';
 import { onTasteChanged } from './tasteEvents';
 import { getStartTaste } from './startTaste';
@@ -29,8 +31,14 @@ type TasteValue = {
   forSlug: (slug: string) => PlaceResult | null;
   /** The same for any place by name. */
   forPlace: (place: Place) => PlaceResult;
-  /** Your score out of 10 for a stay on a place page. */
-  stayScoreFor: (stay: { type: string; sub: string | null; score: number | null }) => number;
+  /** Your score out of 10 for a stay on a place page (`slug` = the place it's in). */
+  stayScoreFor: (stay: { name: string; type: string; sub: string | null; score: number | null }, slug?: string) => number;
+  /** The main reason for a stay's score ("Ikos, a brand you love"), and whether it counts against it. */
+  stayWhy: (stay: { name: string; type: string; sub: string | null; score: number | null }, slug?: string) => { reason: string | null; against: boolean };
+  /** True once we know anything about the hotels you like (rated or saved hotels, or the "Hotels you love" page). */
+  knowsHotels: boolean;
+  /** What you told us on the "Hotels you love" page. */
+  hotelPrefs: HotelPrefs;
   /** Your score out of 10 for a place to eat on a place page. */
   eatScoreFor: (eat: { score: number | null; from: string | null }) => number;
   /** Your score and a friends' line for a "Made for your taste" item, judged on the item itself. */
@@ -58,7 +66,7 @@ function resultsFor(profile: Profile) {
 const Ctx = createContext<TasteValue | null>(null);
 
 /** Your trips and saved places as signals for the engine, leaving out anything switched off in Settings. */
-async function loadSignals(): Promise<{ signals: Signal[]; settings: MatchSettings }> {
+async function loadSignals(): Promise<{ signals: Signal[]; settings: MatchSettings; hotelPrefs: HotelPrefs }> {
   const settings = await getMatchSettings();
   const [trips, boards, views] = await Promise.all([
     settings.trips ? fetchMyTrips() : [],
@@ -81,12 +89,30 @@ async function loadSignals(): Promise<{ signals: Signal[]; settings: MatchSettin
         extraStop: i > 0,
       }),
     );
+    // The hotel itself (its brand, class and price) for your hotel taste: a 10 → +1, 6.5 → 0, 3.5 → −1.
+    if (t.stay?.name && t.stay.score != null) {
+      const known = findSampleStay(t.stay.name);
+      next.push({
+        kind: 'hotel',
+        name: t.stay.name,
+        type: t.stay.type,
+        priceFrom: known?.priceFrom ?? null,
+        city: known ? known.city : !!t.stops[0] && (featuresForPlace({ name: t.stops[0].name, country: countryOf(t.stops[0]) }).tags.city ?? 0) >= 0.5,
+        weight: Math.max(-1, Math.min(1, (t.stay.score - 6.5) / 3)),
+      });
+    }
   }
   for (const b of boards) {
     // Places only: hotels, restaurants and so on saved under a place don't count as places to go.
     for (const item of placesOn(b.items)) {
       const place = item.slug ? (featuresForSlug(item.slug) ?? featuresForPlace(item)) : featuresForPlace({ name: item.name, country: countryOf(item) });
       next.push({ kind: 'save', place, wish: b.kind === 'wish', savedAt: item.createdAt });
+    }
+    // Hotels saved under a place: a lighter "like" for your hotel taste.
+    for (const item of b.items) {
+      if (item.kind !== 'stay') continue;
+      const known = findSampleStay(item.name, item.parentSlug);
+      next.push({ kind: 'hotel', name: item.name, type: known?.type ?? 'Hotel', priceFrom: known?.priceFrom ?? null, city: known?.city ?? false, weight: b.kind === 'wish' ? 0.6 : 0.5 });
     }
     // A list's name can say what it's for ("Ski trips").
     const hint = b.kind === 'list' ? tagsForListName(b.name) : {};
@@ -100,25 +126,37 @@ async function loadSignals(): Promise<{ signals: Signal[]; settings: MatchSettin
     const place = featuresForSlug(slug);
     if (place) next.push({ kind: 'trip', place, score: 8.5, month: aYearAgo, nights: null, companions: i === 0 ? start.who : null, told: true });
   });
+  // The "Hotels you love" page (app/hotels.tsx). A luxury budget also says something about the places you go for.
+  const hotelPrefs = await getHotelPrefs();
+  if (hotelPrefs.brands.length || hotelPrefs.styles.length || hotelPrefs.budget) {
+    next.push({ kind: 'hotelPrefs', prefs: hotelPrefs });
+    if (hotelPrefs.budget === 'luxe' || hotelPrefs.budget === 'splurge') next.push({ kind: 'interest', tags: { luxury: hotelPrefs.budget === 'splurge' ? 0.8 : 0.5 }, label: 'Hotels you love' });
+  }
   // Views come after saves, so a view of somewhere already saved counts for little.
   for (const v of views) {
     const place = featuresForSlug(v.slug) ?? featuresForPlace({ name: v.name, country: v.country });
     next.push({ kind: 'view', place, views: v.views, seconds: v.seconds, lastViewed: v.lastViewed });
   }
-  return { signals: next, settings };
+  return { signals: next, settings, hotelPrefs };
+}
+
+/** A place page's stay in the engine's terms. */
+function stayInput(stay: { name: string; type: string; sub: string | null; score: number | null }, slug: string | undefined, usingFriends: boolean) {
+  const { priceFrom, friend } = parseStaySub(stay.sub);
+  return { name: stay.name, type: stayKind(stay.type), label: stay.type, priceFrom, friendScore: usingFriends && friend ? stay.score : null, city: slug ? isCitySlug(slug) : false };
 }
 
 export function TasteProvider({ children }: { children: React.ReactNode }) {
   const { session } = useAuth();
   const userId = session?.user.id ?? null;
-  const [loaded, setLoaded] = useState<{ user: string; signals: Signal[]; settings: MatchSettings } | null>(null);
+  const [loaded, setLoaded] = useState<{ user: string; signals: Signal[]; settings: MatchSettings; hotelPrefs: HotelPrefs } | null>(null);
 
   useEffect(() => {
     if (!userId) return;
     let active = true;
     const refresh = () =>
       loadSignals()
-        .then(({ signals, settings }) => active && setLoaded({ user: userId, signals, settings }))
+        .then((l) => active && setLoaded({ user: userId, ...l }))
         .catch(() => {}); // keep what we had; numbers stay as they were
     refresh();
     const stop = onTasteChanged(refresh);
@@ -131,6 +169,7 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
   // Only use signals that belong to whoever is signed in now.
   const signals = loaded && loaded.user === userId ? loaded.signals : null;
   const usingFriends = (loaded && loaded.user === userId ? loaded.settings : DEFAULT_MATCH_SETTINGS).friends;
+  const hotelPrefs = loaded && loaded.user === userId ? loaded.hotelPrefs : EMPTY_HOTEL_PREFS;
   // Friends' ratings only count when "Use my friends' scores" is on.
   const friends: FriendRating[] = useMemo(() => (usingFriends ? sampleFriendRatings() : []), [usingFriends]);
   const profile = useMemo(() => (signals ? buildProfile(signals, friends, new Date(), rarity()) : EMPTY), [signals, friends]);
@@ -149,10 +188,13 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
         return cache.get(slug)!;
       },
       forPlace: (place) => scorePlace(profile, featuresForPlace(place), friends),
-      stayScoreFor: ({ type, sub, score }) => {
-        const { priceFrom, friend } = parseStaySub(sub);
-        return stayScore(profile, { type: stayKind(type), priceFrom, friendScore: usingFriends && friend ? score : null });
+      stayScoreFor: (stay, slug) => stayVerdict(profile, stayInput(stay, slug, usingFriends)).score,
+      stayWhy: (stay, slug) => {
+        const v = stayVerdict(profile, stayInput(stay, slug, usingFriends));
+        return { reason: v.reason, against: v.against };
       },
+      knowsHotels: profile.hotels.evidence > 0,
+      hotelPrefs,
       eatScoreFor: ({ score, from }) =>
         itemScore(profile, { tasteTag: 'food', friendScore: usingFriends ? score : null, friendRecommended: usingFriends && !!from }),
       forItem: (item) => {
@@ -160,7 +202,7 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
         // With friends' scores switched off, judge it on your taste alone.
         const info = usingFriends ? raw : { ...raw, friendScore: null, friendRecommended: false, note: 'Judged on your taste' };
         const score = info.stay
-          ? stayScore(profile, { type: stayKind(info.stay.type), priceFrom: parseStaySub(info.stay.sub).priceFrom, friendScore: info.friendScore })
+          ? stayScore(profile, { name: info.stay.name, type: stayKind(info.stay.type), label: info.stay.type, priceFrom: parseStaySub(info.stay.sub).priceFrom, friendScore: info.friendScore, city: isCitySlug(item.slug) })
           : itemScore(profile, info);
         return { score, note: info.note };
       },
@@ -170,7 +212,7 @@ export function TasteProvider({ children }: { children: React.ReactNode }) {
         return !!f && profile.saved[f.key] != null;
       },
     };
-  }, [profile, friends, signals, usingFriends]);
+  }, [profile, friends, signals, usingFriends, hotelPrefs]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

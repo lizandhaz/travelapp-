@@ -24,6 +24,8 @@
  *     a lot down for a poor one, so a place that isn't for them reads 5–7, not 8.
  */
 
+import { buildHotelTaste, EMPTY_HOTEL_TASTE, hotelFit, type HotelEvent, type HotelPrefs, type HotelTaste } from './hotels';
+
 export type Tags = Record<string, number>;
 
 export type PlaceFeatures = {
@@ -66,7 +68,11 @@ export type Signal =
   /** A place page you've looked at: how many times, for how long in total, and when last. */
   | { kind: 'view'; place: PlaceFeatures; views: number; seconds: number; lastViewed: string }
   /** A hint with no place, e.g. a list called "Ski trips" (holiday types only). */
-  | { kind: 'interest'; tags: Tags; label: string };
+  | { kind: 'interest'; tags: Tags; label: string }
+  /** A hotel you rated on a trip (weight from your score) or saved to a board (lib/hotels.ts). */
+  | ({ kind: 'hotel' } & HotelEvent)
+  /** What you told us on the "Hotels you love" page. */
+  | { kind: 'hotelPrefs'; prefs: HotelPrefs };
 
 /** A friend's rating of a place (or of a stay at a place). */
 export type FriendRating = { friend: string; placeKey: string; score: number; /** The place's holiday types (to learn the friend's taste). */ tags?: Tags };
@@ -106,6 +112,8 @@ export type Profile = {
   stayTypes: Record<string, number>;
   /** Typical stay price they liked, £ a night. */
   price: number | null;
+  /** Hotel brands, class, styles and budget (lib/hotels.ts). */
+  hotels: HotelTaste;
   /** Share of their trips that were short (3 nights or fewer): weekenders want places nearby. */
   shortTrips: number;
   /** How telling each holiday type is (rare types like "ski" count more than "food", which almost everywhere has). */
@@ -259,7 +267,17 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
   const goodForSum: Record<string, number> = {};
   let goodForW = 0;
 
+  const hotelEvents: HotelEvent[] = [];
+  let hotelPrefs: HotelPrefs | null = null;
   for (const s of signals) {
+    if (s.kind === 'hotel') {
+      hotelEvents.push(s);
+      continue;
+    }
+    if (s.kind === 'hotelPrefs') {
+      hotelPrefs = s.prefs;
+      continue;
+    }
     if (s.kind === 'interest') {
       const h = halves.next;
       for (const [t, v] of Object.entries(s.tags)) h.tags[t] = (h.tags[t] ?? 0) + INTEREST_WEIGHT * v;
@@ -337,6 +355,10 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
   for (const [g, v] of Object.entries(goodForSum)) nextGoodFor[g] = v / goodForW;
 
   const evidence = enjoyed.evidence + next.evidence;
+  const hotels = hotelEvents.length || hotelPrefs ? buildHotelTaste(hotelEvents, hotelPrefs) : EMPTY_HOTEL_TASTE;
+  // A budget you told us also says what kind of place you go for: half from your trips, half from the budget.
+  const placePrice = priceW > 0 ? priceSum / priceW : null;
+  const toldPrice = hotelPrefs?.budget && hotels.band ? (Number.isFinite(hotels.band[1]) ? Math.sqrt(Math.max(80, hotels.band[0]) * hotels.band[1]) : hotels.band[0] * 1.3) : null;
   return {
     tagWeights,
     enjoyed,
@@ -347,7 +369,8 @@ export function buildProfile(signals: Signal[], friendRatings: FriendRating[] = 
     companions,
     nextGoodFor,
     stayTypes,
-    price: priceW > 0 ? priceSum / priceW : null,
+    price: toldPrice != null ? (placePrice != null ? (placePrice + toldPrice) / 2 : toldPrice) : placePrice,
+    hotels,
     shortTrips: nightsN ? shortN / nightsN : 0,
     evidence,
     confidence: 1 - Math.exp(-evidence / 1.5), // ~50% after one loved trip, ~85% after three
@@ -855,20 +878,54 @@ export function itemScore(profile: Profile, item: { tasteTag: string | null; fri
   return nudge(base, interestFor(profile, item.tasteTag), profile);
 }
 
+/** A stay to score: its name (for the brand and class), kind, price a night and a friend's score. */
+export type StayInput = {
+  name?: string;
+  /** The kind you can pick on a trip (Hotel, Airbnb, Villa, B&B, Other). */
+  type: string;
+  /** The place page's own word for it ("Apartment", "Riad"), when it says more than `type`. */
+  label?: string;
+  priceFrom: number | null;
+  friendScore: number | null;
+  /** In a city (a city hotel, not a resort). */
+  city?: boolean;
+};
+
+/** How far hotel taste moves a stay's score once we know it: up to about ±1.6. */
+const STAY_SWING = 3.2;
+
 /**
- * Your score out of 10 for a stay: the friend's score (or 7.6), nudged by the kind of
- * stay you rate well and a price like you usually pay (cheaper only a little minus).
+ * Your score out of 10 for a stay, and the main reason: the friend's score (or 7.6), moved by your hotel taste (owner,
+ * Nov 2026: "I love Ikos, Four Seasons, luxury but not too expensive"): a brand you love or one like it, the class and
+ * styles you go for and your budget a night (lib/hotels.ts), plus the kind of stay you rate well. Without a budget, a
+ * price like you usually pay is a small plus and pricier counts against it.
  */
-export function stayScore(profile: Profile, stay: { type: string; priceFrom: number | null; friendScore: number | null }): number {
+export function stayVerdict(profile: Profile, stay: StayInput): { score: number; reason: string | null; against: boolean } {
   const parts: [number, number][] = [];
   const pref = profile.stayTypes[stay.type];
   if (pref != null) parts.push([0.6, 0.5 + 0.25 * Math.tanh(pref)]); // a kind of stay you rate well: up to +; badly: up to −
-  if (profile.price != null && stay.priceFrom != null) {
+  const hotels = profile.hotels ?? EMPTY_HOTEL_TASTE;
+  const h = stay.name ? hotelFit(hotels, { name: stay.name, type: stay.label ?? stay.type, priceFrom: stay.priceFrom, city: stay.city }) : null;
+  if (!hotels.band && profile.price != null && stay.priceFrom != null) {
     // Your usual price is a small plus; pricier counts against it; cheaper is roughly neutral.
     const r = Math.log(stay.priceFrom / profile.price);
     parts.push([0.4, r > 0 ? 0.25 + 0.4 * Math.exp(-((r / 0.6) ** 2)) : 0.5 + 0.15 * Math.exp(-((r / 0.6) ** 2))]);
   }
+  if (h?.fit != null) parts.push([h.weight, h.fit]);
   const w = parts.reduce((a, [pw]) => a + pw, 0);
-  const fit = w ? parts.reduce((a, [pw, v]) => a + pw * v, 0) / w : null;
-  return nudge(stay.friendScore ?? 7.6, fit, profile);
+  const base = stay.friendScore ?? 7.6;
+  if (!w) return { score: round1(base), reason: null, against: false };
+  const fit = parts.reduce((a, [pw, v]) => a + pw * v, 0) / w;
+  if (h?.fit == null) return { score: nudge(base, fit, profile), reason: null, against: false };
+  // Hotel taste you've told us (or shown us) is trusted more than a guess from your places.
+  const conf = Math.max(0.4, profile.confidence, hotels.told ? 0.9 : Math.min(0.8, 0.5 * hotels.evidence));
+  const shift = STAY_SWING * (0.5 + (fit - 0.5) * conf - 0.5);
+  // Going up, the less room is left the less it moves (a friend's 9.5 doesn't become 10); going down, the full amount.
+  const score = shift > 0 ? Math.min(9.9, base + shift * clamp((10 - base) / 2.4, 0, 1)) : base + shift;
+  return { score: round1(clamp(score, 1, 10)), reason: h.reason, against: h.against };
+}
+
+/** Your score out of 10 for a stay (see stayVerdict). */
+export function stayScore(profile: Profile, stay: StayInput): number {
+  return stayVerdict(profile, stay).score;
 }

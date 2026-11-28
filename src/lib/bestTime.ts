@@ -97,36 +97,6 @@ export function bestSummary(data: BestTimeData): string {
   return parts.join(' · ');
 }
 
-/** How busy a group of months mostly is: "quiet", "busy", "very busy" or "busy to very busy". */
-function crowdText(crowds: number[] | null, months: number[]): string | null {
-  if (!crowds || !months.length) return null;
-  const c = months.map((m) => crowds[m]);
-  const lo = Math.min(...c);
-  const hi = Math.max(...c);
-  return lo === hi ? CROWD_WORD[lo] : `${CROWD_WORD[lo]} to ${CROWD_WORD[hi]}`;
-}
-
-export type Season = { verdict: Verdict; title: string; months: string; temps: string | null; crowds: string | null; note: string | null };
-
-/** The year as two or three seasons: Best time / Also good / Not ideal, each with months, temperatures and crowds. */
-export function seasons(data: BestTimeData): Season[] {
-  const v = monthVerdicts(data);
-  const groups: Verdict[] = ['best', 'good', 'off'];
-  const avg = (ms: number[]) => (data.temps && ms.length ? ms.reduce((s, m) => s + data.temps![m], 0) / ms.length : null);
-  const bestAvg = avg(v.flatMap((x, m) => (x !== 'off' ? [m] : [])));
-  return groups.flatMap((g) => {
-    const ms = v.flatMap((x, m) => (x === g ? [m] : []));
-    if (!ms.length) return [];
-    let note: string | null = null;
-    if (g === 'good') note = 'Great weather, but very busy';
-    if (g === 'off') {
-      const a = avg(ms);
-      note = a != null && bestAvg != null && bestAvg - a >= 3 ? 'Cooler' : a != null && bestAvg != null && a - bestAvg >= 3 ? 'Warmer' : 'Outside the best season';
-    }
-    return [{ verdict: g, title: g === 'best' ? 'Best time' : g === 'good' ? 'Also good' : 'Not ideal', months: rangeText(ms, true), temps: tempRange(data.temps, ms), crowds: crowdText(data.crowds, ms), note }];
-  });
-}
-
 /** One plain sentence for a month: "June · 24° · quiet · one of the best months". */
 export function monthLine(data: BestTimeData, m: number): string {
   const v = monthVerdicts(data)[m];

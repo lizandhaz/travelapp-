@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { bestSummary, monthLine, monthRuns, monthVerdicts, rangeText, seasons } from '../src/lib/bestTime.ts';
+import { bestSummary, monthLine, monthRuns, monthVerdicts, rangeText } from '../src/lib/bestTime.ts';
 import { placeDetails } from '../src/lib/placeDetails.ts';
 
 test('a month is never both best and very busy: busy best months become "good"', () => {
@@ -25,14 +25,11 @@ test('month ranges read naturally, even over New Year', () => {
   assert.equal(rangeText([...Array(12).keys()]), 'all year round');
 });
 
-test('Mauritius: one clear line, seasons, and a sentence per month', () => {
+test('Mauritius: one clear line and a sentence per month', () => {
   const d = placeDetails.mauritius;
   const s = bestSummary(d);
   assert.match(s, /^Best May, June and September · 25–26° by day · quietest in June$/);
   assert.match(s, /° by day/);
-  const ss = seasons(d);
-  assert.deepEqual(ss.map((x) => x.title), ['Best time', 'Also good', 'Not ideal']);
-  assert.equal(ss[1].note, 'Great weather, but very busy');
   assert.match(monthLine(d, 4), /^May · \d+° · busy · one of the best months$/);
   assert.match(monthLine(d, 10), /^November · 28° · great weather, but very busy$/);
   assert.match(bestSummary(placeDetails.verbier), /^Best January to March · −1 to 4° by day/);

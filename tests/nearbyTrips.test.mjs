@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
+import { curateExploreFeed } from '../src/lib/explore.ts';
 import { cityNear, estimateJourney, groupNearbyTrips, searchDepartureCities } from '../src/lib/nearbyTrips.ts';
 
 const london = [51.51, -0.13];
@@ -38,4 +39,16 @@ test('taste and the season change the order inside a group without changing the 
   assert.equal(groupNearbyTrips(london, places, 0)[0].places[0], places[1]);
   assert.equal(groupNearbyTrips(london, places, 4)[0].places[0], places[0]);
   assert.equal(places[1].taste, 8.78);
+});
+
+test('Explore blends nearby places into its existing cards without repeating destinations', () => {
+  const place = (slug) => ({ slug, kind: 'place', name: slug, sub: '', photo: null });
+  const parisStory = { ...place('paris'), kind: 'Eat', name: 'Lunch in Paris' };
+  const cards = [place('paris'), parisStory, place('bath'), place('turks'), place('paris'), place('york'), place('bath')];
+  const ranked = [
+    { id: 'weekend', places: [{ slug: 'paris' }, { slug: 'york' }, { slug: 'bath' }] },
+    { id: 'long', places: [{ slug: 'turks' }] },
+  ];
+  assert.deepEqual(curateExploreFeed(cards, [{ slug: 'paris' }], ranked).map(({ name }) => name), ['york', 'Lunch in Paris', 'bath', 'turks']);
+  assert.deepEqual(curateExploreFeed(cards, [{ slug: 'paris' }]).map(({ name }) => name), ['Lunch in Paris', 'bath', 'turks', 'york']);
 });

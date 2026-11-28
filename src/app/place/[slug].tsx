@@ -23,6 +23,7 @@ import { aboutPlace, getPlace } from '@/lib/sample';
 import { stayKind } from '@/lib/placeFeatures';
 import { tasteNote, useTaste } from '@/lib/taste';
 import { useWantToGo } from '@/lib/useWantToGo';
+import { hotelPrefsLine } from '@/lib/hotelPrefs';
 import { recordPlaceView } from '@/lib/views';
 import NotFound from '../+not-found';
 
@@ -54,17 +55,22 @@ export default function PlaceScreen() {
   const { said, ideas } = aboutPlace(slug);
   const result = taste.forSlug(slug);
   const personal = taste.profile.evidence > 0;
-  // Stays and places to eat with your score out of 10 (no % match), best first. The featured stay is your top one,
-  // and its "Because…" is only shown when it's true for you.
+  // Stays with your score out of 10 (no % match), best first, each with its main reason ("Ikos, a brand you love").
+  // Hotel taste counts as soon as we know any (owner, Nov 2026: "luxury but not too expensive"), even with no trips yet.
+  const stayPersonal = personal || taste.knowsHotels;
   const stays = (detail?.stays ?? [])
-    .map((s) => ({ ...s, score: personal ? taste.stayScoreFor(s) : s.score, match: null as number | null, because: null as string | null, featured: false }))
-    .sort((a, b) => (personal ? (b.score ?? 0) - (a.score ?? 0) : 0))
+    .map((s) => {
+      const why = stayPersonal ? taste.stayWhy(s, slug) : null;
+      return { ...s, score: stayPersonal ? taste.stayScoreFor(s, slug) : s.score, match: null as number | null, because: why?.reason ?? null, against: !!why?.against, featured: false };
+    })
+    .sort((a, b) => (stayPersonal ? (b.score ?? 0) - (a.score ?? 0) : 0))
     // Stays that fit the search come first.
     .sort((a, b) => Number(!!tailored?.stayNames.includes(b.name)) - Number(!!tailored?.stayNames.includes(a.name)));
   if (stays.length) {
-    stays[0].featured = true;
+    // "We think you'd like it" only when it's true: a score of 8 or more for you.
+    stays[0].featured = !stayPersonal || (stays[0].score ?? 0) >= 8;
     const kind = stayKind(stays[0].type);
-    if (personal && (taste.profile.stayTypes[kind] ?? 0) > 0.2) stays[0].because = `Because you rate ${kind === 'B&B' ? 'B&Bs' : kind === 'Other' ? 'places like this' : `${kind.toLowerCase()}s`} highly`;
+    if (!stays[0].because && personal && (taste.profile.stayTypes[kind] ?? 0) > 0.2) stays[0].because = `Because you rate ${kind === 'B&B' ? 'B&Bs' : kind === 'Other' ? 'places like this' : `${kind.toLowerCase()}s`} highly`;
   }
   const eats = (detail?.eats ?? [])
     .map((e) => ({ ...e, score: personal ? taste.eatScoreFor(e) : e.score, match: null as number | null }))
@@ -199,7 +205,7 @@ export default function PlaceScreen() {
         </View>
       </Modal>
 
-      {stays.length > 0 && <StayRow stays={stays} at={{ name: place.name, country, slug }} />}
+      {stays.length > 0 && <StayRow stays={stays} at={{ name: place.name, country, slug }} tune={{ line: hotelPrefsLine(taste.hotelPrefs) }} />}
 
       {!detail && ideas.length > 0 && (
         <View style={{ marginTop: 40 }}>

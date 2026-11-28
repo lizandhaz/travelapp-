@@ -226,7 +226,16 @@ export function PriceSlider({ prices, value, onChange, shown }: { prices: number
  * Where to stay: a price slider (when the stays' prices differ), then the stays as cards that scroll sideways.
  * Tap a card for its own page (app/stay/[slug].tsx) with prices and links out.
  */
-export function StayRow({ stays, at }: { stays: PlaceDetail['stays']; at?: SpotPlace }) {
+export function StayRow({
+  stays,
+  at,
+  tune,
+}: {
+  stays: (PlaceDetail['stays'][number] & { /** Its reason counts against it ("Over your usual budget"). */ against?: boolean })[];
+  at?: SpotPlace;
+  /** "Hotels you love": what you told us ("Ikos, Four Seasons · £300 to £600 a night"), or null when nothing yet. */
+  tune?: { line: string | null };
+}) {
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const prices = stays.map((s) => parseStaySub(s.sub).priceFrom);
   const known = prices.filter((p): p is number => p != null);
@@ -234,6 +243,22 @@ export function StayRow({ stays, at }: { stays: PlaceDetail['stays']; at?: SpotP
   return (
     <View style={{ marginTop: 40 }}>
       <SectionHeader>Where to stay</SectionHeader>
+      {tune && (
+        <Pressable
+          onPress={() => router.push('/hotels')}
+          accessibilityRole="link"
+          accessibilityLabel={tune.line ? `Hotels you love: ${tune.line}. Change` : 'Tell us the hotels you love'}
+          style={({ pressed }) => ({ marginHorizontal: GUTTER, marginTop: -4, marginBottom: 14, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.line, backgroundColor: pressed ? colors.sageSoft : colors.card, maxWidth: '100%' })}
+        >
+          <BedIcon color={colors.olive} size={14} />
+          <Text variant="tiny" numberOfLines={1} style={{ color: colors.ink, flexShrink: 1 }}>
+            {tune.line ? `Tuned to ${tune.line}` : 'Tell us the hotels you love'}
+          </Text>
+          <Text variant="tiny" style={{ color: colors.accentText, fontFamily: fonts.sansSemiBold }}>
+            {tune.line ? 'Change' : '›'}
+          </Text>
+        </Pressable>
+      )}
       {new Set(known).size >= 2 && <PriceSlider prices={known} value={maxPrice} onChange={setMaxPrice} shown={shown.length} />}
       {shown.length === 0 ? (
         <Text variant="small" style={{ paddingHorizontal: GUTTER }}>
@@ -256,6 +281,7 @@ export function StayRow({ stays, at }: { stays: PlaceDetail['stays']; at?: SpotP
                   kind={s.type}
                   name={s.name}
                   lines={[s.sub, s.because]}
+                  quietLast={s.against}
                   score={s.score}
                   scoreTone="olive"
                   featured={s.featured}
@@ -295,6 +321,7 @@ function SpotCard({
   tall,
   footer,
   a11y,
+  quietLast = false,
 }: {
   tone: string;
   icon: React.ReactNode;
@@ -307,6 +334,8 @@ function SpotCard({
   tall?: boolean;
   footer?: string | null;
   a11y: string;
+  /** The second line counts against it, so it's grey, not olive. */
+  quietLast?: boolean;
 }) {
   return (
     <View accessible accessibilityLabel={a11y} style={{ width: tall ? 200 : 180, minHeight: 230, borderRadius: radius.lg, backgroundColor: tone, padding: 14, paddingTop: 16, borderWidth: featured ? 2 : 0, borderColor: colors.olive }}>
@@ -330,7 +359,7 @@ function SpotCard({
         {name}
       </Text>
       {lines.filter(Boolean).map((l, k) => (
-        <Text key={k} variant="tiny" numberOfLines={2} style={{ marginTop: 4, color: k ? colors.olive : colors.muted }}>
+        <Text key={k} variant="tiny" numberOfLines={2} style={{ marginTop: 4, color: k && !quietLast ? colors.olive : colors.muted }}>
           {l}
         </Text>
       ))}

@@ -157,6 +157,10 @@ src/
     friend-trip/[id].tsx  A friend's trip (sample id "maya-hydra", or a real trip's id via useFriendTrip): their score, who with, nights, quote, photos,
                           then "<who>'s picks": one cream card of matching rows (icon or small photo, name, line, score stamp) under small labels
                           (Where they stayed (→ stay page when it has one), Where they ate, What they did, Top tips; owner Nov 2026: the old mix looked clunky), "More about <place>"
+    hotels.tsx            "Hotels you love" (owner Nov 2026: "I love Ikos, Four Seasons, luxury but not too expensive"): brand chips
+                          (PICK_BRANDS), a budget a night (Good value / Comfortable / Luxury, sensibly priced £300–600 / Money no object)
+                          and styles (All-inclusive, Villas…); kept on the phone per account (lib/hotelPrefs.ts). From Settings → Your
+                          taste and the "Tuned to … · Change" pill under a place page's Where to stay
     settings.tsx          Settings (public-profile note, Your scores: switches for my trips / saved places / friends' scores / places
                           I look at, clear viewed places, Blocked people, Privacy policy, sign out, Delete account), opened from You
     privacy.tsx           The privacy policy (plain-English draft; readable signed in or out)
@@ -278,6 +282,12 @@ src/
                           sample.ts `places`, placeDetails.ts, and placeMaps.ts (pins with `ll` + a placeCentres entry). The owner's to-do list of places
                           to add is the "Places to add" artifact (https://claude.ai/artifact/VLioSvYUbpoRAjHaoUPvw2)
     placeDetails.ts       Sample place details from the prototype (stays, food, things to do, best time, tips)
+    hotels.ts             Hotel knowledge + hotel taste (pure; tests/hotels.test.mjs): BRANDS (Ikos, Four Seasons, Aman… with a class 1–5
+                          and styles), KNOWN unbranded hotels' class/styles (never made-up review scores), hotelInfo(), buildHotelTaste()
+                          (from rated trip stays, saved stays and Hotels you love) and hotelFit(): a brand you love, "Like Ikos, which you
+                          love", class, styles and budget (far over budget caps the fit), with one reason. match.ts stayVerdict() uses it:
+                          friend's score (or 7.6) moved up to about ±1.6, less upward room near 10
+    hotelPrefs.ts         Hotels you love on the phone (per account), hotelPrefsLine(); forgotten on Delete account
     score.ts              formatScore, clampScore, scoreWord
     fit.ts                fitWordSize(): a font size that keeps a place name's longest word on one line (Fraunces is wide,
                           wider on iPhone: 0.74 × size per letter), and fitLines(): one line per word and shrink-to-fit on iPhone, so a

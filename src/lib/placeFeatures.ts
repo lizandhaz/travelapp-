@@ -269,6 +269,25 @@ export function parseStaySub(sub: string | null): { priceFrom: number | null; fr
   return { priceFrom: price ? Number(price[1]) : null, friend: friend ? friend[1] : null };
 }
 
+/**
+ * A stay in the sample places' details by name ("Ikos Dassia"), with its place and price a night, for hotels you
+ * rated or saved. Looks in `slug` first when given. Case and accents don't matter.
+ */
+export function findSampleStay(name: string, slug?: string | null): { slug: string; type: string; priceFrom: number | null; city: boolean } | null {
+  const k = norm(name);
+  const order = slug && placeDetails[slug] ? [slug, ...Object.keys(placeDetails).filter((s) => s !== slug)] : Object.keys(placeDetails);
+  for (const s of order) {
+    const stay = placeDetails[s].stays.find((x) => norm(x.name) === k);
+    if (stay) return { slug: s, type: stay.type, priceFrom: parseStaySub(stay.sub).priceFrom, city: isCitySlug(s) };
+  }
+  return null;
+}
+
+/** A city place (its hotels are city hotels, not resorts). */
+export function isCitySlug(slug: string): boolean {
+  return (featuresForSlug(slug)?.tags.city ?? 0) >= 0.5;
+}
+
 /** Kinds of stay in the sample data → the kinds you can pick on a trip. */
 export function stayKind(type: string): string {
   if (['Hotel', 'Airbnb', 'Villa', 'B&B'].includes(type)) return type;

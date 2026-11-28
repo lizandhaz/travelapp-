@@ -428,7 +428,7 @@ export const rows = {
       "slug": "crete",
       "kind": "Stay",
       "match": "87% match",
-      "name": "Villa Elounda Blue",
+      "name": "Domes of Elounda",
       "where": "Crete, Greece",
       "because": "Because you gave Villa Limone a 9.0",
       "friends": "1 friend has been too",

@@ -32,6 +32,8 @@ export default function StayPage() {
   const about = stay.sub?.split(' · ').slice(1).join(' · ') || null;
   const description = about && !/ stayed$/.test(about) ? about : null;
   const yours = taste.forItem({ slug, kind: 'Stay', name: stay.name, friends: '' });
+  // Why, from your hotel taste ("Ikos, a brand you love", "Over your usual budget").
+  const why = taste.knowsHotels || taste.profile.evidence > 0 ? taste.stayWhy(stay, slug) : null;
   const friendScore = friend ? stay.score : null;
   const wouldReturn = friendScore != null ? sampleWouldReturn(friendScore) : null;
 
@@ -72,6 +74,11 @@ export default function StayPage() {
           <View style={{ flex: 1 }}>
             <Text variant="subheading">Your score</Text>
             <Text variant="small">{yours.note}</Text>
+            {!!why?.reason && (
+              <Text variant="small" style={{ color: why.against ? colors.muted : colors.olive, fontFamily: fonts.sansMedium }}>
+                {why.reason}
+              </Text>
+            )}
           </View>
         </View>
       </Card>

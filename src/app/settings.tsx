@@ -14,10 +14,13 @@ import { clearPlaceViews, setViewsEnabled, viewsEnabled } from '@/lib/views';
 import { DEFAULT_MATCH_SETTINGS, getMatchSettings, setMatchSetting, type MatchSettings } from '@/lib/matchSettings';
 import { deleteMyAccount, fetchBlocks, unblockUser, type Blocked } from '@/lib/safety';
 import { updatePrivacy, type PrivacyChange } from '@/lib/profiles';
+import { hotelPrefsLine } from '@/lib/hotelPrefs';
+import { useTaste } from '@/lib/taste';
 
 /** Settings: what your scores use, blocked people, privacy policy, sign out and deleting your account (plan Step J). */
 export default function Settings() {
   const { profile, session, signOut, refreshProfile } = useAuth();
+  const hotelLine = hotelPrefsLine(useTaste().hotelPrefs);
   const [removing, setRemoving] = useState(false);
   const [useViews, setUseViews] = useState(true);
   const [cleared, setCleared] = useState<string | null>(null);
@@ -182,6 +185,13 @@ export default function Settings() {
               <Text variant="small">The quick questions from when you joined. Your scores update straight away.</Text>
             </View>
             <Text variant="link">Start →</Text>
+          </Pressable>
+          <Pressable onPress={() => router.push('/hotels')} accessibilityRole="link" style={{ padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12, borderTopWidth: 1, borderTopColor: colors.line }}>
+            <View style={{ flex: 1 }}>
+              <Text variant="strong">Hotels you love</Text>
+              <Text variant="small">{hotelLine ?? 'Brands you love and your budget a night, so the hotels we suggest suit you.'}</Text>
+            </View>
+            <Text variant="link">{hotelLine ? 'Change →' : 'Start →'}</Text>
           </Pressable>
         </Section>
         <Section label="Blocked people">

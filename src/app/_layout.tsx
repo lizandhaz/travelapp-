@@ -78,6 +78,7 @@ function Navigator() {
             <Stack.Screen name="postcards" />
             <Stack.Screen name="settings" />
             <Stack.Screen name="departure-city" />
+            <Stack.Screen name="hotels" />
             <Stack.Screen name="setup" options={{ gestureEnabled: false }} />
             <Stack.Screen name="trip/[id]/index" />
             {/* No swipe-back on the form: sliding the score to the right must not leave the page. */}

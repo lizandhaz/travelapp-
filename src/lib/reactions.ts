@@ -51,6 +51,13 @@ AsyncStorage.getItem(KEY)
   })
   .catch(() => {});
 
+/** Forget likes, comments and saved friends' trips kept on this phone (when an account is deleted). */
+export async function forgetLocalReactions() {
+  state = { liked: {}, mine: {}, saved: {} };
+  emit();
+  await AsyncStorage.removeItem(KEY).catch(() => {});
+}
+
 const subscribe = (l: () => void) => {
   listeners.add(l);
   return () => listeners.delete(l);

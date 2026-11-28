@@ -20,6 +20,7 @@ import { getPlace, photoForPlaceName } from '@/lib/sample';
 import { scoreWord } from '@/lib/score';
 import { shareText, tripShareText } from '@/lib/share';
 import { companionsLabel, deleteTrip, fetchTrip, type Trip } from '@/lib/trips';
+import { TripPeople } from '@/components/TripPeople';
 import { useTripPhoto } from '@/lib/useTripPhoto';
 
 /** One of your trips, with Edit and Delete. */
@@ -127,10 +128,11 @@ export default function TripScreen() {
 
       <View style={{ paddingHorizontal: GUTTER, marginTop: -26, gap: 26 }}>
         <Card style={{ flexDirection: 'row' }}>
-          <Info label="With" big={companionsLabel(trip.companions) ?? '–'} small={trip.companions ? (trip.companions === 'solo' ? 'just you' : 'together') : 'not added'} />
+          <Info label="With" big={companionsLabel(trip.companions) ?? '–'} small={trip.companions ? (trip.companions === 'solo' ? 'just you' : trip.companions === 'work' ? 'a work trip' : 'together') : 'not added'} />
           <Info label="How long" big={nights ? String(nights) : '–'} small={nights ? (nights === 1 ? 'night' : 'nights') : 'not added'} border />
           <Info label="When" {...whenInfo(trip)} border />
         </Card>
+        <TripPeople tripId={trip.id} />
 
         {trip.photoPaths.length > 1 && (
           <View style={{ marginHorizontal: -GUTTER }}>

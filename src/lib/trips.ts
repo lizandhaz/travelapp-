@@ -22,6 +22,7 @@ export const COMPANIONS = [
   ['partner', 'Partner'],
   ['friends', 'Friends'],
   ['family', 'Family'],
+  ['work', 'Work'],
 ] as const;
 export type Companions = (typeof COMPANIONS)[number][0];
 export const companionsLabel = (c: Companions | null) => COMPANIONS.find(([id]) => id === c)?.[1] ?? null;
@@ -59,8 +60,18 @@ export type Trip = {
 
 export type TripDates = { start: string; end: string };
 
-/** What the Add a trip form sends to save_trip(). */
-export type TripInput = Omit<Trip, 'id' | 'createdAt' | 'ownerId'> & { id?: string };
+/** What the Add a trip form sends to save_trip(). `withPeople` (friends' user ids) replaces who's tagged; left out, tags stay. */
+export type TripInput = Omit<Trip, 'id' | 'createdAt' | 'ownerId'> & { id?: string; withPeople?: string[] };
+
+/** A friend tagged on a trip (owner, Nov 2026): only people you follow who follow you back can be tagged. */
+export type TripPerson = { userId: string; name: string; handle: string; avatarPath: string | null };
+
+/** Who's tagged on a trip, as far as you're allowed to know (trip_people_of). Empty if none, or if it can't load. */
+export async function fetchTripPeople(tripId: string): Promise<TripPerson[]> {
+  const { data, error } = await supabase.rpc('trip_people_of', { p_trip: tripId });
+  if (error || !data) return [];
+  return (data as { user_id: string; name: string; handle: string; avatar_path: string | null }[]).map((r) => ({ userId: r.user_id, name: r.name, handle: r.handle, avatarPath: r.avatar_path }));
+}
 
 export const TRIP_SELECT = `
   id, owner_id, trip_month, start_date, end_date, score, visibility, companions, note, photo_paths, created_at, would_return,
@@ -161,6 +172,7 @@ export async function saveTrip(input: TripInput): Promise<string> {
       photo_paths: input.photoPaths,
       // Only sent when given, so saving still works if this app reaches a database without the dates update.
       ...(input.dates ? { start_date: input.dates.start, end_date: input.dates.end } : {}),
+      ...(input.withPeople ? { with_people: input.withPeople } : {}),
     },
   });
   if (error) throw new Error(friendlyError(error));
